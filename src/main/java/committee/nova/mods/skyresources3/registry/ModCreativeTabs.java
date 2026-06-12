@@ -57,6 +57,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.RADIOACTIVE_MIX.get());
                         output.accept(ModItems.FROZEN_IRON_INGOT.get());
                         output.accept(ModItems.CRUSHED_NETHERRACK.get());
+                        output.accept(ModItems.WATER_EXTRACTOR.get());
                         output.accept(ModItems.SURVIVALIST_FISHING_ROD.get());
                         output.accept(ModItems.HEAVY_SNOWBALL.get());
                         output.accept(ModItems.HEAVY_EXPLOSIVE_SNOWBALL.get());

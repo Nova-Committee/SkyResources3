@@ -33,6 +33,9 @@ public final class Config {
     private static final ModConfigSpec.DoubleValue HEALTH_GEM_PERCENTAGE = BUILDER
             .comment("Fraction of stored health that will later count as max-health boost.")
             .defineInRange("healthGemPercentage", 0.02D, 0.0D, 100.0D);
+    private static final ModConfigSpec.IntValue WATER_EXTRACTOR_CAPACITY = BUILDER
+            .comment("Water capacity of the water extractor, in millibuckets.")
+            .defineInRange("waterExtractorCapacity", 4000, 1, Integer.MAX_VALUE);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
@@ -44,6 +47,7 @@ public final class Config {
     public static boolean plantMatterBonemealCapability;
     public static int healthGemMaxHealth;
     public static double healthGemPercentage;
+    public static int waterExtractorCapacity;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -55,6 +59,7 @@ public final class Config {
         plantMatterBonemealCapability = PLANT_MATTER_BONEMEAL_CAPABILITY.get();
         healthGemMaxHealth = HEALTH_GEM_MAX_HEALTH.get();
         healthGemPercentage = HEALTH_GEM_PERCENTAGE.get();
+        waterExtractorCapacity = WATER_EXTRACTOR_CAPACITY.get();
     }
 
     private Config() {

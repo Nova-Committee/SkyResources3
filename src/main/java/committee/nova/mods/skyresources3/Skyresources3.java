@@ -2,7 +2,9 @@ package committee.nova.mods.skyresources3;
 
 import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.registry.ModCapabilities;
 import committee.nova.mods.skyresources3.registry.ModCreativeTabs;
+import committee.nova.mods.skyresources3.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import com.mojang.logging.LogUtils;
@@ -21,8 +23,10 @@ public final class Skyresources3 {
 
     public Skyresources3(final IEventBus modEventBus, final ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(ModCapabilities::register);
 
         ModBlocks.register(modEventBus);
+        ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
         ModEntityTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);

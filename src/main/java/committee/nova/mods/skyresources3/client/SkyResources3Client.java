@@ -4,11 +4,13 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 
 @EventBusSubscriber(modid = Skyresources3.MODID, value = Dist.CLIENT)
 public final class SkyResources3Client {
@@ -21,6 +23,16 @@ public final class SkyResources3Client {
         event.registerEntityRenderer(
                 ModEntityTypes.HEAVY_EXPLOSIVE_SNOWBALL.get(),
                 context -> new ThrownItemRenderer<HeavyExplosiveSnowball>(context)
+        );
+    }
+
+    @SubscribeEvent
+    public static void registerRangeSelectItemModelProperties(
+            final RegisterRangeSelectItemModelPropertyEvent event
+    ) {
+        event.register(
+                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "water_extractor_level"),
+                WaterExtractorLevelProperty.MAP_CODEC
         );
     }
 

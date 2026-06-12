@@ -1,0 +1,45 @@
+package committee.nova.mods.skyresources3.registry;
+
+import committee.nova.mods.skyresources3.item.WaterExtractorItem;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
+
+public final class ModCapabilities {
+    public static void register(final RegisterCapabilitiesEvent event) {
+        event.registerItem(
+                Capabilities.Fluid.ITEM,
+                (stack, context) -> context == null
+                        ? null
+                        : new WaterExtractorFluidHandler(
+                                context,
+                                ModDataComponents.WATER_EXTRACTOR_FLUID.get(),
+                                WaterExtractorItem.getCapacity()
+                        ),
+                ModItems.WATER_EXTRACTOR.get()
+        );
+    }
+
+    private static final class WaterExtractorFluidHandler extends ItemAccessFluidHandler {
+        private WaterExtractorFluidHandler(
+                final ItemAccess itemAccess,
+                final DataComponentType<SimpleFluidContent> component,
+                final int capacity
+        ) {
+            super(itemAccess, component, Math.max(0, capacity));
+        }
+
+        @Override
+        public boolean isValid(final int index, final FluidResource resource) {
+            return super.isValid(index, resource) && (resource.isEmpty() || resource.getFluid() == Fluids.WATER);
+        }
+    }
+
+    private ModCapabilities() {
+    }
+}

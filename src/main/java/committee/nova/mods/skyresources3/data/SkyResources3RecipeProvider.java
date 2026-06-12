@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -71,6 +72,13 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern(" X")
                 .pattern("XY")
                 .unlockedBy("has_string", has(Items.STRING))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.TOOLS, ModItems.WATER_EXTRACTOR.get())
+                .define('X', ItemTags.PLANKS)
+                .pattern("XXX")
+                .pattern(" XX")
+                .unlockedBy("has_planks", has(ItemTags.PLANKS))
                 .save(this.output);
 
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
