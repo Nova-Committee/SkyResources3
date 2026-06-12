@@ -19,5 +19,17 @@
   "item.skyresources3.light_matter": "Light Matter",
   "item.skyresources3.sawdust": "Sawdust",
   "item.skyresources3.crushed_stone": "Crushed Stone",
-  "item.skyresources3.crushed_netherrack": "Crushed Netherrack"
+  "item.skyresources3.crushed_netherrack": "Crushed Netherrack",
+  "item.skyresources3.heavy_snowball": "Heavy Snowball",
+  "item.skyresources3.heavy_explosive_snowball": "Heavy Explosive Snowball",
+  "item.skyresources3.cactus_cutting_knife": "Cactus Cutting Knife",
+  "item.skyresources3.stone_cutting_knife": "Stone Cutting Knife",
+  "item.skyresources3.iron_cutting_knife": "Iron Cutting Knife",
+  "item.skyresources3.diamond_cutting_knife": "Diamond Cutting Knife",
+  "item.skyresources3.stone_grinder": "Stone Rock Grinder",
+  "item.skyresources3.iron_grinder": "Iron Rock Grinder",
+  "item.skyresources3.diamond_grinder": "Diamond Rock Grinder",
+  "item.skyresources3.sandstone_infusion_stone": "Sandstone Infusion Stone",
+  "item.skyresources3.red_sandstone_infusion_stone": "Red Sandstone Infusion Stone",
+  "item.skyresources3.alchemical_infusion_stone": "Alchemical Infusion Stone"
 }

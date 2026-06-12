@@ -40,6 +40,24 @@ public final class ModItems {
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
     public static final DeferredItem<Item> CRUSHED_STONE = ITEMS.registerSimpleItem("crushed_stone");
     public static final DeferredItem<Item> CRUSHED_NETHERRACK = ITEMS.registerSimpleItem("crushed_netherrack");
+    public static final DeferredItem<Item> HEAVY_SNOWBALL = ITEMS.registerSimpleItem(
+            "heavy_snowball",
+            () -> new Item.Properties().stacksTo(16)
+    );
+    public static final DeferredItem<Item> HEAVY_EXPLOSIVE_SNOWBALL = ITEMS.registerSimpleItem(
+            "heavy_explosive_snowball",
+            () -> new Item.Properties().stacksTo(16)
+    );
+    public static final DeferredItem<Item> CACTUS_CUTTING_KNIFE = singleStackItem("cactus_cutting_knife");
+    public static final DeferredItem<Item> STONE_CUTTING_KNIFE = singleStackItem("stone_cutting_knife");
+    public static final DeferredItem<Item> IRON_CUTTING_KNIFE = singleStackItem("iron_cutting_knife");
+    public static final DeferredItem<Item> DIAMOND_CUTTING_KNIFE = singleStackItem("diamond_cutting_knife");
+    public static final DeferredItem<Item> STONE_GRINDER = singleStackItem("stone_grinder");
+    public static final DeferredItem<Item> IRON_GRINDER = singleStackItem("iron_grinder");
+    public static final DeferredItem<Item> DIAMOND_GRINDER = singleStackItem("diamond_grinder");
+    public static final DeferredItem<Item> SANDSTONE_INFUSION_STONE = singleStackItem("sandstone_infusion_stone");
+    public static final DeferredItem<Item> RED_SANDSTONE_INFUSION_STONE = singleStackItem("red_sandstone_infusion_stone");
+    public static final DeferredItem<Item> ALCHEMICAL_INFUSION_STONE = singleStackItem("alchemical_infusion_stone");
 
     public static void register(final IEventBus modEventBus) {
         ITEMS.register(modEventBus);
@@ -47,6 +65,10 @@ public final class ModItems {
 
     private static DeferredItem<BlockItem> blockItem(final String name, final DeferredBlock<? extends Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
+    }
+
+    private static DeferredItem<Item> singleStackItem(final String name) {
+        return ITEMS.registerSimpleItem(name, () -> new Item.Properties().stacksTo(1));
     }
 
     private static FoodProperties food(final int nutrition, final float saturationModifier) {

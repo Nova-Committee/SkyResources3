@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
 public final class SkyResources3RecipeProvider extends RecipeProvider {
@@ -64,6 +65,51 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_rotten_flesh", has(Items.ROTTEN_FLESH))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
+                .define('X', ModItems.HEAVY_SNOWBALL.get())
+                .pattern("XX")
+                .pattern("XX")
+                .unlockedBy("has_heavy_snowball", has(ModItems.HEAVY_SNOWBALL.get()))
+                .save(this.output);
+
+        this.shapeless(RecipeCategory.MISC, ModItems.HEAVY_EXPLOSIVE_SNOWBALL.get(), 3)
+                .requires(ModItems.HEAVY_SNOWBALL.get())
+                .requires(ModItems.HEAVY_SNOWBALL.get())
+                .requires(ModItems.HEAVY_SNOWBALL.get())
+                .requires(Items.GUNPOWDER)
+                .unlockedBy("has_heavy_snowball", has(ModItems.HEAVY_SNOWBALL.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.TOOLS, ModItems.CACTUS_CUTTING_KNIFE.get())
+                .define('#', ModItems.CACTUS_NEEDLE.get())
+                .pattern(" #")
+                .pattern("# ")
+                .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
+                .save(this.output);
+
+        this.cuttingKnife(ModItems.STONE_CUTTING_KNIFE.get(), Blocks.COBBLESTONE, "has_cobblestone");
+        this.cuttingKnife(ModItems.IRON_CUTTING_KNIFE.get(), Items.IRON_INGOT, "has_iron_ingot");
+        this.cuttingKnife(ModItems.DIAMOND_CUTTING_KNIFE.get(), Items.DIAMOND, "has_diamond");
+        this.grinder(ModItems.STONE_GRINDER.get(), Blocks.COBBLESTONE, "has_cobblestone");
+        this.grinder(ModItems.IRON_GRINDER.get(), Items.IRON_INGOT, "has_iron_ingot");
+        this.grinder(ModItems.DIAMOND_GRINDER.get(), Items.DIAMOND, "has_diamond");
+
+        this.shaped(RecipeCategory.MISC, ModItems.SANDSTONE_INFUSION_STONE.get())
+                .define('X', ModItems.CACTUS_NEEDLE.get())
+                .define('Y', Blocks.SANDSTONE)
+                .pattern("X")
+                .pattern("Y")
+                .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.MISC, ModItems.RED_SANDSTONE_INFUSION_STONE.get())
+                .define('X', ModItems.CACTUS_NEEDLE.get())
+                .define('Y', Blocks.RED_SANDSTONE)
+                .pattern("X")
+                .pattern("Y")
+                .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
+                .save(this.output);
+
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_MATTER_BLOCK.get())
                 .define('X', ModItems.DARK_MATTER.get())
                 .pattern("XXX")
@@ -99,6 +145,28 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 )
                 .unlockedBy("has_petrified_wood", has(ModBlocks.PETRIFIED_WOOD.get()))
                 .save(this.output, id("charcoal_from_petrified_wood"));
+    }
+
+    private void cuttingKnife(final ItemLike result, final ItemLike material, final String unlockName) {
+        this.shaped(RecipeCategory.TOOLS, result)
+                .define('#', material)
+                .define('X', Items.STICK)
+                .pattern("#  ")
+                .pattern("#X ")
+                .pattern(" #X")
+                .unlockedBy(unlockName, has(material))
+                .save(this.output);
+    }
+
+    private void grinder(final ItemLike result, final ItemLike material, final String unlockName) {
+        this.shaped(RecipeCategory.TOOLS, result)
+                .define('#', material)
+                .define('X', Items.STICK)
+                .pattern("#  ")
+                .pattern(" # ")
+                .pattern("  X")
+                .unlockedBy(unlockName, has(material))
+                .save(this.output);
     }
 
     private static ResourceKey<Recipe<?>> id(final String path) {

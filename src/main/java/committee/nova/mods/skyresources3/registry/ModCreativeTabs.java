@@ -42,6 +42,18 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SAWDUST.get());
                         output.accept(ModItems.CRUSHED_STONE.get());
                         output.accept(ModItems.CRUSHED_NETHERRACK.get());
+                        output.accept(ModItems.HEAVY_SNOWBALL.get());
+                        output.accept(ModItems.HEAVY_EXPLOSIVE_SNOWBALL.get());
+                        output.accept(ModItems.CACTUS_CUTTING_KNIFE.get());
+                        output.accept(ModItems.STONE_CUTTING_KNIFE.get());
+                        output.accept(ModItems.IRON_CUTTING_KNIFE.get());
+                        output.accept(ModItems.DIAMOND_CUTTING_KNIFE.get());
+                        output.accept(ModItems.STONE_GRINDER.get());
+                        output.accept(ModItems.IRON_GRINDER.get());
+                        output.accept(ModItems.DIAMOND_GRINDER.get());
+                        output.accept(ModItems.SANDSTONE_INFUSION_STONE.get());
+                        output.accept(ModItems.RED_SANDSTONE_INFUSION_STONE.get());
+                        output.accept(ModItems.ALCHEMICAL_INFUSION_STONE.get());
                     })
                     .build()
     );
