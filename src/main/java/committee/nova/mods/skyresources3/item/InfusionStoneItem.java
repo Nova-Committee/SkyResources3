@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.item;
 
 import committee.nova.mods.skyresources3.Config;
+import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.List;
 import java.util.Optional;
@@ -116,6 +117,14 @@ public final class InfusionStoneItem extends Item {
 
     private static List<InfusionRecipe> recipes() {
         return List.of(
+                recipe(
+                        ModItems.PRIMUS_ALCHEMICAL_DUST.get(),
+                        10,
+                        block(ModBlocks.CACTUS_FRUIT_NEEDLE.get()),
+                        Blocks.ACACIA_SAPLING,
+                        1,
+                        10
+                ),
                 recipe(Items.APPLE, 4, InfusionStoneItem::isSapling, Blocks.OAK_SAPLING, 1, 10),
                 recipe(ModItems.CACTUS_FRUIT.get(), 4, block(Blocks.RED_SAND), Blocks.COARSE_DIRT, 1, 15),
                 recipe(ModItems.PRIMUS_ALCHEMICAL_DUST.get(), 6, block(Blocks.CACTUS), Blocks.CACTUS, 3, 8),

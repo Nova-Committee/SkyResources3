@@ -10,5 +10,5 @@
 - [x] Commit this migration slice with a Chinese message.
 
 Deferred:
-- [ ] Acacia sapling infusion from cactus fruit needle waits for the old cactus fruit needle block migration.
+- [x] Acacia sapling infusion from cactus fruit needle waits for the old cactus fruit needle block migration.
 - [ ] JEI infusion recipe category waits for the recipe system/UI migration batch.

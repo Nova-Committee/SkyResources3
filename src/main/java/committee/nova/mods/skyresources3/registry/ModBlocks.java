@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -52,6 +53,15 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> ALCHEMICAL_GLASS = BLOCKS.registerSimpleBlock(
             "alchemical_glass",
             () -> properties(0.3F, 0.3F, SoundType.GLASS).noOcclusion()
+    );
+    public static final DeferredBlock<CactusFruitNeedleBlock> CACTUS_FRUIT_NEEDLE = BLOCKS.registerBlock(
+            "cactus_fruit_needle",
+            CactusFruitNeedleBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.PLANT)
+                    .strength(0.5F, 0.5F)
+                    .sound(SoundType.GRASS)
+                    .noOcclusion()
     );
     public static final DeferredBlock<DryCactusBlock> DRY_CACTUS = BLOCKS.registerBlock(
             "dry_cactus",

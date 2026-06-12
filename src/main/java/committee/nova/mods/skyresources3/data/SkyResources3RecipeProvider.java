@@ -116,6 +116,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.CACTUS_FRUIT_NEEDLE.get())
+                .define('X', ModItems.CACTUS_FRUIT.get())
+                .define('Y', ModItems.CACTUS_NEEDLE.get())
+                .pattern("X")
+                .pattern("Y")
+                .unlockedBy("has_cactus_fruit", has(ModItems.CACTUS_FRUIT.get()))
+                .save(this.output);
+
         this.cuttingKnife(ModItems.STONE_CUTTING_KNIFE.get(), Blocks.COBBLESTONE, "has_cobblestone");
         this.cuttingKnife(ModItems.IRON_CUTTING_KNIFE.get(), Items.IRON_INGOT, "has_iron_ingot");
         this.cuttingKnife(ModItems.DIAMOND_CUTTING_KNIFE.get(), Items.DIAMOND, "has_diamond");
