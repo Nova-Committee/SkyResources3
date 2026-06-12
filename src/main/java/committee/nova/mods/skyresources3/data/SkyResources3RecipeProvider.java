@@ -227,6 +227,16 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 )
                 .unlockedBy("has_petrified_wood", has(ModBlocks.PETRIFIED_WOOD.get()))
                 .save(this.output, id("charcoal_from_petrified_wood"));
+
+        SimpleCookingRecipeBuilder.smelting(
+                        Ingredient.of(ModBlocks.DRY_CACTUS.get()),
+                        RecipeCategory.MISC,
+                        Items.LIGHT_GRAY_DYE,
+                        0.2F,
+                        200
+                )
+                .unlockedBy("has_dry_cactus", has(ModBlocks.DRY_CACTUS.get()))
+                .save(this.output, id("light_gray_dye_from_dry_cactus"));
     }
 
     private void cuttingKnife(final ItemLike result, final ItemLike material, final String unlockName) {

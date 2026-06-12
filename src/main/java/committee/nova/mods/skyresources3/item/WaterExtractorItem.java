@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.item;
 
 import committee.nova.mods.skyresources3.Config;
+import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModDataComponents;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
@@ -45,6 +46,8 @@ public final class WaterExtractorItem extends Item {
     private static final int SNOW_WATER = 50;
     private static final int LEAVES_WATER = 20;
     private static final int DIRT_TO_CLAY_WATER = 200;
+    private static final int CACTUS_TO_DRY_CACTUS_WATER = 50;
+    private static final int DRY_CACTUS_TO_CACTUS_WATER = 1200;
 
     public WaterExtractorItem(final Properties properties) {
         super(properties
@@ -170,6 +173,7 @@ public final class WaterExtractorItem extends Item {
         final ItemStack stack = context.getItemInHand();
         final BlockState state = context.getLevel().getBlockState(context.getClickedPos());
         return (state.is(Blocks.DIRT) && canDrainWater(stack, DIRT_TO_CLAY_WATER))
+                || (state.is(ModBlocks.DRY_CACTUS.get()) && canDrainWater(stack, DRY_CACTUS_TO_CACTUS_WATER))
                 || (player.isShiftKeyDown() && canDrainWater(stack, FluidType.BUCKET_VOLUME));
     }
 
@@ -178,15 +182,49 @@ public final class WaterExtractorItem extends Item {
         final BlockPos pos = context.getClickedPos();
         final ItemStack stack = context.getItemInHand();
         final BlockState state = level.getBlockState(pos);
-        if (!state.is(Blocks.DIRT) || !canDrainWater(stack, DIRT_TO_CLAY_WATER)) {
+        if (state.is(Blocks.DIRT)) {
+            return insertWaterAndReplaceBlock(
+                    stack,
+                    level,
+                    player,
+                    pos,
+                    context,
+                    Blocks.CLAY.defaultBlockState(),
+                    DIRT_TO_CLAY_WATER
+            );
+        }
+        if (state.is(ModBlocks.DRY_CACTUS.get())) {
+            return insertWaterAndReplaceBlock(
+                    stack,
+                    level,
+                    player,
+                    pos,
+                    context,
+                    Blocks.CACTUS.defaultBlockState(),
+                    DRY_CACTUS_TO_CACTUS_WATER
+            );
+        }
+        return false;
+    }
+
+    private static boolean insertWaterAndReplaceBlock(
+            final ItemStack stack,
+            final Level level,
+            final Player player,
+            final BlockPos pos,
+            final UseOnContext context,
+            final BlockState replacement,
+            final int waterAmount
+    ) {
+        if (!canDrainWater(stack, waterAmount)) {
             return false;
         }
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, context.getClickedFace(), stack)) {
             return false;
         }
 
-        drainWater(stack, DIRT_TO_CLAY_WATER);
-        level.setBlock(pos, Blocks.CLAY.defaultBlockState(), Block.UPDATE_ALL);
+        drainWater(stack, waterAmount);
+        level.setBlock(pos, replacement, Block.UPDATE_ALL);
         playWaterSound(level, player, pos, SoundEvents.BUCKET_EMPTY);
         level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
         return true;
@@ -240,6 +278,16 @@ public final class WaterExtractorItem extends Item {
         if (state.is(Blocks.SNOW)) {
             return extractWaterAndClearBlock(stack, level, player, pos, SNOW_WATER);
         }
+        if (state.is(Blocks.CACTUS)) {
+            return extractWaterAndReplaceBlock(
+                    stack,
+                    level,
+                    player,
+                    pos,
+                    ModBlocks.DRY_CACTUS.get().defaultBlockState(),
+                    CACTUS_TO_DRY_CACTUS_WATER
+            );
+        }
         if (state.is(BlockTags.LEAVES)) {
             return extractWaterAndClearBlock(stack, level, player, pos, LEAVES_WATER);
         }
@@ -258,6 +306,24 @@ public final class WaterExtractorItem extends Item {
         }
         addWater(stack, waterAmount);
         level.destroyBlock(pos, false, player);
+        playWaterSound(level, player, pos, SoundEvents.PLAYER_SPLASH);
+        level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
+        return true;
+    }
+
+    private static boolean extractWaterAndReplaceBlock(
+            final ItemStack stack,
+            final Level level,
+            final Player player,
+            final BlockPos pos,
+            final BlockState replacement,
+            final int waterAmount
+    ) {
+        if (!canAddWater(stack, waterAmount)) {
+            return false;
+        }
+        addWater(stack, waterAmount);
+        level.setBlock(pos, replacement, Block.UPDATE_ALL);
         playWaterSound(level, player, pos, SoundEvents.PLAYER_SPLASH);
         level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
         return true;

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cactus",
+  "textures": {
+    "particle": "skyresources3:block/dry_cactus_side",
+    "bottom": "skyresources3:block/dry_cactus_bottom",
+    "top": "skyresources3:block/dry_cactus_top",
+    "side": "skyresources3:block/dry_cactus_side"
+  }
+}
