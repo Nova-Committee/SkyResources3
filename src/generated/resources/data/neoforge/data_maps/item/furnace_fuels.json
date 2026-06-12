@@ -1,0 +1,13 @@
+{
+  "values": {
+    "skyresources3:alchemical_coal": {
+      "burn_time": 3000
+    },
+    "skyresources3:coal_infused_block": {
+      "burn_time": 30000
+    },
+    "skyresources3:compressed_coal_block": {
+      "burn_time": 128000
+    }
+  }
+}
