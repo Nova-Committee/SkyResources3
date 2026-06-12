@@ -8,6 +8,7 @@ import committee.nova.mods.skyresources3.item.CuttingKnifeItem;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
+import committee.nova.mods.skyresources3.item.RockGrinderItem;
 import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
 import net.minecraft.world.food.FoodProperties;
@@ -96,9 +97,12 @@ public final class ModItems {
             cuttingKnife("iron_cutting_knife", 175, 6.0F, 3.5F, 14);
     public static final DeferredItem<CuttingKnifeItem> DIAMOND_CUTTING_KNIFE =
             cuttingKnife("diamond_cutting_knife", 1092, 8.0F, 4.5F, 10);
-    public static final DeferredItem<Item> STONE_GRINDER = durableItem("stone_grinder", 104);
-    public static final DeferredItem<Item> IRON_GRINDER = durableItem("iron_grinder", 200);
-    public static final DeferredItem<Item> DIAMOND_GRINDER = durableItem("diamond_grinder", 1248);
+    public static final DeferredItem<RockGrinderItem> STONE_GRINDER =
+            rockGrinder("stone_grinder", 104, 4.0F, 3.5F, 5);
+    public static final DeferredItem<RockGrinderItem> IRON_GRINDER =
+            rockGrinder("iron_grinder", 200, 6.0F, 4.5F, 14);
+    public static final DeferredItem<RockGrinderItem> DIAMOND_GRINDER =
+            rockGrinder("diamond_grinder", 1248, 8.0F, 5.5F, 10);
     public static final DeferredItem<Item> SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("sandstone_infusion_stone", 100);
     public static final DeferredItem<Item> RED_SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("red_sandstone_infusion_stone", 80);
     public static final DeferredItem<Item> ALCHEMICAL_INFUSION_STONE = nonRepairableDurableItem("alchemical_infusion_stone", 1500);
@@ -126,6 +130,19 @@ public final class ModItems {
         return ITEMS.registerItem(
                 name,
                 properties -> new CuttingKnifeItem(properties, durability, miningSpeed, attackDamage, enchantmentValue)
+        );
+    }
+
+    private static DeferredItem<RockGrinderItem> rockGrinder(
+            final String name,
+            final int durability,
+            final float miningSpeed,
+            final float attackDamage,
+            final int enchantmentValue
+    ) {
+        return ITEMS.registerItem(
+                name,
+                properties -> new RockGrinderItem(properties, durability, miningSpeed, attackDamage, enchantmentValue)
         );
     }
 
