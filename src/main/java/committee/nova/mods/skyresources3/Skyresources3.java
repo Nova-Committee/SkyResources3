@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3;
 
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModCreativeTabs;
+import committee.nova.mods.skyresources3.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -21,6 +22,7 @@ public final class Skyresources3 {
 
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
+        ModEntityTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);

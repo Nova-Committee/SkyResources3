@@ -18,18 +18,28 @@ public final class Config {
     private static final ModConfigSpec.BooleanValue ENABLE_MAGMA_ISLAND = BUILDER
             .comment("Enable the migrated magma island progression path when island generation is implemented.")
             .define("enableMagmaIsland", true);
+    private static final ModConfigSpec.IntValue HEAVY_SNOWBALL_DAMAGE = BUILDER
+            .comment("Damage dealt by a thrown heavy snowball.")
+            .defineInRange("heavySnowballDamage", 8, 0, 1024);
+    private static final ModConfigSpec.IntValue EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE = BUILDER
+            .comment("Damage dealt by a thrown explosive heavy snowball before its tiny impact explosion.")
+            .defineInRange("explosiveHeavySnowballDamage", 12, 0, 1024);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
     public static boolean enableMigrationDebugLogging;
     public static boolean enableVoidIslandFeatures;
     public static boolean enableMagmaIsland;
+    public static int heavySnowballDamage;
+    public static int explosiveHeavySnowballDamage;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         enableMigrationDebugLogging = ENABLE_MIGRATION_DEBUG_LOGGING.get();
         enableVoidIslandFeatures = ENABLE_VOID_ISLAND_FEATURES.get();
         enableMagmaIsland = ENABLE_MAGMA_ISLAND.get();
+        heavySnowballDamage = HEAVY_SNOWBALL_DAMAGE.get();
+        explosiveHeavySnowballDamage = EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE.get();
     }
 
     private Config() {

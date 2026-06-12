@@ -1,6 +1,9 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
+import committee.nova.mods.skyresources3.entity.HeavySnowball;
+import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -40,24 +43,28 @@ public final class ModItems {
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
     public static final DeferredItem<Item> CRUSHED_STONE = ITEMS.registerSimpleItem("crushed_stone");
     public static final DeferredItem<Item> CRUSHED_NETHERRACK = ITEMS.registerSimpleItem("crushed_netherrack");
-    public static final DeferredItem<Item> HEAVY_SNOWBALL = ITEMS.registerSimpleItem(
+    public static final DeferredItem<HeavySnowballItem> HEAVY_SNOWBALL = ITEMS.registerItem(
             "heavy_snowball",
-            () -> new Item.Properties().stacksTo(16)
+            properties -> new HeavySnowballItem(properties.stacksTo(8), HeavySnowball::new, HeavySnowball::new)
     );
-    public static final DeferredItem<Item> HEAVY_EXPLOSIVE_SNOWBALL = ITEMS.registerSimpleItem(
+    public static final DeferredItem<HeavySnowballItem> HEAVY_EXPLOSIVE_SNOWBALL = ITEMS.registerItem(
             "heavy_explosive_snowball",
-            () -> new Item.Properties().stacksTo(16)
+            properties -> new HeavySnowballItem(
+                    properties.stacksTo(8),
+                    HeavyExplosiveSnowball::new,
+                    HeavyExplosiveSnowball::new
+            )
     );
-    public static final DeferredItem<Item> CACTUS_CUTTING_KNIFE = singleStackItem("cactus_cutting_knife");
-    public static final DeferredItem<Item> STONE_CUTTING_KNIFE = singleStackItem("stone_cutting_knife");
-    public static final DeferredItem<Item> IRON_CUTTING_KNIFE = singleStackItem("iron_cutting_knife");
-    public static final DeferredItem<Item> DIAMOND_CUTTING_KNIFE = singleStackItem("diamond_cutting_knife");
-    public static final DeferredItem<Item> STONE_GRINDER = singleStackItem("stone_grinder");
-    public static final DeferredItem<Item> IRON_GRINDER = singleStackItem("iron_grinder");
-    public static final DeferredItem<Item> DIAMOND_GRINDER = singleStackItem("diamond_grinder");
-    public static final DeferredItem<Item> SANDSTONE_INFUSION_STONE = singleStackItem("sandstone_infusion_stone");
-    public static final DeferredItem<Item> RED_SANDSTONE_INFUSION_STONE = singleStackItem("red_sandstone_infusion_stone");
-    public static final DeferredItem<Item> ALCHEMICAL_INFUSION_STONE = singleStackItem("alchemical_infusion_stone");
+    public static final DeferredItem<Item> CACTUS_CUTTING_KNIFE = durableItem("cactus_cutting_knife", 2);
+    public static final DeferredItem<Item> STONE_CUTTING_KNIFE = durableItem("stone_cutting_knife", 91);
+    public static final DeferredItem<Item> IRON_CUTTING_KNIFE = durableItem("iron_cutting_knife", 175);
+    public static final DeferredItem<Item> DIAMOND_CUTTING_KNIFE = durableItem("diamond_cutting_knife", 1092);
+    public static final DeferredItem<Item> STONE_GRINDER = durableItem("stone_grinder", 104);
+    public static final DeferredItem<Item> IRON_GRINDER = durableItem("iron_grinder", 200);
+    public static final DeferredItem<Item> DIAMOND_GRINDER = durableItem("diamond_grinder", 1248);
+    public static final DeferredItem<Item> SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("sandstone_infusion_stone", 100);
+    public static final DeferredItem<Item> RED_SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("red_sandstone_infusion_stone", 80);
+    public static final DeferredItem<Item> ALCHEMICAL_INFUSION_STONE = nonRepairableDurableItem("alchemical_infusion_stone", 1500);
 
     public static void register(final IEventBus modEventBus) {
         ITEMS.register(modEventBus);
@@ -67,8 +74,12 @@ public final class ModItems {
         return ITEMS.registerSimpleBlockItem(name, block);
     }
 
-    private static DeferredItem<Item> singleStackItem(final String name) {
-        return ITEMS.registerSimpleItem(name, () -> new Item.Properties().stacksTo(1));
+    private static DeferredItem<Item> durableItem(final String name, final int durability) {
+        return ITEMS.registerItem(name, Item::new, properties -> properties.durability(durability));
+    }
+
+    private static DeferredItem<Item> nonRepairableDurableItem(final String name, final int durability) {
+        return ITEMS.registerItem(name, Item::new, properties -> properties.durability(durability).setNoCombineRepair());
     }
 
     private static FoodProperties food(final int nutrition, final float saturationModifier) {
