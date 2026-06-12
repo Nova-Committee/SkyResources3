@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3;
 
 import committee.nova.mods.skyresources3.event.CuttingKnifeEvents;
+import committee.nova.mods.skyresources3.event.EarlyHandHarvestEvents;
 import committee.nova.mods.skyresources3.event.RockGrinderEvents;
 import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
@@ -34,6 +35,7 @@ public final class Skyresources3 {
         ModCreativeTabs.register(modEventBus);
 
         NeoForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);
+        NeoForge.EVENT_BUS.addListener(EarlyHandHarvestEvents::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(CuttingKnifeEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(RockGrinderEvents::onBlockBreak);
 
