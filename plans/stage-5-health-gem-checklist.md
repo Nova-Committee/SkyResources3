@@ -20,6 +20,8 @@
 - tooltip 保留旧版 Shift 展开信息：
   - 未按 Shift 时提示 `Hold Shift for info.`
   - 按 Shift 时显示注入操作、已注入生命与可获得生命加成。
+- 玩家主背包中的健康宝石每 20 tick 汇总一次生命加成，并通过 `MAX_HEALTH` transient modifier 应用到玩家。
+- 当健康宝石移除或加成降低时，移除/更新本模组的生命加成并夹取玩家当前生命值。
 - `HealthGemItem.getHealthInjected` 提供后续生命灌注机器读取入口。
 - `HealthGemItem.getHealthBoost` 保留旧版按配置比例计算最大生命加成的入口。
 
@@ -32,7 +34,6 @@
 
 ## 暂缓迁移
 
-- 最大生命值属性加成尚未接入，需与玩家属性/附件数据设计一起处理。
 - `LifeInfuser` 和 `LifeInjector` 仍未迁移，健康宝石与机器的自动注入/消耗逻辑留待机器阶段。
 - 健康宝石旧配方来自 `infusionRecipes`，依赖生命灌注 recipe type，未在本批迁移。
 - `survivalist_fishing_rod` 依赖自定义鱼钩实体，留待实体批次单独迁移。
