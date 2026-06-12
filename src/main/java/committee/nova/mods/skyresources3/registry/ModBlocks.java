@@ -54,6 +54,14 @@ public final class ModBlocks {
             "alchemical_glass",
             () -> properties(0.3F, 0.3F, SoundType.GLASS).noOcclusion()
     );
+    public static final DeferredBlock<Block> LIFE_INFUSER = BLOCKS.registerSimpleBlock(
+            "life_infuser",
+            () -> machineWood()
+    );
+    public static final DeferredBlock<Block> LIFE_INJECTOR = BLOCKS.registerSimpleBlock(
+            "life_injector",
+            () -> machineWood()
+    );
     public static final DeferredBlock<CactusFruitNeedleBlock> CACTUS_FRUIT_NEEDLE = BLOCKS.registerBlock(
             "cactus_fruit_needle",
             CactusFruitNeedleBlock::new,
@@ -90,6 +98,14 @@ public final class ModBlocks {
                 .mapColor(MapColor.STONE)
                 .strength(destroyTime, explosionResistance)
                 .sound(soundType);
+    }
+
+    private static BlockBehaviour.Properties machineWood() {
+        return BlockBehaviour.Properties.of()
+                .mapColor(MapColor.WOOD)
+                .strength(6.0F, 12.0F)
+                .sound(SoundType.WOOD)
+                .noOcclusion();
     }
 
     private ModBlocks() {

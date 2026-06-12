@@ -25,6 +25,8 @@ public final class SkyResources3BlockLootProvider extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.DARK_MATTER_BLOCK.get());
         this.dropSelf(ModBlocks.LIGHT_MATTER_BLOCK.get());
         this.dropSelf(ModBlocks.ALCHEMICAL_GLASS.get());
+        this.dropSelf(ModBlocks.LIFE_INFUSER.get());
+        this.dropSelf(ModBlocks.LIFE_INJECTOR.get());
         this.dropSelf(ModBlocks.CACTUS_FRUIT_NEEDLE.get());
         this.dropSelf(ModBlocks.DRY_CACTUS.get());
     }

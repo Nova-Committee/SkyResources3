@@ -34,6 +34,8 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> DARK_MATTER_BLOCK = blockItem("dark_matter_block", ModBlocks.DARK_MATTER_BLOCK);
     public static final DeferredItem<BlockItem> LIGHT_MATTER_BLOCK = blockItem("light_matter_block", ModBlocks.LIGHT_MATTER_BLOCK);
     public static final DeferredItem<BlockItem> ALCHEMICAL_GLASS = blockItem("alchemical_glass", ModBlocks.ALCHEMICAL_GLASS);
+    public static final DeferredItem<BlockItem> LIFE_INFUSER = blockItem("life_infuser", ModBlocks.LIFE_INFUSER);
+    public static final DeferredItem<BlockItem> LIFE_INJECTOR = blockItem("life_injector", ModBlocks.LIFE_INJECTOR);
     public static final DeferredItem<BlockItem> CACTUS_FRUIT_NEEDLE =
             blockItem("cactus_fruit_needle", ModBlocks.CACTUS_FRUIT_NEEDLE);
     public static final DeferredItem<BlockItem> DRY_CACTUS = blockItem("dry_cactus", ModBlocks.DRY_CACTUS);

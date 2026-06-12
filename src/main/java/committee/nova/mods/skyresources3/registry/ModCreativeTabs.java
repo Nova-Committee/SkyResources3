@@ -32,6 +32,8 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.DARK_MATTER_BLOCK.get());
                         output.accept(ModItems.LIGHT_MATTER_BLOCK.get());
                         output.accept(ModItems.ALCHEMICAL_GLASS.get());
+                        output.accept(ModItems.LIFE_INFUSER.get());
+                        output.accept(ModItems.LIFE_INJECTOR.get());
                         output.accept(ModItems.CACTUS_FRUIT_NEEDLE.get());
                         output.accept(ModItems.DRY_CACTUS.get());
                         output.accept(ModItems.CACTUS_FRUIT.get());

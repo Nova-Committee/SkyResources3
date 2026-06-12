@@ -216,6 +216,24 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_light_matter_block", has(ModBlocks.LIGHT_MATTER_BLOCK.get()))
                 .save(this.output, "skyresources3:light_matter_from_block");
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIFE_INFUSER.get())
+                .define('X', ItemTags.LOGS)
+                .define('Y', ModItems.ALCHEMICAL_INFUSION_STONE.get())
+                .pattern("XXX")
+                .pattern(" X ")
+                .pattern(" Y ")
+                .unlockedBy("has_alchemical_infusion_stone", has(ModItems.ALCHEMICAL_INFUSION_STONE.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIFE_INJECTOR.get())
+                .define('X', ItemTags.LOGS)
+                .define('Y', Items.DIAMOND_SWORD)
+                .pattern(" Y ")
+                .pattern(" X ")
+                .pattern("XXX")
+                .unlockedBy("has_diamond_sword", has(Items.DIAMOND_SWORD))
+                .save(this.output);
+
         SimpleCookingRecipeBuilder.smelting(
                         Ingredient.of(ModItems.PLANT_MATTER.get()),
                         RecipeCategory.MISC,
