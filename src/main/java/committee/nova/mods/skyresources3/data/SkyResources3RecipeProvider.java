@@ -65,6 +65,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_rotten_flesh", has(Items.ROTTEN_FLESH))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.TOOLS, ModItems.SURVIVALIST_FISHING_ROD.get())
+                .define('X', Items.STICK)
+                .define('Y', Items.STRING)
+                .pattern(" X")
+                .pattern("XY")
+                .unlockedBy("has_string", has(Items.STRING))
+                .save(this.output);
+
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
                 .define('X', ModItems.HEAVY_SNOWBALL.get())
                 .pattern("XX")

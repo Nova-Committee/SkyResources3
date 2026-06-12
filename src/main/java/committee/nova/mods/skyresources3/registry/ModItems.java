@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
+import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -68,6 +69,8 @@ public final class ModItems {
     public static final DeferredItem<Item> RADIOACTIVE_MIX = ITEMS.registerSimpleItem("radioactive_mix");
     public static final DeferredItem<Item> FROZEN_IRON_INGOT = ITEMS.registerSimpleItem("frozen_iron_ingot");
     public static final DeferredItem<Item> CRUSHED_NETHERRACK = ITEMS.registerSimpleItem("crushed_netherrack");
+    public static final DeferredItem<SurvivalistFishingRodItem> SURVIVALIST_FISHING_ROD =
+            ITEMS.registerItem("survivalist_fishing_rod", SurvivalistFishingRodItem::new);
     public static final DeferredItem<HeavySnowballItem> HEAVY_SNOWBALL = ITEMS.registerItem(
             "heavy_snowball",
             properties -> new HeavySnowballItem(properties.stacksTo(8), HeavySnowball::new, HeavySnowball::new)

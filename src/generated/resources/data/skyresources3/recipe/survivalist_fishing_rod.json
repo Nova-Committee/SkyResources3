@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": "minecraft:stick",
+    "Y": "minecraft:string"
+  },
+  "pattern": [
+    " X",
+    "XY"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:survivalist_fishing_rod"
+  }
+}

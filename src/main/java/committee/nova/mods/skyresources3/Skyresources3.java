@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3;
 
+import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModCreativeTabs;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
@@ -10,6 +11,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 @Mod(Skyresources3.MODID)
@@ -24,6 +26,8 @@ public final class Skyresources3 {
         ModItems.register(modEventBus);
         ModEntityTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
+
+        NeoForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
