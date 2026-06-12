@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_alchemical_gold_needle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "skyresources3:alchemical_gold_needle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "skyresources3:alchemical_infusion_stone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_alchemical_gold_needle"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "skyresources3:alchemical_infusion_stone"
+    ]
+  }
+}

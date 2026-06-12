@@ -24,6 +24,9 @@ public final class Config {
     private static final ModConfigSpec.IntValue EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE = BUILDER
             .comment("Damage dealt by a thrown explosive heavy snowball before its tiny impact explosion.")
             .defineInRange("explosiveHeavySnowballDamage", 12, 0, 1024);
+    private static final ModConfigSpec.BooleanValue PLANT_MATTER_BONEMEAL_CAPABILITY = BUILDER
+            .comment("Allow plant matter to act as instant bone meal.")
+            .define("plantMatterBonemealCapability", true);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
@@ -32,6 +35,7 @@ public final class Config {
     public static boolean enableMagmaIsland;
     public static int heavySnowballDamage;
     public static int explosiveHeavySnowballDamage;
+    public static boolean plantMatterBonemealCapability;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -40,6 +44,7 @@ public final class Config {
         enableMagmaIsland = ENABLE_MAGMA_ISLAND.get();
         heavySnowballDamage = HEAVY_SNOWBALL_DAMAGE.get();
         explosiveHeavySnowballDamage = EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE.get();
+        plantMatterBonemealCapability = PLANT_MATTER_BONEMEAL_CAPABILITY.get();
     }
 
     private Config() {

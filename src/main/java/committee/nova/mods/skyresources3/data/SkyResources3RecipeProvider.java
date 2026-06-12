@@ -72,6 +72,19 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_heavy_snowball", has(ModItems.HEAVY_SNOWBALL.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COAL_INFUSED_BLOCK.get())
+                .define('X', ModItems.ALCHEMICAL_COAL.get())
+                .pattern("XXX")
+                .pattern("XXX")
+                .pattern("XXX")
+                .unlockedBy("has_alchemical_coal", has(ModItems.ALCHEMICAL_COAL.get()))
+                .save(this.output);
+
+        this.shapeless(RecipeCategory.MISC, ModItems.ALCHEMICAL_COAL.get(), 9)
+                .requires(ModBlocks.COAL_INFUSED_BLOCK.get())
+                .unlockedBy("has_coal_infused_block", has(ModBlocks.COAL_INFUSED_BLOCK.get()))
+                .save(this.output, "skyresources3:alchemical_coal_from_block");
+
         this.shapeless(RecipeCategory.MISC, ModItems.HEAVY_EXPLOSIVE_SNOWBALL.get(), 3)
                 .requires(ModItems.HEAVY_SNOWBALL.get())
                 .requires(ModItems.HEAVY_SNOWBALL.get())
@@ -110,6 +123,49 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.MISC, ModItems.ALCHEMICAL_GOLD_NEEDLE.get())
+                .define('X', ModItems.ALCHEMICAL_GOLD_INGOT.get())
+                .pattern("X")
+                .pattern("X")
+                .unlockedBy("has_alchemical_gold_ingot", has(ModItems.ALCHEMICAL_GOLD_INGOT.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.MISC, ModItems.ALCHEMICAL_INFUSION_STONE.get())
+                .define('X', ModItems.ALCHEMICAL_GOLD_NEEDLE.get())
+                .define('Y', ModItems.ALCHEMICAL_DIAMOND.get())
+                .pattern("X")
+                .pattern("Y")
+                .unlockedBy("has_alchemical_gold_needle", has(ModItems.ALCHEMICAL_GOLD_NEEDLE.get()))
+                .save(this.output);
+
+        this.shapeless(RecipeCategory.MISC, ModItems.ENRICHED_BONEMEAL.get(), 4)
+                .requires(Items.ROTTEN_FLESH)
+                .requires(Items.BONE_MEAL)
+                .requires(Items.BONE_MEAL)
+                .requires(Items.BONE_MEAL)
+                .unlockedBy("has_rotten_flesh", has(Items.ROTTEN_FLESH))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.MISC, ModItems.FROZEN_IRON_COOLING_COMPONENT.get())
+                .define('X', ModItems.FROZEN_IRON_INGOT.get())
+                .define('Y', Items.GLOWSTONE_DUST)
+                .define('Z', Items.LAPIS_LAZULI)
+                .pattern("XZX")
+                .pattern("XYX")
+                .pattern("XYX")
+                .unlockedBy("has_frozen_iron_ingot", has(ModItems.FROZEN_IRON_INGOT.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.MISC, ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get())
+                .define('X', Items.QUARTZ)
+                .define('Y', Items.LAPIS_LAZULI)
+                .define('Z', Items.GLOWSTONE_DUST)
+                .pattern("XYX")
+                .pattern("XZX")
+                .pattern("XZX")
+                .unlockedBy("has_quartz", has(Items.QUARTZ))
+                .save(this.output);
+
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_MATTER_BLOCK.get())
                 .define('X', ModItems.DARK_MATTER.get())
                 .pattern("XXX")
@@ -135,6 +191,16 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .requires(ModBlocks.LIGHT_MATTER_BLOCK.get())
                 .unlockedBy("has_light_matter_block", has(ModBlocks.LIGHT_MATTER_BLOCK.get()))
                 .save(this.output, "skyresources3:light_matter_from_block");
+
+        SimpleCookingRecipeBuilder.smelting(
+                        Ingredient.of(ModItems.PLANT_MATTER.get()),
+                        RecipeCategory.MISC,
+                        Items.CHARCOAL,
+                        0.1F,
+                        200
+                )
+                .unlockedBy("has_plant_matter", has(ModItems.PLANT_MATTER.get()))
+                .save(this.output, id("charcoal_from_plant_matter"));
 
         SimpleCookingRecipeBuilder.smelting(
                         Ingredient.of(ModBlocks.PETRIFIED_WOOD.get()),

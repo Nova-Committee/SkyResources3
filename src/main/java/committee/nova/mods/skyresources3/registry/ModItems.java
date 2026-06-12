@@ -1,9 +1,11 @@
 package committee.nova.mods.skyresources3.registry;
 
+import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
+import committee.nova.mods.skyresources3.item.InstantBonemealItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -37,11 +39,33 @@ public final class ModItems {
     );
     public static final DeferredItem<Item> CACTUS_NEEDLE = ITEMS.registerSimpleItem("cactus_needle");
     public static final DeferredItem<Item> CRYSTAL_SHARD = ITEMS.registerSimpleItem("crystal_shard");
-    public static final DeferredItem<Item> PLANT_MATTER = ITEMS.registerSimpleItem("plant_matter");
+    public static final DeferredItem<Item> PRIMUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("primus_alchemical_dust");
+    public static final DeferredItem<Item> SECUNDUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("secundus_alchemical_dust");
+    public static final DeferredItem<Item> TERTIUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("tertius_alchemical_dust");
+    public static final DeferredItem<Item> QUARTUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("quartus_alchemical_dust");
+    public static final DeferredItem<Item> ALCHEMICAL_COAL = ITEMS.registerSimpleItem("alchemical_coal");
+    public static final DeferredItem<Item> ALCHEMICAL_GOLD_INGOT = ITEMS.registerSimpleItem("alchemical_gold_ingot");
+    public static final DeferredItem<Item> ALCHEMICAL_IRON_INGOT = ITEMS.registerSimpleItem("alchemical_iron_ingot");
+    public static final DeferredItem<Item> ALCHEMICAL_GOLD_NEEDLE = ITEMS.registerSimpleItem("alchemical_gold_needle");
+    public static final DeferredItem<Item> ALCHEMICAL_DIAMOND = ITEMS.registerSimpleItem("alchemical_diamond");
+    public static final DeferredItem<InstantBonemealItem> PLANT_MATTER = ITEMS.registerItem(
+            "plant_matter",
+            properties -> new InstantBonemealItem(properties, () -> Config.plantMatterBonemealCapability)
+    );
+    public static final DeferredItem<Item> ADVANCED_POWER_COMPONENT = ITEMS.registerSimpleItem("advanced_power_component");
+    public static final DeferredItem<Item> FROZEN_IRON_COOLING_COMPONENT = ITEMS.registerSimpleItem("frozen_iron_cooling_component");
     public static final DeferredItem<Item> DARK_MATTER = ITEMS.registerSimpleItem("dark_matter");
+    public static final DeferredItem<InstantBonemealItem> ENRICHED_BONEMEAL = ITEMS.registerItem(
+            "enriched_bonemeal",
+            properties -> new InstantBonemealItem(properties, () -> true)
+    );
     public static final DeferredItem<Item> LIGHT_MATTER = ITEMS.registerSimpleItem("light_matter");
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
+    public static final DeferredItem<Item> QUARTZ_AMPLIFICATION_COMPONENT =
+            ITEMS.registerSimpleItem("quartz_amplification_component");
     public static final DeferredItem<Item> CRUSHED_STONE = ITEMS.registerSimpleItem("crushed_stone");
+    public static final DeferredItem<Item> RADIOACTIVE_MIX = ITEMS.registerSimpleItem("radioactive_mix");
+    public static final DeferredItem<Item> FROZEN_IRON_INGOT = ITEMS.registerSimpleItem("frozen_iron_ingot");
     public static final DeferredItem<Item> CRUSHED_NETHERRACK = ITEMS.registerSimpleItem("crushed_netherrack");
     public static final DeferredItem<HeavySnowballItem> HEAVY_SNOWBALL = ITEMS.registerItem(
             "heavy_snowball",
