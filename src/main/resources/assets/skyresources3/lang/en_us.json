@@ -1,5 +1,23 @@
 {
-  "itemGroup.skyresources3": "Example Mod Tab",
-  "block.skyresources3.example_block": "Example Block",
-  "item.skyresources3.example_item": "Example Item"
+  "itemGroup.skyresources3.main": "SkyResources3",
+  "block.skyresources3.compressed_coal_block": "Hardened Coal Block",
+  "block.skyresources3.coal_infused_block": "Alchemical Coal Block",
+  "block.skyresources3.sandy_netherrack": "Sandy Netherrack",
+  "block.skyresources3.petrified_wood": "Petrified Wood",
+  "block.skyresources3.petrified_planks": "Petrified Planks",
+  "block.skyresources3.magmafied_stone": "Magmafied Stone",
+  "block.skyresources3.heavy_snow": "Heavy Snow",
+  "block.skyresources3.dark_matter_block": "Dark Matter Block",
+  "block.skyresources3.light_matter_block": "Light Matter Block",
+  "block.skyresources3.alchemical_glass": "Alchemical Glass",
+  "item.skyresources3.cactus_fruit": "Cactus Fruit",
+  "item.skyresources3.fleshy_snow_nugget": "Fleshy Snow Nugget",
+  "item.skyresources3.cactus_needle": "Cactus Needle",
+  "item.skyresources3.crystal_shard": "Crystal Shard",
+  "item.skyresources3.plant_matter": "Plant Matter",
+  "item.skyresources3.dark_matter": "Dark Matter",
+  "item.skyresources3.light_matter": "Light Matter",
+  "item.skyresources3.sawdust": "Sawdust",
+  "item.skyresources3.crushed_stone": "Crushed Stone",
+  "item.skyresources3.crushed_netherrack": "Crushed Netherrack"
 }
