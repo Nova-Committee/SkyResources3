@@ -8,13 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public final class InstantBonemealItem extends Item {
-    private static final int MAX_GROWTH_ATTEMPTS = 100;
-
     private final BooleanSupplier enabled;
 
     public InstantBonemealItem(final Properties properties, final BooleanSupplier enabled) {
@@ -30,12 +26,12 @@ public final class InstantBonemealItem extends Item {
 
         final Level level = context.getLevel();
         final BlockPos target = context.getClickedPos();
-        if (!isValidTarget(level, target)) {
+        if (!BonemealGrowth.isValidTarget(level, target)) {
             return InteractionResult.PASS;
         }
 
         if (level instanceof ServerLevel serverLevel) {
-            growUntilStable(serverLevel, target);
+            BonemealGrowth.growUntilStable(serverLevel, target);
             final ItemStack itemStack = context.getItemInHand();
             itemStack.shrink(1);
             itemStack.causeUseVibration(context.getPlayer(), GameEvent.ITEM_INTERACT_FINISH);
@@ -43,22 +39,5 @@ public final class InstantBonemealItem extends Item {
         }
 
         return InteractionResult.SUCCESS;
-    }
-
-    private static boolean isValidTarget(final Level level, final BlockPos target) {
-        final BlockState blockState = level.getBlockState(target);
-        return blockState.getBlock() instanceof BonemealableBlock bonemealableBlock
-                && bonemealableBlock.isValidBonemealTarget(level, target, blockState);
-    }
-
-    private static void growUntilStable(final ServerLevel level, final BlockPos target) {
-        for (int tries = 0; tries < MAX_GROWTH_ATTEMPTS; tries++) {
-            final BlockState blockState = level.getBlockState(target);
-            if (!(blockState.getBlock() instanceof BonemealableBlock bonemealableBlock)
-                    || !bonemealableBlock.isValidBonemealTarget(level, target, blockState)) {
-                return;
-            }
-            bonemealableBlock.performBonemeal(level, level.random, target, blockState);
-        }
     }
 }

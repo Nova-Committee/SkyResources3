@@ -27,6 +27,9 @@ public final class Config {
     private static final ModConfigSpec.BooleanValue PLANT_MATTER_BONEMEAL_CAPABILITY = BUILDER
             .comment("Allow plant matter to act as instant bone meal.")
             .define("plantMatterBonemealCapability", true);
+    private static final ModConfigSpec.BooleanValue INFUSION_STONE_BONEMEAL_CAPABILITY = BUILDER
+            .comment("Allow infusion stones to act as instant bone meal when no infusion recipe matches.")
+            .define("infusionStoneBonemealCapability", true);
     private static final ModConfigSpec.IntValue HEALTH_GEM_MAX_HEALTH = BUILDER
             .comment("Maximum health points a health gem can store.")
             .defineInRange("healthGemMaxHealth", 100, 0, 1024);
@@ -45,6 +48,7 @@ public final class Config {
     public static int heavySnowballDamage;
     public static int explosiveHeavySnowballDamage;
     public static boolean plantMatterBonemealCapability;
+    public static boolean infusionStoneBonemealCapability;
     public static int healthGemMaxHealth;
     public static double healthGemPercentage;
     public static int waterExtractorCapacity;
@@ -57,6 +61,7 @@ public final class Config {
         heavySnowballDamage = HEAVY_SNOWBALL_DAMAGE.get();
         explosiveHeavySnowballDamage = EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE.get();
         plantMatterBonemealCapability = PLANT_MATTER_BONEMEAL_CAPABILITY.get();
+        infusionStoneBonemealCapability = INFUSION_STONE_BONEMEAL_CAPABILITY.get();
         healthGemMaxHealth = HEALTH_GEM_MAX_HEALTH.get();
         healthGemPercentage = HEALTH_GEM_PERCENTAGE.get();
         waterExtractorCapacity = WATER_EXTRACTOR_CAPACITY.get();

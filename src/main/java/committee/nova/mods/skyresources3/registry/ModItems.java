@@ -8,6 +8,7 @@ import committee.nova.mods.skyresources3.item.CuttingKnifeItem;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
+import committee.nova.mods.skyresources3.item.InfusionStoneItem;
 import committee.nova.mods.skyresources3.item.RockGrinderItem;
 import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
@@ -103,9 +104,12 @@ public final class ModItems {
             rockGrinder("iron_grinder", 200, 6.0F, 4.5F, 14);
     public static final DeferredItem<RockGrinderItem> DIAMOND_GRINDER =
             rockGrinder("diamond_grinder", 1248, 8.0F, 5.5F, 10);
-    public static final DeferredItem<Item> SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("sandstone_infusion_stone", 100);
-    public static final DeferredItem<Item> RED_SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("red_sandstone_infusion_stone", 80);
-    public static final DeferredItem<Item> ALCHEMICAL_INFUSION_STONE = nonRepairableDurableItem("alchemical_infusion_stone", 1500);
+    public static final DeferredItem<InfusionStoneItem> SANDSTONE_INFUSION_STONE =
+            infusionStone("sandstone_infusion_stone", 100);
+    public static final DeferredItem<InfusionStoneItem> RED_SANDSTONE_INFUSION_STONE =
+            infusionStone("red_sandstone_infusion_stone", 80);
+    public static final DeferredItem<InfusionStoneItem> ALCHEMICAL_INFUSION_STONE =
+            infusionStone("alchemical_infusion_stone", 1500);
     public static final DeferredItem<HealthGemItem> HEALTH_GEM = ITEMS.registerItem("health_gem", HealthGemItem::new);
 
     public static void register(final IEventBus modEventBus) {
@@ -114,10 +118,6 @@ public final class ModItems {
 
     private static DeferredItem<BlockItem> blockItem(final String name, final DeferredBlock<? extends Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
-    }
-
-    private static DeferredItem<Item> durableItem(final String name, final int durability) {
-        return ITEMS.registerItem(name, Item::new, properties -> properties.durability(durability));
     }
 
     private static DeferredItem<CuttingKnifeItem> cuttingKnife(
@@ -146,8 +146,8 @@ public final class ModItems {
         );
     }
 
-    private static DeferredItem<Item> nonRepairableDurableItem(final String name, final int durability) {
-        return ITEMS.registerItem(name, Item::new, properties -> properties.durability(durability).setNoCombineRepair());
+    private static DeferredItem<InfusionStoneItem> infusionStone(final String name, final int durability) {
+        return ITEMS.registerItem(name, properties -> new InfusionStoneItem(properties, durability));
     }
 
     private static FoodProperties food(final int nutrition, final float saturationModifier) {

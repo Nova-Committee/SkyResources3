@@ -51,5 +51,7 @@
   "item.skyresources3.sandstone_infusion_stone": "Sandstone Infusion Stone",
   "item.skyresources3.red_sandstone_infusion_stone": "Red Sandstone Infusion Stone",
   "item.skyresources3.alchemical_infusion_stone": "Alchemical Infusion Stone",
-  "item.skyresources3.health_gem": "Health Gem"
+  "item.skyresources3.health_gem": "Health Gem",
+  "message.skyresources3.infusion_stone.max_health_too_low": "You are not strong enough to infuse. Your max health is too low.",
+  "message.skyresources3.infusion_stone.not_enough_health": "Not enough health to infuse."
 }
