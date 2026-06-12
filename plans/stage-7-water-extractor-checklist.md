@@ -12,5 +12,5 @@
 - [x] Run build and resource reference validation.
 
 Deferred:
-- [ ] `dryCactus` extract/insert recipe waits for the dry cactus block migration.
+- [x] `dryCactus` extract/insert recipe waits for the dry cactus block migration.
 - [ ] JEI water extractor recipe category waits for the recipe system/UI migration batch.
