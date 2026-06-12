@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": "minecraft:coal_block",
+    "X": "minecraft:coal"
+  },
+  "pattern": [
+    "CCC",
+    "CXC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:compressed_coal_block"
+  }
+}

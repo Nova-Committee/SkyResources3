@@ -1,0 +1,36 @@
+package committee.nova.mods.skyresources3.data;
+
+import committee.nova.mods.skyresources3.registry.ModBlocks;
+import java.util.Set;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
+public final class SkyResources3BlockLootProvider extends BlockLootSubProvider {
+    public SkyResources3BlockLootProvider(final HolderLookup.Provider lookupProvider) {
+        super(Set.<Item>of(), FeatureFlags.DEFAULT_FLAGS, lookupProvider);
+    }
+
+    @Override
+    protected void generate() {
+        this.dropSelf(ModBlocks.COMPRESSED_COAL_BLOCK.get());
+        this.dropSelf(ModBlocks.COAL_INFUSED_BLOCK.get());
+        this.dropSelf(ModBlocks.SANDY_NETHERRACK.get());
+        this.dropSelf(ModBlocks.PETRIFIED_WOOD.get());
+        this.dropSelf(ModBlocks.PETRIFIED_PLANKS.get());
+        this.dropSelf(ModBlocks.MAGMAFIED_STONE.get());
+        this.dropSelf(ModBlocks.HEAVY_SNOW.get());
+        this.dropSelf(ModBlocks.DARK_MATTER_BLOCK.get());
+        this.dropSelf(ModBlocks.LIGHT_MATTER_BLOCK.get());
+        this.dropSelf(ModBlocks.ALCHEMICAL_GLASS.get());
+    }
+
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return ModBlocks.BLOCKS.getEntries().stream()
+                .map(holder -> (Block) holder.get())
+                .toList();
+    }
+}
