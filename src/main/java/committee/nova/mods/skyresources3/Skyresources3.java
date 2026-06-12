@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3;
 
+import committee.nova.mods.skyresources3.event.CuttingKnifeEvents;
 import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModCapabilities;
@@ -32,6 +33,7 @@ public final class Skyresources3 {
         ModCreativeTabs.register(modEventBus);
 
         NeoForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);
+        NeoForge.EVENT_BUS.addListener(CuttingKnifeEvents::onBlockBreak);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

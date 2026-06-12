@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.entity.HeavySnowball;
+import committee.nova.mods.skyresources3.item.CuttingKnifeItem;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
@@ -87,10 +88,14 @@ public final class ModItems {
                     HeavyExplosiveSnowball::new
             )
     );
-    public static final DeferredItem<Item> CACTUS_CUTTING_KNIFE = durableItem("cactus_cutting_knife", 2);
-    public static final DeferredItem<Item> STONE_CUTTING_KNIFE = durableItem("stone_cutting_knife", 91);
-    public static final DeferredItem<Item> IRON_CUTTING_KNIFE = durableItem("iron_cutting_knife", 175);
-    public static final DeferredItem<Item> DIAMOND_CUTTING_KNIFE = durableItem("diamond_cutting_knife", 1092);
+    public static final DeferredItem<CuttingKnifeItem> CACTUS_CUTTING_KNIFE =
+            cuttingKnife("cactus_cutting_knife", 2, 5.0F, 2.5F, 5);
+    public static final DeferredItem<CuttingKnifeItem> STONE_CUTTING_KNIFE =
+            cuttingKnife("stone_cutting_knife", 91, 4.0F, 2.5F, 5);
+    public static final DeferredItem<CuttingKnifeItem> IRON_CUTTING_KNIFE =
+            cuttingKnife("iron_cutting_knife", 175, 6.0F, 3.5F, 14);
+    public static final DeferredItem<CuttingKnifeItem> DIAMOND_CUTTING_KNIFE =
+            cuttingKnife("diamond_cutting_knife", 1092, 8.0F, 4.5F, 10);
     public static final DeferredItem<Item> STONE_GRINDER = durableItem("stone_grinder", 104);
     public static final DeferredItem<Item> IRON_GRINDER = durableItem("iron_grinder", 200);
     public static final DeferredItem<Item> DIAMOND_GRINDER = durableItem("diamond_grinder", 1248);
@@ -109,6 +114,19 @@ public final class ModItems {
 
     private static DeferredItem<Item> durableItem(final String name, final int durability) {
         return ITEMS.registerItem(name, Item::new, properties -> properties.durability(durability));
+    }
+
+    private static DeferredItem<CuttingKnifeItem> cuttingKnife(
+            final String name,
+            final int durability,
+            final float miningSpeed,
+            final float attackDamage,
+            final int enchantmentValue
+    ) {
+        return ITEMS.registerItem(
+                name,
+                properties -> new CuttingKnifeItem(properties, durability, miningSpeed, attackDamage, enchantmentValue)
+        );
     }
 
     private static DeferredItem<Item> nonRepairableDurableItem(final String name, final int durability) {
