@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.entity.HeavySnowball;
+import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
 import net.minecraft.world.food.FoodProperties;
@@ -89,6 +90,7 @@ public final class ModItems {
     public static final DeferredItem<Item> SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("sandstone_infusion_stone", 100);
     public static final DeferredItem<Item> RED_SANDSTONE_INFUSION_STONE = nonRepairableDurableItem("red_sandstone_infusion_stone", 80);
     public static final DeferredItem<Item> ALCHEMICAL_INFUSION_STONE = nonRepairableDurableItem("alchemical_infusion_stone", 1500);
+    public static final DeferredItem<HealthGemItem> HEALTH_GEM = ITEMS.registerItem("health_gem", HealthGemItem::new);
 
     public static void register(final IEventBus modEventBus) {
         ITEMS.register(modEventBus);

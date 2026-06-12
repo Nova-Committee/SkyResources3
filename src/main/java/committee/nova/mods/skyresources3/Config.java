@@ -27,6 +27,12 @@ public final class Config {
     private static final ModConfigSpec.BooleanValue PLANT_MATTER_BONEMEAL_CAPABILITY = BUILDER
             .comment("Allow plant matter to act as instant bone meal.")
             .define("plantMatterBonemealCapability", true);
+    private static final ModConfigSpec.IntValue HEALTH_GEM_MAX_HEALTH = BUILDER
+            .comment("Maximum health points a health gem can store.")
+            .defineInRange("healthGemMaxHealth", 100, 0, 1024);
+    private static final ModConfigSpec.DoubleValue HEALTH_GEM_PERCENTAGE = BUILDER
+            .comment("Fraction of stored health that will later count as max-health boost.")
+            .defineInRange("healthGemPercentage", 0.02D, 0.0D, 100.0D);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
@@ -36,6 +42,8 @@ public final class Config {
     public static int heavySnowballDamage;
     public static int explosiveHeavySnowballDamage;
     public static boolean plantMatterBonemealCapability;
+    public static int healthGemMaxHealth;
+    public static double healthGemPercentage;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -45,6 +53,8 @@ public final class Config {
         heavySnowballDamage = HEAVY_SNOWBALL_DAMAGE.get();
         explosiveHeavySnowballDamage = EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE.get();
         plantMatterBonemealCapability = PLANT_MATTER_BONEMEAL_CAPABILITY.get();
+        healthGemMaxHealth = HEALTH_GEM_MAX_HEALTH.get();
+        healthGemPercentage = HEALTH_GEM_PERCENTAGE.get();
     }
 
     private Config() {
