@@ -39,6 +39,24 @@ public final class Config {
     private static final ModConfigSpec.IntValue WATER_EXTRACTOR_CAPACITY = BUILDER
             .comment("Water capacity of the water extractor, in millibuckets.")
             .defineInRange("waterExtractorCapacity", 4000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.BooleanValue ADD_BEETROOT_SEED_DROP = BUILDER
+            .comment("Add beetroot seeds to grass drops.")
+            .define("addBeetrootSeedDrop", true);
+    private static final ModConfigSpec.BooleanValue ADD_MELON_SEED_DROP = BUILDER
+            .comment("Add melon seeds to grass drops.")
+            .define("addMelonSeedDrop", true);
+    private static final ModConfigSpec.BooleanValue ADD_PUMPKIN_SEED_DROP = BUILDER
+            .comment("Add pumpkin seeds to grass drops.")
+            .define("addPumpkinSeedDrop", true);
+    private static final ModConfigSpec.BooleanValue ADD_COCOA_BEAN_DROP = BUILDER
+            .comment("Add cocoa beans to grass drops.")
+            .define("addCocoaBeanDrop", true);
+    private static final ModConfigSpec.BooleanValue ADD_CARROT_DROP = BUILDER
+            .comment("Add carrots to grass drops.")
+            .define("addCarrotDrop", true);
+    private static final ModConfigSpec.BooleanValue ADD_POTATO_DROP = BUILDER
+            .comment("Add potatoes to grass drops.")
+            .define("addPotatoDrop", true);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
@@ -52,6 +70,12 @@ public final class Config {
     public static int healthGemMaxHealth;
     public static double healthGemPercentage;
     public static int waterExtractorCapacity;
+    public static boolean addBeetrootSeedDrop;
+    public static boolean addMelonSeedDrop;
+    public static boolean addPumpkinSeedDrop;
+    public static boolean addCocoaBeanDrop;
+    public static boolean addCarrotDrop;
+    public static boolean addPotatoDrop;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -65,6 +89,12 @@ public final class Config {
         healthGemMaxHealth = HEALTH_GEM_MAX_HEALTH.get();
         healthGemPercentage = HEALTH_GEM_PERCENTAGE.get();
         waterExtractorCapacity = WATER_EXTRACTOR_CAPACITY.get();
+        addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
+        addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
+        addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();
+        addCocoaBeanDrop = ADD_COCOA_BEAN_DROP.get();
+        addCarrotDrop = ADD_CARROT_DROP.get();
+        addPotatoDrop = ADD_POTATO_DROP.get();
     }
 
     private Config() {

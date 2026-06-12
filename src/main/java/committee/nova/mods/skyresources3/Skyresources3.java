@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3;
 
 import committee.nova.mods.skyresources3.event.CuttingKnifeEvents;
 import committee.nova.mods.skyresources3.event.EarlyHandHarvestEvents;
+import committee.nova.mods.skyresources3.event.GrassSeedDropEvents;
 import committee.nova.mods.skyresources3.event.HealthGemEvents;
 import committee.nova.mods.skyresources3.event.RockGrinderEvents;
 import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
@@ -40,6 +41,7 @@ public final class Skyresources3 {
         NeoForge.EVENT_BUS.addListener(CuttingKnifeEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(RockGrinderEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(HealthGemEvents::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(GrassSeedDropEvents::onBlockDrops);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
