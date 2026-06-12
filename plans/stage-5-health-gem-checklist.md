@@ -17,6 +17,9 @@
   - 若未进入冷却且未超过最大存储，玩家受到 2 点通用伤害。
   - 宝石的 `CUSTOM_DATA.health` 增加 2。
   - 玩家获得 20 tick 物品冷却。
+- tooltip 保留旧版 Shift 展开信息：
+  - 未按 Shift 时提示 `Hold Shift for info.`
+  - 按 Shift 时显示注入操作、已注入生命与可获得生命加成。
 - `HealthGemItem.getHealthInjected` 提供后续生命灌注机器读取入口。
 - `HealthGemItem.getHealthBoost` 保留旧版按配置比例计算最大生命加成的入口。
 
@@ -29,7 +32,6 @@
 
 ## 暂缓迁移
 
-- 旧版健康宝石 tooltip 暂未迁移；1.21.11 tooltip 组件策略后续统一处理。
 - 最大生命值属性加成尚未接入，需与玩家属性/附件数据设计一起处理。
 - `LifeInfuser` 和 `LifeInjector` 仍未迁移，健康宝石与机器的自动注入/消耗逻辑留待机器阶段。
 - 健康宝石旧配方来自 `infusionRecipes`，依赖生命灌注 recipe type，未在本批迁移。

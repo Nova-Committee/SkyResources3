@@ -1,8 +1,11 @@
 package committee.nova.mods.skyresources3.item;
 
 import committee.nova.mods.skyresources3.Config;
+import java.util.function.Consumer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -11,7 +14,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 public final class HealthGemItem extends Item {
@@ -38,6 +43,33 @@ public final class HealthGemItem extends Item {
         }
 
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    @Deprecated
+    public void appendHoverText(
+            final ItemStack stack,
+            final TooltipContext context,
+            final TooltipDisplay tooltipDisplay,
+            final Consumer<Component> tooltipAdder,
+            final TooltipFlag tooltipFlag
+    ) {
+        if (!tooltipFlag.hasShiftDown()) {
+            tooltipAdder.accept(Component.translatable("item.skyresources3.health_gem.info")
+                    .withStyle(ChatFormatting.GREEN));
+            return;
+        }
+
+        tooltipAdder.accept(Component.translatable("item.skyresources3.health_gem.inject")
+                .withStyle(ChatFormatting.GREEN));
+        tooltipAdder.accept(Component.translatable(
+                "item.skyresources3.health_gem.health_injected",
+                getHealthInjected(stack)
+        ).withStyle(ChatFormatting.RED));
+        tooltipAdder.accept(Component.translatable(
+                "item.skyresources3.health_gem.health_gained",
+                getHealthBoost(stack)
+        ).withStyle(ChatFormatting.DARK_RED));
     }
 
     public static int getHealthBoost(final ItemStack itemStack) {
