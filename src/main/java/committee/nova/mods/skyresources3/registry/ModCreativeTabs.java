@@ -78,6 +78,7 @@ public final class ModCreativeTabs {
                         }
                         output.accept(ModItems.ALCHEMICAL_COAL.get());
                         output.accept(ModItems.WOODEN_HEAT_COMPONENT.get());
+                        output.accept(ModItems.STONE_ALCHEMY_COMPONENT.get());
                         output.accept(ModItems.ALCHEMICAL_GOLD_INGOT.get());
                         output.accept(ModItems.ALCHEMICAL_IRON_INGOT.get());
                         output.accept(ModItems.ALCHEMICAL_GOLD_NEEDLE.get());

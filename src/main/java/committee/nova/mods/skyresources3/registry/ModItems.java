@@ -100,6 +100,7 @@ public final class ModItems {
     public static final Map<DirtyGem, DeferredItem<Item>> DIRTY_GEMS = registerDirtyGems();
     public static final DeferredItem<Item> ALCHEMICAL_COAL = ITEMS.registerSimpleItem("alchemical_coal");
     public static final DeferredItem<Item> WOODEN_HEAT_COMPONENT = ITEMS.registerSimpleItem("wooden_heat_component");
+    public static final DeferredItem<Item> STONE_ALCHEMY_COMPONENT = ITEMS.registerSimpleItem("stone_alchemy_component");
     public static final DeferredItem<Item> ALCHEMICAL_GOLD_INGOT = ITEMS.registerSimpleItem("alchemical_gold_ingot");
     public static final DeferredItem<Item> ALCHEMICAL_IRON_INGOT = ITEMS.registerSimpleItem("alchemical_iron_ingot");
     public static final DeferredItem<Item> ALCHEMICAL_GOLD_NEEDLE = ITEMS.registerSimpleItem("alchemical_gold_needle");

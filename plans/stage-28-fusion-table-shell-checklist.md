@@ -11,13 +11,13 @@
 - [x] Added the block item to the SkyResources3 creative tab.
 - [x] Added loot and mining tag coverage.
 - [x] Added blockstate, block model, item definition, lang entry, and migrated top/side textures.
+- [x] Follow-up: Crafting recipe was migrated after adding the old stone `alchComponent` mapping as `stone_alchemy_component`.
 - [x] Follow-up: Fusion Table runtime consumes `ProcessRecipes.FUSION` and migrated catalyst values.
 - [x] Follow-up: Fusion Table menu, screen, dump network packet, and player-facing filter editing are implemented.
 - [x] Follow-up: Automation/filter behavior is implemented through the block item capability and menu filter slots.
 
 ## Deferred
 
-- [ ] Crafting recipe waits for the old machine `alchComponent`/machine component mapping to be migrated.
 - [ ] JEI/EMI or scripting integrations remain deferred until integration policy is selected.
 
 ## Verification

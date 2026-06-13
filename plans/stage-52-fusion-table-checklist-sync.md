@@ -4,7 +4,8 @@
 
 - Synchronize Fusion Table stage checklists with implementation that already exists in the codebase.
 - Keep this slice documentation-only.
-- Preserve unresolved deferred items for crafting recipe mapping and JEI/EMI/scripting integrations.
+- Preserve then-unresolved deferred items for crafting recipe mapping and JEI/EMI/scripting integrations.
+- Follow-up note: Stage 53 resolves the crafting recipe mapping by adding `stone_alchemy_component`; JEI/EMI/scripting integrations remain deferred.
 
 ## Evidence
 
@@ -18,7 +19,7 @@
 - [x] Update Stage 27 Fusion process data checklist follow-up state.
 - [x] Update Stage 28 Fusion Table shell checklist follow-up state.
 - [x] Update Stage 29 Fusion Table runtime checklist follow-up state.
-- [x] Keep Fusion Table crafting recipe and JEI/EMI/scripting items deferred.
+- [x] Keep Fusion Table crafting recipe and JEI/EMI/scripting items deferred for this documentation-only sync.
 
 ## Verification
 

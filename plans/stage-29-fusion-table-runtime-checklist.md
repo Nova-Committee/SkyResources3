@@ -20,10 +20,10 @@
 - [x] Follow-up: Fusion Table client screen and migrated GUI texture wiring are complete.
 - [x] Follow-up: Network packet for the old dump button behavior is complete.
 - [x] Follow-up: Player-facing filter editing is implemented through the menu input slots.
+- [x] Follow-up: Crafting recipe was migrated after adding `stone_alchemy_component` for the old stone `alchComponent`.
 
 ## Deferred
 
-- [ ] Crafting recipe waits for old machine component mapping.
 - [ ] JEI/EMI or scripting integrations remain deferred until integration policy is selected.
 
 ## Verification

@@ -108,12 +108,31 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_sawdust", has(ModItems.SAWDUST.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.MISC, ModItems.STONE_ALCHEMY_COMPONENT.get())
+                .define('X', Blocks.STONE)
+                .define('Y', ModItems.PRIMUS_ALCHEMICAL_DUST.get())
+                .pattern("XXX")
+                .pattern("XYX")
+                .pattern("XXX")
+                .unlockedBy("has_primus_alchemical_dust", has(ModItems.PRIMUS_ALCHEMICAL_DUST.get()))
+                .save(this.output);
+
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.DIRT_FURNACE.get())
                 .define('X', ItemTags.DIRT)
                 .define('Y', ModItems.WOODEN_HEAT_COMPONENT.get())
                 .pattern("X")
                 .pattern("Y")
                 .unlockedBy("has_wooden_heat_component", has(ModItems.WOODEN_HEAT_COMPONENT.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.FUSION_TABLE.get())
+                .define('X', ItemTags.PLANKS)
+                .define('Y', ModItems.STONE_ALCHEMY_COMPONENT.get())
+                .define('Z', ModItems.PRIMUS_ALCHEMICAL_DUST.get())
+                .pattern("XZX")
+                .pattern("XYX")
+                .pattern("X X")
+                .unlockedBy("has_stone_alchemy_component", has(ModItems.STONE_ALCHEMY_COMPONENT.get()))
                 .save(this.output);
 
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.QUICK_DROPPER.get())
