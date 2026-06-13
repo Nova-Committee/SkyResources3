@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.block.entity.CrucibleBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CrucibleInserterBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CombustionCollectorBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CombustionControllerBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.DarkMatterWarperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.DirtFurnaceBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FluidDropperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
@@ -53,6 +54,15 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "quick_dropper",
                     () -> new BlockEntityType<>(QuickDropperBlockEntity::new, ModBlocks.QUICK_DROPPER.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DarkMatterWarperBlockEntity>>
+            DARK_MATTER_WARPER =
+            BLOCK_ENTITY_TYPES.register(
+                    "dark_matter_warper",
+                    () -> new BlockEntityType<>(
+                            DarkMatterWarperBlockEntity::new,
+                            ModBlocks.DARK_MATTER_WARPER.get()
+                    )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidDropperBlockEntity>> FLUID_DROPPER =
             BLOCK_ENTITY_TYPES.register(

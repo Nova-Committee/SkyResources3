@@ -5,6 +5,7 @@ import committee.nova.mods.skyresources3.menu.AqueousMachineMenu;
 import committee.nova.mods.skyresources3.menu.CombustionCollectorMenu;
 import committee.nova.mods.skyresources3.menu.CombustionControllerMenu;
 import committee.nova.mods.skyresources3.menu.CrucibleInserterMenu;
+import committee.nova.mods.skyresources3.menu.DarkMatterWarperMenu;
 import committee.nova.mods.skyresources3.menu.DirtFurnaceMenu;
 import committee.nova.mods.skyresources3.menu.FreezerMenu;
 import committee.nova.mods.skyresources3.menu.FusionTableMenu;
@@ -31,6 +32,8 @@ public final class ModMenuTypes {
             MENU_TYPES.register("freezer", () -> IMenuTypeExtension.create(FreezerMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<QuickDropperMenu>> QUICK_DROPPER =
             MENU_TYPES.register("quick_dropper", () -> IMenuTypeExtension.create(QuickDropperMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<DarkMatterWarperMenu>> DARK_MATTER_WARPER =
+            MENU_TYPES.register("dark_matter_warper", () -> IMenuTypeExtension.create(DarkMatterWarperMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<CrucibleInserterMenu>> CRUCIBLE_INSERTER =
             MENU_TYPES.register("crucible_inserter", () -> IMenuTypeExtension.create(CrucibleInserterMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<RockCrusherMenu>> ROCK_CRUSHER =

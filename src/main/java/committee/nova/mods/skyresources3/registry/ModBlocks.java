@@ -9,6 +9,7 @@ import committee.nova.mods.skyresources3.block.CombustionCollectorBlock;
 import committee.nova.mods.skyresources3.block.CombustionControllerBlock;
 import committee.nova.mods.skyresources3.block.CrucibleBlock;
 import committee.nova.mods.skyresources3.block.CrucibleInserterBlock;
+import committee.nova.mods.skyresources3.block.DarkMatterWarperBlock;
 import committee.nova.mods.skyresources3.block.DirtFurnaceBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
 import committee.nova.mods.skyresources3.block.FluidDropperBlock;
@@ -113,6 +114,11 @@ public final class ModBlocks {
             "quick_dropper",
             QuickDropperBlock::new,
             () -> properties(6.0F, 12.0F, SoundType.METAL)
+    );
+    public static final DeferredBlock<DarkMatterWarperBlock> DARK_MATTER_WARPER = BLOCKS.registerBlock(
+            "dark_matter_warper",
+            DarkMatterWarperBlock::new,
+            () -> properties(8.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
     public static final DeferredBlock<FluidDropperBlock> FLUID_DROPPER = BLOCKS.registerBlock(
             "fluid_dropper",

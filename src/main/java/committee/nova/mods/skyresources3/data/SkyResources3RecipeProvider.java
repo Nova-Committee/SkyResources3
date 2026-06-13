@@ -121,6 +121,15 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dropper", has(Blocks.DROPPER))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.DARK_MATTER_WARPER.get())
+                .define('X', Blocks.OBSIDIAN)
+                .define('Y', ModItems.DARK_MATTER.get())
+                .pattern("XXX")
+                .pattern("XYX")
+                .pattern("XXX")
+                .unlockedBy("has_dark_matter", has(ModItems.DARK_MATTER.get()))
+                .save(this.output);
+
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.FLUID_DROPPER.get())
                 .define('X', Blocks.COBBLESTONE)
                 .pattern("XXX")

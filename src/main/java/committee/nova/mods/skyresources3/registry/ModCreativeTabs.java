@@ -37,6 +37,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.FUSION_TABLE.get());
                         output.accept(ModItems.DIRT_FURNACE.get());
                         output.accept(ModItems.QUICK_DROPPER.get());
+                        output.accept(ModItems.DARK_MATTER_WARPER.get());
                         output.accept(ModItems.FLUID_DROPPER.get());
                         output.accept(ModItems.CRUCIBLE.get());
                         output.accept(ModItems.CRUCIBLE_INSERTER.get());

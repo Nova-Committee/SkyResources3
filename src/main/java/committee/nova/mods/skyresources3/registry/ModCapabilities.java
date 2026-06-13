@@ -34,6 +34,11 @@ public final class ModCapabilities {
         );
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.DARK_MATTER_WARPER.get(),
+                (darkMatterWarper, direction) -> darkMatterWarper.getItemHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
                 ModBlockEntityTypes.CRUCIBLE_INSERTER.get(),
                 (crucibleInserter, direction) -> crucibleInserter.getItemHandler()
         );

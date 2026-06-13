@@ -46,6 +46,8 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> FUSION_TABLE = blockItem("fusion_table", ModBlocks.FUSION_TABLE);
     public static final DeferredItem<BlockItem> DIRT_FURNACE = blockItem("dirt_furnace", ModBlocks.DIRT_FURNACE);
     public static final DeferredItem<BlockItem> QUICK_DROPPER = blockItem("quick_dropper", ModBlocks.QUICK_DROPPER);
+    public static final DeferredItem<BlockItem> DARK_MATTER_WARPER =
+            blockItem("dark_matter_warper", ModBlocks.DARK_MATTER_WARPER);
     public static final DeferredItem<BlockItem> FLUID_DROPPER = blockItem("fluid_dropper", ModBlocks.FLUID_DROPPER);
     public static final DeferredItem<BlockItem> CRUCIBLE = blockItem("crucible", ModBlocks.CRUCIBLE);
     public static final DeferredItem<BlockItem> CRUCIBLE_INSERTER =

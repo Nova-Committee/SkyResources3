@@ -75,6 +75,15 @@ public final class Config {
     private static final ModConfigSpec.IntValue COMBUSTION_CONTROLLER_TICKS = BUILDER
             .comment("Cooldown in ticks between smart combustion controller crafts.")
             .defineInRange("combustionControllerTicks", 20, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue DARK_MATTER_WARPER_FUEL_TIME = BUILDER
+            .comment("Ticks of fueled operation provided by one dark matter in the dark matter warper.")
+            .defineInRange("darkMatterWarperFuelTime", 3600, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.BooleanValue DARK_MATTER_WARPER_EFFECT_PLAYERS = BUILDER
+            .comment("Allow the fueled dark matter warper to apply negative effects to nearby non-creative players.")
+            .define("darkMatterWarperEffectPlayers", true);
+    private static final ModConfigSpec.BooleanValue DARK_MATTER_WARPER_EFFECT_NO_FUEL = BUILDER
+            .comment("Allow the unfueled dark matter warper to apply short negative effects to nearby non-creative players.")
+            .define("darkMatterWarperEffectNoFuel", true);
     private static final ModConfigSpec.BooleanValue ADD_BEETROOT_SEED_DROP = BUILDER
             .comment("Add beetroot seeds to grass drops.")
             .define("addBeetrootSeedDrop", true);
@@ -118,6 +127,9 @@ public final class Config {
     public static int aqueousDeconcentratorPowerUsage;
     public static int aqueousDeconcentratorSpeed;
     public static int combustionControllerTicks;
+    public static int darkMatterWarperFuelTime;
+    public static boolean darkMatterWarperEffectPlayers;
+    public static boolean darkMatterWarperEffectNoFuel;
     public static boolean addBeetrootSeedDrop;
     public static boolean addMelonSeedDrop;
     public static boolean addPumpkinSeedDrop;
@@ -149,6 +161,9 @@ public final class Config {
         aqueousDeconcentratorPowerUsage = AQUEOUS_DECONCENTRATOR_POWER_USAGE.get();
         aqueousDeconcentratorSpeed = AQUEOUS_DECONCENTRATOR_SPEED.get();
         combustionControllerTicks = COMBUSTION_CONTROLLER_TICKS.get();
+        darkMatterWarperFuelTime = DARK_MATTER_WARPER_FUEL_TIME.get();
+        darkMatterWarperEffectPlayers = DARK_MATTER_WARPER_EFFECT_PLAYERS.get();
+        darkMatterWarperEffectNoFuel = DARK_MATTER_WARPER_EFFECT_NO_FUEL.get();
         addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
         addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
         addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();
