@@ -39,6 +39,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.FLUID_DROPPER.get());
                         output.accept(ModItems.CRUCIBLE.get());
                         output.accept(ModItems.CRUCIBLE_INSERTER.get());
+                        output.accept(ModItems.ROCK_CRUSHER.get());
                         output.accept(ModItems.MINI_FREEZER.get());
                         output.accept(ModItems.IRON_FREEZER.get());
                         output.accept(ModItems.LIGHT_FREEZER.get());

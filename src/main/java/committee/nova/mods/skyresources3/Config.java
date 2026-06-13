@@ -48,6 +48,12 @@ public final class Config {
     private static final ModConfigSpec.IntValue CRUCIBLE_SPEED = BUILDER
             .comment("Base crucible speed. A torch melts 1 mB/tick at the default value of 8.")
             .defineInRange("crucibleSpeed", 8, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue ROCK_CRUSHER_POWER_USAGE = BUILDER
+            .comment("Energy consumed by the rock crusher per processing tick.")
+            .defineInRange("rockCrusherPowerUsage", 100, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue ROCK_CRUSHER_SPEED = BUILDER
+            .comment("Rock crusher progress added per tick.")
+            .defineInRange("rockCrusherSpeed", 2, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.BooleanValue ADD_BEETROOT_SEED_DROP = BUILDER
             .comment("Add beetroot seeds to grass drops.")
             .define("addBeetrootSeedDrop", true);
@@ -82,6 +88,8 @@ public final class Config {
     public static int fluidDropperCapacity;
     public static int crucibleCapacity;
     public static int crucibleSpeed;
+    public static int rockCrusherPowerUsage;
+    public static int rockCrusherSpeed;
     public static boolean addBeetrootSeedDrop;
     public static boolean addMelonSeedDrop;
     public static boolean addPumpkinSeedDrop;
@@ -104,6 +112,8 @@ public final class Config {
         fluidDropperCapacity = FLUID_DROPPER_CAPACITY.get();
         crucibleCapacity = CRUCIBLE_CAPACITY.get();
         crucibleSpeed = CRUCIBLE_SPEED.get();
+        rockCrusherPowerUsage = ROCK_CRUSHER_POWER_USAGE.get();
+        rockCrusherSpeed = ROCK_CRUSHER_SPEED.get();
         addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
         addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
         addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();

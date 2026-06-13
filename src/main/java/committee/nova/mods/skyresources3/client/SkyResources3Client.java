@@ -43,6 +43,7 @@ public final class SkyResources3Client {
         event.register(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
         event.register(ModMenuTypes.QUICK_DROPPER.get(), QuickDropperScreen::new);
         event.register(ModMenuTypes.CRUCIBLE_INSERTER.get(), CrucibleInserterScreen::new);
+        event.register(ModMenuTypes.ROCK_CRUSHER.get(), RockCrusherScreen::new);
     }
 
     @SubscribeEvent

@@ -38,6 +38,16 @@ public final class ModCapabilities {
                 (crucibleInserter, direction) -> crucibleInserter.getItemHandler()
         );
         event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.ROCK_CRUSHER.get(),
+                (rockCrusher, direction) -> rockCrusher.getItemHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Energy.BLOCK,
+                ModBlockEntityTypes.ROCK_CRUSHER.get(),
+                (rockCrusher, direction) -> rockCrusher.getEnergyHandler()
+        );
+        event.registerBlockEntity(
                 Capabilities.Fluid.BLOCK,
                 ModBlockEntityTypes.FLUID_DROPPER.get(),
                 (fluidDropper, direction) -> fluidDropper.getFluidHandler()

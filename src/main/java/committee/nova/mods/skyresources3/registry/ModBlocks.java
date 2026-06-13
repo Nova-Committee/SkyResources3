@@ -13,6 +13,7 @@ import committee.nova.mods.skyresources3.block.FreezerBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
 import committee.nova.mods.skyresources3.block.QuickDropperBlock;
+import committee.nova.mods.skyresources3.block.RockCrusherBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -117,6 +118,11 @@ public final class ModBlocks {
             "crucible_inserter",
             CrucibleInserterBlock::new,
             () -> properties(2.0F, 12.0F, SoundType.STONE).noOcclusion()
+    );
+    public static final DeferredBlock<RockCrusherBlock> ROCK_CRUSHER = BLOCKS.registerBlock(
+            "rock_crusher",
+            RockCrusherBlock::new,
+            () -> properties(6.0F, 12.0F, SoundType.METAL)
     );
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
             "mini_freezer",
