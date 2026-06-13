@@ -50,7 +50,9 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Supported island starter template ids are `grass`, `sand`, `snow`, `wood`, `gog`, and `magma`.
 - Team ownership is stored in `TeamSavedData`, keyed by team owner UUID.
 - A team member without a personal island resolves `/island home` and `/island info` through the team owner's island.
-- `/island visit <player>` resolves the target player's own island first, then the target's team owner island.
+- `/island visit <player>` resolves the target player's own island first, then the target's team owner island. Online
+  targets resolve by UUID; offline targets may resolve by the last saved island owner or team member name stored in
+  `IslandSavedData` / `TeamSavedData`.
 - `/island reset` is only a confirmation prompt; `/island reset confirm` performs the reset with the stored type.
 - `/island reset <type>` prompts for a type switch; `/island reset <type> confirm` clears the island reset area, rebuilds the selected starter template, and persists the new type.
 - Island reset is restricted to personal island owners. Reset clearing uses the configured island protection radius and caps the clear radius by island spacing so one reset cannot wipe a neighboring island.
@@ -80,7 +82,9 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Team owner has no island -> reject team creation/invite/home.
 - Team owner tries `/island leave` or `/skyresources3 team leave` -> reject and require disband.
 - Invite target already has a pending team invitation -> reject invite to keep accept semantics unambiguous.
-- Visit target is offline -> reject visit.
+- Visit target is offline but matches a saved island owner name -> teleport to that island.
+- Visit target is offline but matches a saved team owner/member name -> teleport to that team's owner island.
+- Visit target is offline and has no saved island/team name match -> reject visit.
 - Visit target has no own or team island -> reject visit.
 - Team member runs `/island reset confirm` without owning a personal island -> reject reset.
 - Island owner runs `/island reset confirm` with placed blocks inside the protected reset area -> clear those blocks before rebuilding the starter template.

@@ -33,7 +33,7 @@
 
 ## 仍暂缓迁移
 
-- 旧 VoidIslandControl 离线访问、离开事件钩子和完整事件广播留待后续空岛阶段。
+- 旧 VoidIslandControl 离线访问查找已在 Stage 69 通过保存名完成；离开事件钩子、完整事件广播和更完整 profile cache 留待后续空岛阶段。
 
 ## 验证
 

@@ -18,7 +18,7 @@
 
 ## Deferred Migration
 
-- Offline player visit/profile-cache lookup remains deferred.
+- Saved-name offline visit lookup is completed in Stage 69; full player-name history/profile-cache support remains deferred for offline invite/trust and rename conflicts.
 - Old VoidIslandControl leave event hooks and full event broadcast remain deferred.
 - Old overworld-island save migration to `skyresources3:void_island` remains a separate decision.
 

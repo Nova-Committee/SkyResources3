@@ -218,40 +218,36 @@ public final class VoidIslandCommands {
         }
 
         final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
         final ServerPlayer target = source.getServer().getPlayerList().getPlayerByName(targetName);
-        if (target == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.visit.target_missing", targetName));
-            return 0;
-        }
-        if (player.getUUID().equals(target.getUUID())) {
+        if (target != null && player.getUUID().equals(target.getUUID())) {
             source.sendFailure(Component.translatable("message.skyresources3.island.visit.self"));
             return 0;
         }
 
-        final ServerLevel level = source.getServer().overworld();
-        final IslandSavedData islands = IslandSavedData.get(level);
-        final TeamSavedData teams = TeamSavedData.get(level);
-        final IslandSavedData.IslandRecord island = getAccessibleIsland(target.getUUID(), islands, teams).orElse(null);
-        if (island == null) {
+        final VisitTarget visitTarget = resolveVisitTarget(targetName, target, islands, teams).orElse(null);
+        if (visitTarget == null) {
             source.sendFailure(Component.translatable(
                     "message.skyresources3.island.visit.target_no_island",
-                    target.getName().getString()
+                    targetName
             ));
             return 0;
         }
 
-        final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
+        final ServerLevel targetLevel = source.getServer().getLevel(visitTarget.island().dimension());
         if (targetLevel == null) {
             source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
             return 0;
         }
 
-        teleport(player, targetLevel, island.home());
+        teleport(player, targetLevel, visitTarget.island().home());
         source.sendSuccess(
                 () -> Component.translatable(
                         "message.skyresources3.island.visit.success",
-                        target.getName().getString(),
-                        formatPosition(island.home())
+                        visitTarget.name(),
+                        formatPosition(visitTarget.island().home())
                 ),
                 false
         );
@@ -729,6 +725,27 @@ public final class VoidIslandCommands {
             return ownIsland;
         }
         return teams.getTeamFor(player).flatMap(team -> islands.getIsland(team.owner()));
+    }
+
+    private static Optional<VisitTarget> resolveVisitTarget(
+            final String targetName,
+            final ServerPlayer onlineTarget,
+            final IslandSavedData islands,
+            final TeamSavedData teams
+    ) {
+        if (onlineTarget != null) {
+            return getAccessibleIsland(onlineTarget.getUUID(), islands, teams)
+                    .map(island -> new VisitTarget(onlineTarget.getName().getString(), island));
+        }
+
+        return islands.findIslandByOwnerName(targetName)
+                .map(island -> new VisitTarget(island.ownerName(), island))
+                .or(() -> teams.findTeamByPlayerName(targetName)
+                        .flatMap(team -> islands.getIsland(team.owner()))
+                        .map(island -> new VisitTarget(targetName, island)));
+    }
+
+    private record VisitTarget(String name, IslandSavedData.IslandRecord island) {
     }
 
     private static Optional<IslandSavedData.IslandRecord> getOwnedIslandForTrust(

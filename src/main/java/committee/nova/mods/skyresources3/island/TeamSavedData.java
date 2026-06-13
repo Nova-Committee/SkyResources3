@@ -54,6 +54,13 @@ public final class TeamSavedData extends SavedData {
                 .findFirst();
     }
 
+    public Optional<TeamRecord> findTeamByPlayerName(final String playerName) {
+        return this.teams.values()
+                .stream()
+                .filter(team -> team.includesName(playerName))
+                .findFirst();
+    }
+
     public Optional<TeamRecord> getPendingInvitation(final UUID player) {
         return this.teams.values()
                 .stream()
@@ -147,6 +154,11 @@ public final class TeamSavedData extends SavedData {
 
         public boolean includes(final UUID player) {
             return this.isOwner(player) || this.members.containsKey(player);
+        }
+
+        public boolean includesName(final String playerName) {
+            return this.ownerName.equalsIgnoreCase(playerName)
+                    || this.members.values().stream().anyMatch(name -> name.equalsIgnoreCase(playerName));
         }
 
         public boolean hasInvite(final UUID player) {

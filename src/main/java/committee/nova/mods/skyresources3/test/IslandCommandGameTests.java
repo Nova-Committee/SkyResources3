@@ -148,6 +148,44 @@ public final class IslandCommandGameTests {
     }
 
     @SuppressWarnings("removal")
+    public static void visitTeleportsToOfflineSavedIsland(final GameTestHelper helper) {
+        final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
+        Config.enableVoidIslandFeatures = true;
+
+        try {
+            final String ownerName = "offline_owner";
+            final String memberName = "offline_member";
+            final UUID owner = UUID.randomUUID();
+            final UUID member = UUID.randomUUID();
+            final BlockPos home = new BlockPos(12288, VoidIslandWorld.ISLAND_Y + 1, 12288);
+            final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
+            final TeamSavedData teams = TeamSavedData.get(helper.getLevel().getServer().overworld());
+            islands.createIsland(owner, ownerName, helper.getLevel().dimension(), home, IslandTemplate.DEFAULT_ID);
+            teams.invite(owner, ownerName, member, memberName);
+            teams.acceptInvitation(member, memberName);
+
+            final ServerPlayer ownerVisitor = makeNamedMockServerPlayerInLevel(helper, "offline_visit_guest");
+            assertCommandSucceeds(helper, ownerVisitor, "island visit OFFLINE_OWNER");
+            helper.assertValueEqual(
+                    home,
+                    ownerVisitor.blockPosition(),
+                    "Offline owner name lookup should teleport to the saved island"
+            );
+
+            final ServerPlayer teamVisitor = makeNamedMockServerPlayerInLevel(helper, "offline_team_guest");
+            assertCommandSucceeds(helper, teamVisitor, "island visit OFFLINE_MEMBER");
+            helper.assertValueEqual(
+                    home,
+                    teamVisitor.blockPosition(),
+                    "Offline team member name lookup should teleport to the team owner island"
+            );
+            helper.succeed();
+        } finally {
+            Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+        }
+    }
+
+    @SuppressWarnings("removal")
     public static void teamInviteHomeLeaveAndDisband(final GameTestHelper helper) {
         final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
         Config.enableVoidIslandFeatures = true;

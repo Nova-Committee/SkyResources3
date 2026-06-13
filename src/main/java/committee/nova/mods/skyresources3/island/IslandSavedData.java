@@ -50,6 +50,13 @@ public final class IslandSavedData extends SavedData {
         return Optional.ofNullable(this.islands.get(owner));
     }
 
+    public Optional<IslandRecord> findIslandByOwnerName(final String ownerName) {
+        return this.islands.values()
+                .stream()
+                .filter(island -> island.ownerName().equalsIgnoreCase(ownerName))
+                .findFirst();
+    }
+
     public int islandCount() {
         return this.islands.size();
     }

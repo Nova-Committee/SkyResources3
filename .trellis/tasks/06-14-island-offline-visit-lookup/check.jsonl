@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend quality gate entry point."}
+{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Verify visit behavior and offline limitations."}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Verify command failures remain localized and simple."}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Verify no new persistence dependency or profile cache is introduced."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Verify compile/build/GameTest expectations and conventions."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Check for duplicate lookup logic that should be reusable."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Check consistency across command, saved data, tests, and docs."}
