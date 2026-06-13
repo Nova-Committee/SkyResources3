@@ -1,0 +1,3 @@
+{"file":".trellis/spec/backend/index.md","reason":"Backend spec index for final review."}
+{"file":".trellis/spec/backend/guide-guidelines.md","reason":"Verify guide keybinding contract and manual GUI boundary."}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Verify required checks and documentation evidence."}
