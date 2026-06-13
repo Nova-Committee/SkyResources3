@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.event.GrassSeedDropEvents;
 import committee.nova.mods.skyresources3.event.HealthGemEvents;
 import committee.nova.mods.skyresources3.event.RockGrinderEvents;
 import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
+import committee.nova.mods.skyresources3.island.VoidIslandCommands;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModCapabilities;
@@ -44,6 +45,7 @@ public final class Skyresources3 {
         NeoForge.EVENT_BUS.addListener(RockGrinderEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(HealthGemEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(GrassSeedDropEvents::onBlockDrops);
+        NeoForge.EVENT_BUS.addListener(VoidIslandCommands::register);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
