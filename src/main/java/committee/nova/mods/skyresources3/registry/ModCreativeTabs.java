@@ -84,6 +84,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.RED_SANDSTONE_INFUSION_STONE.get());
                         output.accept(ModItems.ALCHEMICAL_INFUSION_STONE.get());
                         output.accept(ModItems.HEALTH_GEM.get());
+                        output.accept(ModItems.CRYSTAL_FLUID_BUCKET.get());
                     })
                     .build()
     );

@@ -14,7 +14,9 @@ import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -123,6 +125,13 @@ public final class ModItems {
     public static final DeferredItem<InfusionStoneItem> ALCHEMICAL_INFUSION_STONE =
             infusionStone("alchemical_infusion_stone", 1500);
     public static final DeferredItem<HealthGemItem> HEALTH_GEM = ITEMS.registerItem("health_gem", HealthGemItem::new);
+    public static final DeferredItem<BucketItem> CRYSTAL_FLUID_BUCKET = ITEMS.registerItem(
+            "crystal_fluid_bucket",
+            properties -> new BucketItem(
+                    ModFluids.CRYSTAL_FLUID.get(),
+                    properties.craftRemainder(Items.BUCKET).stacksTo(1)
+            )
+    );
 
     public static void register(final IEventBus modEventBus) {
         ITEMS.register(modEventBus);

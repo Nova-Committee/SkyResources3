@@ -11,9 +11,11 @@ import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
 import committee.nova.mods.skyresources3.block.QuickDropperBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -60,6 +62,17 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> ALCHEMICAL_GLASS = BLOCKS.registerSimpleBlock(
             "alchemical_glass",
             () -> properties(0.3F, 0.3F, SoundType.GLASS).noOcclusion()
+    );
+    public static final DeferredBlock<LiquidBlock> CRYSTAL_FLUID = BLOCKS.registerBlock(
+            "crystal_fluid",
+            properties -> new LiquidBlock(ModFluids.CRYSTAL_FLUID.get(), properties),
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .replaceable()
+                    .noCollision()
+                    .strength(100.0F)
+                    .liquid()
+                    .pushReaction(PushReaction.DESTROY)
     );
     public static final DeferredBlock<FusionTableBlock> FUSION_TABLE = BLOCKS.registerBlock(
             "fusion_table",
