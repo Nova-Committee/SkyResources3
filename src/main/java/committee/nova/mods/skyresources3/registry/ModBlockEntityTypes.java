@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.FreezerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -30,6 +31,16 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "fusion_table",
                     () -> new BlockEntityType<>(FusionTableBlockEntity::new, ModBlocks.FUSION_TABLE.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =
+            BLOCK_ENTITY_TYPES.register(
+                    "freezer",
+                    () -> new BlockEntityType<>(
+                            FreezerBlockEntity::new,
+                            ModBlocks.MINI_FREEZER.get(),
+                            ModBlocks.IRON_FREEZER.get(),
+                            ModBlocks.LIGHT_FREEZER.get()
+                    )
             );
 
     public static void register(final IEventBus modEventBus) {

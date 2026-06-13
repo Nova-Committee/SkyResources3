@@ -1,6 +1,5 @@
 package committee.nova.mods.skyresources3.registry;
 
-import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.level.material.Fluids;
@@ -17,6 +16,11 @@ public final class ModCapabilities {
                 Capabilities.Item.BLOCK,
                 ModBlockEntityTypes.FUSION_TABLE.get(),
                 (fusionTable, direction) -> fusionTable.getItemHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.FREEZER.get(),
+                (freezer, direction) -> freezer.getItemHandler()
         );
         event.registerItem(
                 Capabilities.Fluid.ITEM,

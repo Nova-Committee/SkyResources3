@@ -95,6 +95,31 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_heavy_snowball", has(ModItems.HEAVY_SNOWBALL.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MINI_FREEZER.get())
+                .define('X', Blocks.SNOW)
+                .pattern("X")
+                .pattern("X")
+                .unlockedBy("has_snow", has(Blocks.SNOW))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.IRON_FREEZER.get())
+                .define('X', ModItems.FROZEN_IRON_INGOT.get())
+                .define('Z', ModBlocks.MINI_FREEZER.get())
+                .pattern("XXX")
+                .pattern("XZX")
+                .pattern("XXX")
+                .unlockedBy("has_frozen_iron_ingot", has(ModItems.FROZEN_IRON_INGOT.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIGHT_FREEZER.get())
+                .define('X', ModItems.LIGHT_MATTER.get())
+                .define('Z', ModBlocks.IRON_FREEZER.get())
+                .pattern("XXX")
+                .pattern("XZX")
+                .pattern("XXX")
+                .unlockedBy("has_light_matter", has(ModItems.LIGHT_MATTER.get()))
+                .save(this.output);
+
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COAL_INFUSED_BLOCK.get())
                 .define('X', ModItems.ALCHEMICAL_COAL.get())
                 .pattern("XXX")

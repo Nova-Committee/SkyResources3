@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,part=bottom": {
+      "model": "skyresources3:block/mini_freezer",
+      "y": 90
+    },
+    "facing=east,part=top": {
+      "model": "skyresources3:block/mini_freezer",
+      "y": 90
+    },
+    "facing=north,part=bottom": {
+      "model": "skyresources3:block/mini_freezer"
+    },
+    "facing=north,part=top": {
+      "model": "skyresources3:block/mini_freezer"
+    },
+    "facing=south,part=bottom": {
+      "model": "skyresources3:block/mini_freezer",
+      "y": 180
+    },
+    "facing=south,part=top": {
+      "model": "skyresources3:block/mini_freezer",
+      "y": 180
+    },
+    "facing=west,part=bottom": {
+      "model": "skyresources3:block/mini_freezer",
+      "y": 270
+    },
+    "facing=west,part=top": {
+      "model": "skyresources3:block/mini_freezer",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "skyresources3:block/iron_machine",
+    "up": "skyresources3:block/iron_machine",
+    "north": "skyresources3:block/iron_freezer_bottom",
+    "south": "skyresources3:block/iron_freezer_bottom",
+    "west": "skyresources3:block/iron_freezer_bottom",
+    "east": "skyresources3:block/iron_freezer_bottom",
+    "particle": "skyresources3:block/iron_freezer_bottom"
+  }
+}

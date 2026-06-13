@@ -35,6 +35,9 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> LIGHT_MATTER_BLOCK = blockItem("light_matter_block", ModBlocks.LIGHT_MATTER_BLOCK);
     public static final DeferredItem<BlockItem> ALCHEMICAL_GLASS = blockItem("alchemical_glass", ModBlocks.ALCHEMICAL_GLASS);
     public static final DeferredItem<BlockItem> FUSION_TABLE = blockItem("fusion_table", ModBlocks.FUSION_TABLE);
+    public static final DeferredItem<BlockItem> MINI_FREEZER = blockItem("mini_freezer", ModBlocks.MINI_FREEZER);
+    public static final DeferredItem<BlockItem> IRON_FREEZER = blockItem("iron_freezer", ModBlocks.IRON_FREEZER);
+    public static final DeferredItem<BlockItem> LIGHT_FREEZER = blockItem("light_freezer", ModBlocks.LIGHT_FREEZER);
     public static final DeferredItem<BlockItem> LIFE_INFUSER = blockItem("life_infuser", ModBlocks.LIFE_INFUSER);
     public static final DeferredItem<BlockItem> LIFE_INJECTOR = blockItem("life_injector", ModBlocks.LIFE_INJECTOR);
     public static final DeferredItem<BlockItem> CACTUS_FRUIT_NEEDLE =

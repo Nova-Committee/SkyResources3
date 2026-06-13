@@ -33,6 +33,9 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.LIGHT_MATTER_BLOCK.get());
                         output.accept(ModItems.ALCHEMICAL_GLASS.get());
                         output.accept(ModItems.FUSION_TABLE.get());
+                        output.accept(ModItems.MINI_FREEZER.get());
+                        output.accept(ModItems.IRON_FREEZER.get());
+                        output.accept(ModItems.LIGHT_FREEZER.get());
                         output.accept(ModItems.LIFE_INFUSER.get());
                         output.accept(ModItems.LIFE_INJECTOR.get());
                         output.accept(ModItems.CACTUS_FRUIT_NEEDLE.get());

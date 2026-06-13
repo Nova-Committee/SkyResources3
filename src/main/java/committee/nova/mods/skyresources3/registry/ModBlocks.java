@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
 import committee.nova.mods.skyresources3.block.FusionTableBlock;
+import committee.nova.mods.skyresources3.block.FreezerBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
 import net.minecraft.world.level.block.Block;
@@ -61,6 +62,21 @@ public final class ModBlocks {
             "fusion_table",
             FusionTableBlock::new,
             () -> machineWood(3.0F, 10.0F)
+    );
+    public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
+            "mini_freezer",
+            properties -> new FreezerBlock(FreezerBlock.Tier.MINI, properties),
+            () -> properties(0.5F, 0.5F, SoundType.SNOW).noOcclusion()
+    );
+    public static final DeferredBlock<FreezerBlock> IRON_FREEZER = BLOCKS.registerBlock(
+            "iron_freezer",
+            properties -> new FreezerBlock(FreezerBlock.Tier.IRON, properties),
+            () -> properties(2.0F, 2.0F, SoundType.METAL).noOcclusion()
+    );
+    public static final DeferredBlock<FreezerBlock> LIGHT_FREEZER = BLOCKS.registerBlock(
+            "light_freezer",
+            properties -> new FreezerBlock(FreezerBlock.Tier.LIGHT, properties),
+            () -> properties(8.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
     public static final DeferredBlock<LifeInfuserBlock> LIFE_INFUSER = BLOCKS.registerBlock(
             "life_infuser",

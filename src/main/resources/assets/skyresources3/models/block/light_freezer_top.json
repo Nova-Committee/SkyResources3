@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "skyresources3:block/light_matter_block",
+    "up": "skyresources3:block/light_matter_block",
+    "north": "skyresources3:block/light_freezer_top",
+    "south": "skyresources3:block/light_freezer_top",
+    "west": "skyresources3:block/light_freezer_top",
+    "east": "skyresources3:block/light_freezer_top",
+    "particle": "skyresources3:block/light_freezer_top"
+  }
+}
