@@ -493,7 +493,7 @@ public final class VoidIslandCommands {
                         "message.skyresources3.island.info",
                         island.ownerName(),
                         island.type(),
-                        island.dimension().identifier(),
+                        island.dimension().identifier().toString(),
                         formatPosition(island.home())
                 ),
                 false

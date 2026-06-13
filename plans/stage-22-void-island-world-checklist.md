@@ -14,10 +14,11 @@
 - `VoidIslandCommands` still stores island/team data in the overworld saved data while using the void dimension for new island placement.
 - `src/main/resources/data/skyresources3/dimension/void_island.json` uses an empty `minecraft:flat` generator with no structures.
 - `src/main/resources/data/skyresources3/worldgen/world_preset/void_island.json` exposes an empty-world preset for new worlds.
+- `ModGameTests` registers function-based GameTests and `IslandCommandGameTests` covers `/island create`, `/island info`, and `/island reset sand confirm`.
+- Command-level GameTests caught and fixed the `/island info` dimension translation argument by converting the dimension identifier to a string.
 
 ## TODO
 
-- Add command-level GameTests once the project has command execution fixtures.
 - Decide whether existing overworld islands should be migrated to the void dimension or left in place.
 - Replace the simple spawn grass platform with configurable VoidIslandControl-style spawn settings if needed.
 

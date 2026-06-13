@@ -64,6 +64,9 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Untrusted visitors and unrelated players must not be allowed to break, place, or right-click blocks inside another team's protected island range.
 - Island protection handlers must run before custom world-mutating interaction handlers such as processing tools or cauldron cleaning.
 - Player-facing command messages use `Component.translatable` with keys in `assets/skyresources3/lang/en_us.json`.
+- Translation arguments must be Minecraft-supported message argument types: `Component`, `Number`, `Boolean`, or `String`.
+  Convert identifiers, resource keys, block positions, and other domain objects to strings or components before passing
+  them to `Component.translatable`.
 
 ### 4. Validation & Error Matrix
 
@@ -100,6 +103,7 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - `./gradlew.bat runGameTestServer` proves dedicated-server startup accepts command registration and saved data codecs.
 
 When command execution GameTests are added, cover create/invite/accept/home/reset/visit and rejection paths for existing islands, existing teams, members resetting team islands, and offline visit targets.
+Command GameTests should execute commands through the Brigadier dispatcher and assert saved-data side effects, not just positive command return values.
 
 ### 7. Wrong vs Correct
 
@@ -114,4 +118,16 @@ event.getDispatcher().register(Commands.literal("team").then(teamNode()));
 ```java
 event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(teamNode()));
 event.getDispatcher().register(Commands.literal("island").then(inviteAlias()));
+```
+
+#### Wrong
+
+```java
+source.sendSuccess(() -> Component.translatable("message.skyresources3.island.info", island.dimension().identifier()), false);
+```
+
+#### Correct
+
+```java
+source.sendSuccess(() -> Component.translatable("message.skyresources3.island.info", island.dimension().identifier().toString()), false);
 ```
