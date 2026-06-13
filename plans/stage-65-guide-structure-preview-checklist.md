@@ -14,4 +14,4 @@
 - [x] Keep the scrollable structure list and close behavior intact.
 - [x] Update migration plan, guide spec, and deferred checklist notes.
 - [x] Run compileJava, runData, build, runGameTestServer.
-- [ ] Chinese commit and archive Trellis task.
+- [x] Chinese commit and archive Trellis task.
