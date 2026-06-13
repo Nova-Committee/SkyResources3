@@ -17,4 +17,4 @@
 - [x] 写入 `plans/integration-availability.md`。
 - [x] 更新 `plans/migration-plan.md` 阶段 9 和风险 TODO。
 - [x] 运行文档验证命令。
-- [ ] 中文提交并归档 Trellis 任务。
+- [x] 中文提交并归档 Trellis 任务；见提交 `6c2a205` 和 `9b4c9b4`。

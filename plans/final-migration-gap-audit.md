@@ -9,8 +9,9 @@
 SkyResources3 has migrated the main NeoForge 1.21.11 mod body far enough that most remaining items are no longer
 core runtime implementation gaps. The remaining work falls into three groups:
 
-1. **Must finish before declaring full migration complete**: automated final validation has been refreshed, while
-   visual GUI click-through remains a manual release-prep item that cannot be proven by headless gates.
+1. **Must finish before declaring full migration complete**: automated final validation and stale checklist cleanup
+   have been refreshed, while visual GUI click-through remains a manual release-prep item that cannot be proven by
+   headless gates.
 2. **Allowed deferrals under `plans/ask.md`**: optional integrations without verified 1.21.11 NeoForge artifacts, dynamic
    ore-dictionary/tagged modded recipes that depend on those integrations, and external profile lookup.
 3. **Enhancements**: visual variants, richer team roles, old save migration, and deeper
@@ -62,8 +63,11 @@ core runtime implementation gaps. The remaining work falls into three groups:
    - Resolved in `plans/migration-plan.md`: old event broadcast hooks and silent old-save dimension migration are intentionally deferred/non-blocking unless a real consumer or upgrade requirement appears.
 
 4. **Checklist cleanup**
-   - Remove or reclassify stale deferred items that were completed by later stages.
-   - Keep true version/API blockers in `plans/integration-availability.md` instead of scattering them across old stage files.
+   - Resolved on 2026-06-14: stale deferred items for JEI recipe viewing, guide recipe actions, stable
+     `cauldronclean` recipes, combustion controller/collector runtime, and the Stage 59 archive step were synchronized
+     with later evidence.
+   - True version/API blockers remain in `plans/integration-availability.md`; true dynamic/tagged recipe and visual
+     enhancement deferrals remain in their owning stage files.
 
 ## Allowed Deferrals
 

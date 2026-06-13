@@ -13,4 +13,6 @@
 
 Deferred:
 - [x] `dryCactus` extract/insert recipe waits for the dry cactus block migration.
-- [ ] JEI water extractor recipe category waits for the recipe system/UI migration batch.
+- [ ] Standalone JEI Water Extractor category remains deferred until a first-class water-extraction display contract is
+  selected. Stage 60 covers the migrated process/crucible/condenser/heat-source JEI categories, but does not add a
+  dedicated Water Extractor category.

@@ -8,4 +8,7 @@
 - [x] Commit this migration slice with a Chinese message.
 
 Deferred:
-- [ ] Cauldron clean recipes wait for the custom process recipe and cauldron batch.
+- [x] Manual water-cauldron cleaning now consumes `ProcessRecipes.CAULDRON_CLEAN` through the Rock Cleaner slice.
+- [x] Stable vanilla Dirty Gem `cauldronclean` recipes were generated in Stage 50.
+- [ ] Dynamic/tagged cauldron-clean outputs remain deferred until the modded output/tag compatibility policy is
+  explicit.

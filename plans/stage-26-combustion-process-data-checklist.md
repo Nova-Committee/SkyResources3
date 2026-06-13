@@ -46,4 +46,6 @@
 
 - [ ] Water bottle -> snowball combustion waits for a component-aware process ingredient convention.
 - [ ] Dynamic old ore-dictionary priority variants wait for tag and integration policy decisions.
-- [ ] Combustion controller/collector runtime waits for the machine block-entity migration slice.
+- [x] Combustion controller/collector runtime was completed by the combustion automation slice and is covered by
+  `MachineRuntimeGameTests.combustionControllerUsesFilterPriority` and
+  `MachineRuntimeGameTests.combustionCollectorDropsOverflow`.

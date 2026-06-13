@@ -17,7 +17,8 @@
 
 - [ ] Full old `alchComponent` and `heatComponent` machine component families remain deferred until a concrete recipe or target machine requires each variant.
 - [ ] External old machine variants remain deferred until the target mod/tag integration policy is explicit.
-- [ ] JEI/EMI or scripting integrations remain deferred until integration policy is selected.
+- [x] JEI recipe viewer integration for Fusion/process recipe categories was completed in Stage 60.
+- [ ] EMI and scripting integrations remain deferred until a target version/API policy is selected.
 
 ## Verification
 

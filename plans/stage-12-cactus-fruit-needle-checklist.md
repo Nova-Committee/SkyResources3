@@ -10,4 +10,5 @@
 - [x] Commit this migration slice with a Chinese message.
 
 Deferred:
-- [ ] JEI description for cactus needle waits for the recipe system/UI migration batch.
+- [ ] Dedicated JEI description text for cactus needle remains deferred. The Stage 60 JEI work covers process recipes
+  and guide recipe actions, but no standalone cactus-needle information page/category has been added.

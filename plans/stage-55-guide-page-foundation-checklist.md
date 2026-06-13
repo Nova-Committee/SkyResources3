@@ -16,7 +16,8 @@
 - [x] Full client guide GUI, search, navigation, and keybinding were completed by Stages 56-65.
 - [x] Old rich text markers such as `<recipe>`, `<link>`, and `<image>` now have a lightweight `{action:n}` inline action replacement for selected migrated pages.
 - [x] Structure image data from old `ModGuidePages.imageDesigns` now uses current `GuideStructure` entries and a lightweight 2D isometric `GuideScreen` preview.
-- [ ] Integration guide pages wait for the remaining 1.21.11 mod compatibility policy; JEI recipe actions are already covered by Stage 60.
+- [x] JEI recipe actions for migrated guide recipe targets are covered by Stage 60 and the guide action follow-up slices.
+- [ ] Integration guide pages for unavailable optional mods wait for the remaining 1.21.11 mod compatibility policy.
 
 ## Verification
 

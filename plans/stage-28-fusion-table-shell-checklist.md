@@ -18,7 +18,8 @@
 
 ## Deferred
 
-- [ ] JEI/EMI or scripting integrations remain deferred until integration policy is selected.
+- [x] JEI recipe viewer integration for Fusion/process recipe categories was completed in Stage 60.
+- [ ] EMI and scripting integrations remain deferred until a target version/API policy is selected.
 
 ## Verification
 
