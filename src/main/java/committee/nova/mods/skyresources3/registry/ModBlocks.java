@@ -19,6 +19,7 @@ import committee.nova.mods.skyresources3.block.FreezerBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
 import committee.nova.mods.skyresources3.block.MachineCasingBlock;
+import committee.nova.mods.skyresources3.block.MagmafiedStoneBlock;
 import committee.nova.mods.skyresources3.block.QuickDropperBlock;
 import committee.nova.mods.skyresources3.block.RockCleanerBlock;
 import committee.nova.mods.skyresources3.block.RockCrusherBlock;
@@ -61,8 +62,9 @@ public final class ModBlocks {
             "petrified_planks",
             () -> properties(2.0F, 6.0F, SoundType.WOOD)
     );
-    public static final DeferredBlock<Block> MAGMAFIED_STONE = BLOCKS.registerSimpleBlock(
+    public static final DeferredBlock<MagmafiedStoneBlock> MAGMAFIED_STONE = BLOCKS.registerBlock(
             "magmafied_stone",
+            MagmafiedStoneBlock::new,
             () -> stone(1.5F, 6.0F)
     );
     public static final DeferredBlock<Block> HEAVY_SNOW = BLOCKS.registerSimpleBlock(
