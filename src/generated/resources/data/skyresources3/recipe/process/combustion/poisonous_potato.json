@@ -1,0 +1,20 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": "minecraft:potato"
+    },
+    {
+      "ingredient": "minecraft:rotten_flesh"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "minecraft:poisonous_potato"
+    }
+  ],
+  "parameter": 650.0,
+  "process": "combustion"
+}

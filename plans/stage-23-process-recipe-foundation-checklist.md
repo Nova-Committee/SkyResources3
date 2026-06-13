@@ -14,6 +14,7 @@
 - [x] Recorded the new recipe contract in `.trellis/spec/backend/recipe-guidelines.md`.
 - [x] Follow-up: cutting knife and rock grinder runtime logic now consumes process recipe data.
 - [x] Follow-up: infusion stone and Life Infuser runtime logic now consumes process recipe data.
+- [x] Follow-up: low-risk vanilla/SkyResources combustion recipe data has been expanded.
 
 ## Generated Process Recipes
 

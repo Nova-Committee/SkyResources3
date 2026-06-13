@@ -1,0 +1,16 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:charcoal"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:coal"
+    }
+  ],
+  "parameter": 170.0,
+  "process": "combustion"
+}

@@ -550,10 +550,31 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final int outputCount,
             final ProcessIngredient ingredient
     ) {
-        this.infusionRecipe(name + "_from_short_grass", healthCost, output, outputCount, ingredient, input(Blocks.SHORT_GRASS));
+        this.infusionRecipe(
+                name + "_from_short_grass",
+                healthCost,
+                output,
+                outputCount,
+                ingredient,
+                input(Blocks.SHORT_GRASS)
+        );
         this.infusionRecipe(name + "_from_fern", healthCost, output, outputCount, ingredient, input(Blocks.FERN));
-        this.infusionRecipe(name + "_from_tall_grass", healthCost, output, outputCount, ingredient, input(Blocks.TALL_GRASS));
-        this.infusionRecipe(name + "_from_large_fern", healthCost, output, outputCount, ingredient, input(Blocks.LARGE_FERN));
+        this.infusionRecipe(
+                name + "_from_tall_grass",
+                healthCost,
+                output,
+                outputCount,
+                ingredient,
+                input(Blocks.TALL_GRASS)
+        );
+        this.infusionRecipe(
+                name + "_from_large_fern",
+                healthCost,
+                output,
+                outputCount,
+                ingredient,
+                input(Blocks.LARGE_FERN)
+        );
     }
 
     private void infusionRecipe(
@@ -568,8 +589,134 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void buildCombustionRecipes() {
-        this.processRecipe(
-                ProcessRecipes.COMBUSTION,
+        this.combustionRecipe("coal", 170.0F, Items.COAL, 1, input(Items.CHARCOAL));
+        this.combustionRecipe("blaze_powder", 75.0F, Items.BLAZE_POWDER, 3, input(Items.GUNPOWDER));
+        this.combustionRecipe("gunpowder", 1120.0F, Items.GUNPOWDER, 3, input(Items.FLINT));
+        this.combustionRecipe("diamond", 1600.0F, Items.DIAMOND, 1, input(ModBlocks.COMPRESSED_COAL_BLOCK.get()));
+        this.combustionRecipe(
+                "red_sand",
+                200.0F,
+                Blocks.RED_SAND,
+                12,
+                input(Blocks.SAND, 12),
+                input(Items.RED_DYE)
+        );
+        this.combustionRecipe(
+                "dry_cactus",
+                400.0F,
+                ModBlocks.DRY_CACTUS.get(),
+                1,
+                input(Blocks.BONE_BLOCK),
+                input(Items.LIGHT_GRAY_DYE, 8),
+                input(ModItems.PLANT_MATTER.get(), 8)
+        );
+        this.combustionRecipe(
+                "redstone",
+                880.0F,
+                Items.REDSTONE,
+                4,
+                input(Items.GUNPOWDER, 2),
+                input(Items.BLAZE_POWDER, 2)
+        );
+        this.combustionRecipe(
+                "wheat_seeds",
+                50.0F,
+                Items.WHEAT_SEEDS,
+                1,
+                input(Blocks.DEAD_BUSH),
+                input(Items.FLINT, 2)
+        );
+        this.combustionRecipe("dirt", 100.0F, Blocks.DIRT, 1, input(ModItems.PLANT_MATTER.get(), 4));
+        this.combustionRecipe(
+                "slime_ball",
+                200.0F,
+                Items.SLIME_BALL,
+                1,
+                input(ModItems.PLANT_MATTER.get(), 8),
+                input(Items.SNOWBALL)
+        );
+        this.combustionRecipe(
+                "poisonous_potato",
+                650.0F,
+                Items.POISONOUS_POTATO,
+                4,
+                input(Items.POTATO, 4),
+                input(Items.ROTTEN_FLESH)
+        );
+        this.combustionRecipe(
+                "radioactive_mix",
+                1400.0F,
+                ModItems.RADIOACTIVE_MIX.get(),
+                6,
+                input(Items.POISONOUS_POTATO),
+                input(Items.SPIDER_EYE, 2),
+                input(Items.GUNPOWDER, 4)
+        );
+        this.combustionRecipe(
+                "prismarine_shard",
+                1900.0F,
+                Items.PRISMARINE_SHARD,
+                4,
+                input(Items.QUARTZ, 4),
+                input(Blocks.MOSSY_COBBLESTONE)
+        );
+        this.combustionRecipe(
+                "prismarine_crystals",
+                1440.0F,
+                Items.PRISMARINE_CRYSTALS,
+                4,
+                input(Items.QUARTZ),
+                input(Blocks.GLASS, 3)
+        );
+        this.combustionRecipe(
+                "netherrack",
+                920.0F,
+                Blocks.NETHERRACK,
+                8,
+                input(Blocks.COBBLESTONE, 8),
+                input(Items.BLAZE_POWDER, 3)
+        );
+        this.combustionRecipe(
+                "dark_matter",
+                2900.0F,
+                ModItems.DARK_MATTER.get(),
+                1,
+                input(Blocks.SOUL_SAND, 5),
+                input(ModBlocks.COMPRESSED_COAL_BLOCK.get(), 3),
+                input(Items.GOLD_INGOT),
+                input(Items.IRON_INGOT, 2),
+                input(Items.BRICK, 4)
+        );
+        this.combustionRecipe(
+                "light_matter",
+                3400.0F,
+                ModItems.LIGHT_MATTER.get(),
+                1,
+                input(ModBlocks.HEAVY_SNOW.get(), 5),
+                input(ModItems.FROZEN_IRON_INGOT.get(), 4),
+                input(ModItems.ALCHEMICAL_GOLD_INGOT.get(), 4),
+                input(Blocks.END_STONE, 3)
+        );
+        this.combustionRecipe(
+                "glowstone_dust",
+                1700.0F,
+                Items.GLOWSTONE_DUST,
+                5,
+                input(Items.REDSTONE, 4),
+                input(Items.BLAZE_POWDER, 2)
+        );
+        this.combustionRecipe(
+                "end_stone",
+                1800.0F,
+                Blocks.END_STONE,
+                1,
+                input(Blocks.DIORITE, 6),
+                input(Items.SUGAR, 2),
+                input(Items.ENDER_PEARL, 4),
+                input(Items.QUARTZ, 2),
+                input(Blocks.BONE_BLOCK, 4)
+        );
+        this.combustionRecipe(
                 "primus_alchemical_dust",
                 335.0F,
                 ModItems.PRIMUS_ALCHEMICAL_DUST.get(),
@@ -578,6 +725,16 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 input(Items.BLAZE_POWDER, 2),
                 input(Items.CHARCOAL)
         );
+    }
+
+    private void combustionRecipe(
+            final String name,
+            final float heat,
+            final ItemLike output,
+            final int outputCount,
+            final ProcessIngredient... inputs
+    ) {
+        this.processRecipe(ProcessRecipes.COMBUSTION, name, heat, output, outputCount, inputs);
     }
 
     private void processRecipe(

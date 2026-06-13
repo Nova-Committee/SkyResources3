@@ -1,0 +1,20 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "count": 12,
+      "ingredient": "minecraft:sand"
+    },
+    {
+      "ingredient": "minecraft:red_dye"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 12,
+      "id": "minecraft:red_sand"
+    }
+  ],
+  "parameter": 200.0,
+  "process": "combustion"
+}
