@@ -820,3 +820,42 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 24: 补全中文翻译键值
+
+**Date**: 2026-06-14
+**Task**: 补全中文翻译键值
+**Branch**: `master`
+
+### Summary
+
+新增完整 `zh_cn.json`，覆盖 `en_us.json` 的 445 个翻译键；验证 JSON 解析、键集合、占位符一致性，并通过 `build`、`runData` 与 Serena Java 识别检查。
+
+### Main Changes
+
+- 新增 `src/main/resources/assets/skyresources3/lang/zh_cn.json`。
+- 保持中文键顺序与 `en_us.json` 一致。
+- 保留 `%s`、`%s%%`、`{action:n}` 等占位符和指南动作标记。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a320126` | 补全中文翻译键值 |
+
+### Testing
+
+- [OK] Python JSON/键集合/占位符一致性检查。
+- [OK] `git diff --check`。
+- [OK] `./gradlew.bat build`。
+- [OK] `./gradlew.bat runData`。
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`。
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
