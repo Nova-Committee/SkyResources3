@@ -20,6 +20,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -197,8 +198,12 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         if (recipeTypes.isEmpty()) {
             return openItemRecipe(jeiRuntime, icon);
         }
-        jeiRuntime.getRecipesGui().showTypes(recipeTypes);
-        return true;
+        final IRecipesGui recipesGui = jeiRuntime.getRecipesGui();
+        recipesGui.showTypes(recipeTypes);
+        if (recipesGui.getParentScreen().isPresent()) {
+            return true;
+        }
+        return openItemRecipe(jeiRuntime, icon);
     }
 
     private void addProcessRecipes(
@@ -235,8 +240,9 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         final IFocus<ItemStack> focus = jeiRuntime.getJeiHelpers()
                 .getFocusFactory()
                 .createFocus(RecipeIngredientRole.OUTPUT, VanillaTypes.ITEM_STACK, icon.copy());
-        jeiRuntime.getRecipesGui().show(focus);
-        return true;
+        final IRecipesGui recipesGui = jeiRuntime.getRecipesGui();
+        recipesGui.show(focus);
+        return recipesGui.getParentScreen().isPresent();
     }
 
     private static ItemLike[] variants(final Map<MachineVariant, ? extends Supplier<? extends ItemLike>> items) {

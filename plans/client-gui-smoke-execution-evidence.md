@@ -9,9 +9,8 @@ The desktop smoke attempt proved that the dev client can reach the main menu and
 with SkyResources3, Jade, and JEI loaded. It also exposed a real usability defect: the guide key default was `G`, which
 conflicted with Minecraft 1.21.11 `key.quickActions`. The default guide key is now `Y`.
 
-The full manual GUI click-through is still not complete. Native desktop input automation became unreliable after window
-focus changed between Codex, Windows Terminal, and the GLFW Minecraft window, so guide search/actions, JEI recipe action
-clicks, representative machine screens, and island/team chat command flows remain manual release-prep items.
+The first GUI attempt did not complete the full click-through because native desktop input automation became unreliable
+after window focus changed between Codex, Windows Terminal, and the GLFW Minecraft window.
 
 ## Focused Retry
 
@@ -26,6 +25,34 @@ This narrows the remaining blocker: terminal focus pollution is no longer the ma
 evidence. In this desktop session, the client window/render capture itself did not become a usable visual target, so the
 manual runbook still needs a human-observed focused client session before release.
 
+## Release Smoke Validation
+
+A later focused validation run under
+`.trellis/tasks/06-14-client-gui-release-smoke-validation/evidence/` completed the remaining primary GUI paths in a
+local creative singleplayer world with SkyResources3, Jade, and JEI enabled.
+
+Observed screenshots/log evidence:
+
+- `release-runclient-1-guide-open-post-y.png`: `Y` opened the `Sky Resources Guide`.
+- `release-runclient-1-guide-search-fusion.png`: guide search accepted `fusion` and visibly narrowed the result set.
+- `release-runclient-1-guide-link-sand-island.png`: clicking a guide page action jumped to `Sand Island` and cleared the
+  search field.
+- `release-runclient-1-island-team-chat-history.png`: `/island create grass`, `/island home`, `/island spawn`,
+  `/island info`, `/island trusted`, `/skyresources3 team create`, `/skyresources3 team info`, and
+  `/skyresources3 team home` produced readable chat feedback and teleported without disconnecting.
+- `release-runclient-1-fusion-table-target.png`: the local player targeted `skyresources3:fusion_table`.
+- `release-runclient-1-fusion-table-dump-tooltip-precise.png`: the Fusion Table menu opened and exposed its
+  screen-specific `Dump Stored Catalyst` button.
+- The initial JEI guide recipe click only showed the guide tooltip and did not switch screens, revealing a silent
+  integration-result problem.
+- `release-runclient-2-jei-after-guide-recipe-fixed.png`: after the integration result check was tightened, clicking the
+  Life Infusion recipe action opened JEI's Recipes GUI for the Alchemical Infusion Stone item recipe instead of staying
+  silently on the guide.
+
+The JEI-present action is therefore visually safe and opens JEI, but the observed fallback view was the item recipe view,
+not direct proof that the targeted `process/infusion` category deep-link displayed a populated category. Treat targeted
+process-category deep-linking as an enhancement unless a stricter release requirement is added.
+
 ## Observed Evidence
 
 - `interactive-runclient-2-main-menu.png`: client reached the Minecraft main menu.
@@ -38,7 +65,8 @@ manual runbook still needs a human-observed focused client session before releas
   client resource loading again.
 
 Evidence files live under `.trellis/tasks/06-14-client-gui-smoke-execution/evidence/` and are intentionally not tracked
-in Git.
+in Git. Release validation evidence lives under
+`.trellis/tasks/06-14-client-gui-release-smoke-validation/evidence/` and is also intentionally not tracked in Git.
 
 ## Result
 
@@ -46,12 +74,14 @@ in Git.
 - Existing world entry: passed in the `interactive-runclient-2` attempt.
 - Guide default key conflict: found and fixed by changing the default from `G` to `Y`.
 - Hidden-launcher focused retry: partial; client loaded but visible captures stayed white.
-- Guide screen open/search/action click-through: not completed.
-- JEI recipe action click-through: not completed.
-- Representative machine screen click-through: not completed.
-- Island/team command manual sanity: not completed.
+- Guide screen open/search/action click-through: passed in the release validation run.
+- JEI recipe action click-through: passed with JEI opening to the item recipe fallback view after the integration result
+  fix.
+- Representative machine screen click-through: passed for Fusion Table, including the screen-specific dump button.
+- Island/team command manual sanity: passed for the local singleplayer command sequence listed above.
 
 ## Follow-Up
 
-Run `plans/client-manual-smoke-runbook.md` manually from a focused desktop session and record screenshots for the remaining
-guide, JEI, machine GUI, and island/team checks before a release tag.
+Only run the no-JEI fallback profile if preparing a distribution profile without JEI. A stricter JEI process-category
+deep-link test can be added later if release criteria require the guide action to open the exact process category rather
+than a visible JEI recipe fallback.

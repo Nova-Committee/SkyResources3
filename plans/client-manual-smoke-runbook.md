@@ -1,7 +1,7 @@
 # Client Manual Smoke Runbook
 
 > Purpose: complete the final visual/click-through validation that headless Gradle gates and GameTests cannot prove.
-> Current startup evidence: `run/logs/latest.log` from 2026-06-14 04:56.
+> Current startup evidence: `run/logs/latest.log` from 2026-06-14 05:56.
 
 ## Preconditions
 
@@ -20,6 +20,22 @@
 - OpenAL initialized and the sound engine started.
 - Minecraft and JEI GUI texture atlases were created.
 - No crash marker was found in the captured `latest.log`.
+
+## Latest Focused Result
+
+The JEI-present release-prep profile was smoke-tested on 2026-06-14 under
+`.trellis/tasks/06-14-client-gui-release-smoke-validation/evidence/`.
+
+Covered by direct screenshots/logs:
+
+- Guide opens with `Y`, search narrows results, and a page action navigates to another guide page.
+- The Life Infusion recipe action opens JEI's Recipes GUI after the integration result check was tightened. The observed
+  fixed path opened the Alchemical Infusion Stone item recipe fallback, not a direct proof of exact
+  `process/infusion` category navigation.
+- Fusion Table opens and shows its screen-specific `Dump Stored Catalyst` button.
+- Island/team commands listed below produce readable chat feedback and complete without disconnecting.
+
+Only run the no-JEI fallback section if preparing a distribution profile without JEI.
 
 ## Guide Smoke
 
@@ -75,7 +91,7 @@ Only run this if preparing a distribution profile without JEI:
 
 ## Recording Result
 
-When a human completes the click-through, update:
+When a future click-through changes the result, update:
 
 - `plans/client-smoke-resource-license-closeout-checklist.md`
 - `plans/final-validation-compatibility-closeout-checklist.md`

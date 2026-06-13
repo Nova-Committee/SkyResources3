@@ -42,15 +42,19 @@
   window captures stayed white after SkyResources3/Jade/JEI loaded, so it did not prove guide, JEI, machine, or
   island/team click-through.
 - [x] No intentional Gradle/Java client process was left running after the GUI attempt.
+- [x] A release GUI smoke validation on 2026-06-14 later reached a focused local creative world, opened the guide with
+  `Y`, verified guide search/page actions, opened the Fusion Table screen, ran the island/team command sanity sequence,
+  and opened JEI from a guide recipe action after tightening the JEI integration result check.
 
 ## Still Manual Before Release
 
-- [ ] Follow `plans/client-manual-smoke-runbook.md` in a focused local client world and record the remaining result.
-- [ ] Open guide screen and verify search/action links by clicking them.
-- [ ] Verify JEI recipe action opens recipes when JEI is present.
+- [x] Follow `plans/client-manual-smoke-runbook.md` in a focused local client world and record the JEI-present result.
+- [x] Open guide screen and verify search/action links by clicking them.
+- [x] Verify JEI recipe action opens recipes when JEI is present. The fixed screenshot shows JEI opening to the
+  Alchemical Infusion Stone item recipe fallback; exact process-category deep-linking remains an optional tightening.
 - [ ] Verify JEI absence/fallback behavior in a separate no-JEI client run if packaging a no-JEI profile.
-- [ ] Open representative machine menus and confirm layout/slot behavior visually.
-- [ ] Sanity-check island/team flows in a local client world.
+- [x] Open representative machine menus and confirm layout/slot behavior visually for Fusion Table.
+- [x] Sanity-check island/team flows in a local client world.
 
 ## Later Automation Evidence
 

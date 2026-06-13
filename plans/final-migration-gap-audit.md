@@ -9,9 +9,8 @@
 SkyResources3 has migrated the main NeoForge 1.21.11 mod body far enough that most remaining items are no longer
 core runtime implementation gaps. The remaining work falls into three groups:
 
-1. **Must finish before declaring full migration complete**: automated final validation and stale checklist cleanup
-   have been refreshed, while visual GUI click-through remains a manual release-prep item that cannot be proven by
-   headless gates.
+1. **Release-prep validation**: automated final validation, stale checklist cleanup, and the focused JEI-present GUI
+   click-through have been refreshed with direct evidence.
 2. **Allowed deferrals under `plans/ask.md`**: optional integrations without verified 1.21.11 NeoForge artifacts, dynamic
    ore-dictionary/tagged modded recipes that depend on those integrations, and external profile lookup.
 3. **Enhancements**: visual variants, richer team roles, old save migration, and deeper
@@ -24,7 +23,7 @@ core runtime implementation gaps. The remaining work falls into three groups:
 | Blocks and items | Main families, tools, components, fluids, machine blocks, and island templates are migrated in staged checklists. | ARR resource reuse policy is recorded; final asset/model/lang audit remains part of validation. Variant tinting/per-family textures are enhancements. | License decision recorded; visual work is enhancement | `plans/migration-plan.md`, `plans/stage-46-ore-alchemy-dust-checklist.md`, `plans/stage-49-dirty-gem-item-family-checklist.md`, `plans/final-validation-compatibility-closeout-checklist.md` |
 | Recipes and data generation | Custom process recipe foundation, core fusion/combustion/crucible/condenser data, stable dirty gem recipes, and JEI displays are present. | Dynamic old ore-dictionary/tagged modded outputs wait for compatibility policy; fluid-capable process data only matters if a concrete machine or recipe needs it. | Allowed deferral unless a target integration is selected | `plans/stage-23-process-recipe-foundation-checklist.md`, `plans/stage-27-fusion-process-data-checklist.md`, `.trellis/spec/backend/recipe-guidelines.md` |
 | Network | Old Fusion Table dump behavior is migrated through current networking. | Final validation found no old Forge network API/message names or old package references in runtime Java/resources. | Verified in closeout | `plans/stage-29-fusion-table-runtime-checklist.md`, `src/main/java/committee/nova/mods/skyresources3/network/`, `plans/final-validation-compatibility-closeout-checklist.md` |
-| Menus and GUI | Multiple machine menus/screens and the guide screen are migrated; guide search/actions/structure preview and JEI recipe action are complete. Automated GameTests now verify guide metadata/action/translation integrity and all migrated menu type registry ids. | Controlled `runClient` startup smoke reached client render/resource loading with SkyResources3, Jade, and JEI. Manual click-through is still needed for guide actions and representative machine screen visuals. REI/EMI duplicate integrations are not required while JEI is active. | Startup plus automated data/registry coverage verified; visual interaction manual before release | `plans/stage-55-guide-page-foundation-checklist.md`, `plans/stage-58-guide-rich-text-actions-checklist.md`, `plans/stage-60-jei-recipe-viewer-integration-checklist.md`, `plans/client-smoke-resource-license-closeout-checklist.md`, `plans/gui-menu-guide-automation-closeout-checklist.md` |
+| Menus and GUI | Multiple machine menus/screens and the guide screen are migrated; guide search/actions/structure preview and JEI recipe action are complete. Automated GameTests verify guide metadata/action/translation integrity and all migrated menu type registry ids. A focused `runClient` release smoke opened the guide with `Y`, verified search and page actions, opened JEI from a guide recipe action after a silent-result fix, and opened the Fusion Table screen. | No JEI-absent client profile was run because the current release-prep profile includes JEI. Targeted process-category deep-linking can be tightened later if release criteria require exact category navigation instead of the visible JEI item recipe fallback. REI/EMI duplicate integrations are not required while JEI is active. | JEI-present visual smoke passed; no-JEI and exact-category deep-link are conditional/enhancement follow-ups | `plans/stage-55-guide-page-foundation-checklist.md`, `plans/stage-58-guide-rich-text-actions-checklist.md`, `plans/stage-60-jei-recipe-viewer-integration-checklist.md`, `plans/client-smoke-resource-license-closeout-checklist.md`, `plans/gui-menu-guide-automation-closeout-checklist.md`, `plans/client-gui-smoke-execution-evidence.md` |
 | Multiblock structures and machines | Life Infuser, Fusion Table, combustion machines, condenser, and other core machines have runtime slices and GameTests, including combustion controller priority and collector overflow/drop fallback. | RF/fluid heater variants require an energy/fluid compatibility decision. | Allowed deferral | `plans/stage-17-life-infuser-runtime-checklist.md`, `plans/stage-29-fusion-table-runtime-checklist.md`, `plans/stage-39-combustion-automation-checklist.md` |
 | Commands | Island/team command surface is migrated, including create/home/spawn/visit/reset/invite/accept/leave/trust/trusted/disband and saved offline identities. | Old VoidIslandControl event broadcast hooks are intentionally not implemented without a verified current consumer. | Resolved non-blocking compatibility enhancement | `plans/stage-18-void-island-commands-checklist.md`, `plans/stage-71-offline-identity-team-commands-checklist.md`, `.trellis/spec/backend/island-command-guidelines.md`, `plans/final-validation-compatibility-closeout-checklist.md` |
 | World generation | `skyresources3:void_island`, world preset, starter templates, magma Crystal Fluid, and spawn platform are migrated. | Existing overworld island records should not be silently migrated; add an explicit migration tool only if old-save support becomes a release requirement. | Resolved non-blocking save-compatibility enhancement | `plans/stage-22-void-island-world-checklist.md`, `plans/stage-70-magma-island-crystal-fluid-checklist.md`, `plans/final-validation-compatibility-closeout-checklist.md` |
@@ -37,7 +36,9 @@ core runtime implementation gaps. The remaining work falls into three groups:
 - **Resource/license policy**: legacy ARR resources are not automatically relicensed as MIT by being migrated into the target project. The repository now has `LICENSE` for MIT-covered project work and `RESOURCE_LICENSE.md` for the conservative legacy-resource boundary; copied or legacy-derived assets still need explicit owner relicensing, attribution/license notes, or replacement before a public release claim.
 - **VoidIslandControl event hooks**: full old VIC event-broadcast compatibility is intentionally not implemented in this closeout because the core gameplay is now built in and no current 1.21.11 external consumer has been verified.
 - **Old overworld island records**: do not silently migrate saved island records to `skyresources3:void_island`. If old-save migration becomes required, add a deliberate command/tool so the owner controls the change.
-- **Manual GUI validation**: `runClient` remains a release-prep manual smoke test for guide actions, JEI behavior, and representative machine screens; automated CLI validation must not claim visual GUI coverage.
+- **Manual GUI validation**: `runClient` visual evidence is required for user-facing guide, JEI, and machine click
+  behavior. The JEI-present profile has now been smoke-tested; a no-JEI profile is only needed if preparing a package
+  that omits JEI.
 
 ## 2026-06-14 Validation Evidence
 
@@ -51,6 +52,13 @@ core runtime implementation gaps. The remaining work falls into three groups:
 - A hidden-launcher focused retry removed visible terminal focus pollution and loaded a Minecraft NeoForge client window
   with SkyResources3, Jade, and JEI, but the window captures stayed white after waiting. This did not prove any guide,
   JEI, machine, or island/team click-through item, so the manual GUI blocker remains open.
+- A release GUI smoke validation later reached a local world, opened the guide with `Y`, verified guide search and page
+  actions, opened the Fusion Table screen with its `Dump Stored Catalyst` button, and ran the island/team command sanity
+  sequence with readable chat feedback.
+- The same validation found that a guide recipe action could silently stay on the guide after JEI was invoked. The JEI
+  integration result check now treats only an actually opened JEI Recipes GUI as success and falls back to the icon item
+  recipe. `release-runclient-2-jei-after-guide-recipe-fixed.png` shows the Life Infusion guide action opening JEI's
+  Recipes GUI for the Alchemical Infusion Stone item recipe.
 - `GuideMenuGameTests.guide_data_integrity` and `GuideMenuGameTests.menu_type_registration` passed through `./gradlew.bat runGameTestServer`, covering guide translation/action/structure consistency and all migrated menu type registry ids.
 - `MachineRuntimeGameTests.combustionControllerUsesFilterPriority` and `MachineRuntimeGameTests.combustionCollectorDropsOverflow` passed through `./gradlew.bat runGameTestServer`, covering Smart Combustion Controller filter priority and Combustion Collector overflow/drop fallback.
 - `git diff --check`, `git diff --cached --check`, and `scripts/check-serena-java.ps1` passed again in the refreshed final validation run.
@@ -59,10 +67,10 @@ core runtime implementation gaps. The remaining work falls into three groups:
 ## Must Finish Before Calling Migration Complete
 
 1. **Manual GUI click-through**
-   - Automated final gates have been refreshed in the post-combustion state.
-   - Run `plans/client-manual-smoke-runbook.md` for guide, JEI action fallback, representative machine GUIs, and island/team flows before a release tag. Guide/menu data and registry integrity now have GameTest coverage, and the client has reached a local world, but visual clicks remain manual release-prep unless a focused interactive client session is completed.
-   - The focused hidden-launcher retry narrowed the blocker to unusable client-window/render capture in this desktop
-     session rather than visible helper-terminal focus theft.
+   - Resolved for the JEI-present release-prep profile on 2026-06-14.
+   - Direct evidence covers guide open/search/page actions, JEI recipe action opening a visible JEI recipe fallback,
+     Fusion Table menu visuals, and island/team command feedback.
+   - A separate no-JEI fallback run is still conditional: run it only if preparing a distribution profile without JEI.
 
 2. **Resource/license decision**
    - Resolved in `plans/migration-plan.md`, `LICENSE`, and `RESOURCE_LICENSE.md`: legacy ARR resources need explicit owner relicensing, attribution/license notes, or replacement before public MIT-release claims.
@@ -94,5 +102,5 @@ core runtime implementation gaps. The remaining work falls into three groups:
 
 ## Recommended Next Large Tasks
 
-1. **Manual client smoke test before release**: follow `plans/client-manual-smoke-runbook.md` to verify guide actions, JEI behavior, representative machine GUI visuals, and island/team flows through `runClient`.
+1. **Optional no-JEI profile smoke**: run only if preparing a distribution profile without JEI.
 2. **Optional enhancement/integration backlog**: continue only after compatible target artifacts or a concrete release requirement exists.

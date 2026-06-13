@@ -75,6 +75,10 @@ ModList.get().isLoaded("<modid>")
 - Core gameplay, recipe loading, registries, datagen, and server startup must work when the optional mod is absent.
 - Client-only integration APIs must not be referenced from common/server startup paths unless NeoForge side loading guarantees the class is not resolved there.
 - Do not add a dependency just to inspect item ids or tags; prefer vanilla/NeoForge registries and tags for generic compatibility.
+- JEI recipe-opening calls such as `IRecipesGui#showTypes` and `IRecipesGui#show` are void; after calling them from a
+  guide action, treat the action as successful only if JEI's Recipes GUI actually opened, for example by checking
+  `IRecipesGui#getParentScreen()`. If the targeted category does not open, fall back to the action icon item recipe or
+  show the guide's localized unavailable message instead of silently staying on the guide screen.
 
 ---
 
@@ -86,6 +90,7 @@ ModList.get().isLoaded("<modid>")
 | Maven POM or official Maven coordinate does not resolve | Do not commit the dependency; record the blocker in the task research |
 | Optional mod is absent at runtime | SkyResources3 still starts and the feature silently degrades or uses in-mod fallback text |
 | Client recipe viewer is absent | Guide recipe actions show the existing in-mod feedback instead of crashing |
+| JEI is present but a targeted category or focus opens no Recipes GUI | Fall back to the icon item recipe; if that also does not open, show the guide's localized unavailable message |
 | Integration API is client-only | Keep references in client-only classes or plugin callbacks only |
 | External API changed from the old 1.12.2 API | Port the behavior to the new API directly; do not recreate the old wrapper hierarchy unless it removes real duplication |
 
@@ -114,7 +119,8 @@ For dependency or code integration:
 - `./gradlew.bat runData` if recipes, tags, generated assets, or guide data changed
 - `./gradlew.bat runGameTestServer` when runtime machine behavior changes
 - A local run with the optional mod absent
-- A local run with the optional mod present when the integration is client-visible
+- A local run with the optional mod present when the integration is client-visible. For JEI guide actions, capture the
+  Recipes GUI after the action and do not count a silent unchanged guide screen as success.
 
 ---
 

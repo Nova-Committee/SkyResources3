@@ -29,6 +29,9 @@
 - [x] A focused hidden-launcher retry on 2026-06-14 removed visible terminal focus pollution, loaded a Minecraft
   NeoForge client window with SkyResources3/Jade/JEI, and still produced only white-window captures; no visual
   click-through item was closed by that retry.
+- [x] A release GUI smoke validation on 2026-06-14 reached a local world with SkyResources3/Jade/JEI, opened the guide
+  with `Y`, verified guide search and page actions, opened the Fusion Table menu, ran the island/team command sanity
+  sequence, and opened JEI from the Life Infusion guide recipe action after tightening the integration result check.
 - [x] Guide/menu automated integrity coverage was added on 2026-06-14:
   - `GuideMenuGameTests.guide_data_integrity` verifies guide translation keys, inline action markers, link targets, recipe targets, structure targets, and structure block icons.
   - `GuideMenuGameTests.menu_type_registration` verifies all migrated machine menu type ids resolve through the runtime registry.
@@ -44,15 +47,18 @@
 
 ## Manual Validation
 
-- [ ] `./gradlew.bat runClient` GUI interaction smoke test is still required before a release tag because a timed automated startup can prove client boot/loading, but not user-facing clicks:
-  - Follow `plans/client-manual-smoke-runbook.md` and record the result.
-  - Use the configured `key.skyresources3.guide` key; the default is now `Y`.
-  - Guide screen opens and search/action links work.
-  - JEI recipe action degrades safely when JEI is absent or opens recipes when JEI is present.
-  - Representative machine menus open without client-only classloading or layout errors.
-  - Island/team command flows are manually sanity-checked in a local world.
-  - The focused hidden-launcher retry did not replace this manual check because the captured client window remained white.
-  - Headless Gradle gates and GameTests must not be treated as proof for this visual/click-through item.
+- [x] `./gradlew.bat runClient` GUI interaction smoke test was completed for the JEI-present release-prep profile:
+  - [x] Followed `plans/client-manual-smoke-runbook.md` in a focused local creative world and recorded screenshots under
+    `.trellis/tasks/06-14-client-gui-release-smoke-validation/evidence/`.
+  - [x] Used the configured `key.skyresources3.guide` key; the default is now `Y`.
+  - [x] Guide screen opens and search/action links work.
+  - [x] JEI recipe action opens a visible JEI recipe view when JEI is present. The observed fixed path used the item
+    recipe fallback for Alchemical Infusion Stone rather than proving exact `process/infusion` category navigation.
+  - [x] Representative machine menu smoke passed for Fusion Table, including its screen-specific dump button.
+  - [x] Island/team command flows were manually sanity-checked in a local world.
+  - [x] Headless Gradle gates and GameTests are still not treated as proof for visual/click-through behavior.
+- [ ] JEI-absent fallback behavior remains conditional; run a no-JEI client profile only if preparing a distribution
+  profile without JEI.
 
 ## Remaining Non-Blocking TODOs
 
