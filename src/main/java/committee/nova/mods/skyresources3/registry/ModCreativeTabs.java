@@ -45,6 +45,8 @@ public final class ModCreativeTabs {
                         for (final MachineVariant variant : MachineVariant.values()) {
                             output.accept(ModItems.MACHINE_CASINGS.get(variant).get());
                         }
+                        output.accept(ModItems.COMBUSTION_COLLECTOR.get());
+                        output.accept(ModItems.COMBUSTION_CONTROLLER.get());
                         output.accept(ModItems.MINI_FREEZER.get());
                         output.accept(ModItems.IRON_FREEZER.get());
                         output.accept(ModItems.LIGHT_FREEZER.get());

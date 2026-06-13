@@ -3,6 +3,8 @@ package committee.nova.mods.skyresources3.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.BlazePowderBlock;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
+import committee.nova.mods.skyresources3.block.CombustionCollectorBlock;
+import committee.nova.mods.skyresources3.block.CombustionControllerBlock;
 import committee.nova.mods.skyresources3.block.CrucibleBlock;
 import committee.nova.mods.skyresources3.block.CrucibleInserterBlock;
 import committee.nova.mods.skyresources3.block.DirtFurnaceBlock;
@@ -137,6 +139,16 @@ public final class ModBlocks {
     );
     public static final Map<MachineVariant, DeferredBlock<MachineCasingBlock>> MACHINE_CASINGS =
             registerMachineCasings();
+    public static final DeferredBlock<CombustionCollectorBlock> COMBUSTION_COLLECTOR = BLOCKS.registerBlock(
+            "combustion_collector",
+            CombustionCollectorBlock::new,
+            () -> properties(6.0F, 12.0F, SoundType.METAL)
+    );
+    public static final DeferredBlock<CombustionControllerBlock> COMBUSTION_CONTROLLER = BLOCKS.registerBlock(
+            "combustion_controller",
+            CombustionControllerBlock::new,
+            () -> properties(6.0F, 12.0F, SoundType.METAL)
+    );
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
             "mini_freezer",
             properties -> new FreezerBlock(FreezerBlock.Tier.MINI, properties),

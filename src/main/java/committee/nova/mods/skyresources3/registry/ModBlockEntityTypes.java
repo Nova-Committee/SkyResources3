@@ -3,6 +3,8 @@ package committee.nova.mods.skyresources3.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.entity.CrucibleBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CrucibleInserterBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.CombustionCollectorBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.CombustionControllerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.DirtFurnaceBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FluidDropperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
@@ -85,6 +87,24 @@ public final class ModBlockEntityTypes {
                             ModBlocks.MACHINE_CASINGS.values().stream()
                                     .map(holder -> (Block) holder.get())
                                     .toArray(Block[]::new)
+                    )
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionCollectorBlockEntity>>
+            COMBUSTION_COLLECTOR =
+            BLOCK_ENTITY_TYPES.register(
+                    "combustion_collector",
+                    () -> new BlockEntityType<>(
+                            CombustionCollectorBlockEntity::new,
+                            ModBlocks.COMBUSTION_COLLECTOR.get()
+                    )
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionControllerBlockEntity>>
+            COMBUSTION_CONTROLLER =
+            BLOCK_ENTITY_TYPES.register(
+                    "combustion_controller",
+                    () -> new BlockEntityType<>(
+                            CombustionControllerBlockEntity::new,
+                            ModBlocks.COMBUSTION_CONTROLLER.get()
                     )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =

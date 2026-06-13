@@ -8,6 +8,8 @@
     "skyresources3:nether_brick_machine_casing",
     "skyresources3:end_stone_machine_casing",
     "skyresources3:dark_matter_machine_casing",
-    "skyresources3:light_matter_machine_casing"
+    "skyresources3:light_matter_machine_casing",
+    "skyresources3:combustion_collector",
+    "skyresources3:combustion_controller"
   ]
 }

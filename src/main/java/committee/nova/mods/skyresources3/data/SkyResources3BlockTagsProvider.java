@@ -34,6 +34,8 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.CRUCIBLE_INSERTER.get(),
                 ModBlocks.ROCK_CRUSHER.get(),
                 ModBlocks.ROCK_CLEANER.get(),
+                ModBlocks.COMBUSTION_COLLECTOR.get(),
+                ModBlocks.COMBUSTION_CONTROLLER.get(),
                 ModBlocks.MACHINE_CASINGS.get(MachineVariant.STONE).get(),
                 ModBlocks.MACHINE_CASINGS.get(MachineVariant.IRON).get(),
                 ModBlocks.MACHINE_CASINGS.get(MachineVariant.NETHER_BRICK).get(),
@@ -63,7 +65,9 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.MACHINE_CASINGS.get(MachineVariant.NETHER_BRICK).get(),
                 ModBlocks.MACHINE_CASINGS.get(MachineVariant.END_STONE).get(),
                 ModBlocks.MACHINE_CASINGS.get(MachineVariant.DARK_MATTER).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.LIGHT_MATTER).get()
+                ModBlocks.MACHINE_CASINGS.get(MachineVariant.LIGHT_MATTER).get(),
+                ModBlocks.COMBUSTION_COLLECTOR.get(),
+                ModBlocks.COMBUSTION_CONTROLLER.get()
         );
     }
 }

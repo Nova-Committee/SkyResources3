@@ -467,6 +467,23 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.combustionHeaterRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
         this.combustionHeaterRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
         this.combustionHeaterRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_COLLECTOR.get())
+                .define('X', Items.IRON_INGOT)
+                .define('Y', Blocks.HOPPER)
+                .pattern("XXX")
+                .pattern("XYX")
+                .pattern("XXX")
+                .unlockedBy("has_hopper", has(Blocks.HOPPER))
+                .save(this.output);
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_CONTROLLER.get())
+                .define('X', Items.IRON_INGOT)
+                .define('Y', Items.REDSTONE_BLOCK)
+                .pattern("XXX")
+                .pattern("XYX")
+                .pattern("XYX")
+                .unlockedBy("has_redstone_block", has(Items.REDSTONE_BLOCK))
+                .save(this.output);
     }
 
     private void combustionHeaterRecipe(

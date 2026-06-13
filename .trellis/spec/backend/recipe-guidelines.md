@@ -86,6 +86,91 @@ For `ProcessRecipes.INFUSION`, recipe inputs have a positional convention on top
 
 For `ProcessRecipes.FUSION`, the `parameter` preserves the old fusion table's per-progress-tick catalyst drain. A full legacy craft has 100 progress ticks, so the user-facing catalyst percentage is `parameter * 10000`. Catalyst item yield values are a separate fusion-table runtime concern and should not be encoded as normal fusion recipe inputs.
 
+## Combustion Automation Contract
+
+### 1. Scope / Trigger
+
+Use this contract when changing combustion recipe execution, the Combustion Collector, the Smart Combustion
+Controller, or the machine-casing multiblock validation used by combustion.
+
+### 2. Signatures
+
+- Manual casing craft:
+  ```java
+  private boolean craftChamberItems(
+          ServerLevel level,
+          MachineVariant heaterVariant,
+          Predicate<ItemStack> outputFilter,
+          int maxCrafts
+  )
+  ```
+- Controller entry point:
+  ```java
+  public boolean craftSingleForController(ServerLevel level, Predicate<ItemStack> outputFilter)
+  ```
+- Collector output routing:
+  ```java
+  public ItemStack insertOutput(ItemStack stack)
+  ```
+
+### 3. Contracts
+
+- Combustion recipes are looked up through `CombustionRecipeLogic.findRecipe` / `ProcessRecipes.COMBUSTION`, never
+  through a duplicated static output table.
+- The controller owns five filter slots. Each slot stores one real item stack and is checked left-to-right; the first
+  filter with a craftable first recipe output wins.
+- Redstone power on the controller disables automatic crafting. Redstone pulses on the casing still trigger manual
+  combustion.
+- The controller crafts at most one recipe per cooldown cycle; manual casing pulses may craft repeatedly while inputs
+  and heat remain sufficient.
+- A collector adjacent to the chamber west/east/north/south/above receives combustion outputs before leftovers are
+  dropped in the chamber.
+- Collector/controller blocks count as valid structure blocks only for metal-tier combustion casings. Wooden and stone
+  casings must continue to reject them.
+
+### 4. Validation & Error Matrix
+
+| Condition | Expected behavior |
+|---|---|
+| Controller has no matching filter item | No craft; chamber item entities stay in place |
+| Controller is redstone powered | No automatic craft; cooldown does not restart |
+| Collector inventory is full | Insert what fits, then drop the remaining output in the chamber |
+| Recipe needs more heat than the casing has | No craft; chamber item entities stay in place |
+| Wooden or stone casing uses collector/controller as a wall block | Structure remains invalid |
+
+### 5. Good/Base/Bad Cases
+
+- Good: Controller calls the casing craft entry once per non-empty filter slot to preserve legacy output priority.
+- Base: Manual casing combustion passes an always-true output filter and routes outputs through the same collector path.
+- Bad: Client screens, item tooltips, or block classes spawn combustion outputs or inspect generated recipe JSON directly.
+
+### 6. Tests Required
+
+- `./gradlew.bat compileJava`
+- `./gradlew.bat runData` when recipes, tags, or loot tables change
+- `./gradlew.bat build`
+- `./gradlew.bat runGameTestServer` for combustion block-entity or multiblock changes
+- Add focused GameTests when reusable machine test helpers exist for asserting controller priority, redstone disable,
+  and collector overflow behavior.
+
+### 7. Wrong vs Correct
+
+Wrong:
+```java
+// Picks whichever recipe happens to appear first and ignores filter priority.
+casing.craftSingleForController(level, this::matchesFilter);
+```
+
+Correct:
+```java
+for (int slot = 0; slot < SLOT_COUNT; slot++) {
+    ItemStack filter = this.getStackInSlot(slot);
+    if (!filter.isEmpty() && casing.craftSingleForController(level, output -> ItemStack.isSameItemSameComponents(filter, output))) {
+        return true;
+    }
+}
+```
+
 ---
 
 ## Data Generation

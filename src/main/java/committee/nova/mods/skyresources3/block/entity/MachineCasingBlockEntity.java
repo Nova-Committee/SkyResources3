@@ -10,6 +10,7 @@ import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -209,6 +210,20 @@ public final class MachineCasingBlockEntity extends BlockEntity {
                 && this.isStructureBlockValid(level, chamber, this.worldPosition.above(2));
     }
 
+    public boolean isChamber(final BlockPos chamber) {
+        return this.worldPosition.above().equals(chamber);
+    }
+
+    public boolean craftSingleForController(
+            final ServerLevel level,
+            final Predicate<ItemStack> outputFilter
+    ) {
+        if (!(this.heater.getItem() instanceof CombustionHeaterItem heaterItem) || !this.hasValidMultiblock(level)) {
+            return false;
+        }
+        return this.craftChamberItems(level, heaterItem.variant(), outputFilter, 1);
+    }
+
     public void dropContents() {
         if (this.level == null) {
             return;
@@ -262,31 +277,40 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             return;
         }
         this.powered = true;
-        this.craftChamberItems(level, heaterVariant);
+        this.craftChamberItems(level, heaterVariant, output -> true, Integer.MAX_VALUE);
     }
 
-    private void craftChamberItems(final ServerLevel level, final MachineVariant heaterVariant) {
+    private boolean craftChamberItems(
+            final ServerLevel level,
+            final MachineVariant heaterVariant,
+            final Predicate<ItemStack> outputFilter,
+            final int maxCrafts
+    ) {
         final BlockPos chamber = this.worldPosition.above();
         final List<ItemEntity> entities = CombustionRecipeLogic.itemEntities(level, chamber);
         if (entities.isEmpty()) {
-            return;
+            return false;
         }
 
         final List<ItemStack> stacks = CombustionRecipeLogic.aggregate(entities);
         final Optional<RecipeHolder<SkyResourcesProcessRecipe>> holder =
-                CombustionRecipeLogic.findRecipe(level, stacks, this.currentHeat, output -> true);
+                CombustionRecipeLogic.findRecipe(level, stacks, this.currentHeat, outputFilter);
         if (holder.isEmpty()) {
-            return;
+            return false;
         }
 
         entities.forEach(ItemEntity::discard);
         final SkyResourcesProcessRecipe recipe = holder.get().value();
         this.playCombustionEffects(level, chamber, heaterVariant);
-        while (this.currentHeat >= recipe.parameter() && CombustionRecipeLogic.canCraft(recipe, stacks)) {
+        int crafts = 0;
+        while (crafts < maxCrafts
+                && this.currentHeat >= recipe.parameter()
+                && CombustionRecipeLogic.canCraft(recipe, stacks)) {
             CombustionRecipeLogic.consumeInputs(recipe, stacks);
             this.currentHeat = this.reducedHeat(heaterVariant);
+            crafts++;
             for (final ItemStack output : recipe.outputs()) {
-                Containers.dropItemStack(level, chamber.getX() + 0.5D, chamber.getY() + 0.5D, chamber.getZ() + 0.5D, output);
+                this.routeOutput(level, chamber, output);
             }
         }
         for (final ItemStack stack : stacks) {
@@ -294,6 +318,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
                 Containers.dropItemStack(level, chamber.getX() + 0.5D, chamber.getY() + 0.5D, chamber.getZ() + 0.5D, stack);
             }
         }
+        return crafts > 0;
     }
 
     private void playCombustionEffects(
@@ -333,6 +358,39 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return heaterVariant.efficiency() * this.casingVariant().efficiency();
     }
 
+    private void routeOutput(final ServerLevel level, final BlockPos chamber, final ItemStack output) {
+        ItemStack remaining = output.copy();
+        final CombustionCollectorBlockEntity collector = this.findCollector(level, chamber);
+        if (collector != null) {
+            remaining = collector.insertOutput(remaining);
+        }
+        if (!remaining.isEmpty()) {
+            Containers.dropItemStack(
+                    level,
+                    chamber.getX() + 0.5D,
+                    chamber.getY() + 0.5D,
+                    chamber.getZ() + 0.5D,
+                    remaining
+            );
+        }
+    }
+
+    private CombustionCollectorBlockEntity findCollector(final ServerLevel level, final BlockPos chamber) {
+        final BlockPos[] positions = {
+                chamber.west(),
+                chamber.east(),
+                chamber.north(),
+                chamber.south(),
+                chamber.above()
+        };
+        for (final BlockPos pos : positions) {
+            if (level.getBlockEntity(pos) instanceof CombustionCollectorBlockEntity collector) {
+                return collector;
+            }
+        }
+        return null;
+    }
+
     private boolean isValidFuel(final ItemStack stack) {
         if (!(this.heater.getItem() instanceof CombustionHeaterItem heaterItem) || this.level == null) {
             return false;
@@ -367,6 +425,8 @@ public final class MachineCasingBlockEntity extends BlockEntity {
                 || state.is(Blocks.END_STONE)
                 || state.is(ModBlocks.DARK_MATTER_BLOCK.get())
                 || state.is(ModBlocks.LIGHT_MATTER_BLOCK.get())
+                || state.is(ModBlocks.COMBUSTION_COLLECTOR.get())
+                || state.is(ModBlocks.COMBUSTION_CONTROLLER.get())
                 || isGlass(state);
     }
 

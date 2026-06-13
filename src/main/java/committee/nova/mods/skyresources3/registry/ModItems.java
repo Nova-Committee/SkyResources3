@@ -53,6 +53,10 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> ROCK_CRUSHER = blockItem("rock_crusher", ModBlocks.ROCK_CRUSHER);
     public static final DeferredItem<BlockItem> ROCK_CLEANER = blockItem("rock_cleaner", ModBlocks.ROCK_CLEANER);
     public static final Map<MachineVariant, DeferredItem<BlockItem>> MACHINE_CASINGS = registerMachineCasingItems();
+    public static final DeferredItem<BlockItem> COMBUSTION_COLLECTOR =
+            blockItem("combustion_collector", ModBlocks.COMBUSTION_COLLECTOR);
+    public static final DeferredItem<BlockItem> COMBUSTION_CONTROLLER =
+            blockItem("combustion_controller", ModBlocks.COMBUSTION_CONTROLLER);
     public static final DeferredItem<BlockItem> MINI_FREEZER = blockItem("mini_freezer", ModBlocks.MINI_FREEZER);
     public static final DeferredItem<BlockItem> IRON_FREEZER = blockItem("iron_freezer", ModBlocks.IRON_FREEZER);
     public static final DeferredItem<BlockItem> LIGHT_FREEZER = blockItem("light_freezer", ModBlocks.LIGHT_FREEZER);

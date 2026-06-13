@@ -60,6 +60,9 @@ public final class Config {
     private static final ModConfigSpec.IntValue ROCK_CLEANER_SPEED = BUILDER
             .comment("Rock cleaner progress added per tick.")
             .defineInRange("rockCleanerSpeed", 5, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue COMBUSTION_CONTROLLER_TICKS = BUILDER
+            .comment("Cooldown in ticks between smart combustion controller crafts.")
+            .defineInRange("combustionControllerTicks", 20, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.BooleanValue ADD_BEETROOT_SEED_DROP = BUILDER
             .comment("Add beetroot seeds to grass drops.")
             .define("addBeetrootSeedDrop", true);
@@ -98,6 +101,7 @@ public final class Config {
     public static int rockCrusherSpeed;
     public static int rockCleanerPowerUsage;
     public static int rockCleanerSpeed;
+    public static int combustionControllerTicks;
     public static boolean addBeetrootSeedDrop;
     public static boolean addMelonSeedDrop;
     public static boolean addPumpkinSeedDrop;
@@ -124,6 +128,7 @@ public final class Config {
         rockCrusherSpeed = ROCK_CRUSHER_SPEED.get();
         rockCleanerPowerUsage = ROCK_CLEANER_POWER_USAGE.get();
         rockCleanerSpeed = ROCK_CLEANER_SPEED.get();
+        combustionControllerTicks = COMBUSTION_CONTROLLER_TICKS.get();
         addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
         addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
         addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();
