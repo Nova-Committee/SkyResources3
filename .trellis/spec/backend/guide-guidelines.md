@@ -49,6 +49,7 @@ Use this contract when adding or extending interactive guide page entries such a
 - `GuidePage.actions()` must be immutable to callers; use `List.copyOf` in record construction.
 - Guide body text may contain `{action:n}` inline markers, where `n` is the 1-based index of `GuidePage.actions()`.
 - `{action:n}` markers are a client rendering hint only; invalid or out-of-range markers should degrade to readable text instead of throwing.
+- Structure detail rendering should use `GuideStructure.BlockEntry` coordinates for both the scrollable block list and a client-only layout preview; keep any 3D or 2D rendering code out of common guide data.
 - Client screens may render and dispatch actions, but common guide data must not import client-only classes.
 - User-visible action labels, tooltips, feedback messages, and structure titles must use translation keys except item display names coming from `ItemStack#getHoverName()`.
 

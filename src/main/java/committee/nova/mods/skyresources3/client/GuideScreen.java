@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.guide.GuidePages;
 import committee.nova.mods.skyresources3.guide.GuideStructure;
 import committee.nova.mods.skyresources3.guide.GuideStructures;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,6 +36,8 @@ public final class GuideScreen extends Screen {
     private static final int ACTION_GAP = 6;
     private static final int INLINE_ACTION_GAP = 4;
     private static final int STRUCTURE_ROW_HEIGHT = 18;
+    private static final int STRUCTURE_PREVIEW_HEIGHT = 76;
+    private static final int STRUCTURE_PREVIEW_GAP = 6;
     private static final int ICON_SIZE = 16;
     private static final int BACKGROUND_COLOR = 0xC0101010;
     private static final int PANEL_COLOR = 0xF0E7D8BD;
@@ -681,7 +684,22 @@ public final class GuideScreen extends Screen {
                 false
         );
 
-        final int listY = this.structureListY(panelY);
+        final int previewY = this.structurePreviewY(panelY);
+        final int previewBottom = this.structurePreviewBottom(panelY, panelHeight);
+        if (previewBottom > previewY) {
+            this.renderStructureLayoutPreview(
+                    guiGraphics,
+                    mouseX,
+                    mouseY,
+                    structure,
+                    contentX,
+                    previewY,
+                    contentWidth,
+                    previewBottom - previewY
+            );
+        }
+
+        final int listY = this.structureListY(panelY, panelHeight);
         final int listBottom = this.structureListBottom(panelY, panelHeight);
         final int visibleRows = this.visibleStructureRows(panelY, panelHeight);
         final int firstIndex = this.structureScrollOffset;
@@ -698,6 +716,85 @@ public final class GuideScreen extends Screen {
                     contentWidth,
                     rowIndex
             );
+        }
+        guiGraphics.disableScissor();
+    }
+
+    private void renderStructureLayoutPreview(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final GuideStructure structure,
+            final int x,
+            final int y,
+            final int width,
+            final int height
+    ) {
+        if (structure.blocks().isEmpty() || height < ICON_SIZE) {
+            return;
+        }
+
+        final List<GuideStructure.BlockEntry> blocks = new ArrayList<>(structure.blocks());
+        blocks.sort(Comparator.comparingInt(GuideStructure.BlockEntry::y)
+                .thenComparingInt(block -> block.x() + block.z())
+                .thenComparingInt(GuideStructure.BlockEntry::x));
+
+        int minX = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        int minZ = Integer.MAX_VALUE;
+        int maxZ = Integer.MIN_VALUE;
+        for (final GuideStructure.BlockEntry block : blocks) {
+            minX = Math.min(minX, block.x());
+            maxX = Math.max(maxX, block.x());
+            minY = Math.min(minY, block.y());
+            maxY = Math.max(maxY, block.y());
+            minZ = Math.min(minZ, block.z());
+            maxZ = Math.max(maxZ, block.z());
+        }
+
+        final int horizontalUnits = Math.max(1, maxX - minX + maxZ - minZ);
+        final int verticalUnits = Math.max(1, maxX + maxZ - minX - minZ + (maxY - minY) * 2);
+        final int stepX = this.previewStep(width - ICON_SIZE, horizontalUnits, 8, 24);
+        final int stepY = this.previewStep(height - ICON_SIZE, verticalUnits, 3, 10);
+        final int layerStep = stepY * 2;
+        final List<StructurePreviewTile> tiles = new ArrayList<>();
+
+        int minTileX = Integer.MAX_VALUE;
+        int maxTileX = Integer.MIN_VALUE;
+        int minTileY = Integer.MAX_VALUE;
+        int maxTileY = Integer.MIN_VALUE;
+        for (final GuideStructure.BlockEntry block : blocks) {
+            final int tileX = (block.x() - block.z()) * stepX;
+            final int tileY = (block.x() + block.z()) * stepY - (block.y() - minY) * layerStep;
+            tiles.add(new StructurePreviewTile(block, tileX, tileY));
+            minTileX = Math.min(minTileX, tileX);
+            maxTileX = Math.max(maxTileX, tileX + ICON_SIZE);
+            minTileY = Math.min(minTileY, tileY);
+            maxTileY = Math.max(maxTileY, tileY + ICON_SIZE);
+        }
+
+        final int offsetX = x + (width - (maxTileX - minTileX)) / 2 - minTileX;
+        final int offsetY = y + (height - (maxTileY - minTileY)) / 2 - minTileY;
+
+        guiGraphics.enableScissor(x, y, x + width, y + height);
+        for (final StructurePreviewTile tile : tiles) {
+            final GuideStructure.BlockEntry block = tile.block();
+            final ItemStack icon = block.icon();
+            if (icon.isEmpty()) {
+                continue;
+            }
+            final int drawX = offsetX + tile.x();
+            final int drawY = offsetY + tile.y();
+            final boolean hovered = this.isInside(mouseX, mouseY, drawX, drawY, ICON_SIZE, ICON_SIZE);
+            if (hovered) {
+                guiGraphics.fill(drawX - 1, drawY - 1, drawX + ICON_SIZE + 1, drawY + ICON_SIZE + 1, HOVERED_ROW_COLOR);
+            }
+            guiGraphics.renderFakeItem(icon, drawX, drawY);
+            if (hovered) {
+                guiGraphics.setTooltipForNextFrame(this.font, this.structureBlockTooltip(block, icon), mouseX, mouseY);
+            }
         }
         guiGraphics.disableScissor();
     }
@@ -736,7 +833,7 @@ public final class GuideScreen extends Screen {
                 false
         );
         if (hovered && !icon.isEmpty()) {
-            guiGraphics.setTooltipForNextFrame(this.font, icon, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(this.font, this.structureBlockTooltip(block, icon), mouseX, mouseY);
         }
     }
 
@@ -982,7 +1079,7 @@ public final class GuideScreen extends Screen {
         final int panelHeight = this.panelHeight();
         final int contentX = panelX + PANEL_PADDING;
         final int contentWidth = panelWidth - PANEL_PADDING * 2;
-        final int listY = this.structureListY(panelY);
+        final int listY = this.structureListY(panelY, panelHeight);
         final int listBottom = this.structureListBottom(panelY, panelHeight);
         if (!this.isInside((int) mouseX, (int) mouseY, contentX, listY, contentWidth, listBottom - listY)) {
             return false;
@@ -1075,8 +1172,19 @@ public final class GuideScreen extends Screen {
         return panelY + panelHeight - FOOTER_HEIGHT - visibleRows * ACTION_ROW_HEIGHT;
     }
 
-    private int structureListY(final int panelY) {
+    private int structurePreviewY(final int panelY) {
         return panelY + 80;
+    }
+
+    private int structurePreviewBottom(final int panelY, final int panelHeight) {
+        final int previewY = this.structurePreviewY(panelY);
+        final int listBottom = this.structureListBottom(panelY, panelHeight);
+        final int maxPreviewBottom = Math.max(previewY, listBottom - STRUCTURE_ROW_HEIGHT * 2 - STRUCTURE_PREVIEW_GAP);
+        return Math.min(previewY + STRUCTURE_PREVIEW_HEIGHT, maxPreviewBottom);
+    }
+
+    private int structureListY(final int panelY, final int panelHeight) {
+        return this.structurePreviewBottom(panelY, panelHeight) + STRUCTURE_PREVIEW_GAP;
     }
 
     private int structureListBottom(final int panelY, final int panelHeight) {
@@ -1084,7 +1192,22 @@ public final class GuideScreen extends Screen {
     }
 
     private int visibleStructureRows(final int panelY, final int panelHeight) {
-        return Math.max(0, (this.structureListBottom(panelY, panelHeight) - this.structureListY(panelY)) / STRUCTURE_ROW_HEIGHT);
+        return Math.max(0, (this.structureListBottom(panelY, panelHeight) - this.structureListY(panelY, panelHeight)) / STRUCTURE_ROW_HEIGHT);
+    }
+
+    private int previewStep(final int available, final int units, final int min, final int max) {
+        return Math.max(min, Math.min(max, Math.max(1, available / Math.max(1, units))));
+    }
+
+    private Component structureBlockTooltip(final GuideStructure.BlockEntry block, final ItemStack icon) {
+        return Component.literal(icon.getHoverName().getString()
+                + " ("
+                + block.x()
+                + ", "
+                + block.y()
+                + ", "
+                + block.z()
+                + ")");
     }
 
     private int scrollOffset(
@@ -1255,5 +1378,8 @@ public final class GuideScreen extends Screen {
     }
 
     private record InlineActionRegion(int x, int y, int width, int height, GuideAction action) {
+    }
+
+    private record StructurePreviewTile(GuideStructure.BlockEntry block, int x, int y) {
     }
 }

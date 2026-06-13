@@ -17,7 +17,7 @@
 
 - [x] Inline placement matching old text markers through lightweight `{action:n}` markers.
 - [ ] JEI/EMI/REI recipe viewer integration.
-- [ ] Rotating 3D structure renderer.
+- [x] Rotating 3D structure renderer replaced for this port by a lower-risk 2D isometric `GuideScreen` structure preview.
 - [x] Scrollable action/structure lists.
 
 ## Verification

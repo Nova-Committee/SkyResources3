@@ -15,7 +15,7 @@
 
 - [ ] Full client guide GUI, search, navigation, and keybinding remain for a focused UI slice.
 - [x] Old rich text markers such as `<recipe>`, `<link>`, and `<image>` now have a lightweight `{action:n}` inline action replacement for selected migrated pages.
-- [ ] Structure image data from old `ModGuidePages.imageDesigns` waits for a renderable guide-screen contract.
+- [x] Structure image data from old `ModGuidePages.imageDesigns` now uses current `GuideStructure` entries and a lightweight 2D isometric `GuideScreen` preview.
 - [ ] Integration guide pages wait for the 1.21.11 mod compatibility policy.
 
 ## Verification
