@@ -290,3 +290,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 9: 空岛重置完整清理
+
+**Date**: 2026-06-14
+**Task**: 空岛重置完整清理
+**Branch**: `master`
+
+### Summary
+
+补齐 VoidIslandControl reset 的完整岛屿清理：reset 现在按岛屿保护半径清理并由岛屿间距设置安全上限，新增命令 GameTest 验证保护范围内残留清空与范围外哨兵保留；同步 Stage 20、Stage 68、总迁移计划和 island command spec。验证通过 compileJava、runGameTestServer、build、git diff --check、git diff --cached --check。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `075c098` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
