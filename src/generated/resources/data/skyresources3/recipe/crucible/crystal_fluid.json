@@ -1,0 +1,10 @@
+{
+  "type": "skyresources3:crucible",
+  "input": {
+    "ingredient": "skyresources3:crystal_shard"
+  },
+  "output": {
+    "amount": 1000,
+    "id": "skyresources3:crystal_fluid"
+  }
+}

@@ -1,10 +1,12 @@
 package committee.nova.mods.skyresources3.data;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.recipe.ProcessIngredient;
 import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.registry.ModFluids;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -26,6 +28,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public final class SkyResources3RecipeProvider extends RecipeProvider {
     private SkyResources3RecipeProvider(final HolderLookup.Provider lookupProvider, final RecipeOutput output) {
@@ -121,6 +125,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("X X")
                 .pattern("X X")
                 .unlockedBy("has_cobblestone", has(Blocks.COBBLESTONE))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.CRUCIBLE.get())
+                .define('X', Items.BRICK)
+                .pattern("X X")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_brick", has(Items.BRICK))
                 .save(this.output);
 
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
@@ -332,6 +344,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .save(this.output, id("light_gray_dye_from_dry_cactus"));
 
         this.buildProcessRecipes();
+        this.buildCrucibleRecipes();
     }
 
     private void cuttingKnife(final ItemLike result, final ItemLike material, final String unlockName) {
@@ -363,6 +376,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.buildInfusionRecipes();
         this.buildCombustionRecipes();
         this.buildFusionRecipes();
+    }
+
+    private void buildCrucibleRecipes() {
+        this.crucibleRecipe(
+                "crystal_fluid",
+                new FluidStack(ModFluids.CRYSTAL_FLUID.get(), FluidType.BUCKET_VOLUME),
+                input(ModItems.CRYSTAL_SHARD.get())
+        );
     }
 
     private void buildFreezerRecipes() {
@@ -935,6 +956,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ProcessIngredient... inputs
     ) {
         this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, outputCount, inputs);
+    }
+
+    private void crucibleRecipe(final String name, final FluidStack output, final ProcessIngredient input) {
+        this.output.accept(
+                id("crucible/" + name),
+                new CrucibleRecipe("", input, output),
+                null
+        );
     }
 
     private void processRecipe(

@@ -37,6 +37,11 @@ public final class ModCapabilities {
                 ModBlockEntityTypes.FLUID_DROPPER.get(),
                 (fluidDropper, direction) -> fluidDropper.getFluidHandler()
         );
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                ModBlockEntityTypes.CRUCIBLE.get(),
+                (crucible, direction) -> crucible.getFluidHandler()
+        );
         event.registerItem(
                 Capabilities.Fluid.ITEM,
                 (stack, context) -> context == null

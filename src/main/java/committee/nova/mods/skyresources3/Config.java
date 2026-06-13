@@ -42,6 +42,12 @@ public final class Config {
     private static final ModConfigSpec.IntValue FLUID_DROPPER_CAPACITY = BUILDER
             .comment("Fluid capacity of the fluid dropper, in millibuckets.")
             .defineInRange("fluidDropperCapacity", 1000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue CRUCIBLE_CAPACITY = BUILDER
+            .comment("Fluid and pending solid capacity of the crucible, in millibuckets.")
+            .defineInRange("crucibleCapacity", 4000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue CRUCIBLE_SPEED = BUILDER
+            .comment("Base crucible speed. A torch melts 1 mB/tick at the default value of 8.")
+            .defineInRange("crucibleSpeed", 8, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.BooleanValue ADD_BEETROOT_SEED_DROP = BUILDER
             .comment("Add beetroot seeds to grass drops.")
             .define("addBeetrootSeedDrop", true);
@@ -74,6 +80,8 @@ public final class Config {
     public static double healthGemPercentage;
     public static int waterExtractorCapacity;
     public static int fluidDropperCapacity;
+    public static int crucibleCapacity;
+    public static int crucibleSpeed;
     public static boolean addBeetrootSeedDrop;
     public static boolean addMelonSeedDrop;
     public static boolean addPumpkinSeedDrop;
@@ -94,6 +102,8 @@ public final class Config {
         healthGemPercentage = HEALTH_GEM_PERCENTAGE.get();
         waterExtractorCapacity = WATER_EXTRACTOR_CAPACITY.get();
         fluidDropperCapacity = FLUID_DROPPER_CAPACITY.get();
+        crucibleCapacity = CRUCIBLE_CAPACITY.get();
+        crucibleSpeed = CRUCIBLE_SPEED.get();
         addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
         addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
         addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();
