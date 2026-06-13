@@ -177,3 +177,44 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: 补充空岛团队命令回归测试
+
+**Date**: 2026-06-14
+**Task**: 补充空岛团队命令回归测试
+**Branch**: `master`
+
+### Summary
+
+为 /island visit、团队邀请/接受/home/leave/disband 和 trust/trusted/untrust 补充 GameTest 覆盖；清理岛屿命令树重复 trust literal；同步 Stage 18/19 清单并记录多玩家命令测试的 named mock player 规范。验证 compileJava、build、runGameTestServer、diff check 与 Serena Java 检查均通过。
+
+### Main Changes
+
+- 新增 `/island visit <player>` GameTest，验证在线玩家访问目标玩家空岛 home。
+- 新增团队命令闭环 GameTest，覆盖 invite、accept、home、leave 和 disband。
+- 新增 trust/trusted/untrust GameTest，并清理 `VoidIslandCommands#islandNode` 中重复的 trust 命令节点。
+- 同步 Stage 18/19 checklist，并在 code-spec 中记录多玩家命令测试需要 named mock player。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1a51d7d` | (see git log) |
+
+### Testing
+
+- [OK] `./gradlew.bat compileJava`
+- [OK] `./gradlew.bat build`
+- [OK] `./gradlew.bat runGameTestServer`
+- [OK] `git diff --check`
+- [OK] `git diff --cached --check`
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
