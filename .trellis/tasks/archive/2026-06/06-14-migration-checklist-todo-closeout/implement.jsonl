@@ -1,0 +1,9 @@
+{"file": "plans/final-migration-gap-audit.md", "reason": "Updated to record stale checklist cleanup as resolved while keeping manual GUI validation open."}
+{"file": "plans/stage-7-water-extractor-checklist.md", "reason": "Clarified standalone Water Extractor JEI category remains deferred, distinct from completed Stage 60 JEI categories."}
+{"file": "plans/stage-12-cactus-fruit-needle-checklist.md", "reason": "Clarified cactus needle JEI description remains a dedicated-info-page deferral."}
+{"file": "plans/stage-13-early-hand-harvest-checklist.md", "reason": "Synchronized cauldronclean completion and dynamic/tagged output deferral."}
+{"file": "plans/stage-26-combustion-process-data-checklist.md", "reason": "Synchronized combustion controller/collector runtime completion and GameTest evidence."}
+{"file": "plans/stage-28-fusion-table-shell-checklist.md", "reason": "Synchronized JEI completion while keeping EMI/scripting deferrals."}
+{"file": "plans/stage-53-fusion-table-crafting-component-checklist.md", "reason": "Synchronized JEI completion while keeping component-family and scripting deferrals."}
+{"file": "plans/stage-55-guide-page-foundation-checklist.md", "reason": "Synchronized guide recipe action completion while keeping optional-mod guide pages deferred."}
+{"file": "plans/stage-59-integration-availability-audit-checklist.md", "reason": "Marked integration availability audit commit/archive as completed with commit evidence."}
