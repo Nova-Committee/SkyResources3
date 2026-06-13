@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 14
+- **Total Sessions**: 15
 - **Last Active**: 2026-06-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~491 | Active |
+| `journal-1.md` | ~534 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 15 | 2026-06-14 | 客户端冒烟与资源授权说明 | `15b313b`, `a311f1c` | `master` |
 | 14 | 2026-06-14 | 最终验证兼容收口 | `2619a94`, `943be73` | `master` |
 | 13 | 2026-06-14 | 最终迁移缺口审计 | `ea60c0e` | `master` |
 | 12 | 2026-06-14 | 离线身份团队命令 | `5ccc3f7` | `master` |

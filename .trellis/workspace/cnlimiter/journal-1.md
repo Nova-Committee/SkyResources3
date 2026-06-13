@@ -498,3 +498,44 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 15: 客户端冒烟与资源授权说明
+
+**Date**: 2026-06-14
+**Task**: 客户端冒烟与资源授权说明
+**Branch**: `master`
+
+### Summary
+
+补齐 MIT LICENSE 和 RESOURCE_LICENSE.md，记录旧 ARR 资源边界；受控运行 runClient 启动冒烟并记录 SkyResources3/Jade/JEI 客户端加载证据；更新最终迁移审计、收口 checklist 和质量规范。
+
+### Main Changes
+
+- Added root `LICENSE` matching the project MIT metadata.
+- Added `RESOURCE_LICENSE.md` to document the conservative boundary for legacy ARR-derived resources.
+- Recorded controlled `runClient --no-daemon` startup smoke evidence in `plans/client-smoke-resource-license-closeout-checklist.md`.
+- Updated the final migration audit, closeout checklist, migration plan, and backend quality guidelines with license/client-smoke evidence.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `15b313b` | (see git log) |
+| `a311f1c` | (see git log) |
+
+### Testing
+
+- [OK] `./gradlew.bat runClient --no-daemon` controlled startup smoke
+- [OK] `./gradlew.bat build`
+- [OK] `git diff --check`
+- [OK] `git diff --cached --check`
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
