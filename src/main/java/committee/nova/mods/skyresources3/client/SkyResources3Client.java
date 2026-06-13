@@ -6,12 +6,17 @@ import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModFluidTypes;
 import committee.nova.mods.skyresources3.registry.ModMenuTypes;
-import net.minecraft.resources.Identifier;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -23,6 +28,14 @@ public final class SkyResources3Client {
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_still");
     private static final Identifier CRYSTAL_FLUID_FLOW =
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_flow");
+    private static final KeyMapping.Category KEY_CATEGORY =
+            KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Skyresources3.MODID, "guide"));
+    private static final KeyMapping OPEN_GUIDE = new KeyMapping(
+            "key.skyresources3.guide",
+            InputConstants.Type.KEYSYM,
+            InputConstants.KEY_G,
+            KEY_CATEGORY
+    );
 
     @SubscribeEvent
     public static void registerEntityRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -52,6 +65,22 @@ public final class SkyResources3Client {
         event.register(ModMenuTypes.MACHINE_CASING.get(), MachineCasingScreen::new);
         event.register(ModMenuTypes.COMBUSTION_COLLECTOR.get(), CombustionCollectorScreen::new);
         event.register(ModMenuTypes.COMBUSTION_CONTROLLER.get(), CombustionControllerScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
+        event.registerCategory(KEY_CATEGORY);
+        event.register(OPEN_GUIDE);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(final ClientTickEvent.Post event) {
+        final Minecraft minecraft = Minecraft.getInstance();
+        while (OPEN_GUIDE.consumeClick()) {
+            if (minecraft.player != null && minecraft.screen == null) {
+                minecraft.setScreen(new GuideScreen());
+            }
+        }
     }
 
     @SubscribeEvent
