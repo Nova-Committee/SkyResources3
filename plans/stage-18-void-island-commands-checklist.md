@@ -33,7 +33,7 @@
 
 ## 仍暂缓迁移
 
-- 旧 VoidIslandControl 离线访问查找已在 Stage 69 通过保存名完成，本地缓存身份的离线 invite/trust 已在 Stage 71 完成；离开事件钩子、完整事件广播、外部 profile 查询和重命名冲突处理留待最终兼容性决策。
+- 旧 VoidIslandControl 离线访问查找已在 Stage 69 通过保存名完成，本地缓存身份的离线 invite/trust 已在 Stage 71 完成；离开事件钩子、完整事件广播、外部 profile 查询和重命名冲突处理已在 2026-06-14 最终收口中归类为非阻塞兼容增强。
 
 ## 验证
 

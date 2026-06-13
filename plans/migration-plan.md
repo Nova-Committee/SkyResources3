@@ -196,3 +196,10 @@ Stage 59 已完成可用性审计，详见 `plans/integration-availability.md`�
 ## 最终缺口审计
 
 详见 `plans/final-migration-gap-audit.md`。当前剩余工作应优先按该审计文档分类推进：先处理最终验证、资源许可决策和 VoidIslandControl 兼容性决策；联动版本阻塞、动态 modded recipe、视觉增强和更深团队权限不应混作主体迁移阻塞项。
+
+## 2026-06-14 最终收口决策
+
+- 资源许可：旧项目许可证为 ARR，目标项目为 MIT；除非项目所有者后续明确重授权，迁入或参考的旧资源不能自动视为 MIT 覆盖内容。发布前应保留来源/授权说明，或替换为可明确按目标许可证发布的新资源。
+- VoidIslandControl 事件兼容：当前目标项目已内置空岛核心流程，且没有已验证的 1.21.11 外部消费者依赖旧 VIC 事件广播 API；本轮不新增完整事件兼容层，后续如出现真实消费方再按小范围 API 设计处理。
+- 旧空岛存档迁移：新建空岛使用 `skyresources3:void_island`；旧主世界空岛记录不做静默迁移，避免改变玩家现有维度/坐标语义。若需要旧档升级，应另做显式迁移命令或工具。
+- 最终验证记录：本轮收口证据写入 `plans/final-validation-compatibility-closeout-checklist.md`；`runData`、`runGameTestServer`、`build`、空白检查、Serena Java/LSP 检查和旧网络/资源命名扫描均已通过，`runClient` 视觉/GUIs 冒烟作为发布前人工验证项。

@@ -1,0 +1,44 @@
+# Final Validation and Compatibility Closeout Checklist
+
+> Task: `.trellis/tasks/06-14-final-validation-compatibility-closeout`
+> Date: 2026-06-14
+> Scope source: `plans/ask.md`, `plans/final-migration-gap-audit.md`
+
+## Scope
+
+- [x] Treat the migrated main mod body as feature-complete enough for final closeout review.
+- [x] Keep optional integrations without verified Minecraft 1.21.11 NeoForge artifacts as documented TODOs.
+- [x] Avoid adding new gameplay scope unless final validation reveals a real build, datagen, or runtime startup defect.
+
+## Compatibility Decisions
+
+- [x] Legacy ARR resources are not automatically relicensed by being present in the MIT target project. Until the project owner records an explicit relicensing decision, migrated legacy assets must be treated as project-provided/legacy-derived assets that need a license note or later replacement.
+- [x] Old VoidIslandControl event broadcast hooks are not a migration blocker for this task. The current mod has the core behavior built in and no verified external 1.12.2 VIC API consumers in the 1.21.11 target.
+- [x] Existing overworld island saved records should not be silently moved to `skyresources3:void_island`. If old-save support becomes required, add an explicit migration command/tool so the owner can control the operation.
+- [x] External Mojang profile lookup, rename history, and duplicate cached-name conflict handling stay outside the local-cache MVP.
+
+## Final Validation
+
+- [x] `./gradlew.bat runData` passed on 2026-06-14; data generator reported `BUILD SUCCESSFUL` and `written: 0`.
+- [x] `./gradlew.bat runGameTestServer` passed on 2026-06-14 with Gradle exit code 0.
+- [x] `./gradlew.bat build` passed on 2026-06-14; final task result was `BUILD SUCCESSFUL`.
+- [x] `git diff --check` passed on 2026-06-14.
+- [x] `git diff --cached --check` passed on 2026-06-14.
+- [x] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"` passed on 2026-06-14; Serena resolved the project as Java with LSP configuration.
+- [x] Legacy network/resource scan passed on 2026-06-14:
+  - No `SimpleNetworkWrapper`, `IMessage`, old `DumpMessage`, `NetworkRegistry`, `PacketBuffer`, `com.bartz24.skyresources`, or `voidislandcontrol` references were found under runtime Java/resources.
+  - No non-`skyresources3` `skyresources` namespace references were found in runtime/generated JSON/TOML/MCMeta resources.
+
+## Manual Validation
+
+- [ ] `./gradlew.bat runClient` GUI smoke test is still required before a release tag because the automated session cannot prove visual interaction:
+  - Guide screen opens and search/action links work.
+  - JEI recipe action degrades safely when JEI is absent or opens recipes when JEI is present.
+  - Representative machine menus open without client-only classloading or layout errors.
+  - Island/team command flows are manually sanity-checked in a local world.
+
+## Remaining Non-Blocking TODOs
+
+- Optional integrations listed in `plans/integration-availability.md` may continue once compatible target artifacts and APIs are verified.
+- Dynamic modded ore/tag recipe output remains deferred until a target integration policy exists.
+- Richer team role matrix, shared death-home behavior, old-save migration tooling, and extra GameTests are enhancements rather than blockers for the main migration body.
