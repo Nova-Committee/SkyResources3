@@ -29,10 +29,10 @@
   - 在目标方块位置掉落灌注产物。
 - 破坏方块时掉落内部健康宝石和输入物品。
 - 客户端交互采用乐观返回，服务端仍校验内部槽位，避免 GUI/Menu 同步迁移前交互被客户端旧状态阻断。
+- `LifeInfuserMenu` / `LifeInfuserScreen` 已接入：普通空手右键打开界面，蹲下空手右键仍按输入物品优先、健康宝石其次的顺序快速取回。
 
 ## 暂缓迁移
 
-- `LifeInfuser` Menu、Screen、slot 同步和纹理 GUI 留待网络与界面阶段。
 - 物品 handler capability 自动化插入/抽出留待机器 capability 阶段。
 - 将生命灌注从硬编码列表迁移为 NeoForge recipe type 留待配方系统阶段。
 - JEI/EMI 生命灌注分类联动留待联动阶段。

@@ -13,6 +13,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 public final class LifeInjectorBlockEntity extends BlockEntity {
+    public static final int GEM_SLOT = 0;
+    public static final int SLOT_COUNT = 1;
     private static final String GEM_KEY = "gem";
     private static final String COOLDOWN_KEY = "cooldown";
     private static final int TRANSFER_INTERVAL_TICKS = 60;
@@ -57,6 +59,51 @@ public final class LifeInjectorBlockEntity extends BlockEntity {
         this.gem = ItemStack.EMPTY;
         this.setChanged();
         return removed;
+    }
+
+    public ItemStack getStackInSlot(final int slot) {
+        return slot == GEM_SLOT ? this.gem : ItemStack.EMPTY;
+    }
+
+    public void setStackInSlot(final int slot, final ItemStack stack) {
+        if (slot != GEM_SLOT) {
+            return;
+        }
+        if (stack.isEmpty()) {
+            this.gem = ItemStack.EMPTY;
+            this.setChanged();
+            return;
+        }
+        if (stack.getItem() instanceof HealthGemItem) {
+            this.gem = stack.copyWithCount(1);
+            this.setChanged();
+        }
+    }
+
+    public ItemStack removeStack(final int slot, final int amount) {
+        if (slot != GEM_SLOT || amount <= 0 || this.gem.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack removed = this.gem.split(amount);
+        if (this.gem.isEmpty()) {
+            this.gem = ItemStack.EMPTY;
+        }
+        this.setChanged();
+        return removed;
+    }
+
+    public ItemStack removeStackNoUpdate(final int slot) {
+        if (slot != GEM_SLOT) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack removed = this.gem;
+        this.gem = ItemStack.EMPTY;
+        this.setChanged();
+        return removed;
+    }
+
+    public boolean mayPlaceInSlot(final int slot, final ItemStack stack) {
+        return slot == GEM_SLOT && stack.getItem() instanceof HealthGemItem;
     }
 
     public void serverTick(final ServerLevel level) {

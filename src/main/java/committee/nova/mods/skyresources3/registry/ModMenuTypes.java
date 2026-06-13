@@ -10,6 +10,8 @@ import committee.nova.mods.skyresources3.menu.DirtFurnaceMenu;
 import committee.nova.mods.skyresources3.menu.EndPortalCoreMenu;
 import committee.nova.mods.skyresources3.menu.FreezerMenu;
 import committee.nova.mods.skyresources3.menu.FusionTableMenu;
+import committee.nova.mods.skyresources3.menu.LifeInfuserMenu;
+import committee.nova.mods.skyresources3.menu.LifeInjectorMenu;
 import committee.nova.mods.skyresources3.menu.MachineCasingMenu;
 import committee.nova.mods.skyresources3.menu.QuickDropperMenu;
 import committee.nova.mods.skyresources3.menu.RockCleanerMenu;
@@ -50,6 +52,10 @@ public final class ModMenuTypes {
             MENU_TYPES.register("wildlife_attractor", () -> IMenuTypeExtension.create(WildlifeAttractorMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCasingMenu>> MACHINE_CASING =
             MENU_TYPES.register("machine_casing", () -> IMenuTypeExtension.create(MachineCasingMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<LifeInfuserMenu>> LIFE_INFUSER =
+            MENU_TYPES.register("life_infuser", () -> IMenuTypeExtension.create(LifeInfuserMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<LifeInjectorMenu>> LIFE_INJECTOR =
+            MENU_TYPES.register("life_injector", () -> IMenuTypeExtension.create(LifeInjectorMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<CombustionCollectorMenu>> COMBUSTION_COLLECTOR =
             MENU_TYPES.register("combustion_collector", () -> IMenuTypeExtension.create(CombustionCollectorMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<CombustionControllerMenu>> COMBUSTION_CONTROLLER =

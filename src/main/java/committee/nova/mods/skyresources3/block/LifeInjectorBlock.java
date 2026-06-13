@@ -2,13 +2,16 @@ package committee.nova.mods.skyresources3.block;
 
 import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
+import committee.nova.mods.skyresources3.menu.LifeInjectorMenu;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -93,14 +96,14 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
-        if (!lifeInjector.hasGem()) {
-            return InteractionResult.PASS;
+        if (player.isShiftKeyDown() && lifeInjector.hasGem()) {
+            final ItemStack removed = lifeInjector.removeGem();
+            if (!player.addItem(removed)) {
+                Block.popResource(level, pos.above(), removed);
+            }
+            return InteractionResult.SUCCESS_SERVER;
         }
-        final ItemStack removed = lifeInjector.removeGem();
-        if (!player.addItem(removed)) {
-            Block.popResource(level, pos.above(), removed);
-        }
-        return InteractionResult.SUCCESS_SERVER;
+        return this.openMenu(pos, player, lifeInjector);
     }
 
     @Override
@@ -116,5 +119,24 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
             Containers.dropContents(level, pos, new SimpleContainer(lifeInjector.removeGem()));
         }
         return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    private InteractionResult openMenu(
+            final BlockPos pos,
+            final Player player,
+            final LifeInjectorBlockEntity lifeInjector
+    ) {
+        player.openMenu(
+                new SimpleMenuProvider(
+                        (containerId, inventory, menuPlayer) -> new LifeInjectorMenu(
+                                containerId,
+                                inventory,
+                                lifeInjector
+                        ),
+                        Component.translatable("container.skyresources3.life_injector")
+                ),
+                buffer -> LifeInjectorMenu.writeClientSideData(buffer, pos)
+        );
+        return InteractionResult.SUCCESS_SERVER;
     }
 }

@@ -21,10 +21,10 @@
 - 伤害成功后通过 `HealthGemItem.addStoredHealth` 写回健康宝石，避免机器直接拼写 NBT。
 - 破坏方块时掉落内部健康宝石。
 - 客户端交互采用乐观返回，服务端仍校验内部宝石槽，避免 GUI/Menu 同步迁移前空手取回被客户端旧状态阻断。
+- `LifeInjectorMenu` / `LifeInjectorScreen` 已接入：普通空手右键打开界面，蹲下空手右键仍可快速取回健康宝石。
 
 ## 暂缓迁移
 
-- `LifeInjector` Menu、Screen、slot 同步和纹理 GUI 留待网络与界面阶段。
 - 物品 handler capability 自动化插入/抽出留待机器 capability 阶段。
 - `LifeInfuser` 方块实体、多方块校验和生命灌注执行逻辑留待后续阶段。
 

@@ -18,6 +18,9 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public final class LifeInfuserBlockEntity extends BlockEntity {
+    public static final int GEM_SLOT = 0;
+    public static final int INPUT_SLOT = 1;
+    public static final int SLOT_COUNT = 2;
     private static final String GEM_KEY = "gem";
     private static final String INPUT_KEY = "input";
 
@@ -82,6 +85,61 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
         this.input = ItemStack.EMPTY;
         this.setChanged();
         return removed;
+    }
+
+    public ItemStack getStackInSlot(final int slot) {
+        return switch (slot) {
+            case GEM_SLOT -> this.gem;
+            case INPUT_SLOT -> this.input;
+            default -> ItemStack.EMPTY;
+        };
+    }
+
+    public void setStackInSlot(final int slot, final ItemStack stack) {
+        if (!isMachineSlot(slot)) {
+            return;
+        }
+        if (stack.isEmpty()) {
+            this.setMachineStack(slot, ItemStack.EMPTY);
+            return;
+        }
+        if (this.mayPlaceInSlot(slot, stack)) {
+            this.setMachineStack(slot, slot == GEM_SLOT ? stack.copyWithCount(1) : stack.copy());
+        }
+    }
+
+    public ItemStack removeStack(final int slot, final int amount) {
+        if (!isMachineSlot(slot) || amount <= 0) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack stack = this.getStackInSlot(slot);
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack removed = stack.split(amount);
+        if (stack.isEmpty()) {
+            this.setMachineStack(slot, ItemStack.EMPTY);
+        } else {
+            this.setChanged();
+        }
+        return removed;
+    }
+
+    public ItemStack removeStackNoUpdate(final int slot) {
+        if (!isMachineSlot(slot)) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack removed = this.getStackInSlot(slot);
+        this.setMachineStack(slot, ItemStack.EMPTY);
+        return removed;
+    }
+
+    public boolean mayPlaceInSlot(final int slot, final ItemStack stack) {
+        return switch (slot) {
+            case GEM_SLOT -> stack.getItem() instanceof HealthGemItem;
+            case INPUT_SLOT -> !stack.isEmpty() && !(stack.getItem() instanceof HealthGemItem);
+            default -> false;
+        };
     }
 
     public void dropContents(final ServerLevel level) {
@@ -154,5 +212,18 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
         }
         Block.popResource(level, targetPos, recipe.get().createOutput());
         this.setChanged();
+    }
+
+    private void setMachineStack(final int slot, final ItemStack stack) {
+        if (slot == GEM_SLOT) {
+            this.gem = stack;
+        } else if (slot == INPUT_SLOT) {
+            this.input = stack;
+        }
+        this.setChanged();
+    }
+
+    private static boolean isMachineSlot(final int slot) {
+        return slot >= 0 && slot < SLOT_COUNT;
     }
 }

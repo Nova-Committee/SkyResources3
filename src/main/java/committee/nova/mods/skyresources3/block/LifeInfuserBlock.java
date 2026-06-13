@@ -2,10 +2,13 @@ package committee.nova.mods.skyresources3.block;
 
 import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
+import committee.nova.mods.skyresources3.menu.LifeInfuserMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -85,14 +88,16 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        final ItemStack removed = lifeInfuser.hasInput() ? lifeInfuser.removeInput() : lifeInfuser.removeGem();
-        if (removed.isEmpty()) {
-            return InteractionResult.PASS;
+        if (player.isShiftKeyDown()) {
+            final ItemStack removed = lifeInfuser.hasInput() ? lifeInfuser.removeInput() : lifeInfuser.removeGem();
+            if (!removed.isEmpty()) {
+                if (!player.addItem(removed)) {
+                    Block.popResource(level, pos.above(), removed);
+                }
+                return InteractionResult.SUCCESS_SERVER;
+            }
         }
-        if (!player.addItem(removed)) {
-            Block.popResource(level, pos.above(), removed);
-        }
-        return InteractionResult.SUCCESS_SERVER;
+        return this.openMenu(pos, player, lifeInfuser);
     }
 
     @Override
@@ -123,5 +128,24 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
             lifeInfuser.dropContents(serverLevel);
         }
         return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    private InteractionResult openMenu(
+            final BlockPos pos,
+            final Player player,
+            final LifeInfuserBlockEntity lifeInfuser
+    ) {
+        player.openMenu(
+                new SimpleMenuProvider(
+                        (containerId, inventory, menuPlayer) -> new LifeInfuserMenu(
+                                containerId,
+                                inventory,
+                                lifeInfuser
+                        ),
+                        Component.translatable("container.skyresources3.life_infuser")
+                ),
+                buffer -> LifeInfuserMenu.writeClientSideData(buffer, pos)
+        );
+        return InteractionResult.SUCCESS_SERVER;
     }
 }

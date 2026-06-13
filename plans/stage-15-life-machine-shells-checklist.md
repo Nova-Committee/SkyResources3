@@ -41,9 +41,9 @@
 
 ## 暂缓迁移
 
-- `LifeInfuser` 方块实体、红石脉冲触发、生命灌注执行和多方块校验已在阶段 17 迁移；菜单同步留待网络与界面阶段。
-- `LifeInjector` 方块实体、实体抽血和健康宝石注入已在阶段 16 迁移；菜单同步留待网络与界面阶段。
-- 旧 GUI/Menu 与客户端 Screen 留待网络与界面阶段。
+- `LifeInfuser` 方块实体、红石脉冲触发、生命灌注执行和多方块校验已在阶段 17 迁移；Menu、Screen 和 slot 同步已由 2026-06-14 生命机器菜单界面任务迁移。
+- `LifeInjector` 方块实体、实体抽血和健康宝石注入已在阶段 16 迁移；Menu、Screen 和 slot 同步已由 2026-06-14 生命机器菜单界面任务迁移。
+- `LifeInfuser` / `LifeInjector` 旧 GUI/Menu 已改为 `MenuType`、`SimpleMenuProvider` 和客户端 Screen 注册。
 - JEI 生命灌注分类联动留待联动阶段。
 
 ## 验证
