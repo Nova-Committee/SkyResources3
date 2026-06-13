@@ -672,3 +672,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 20: 迁移清单 TODO 收口同步
+
+**Date**: 2026-06-14
+**Task**: 迁移清单 TODO 收口同步
+**Branch**: `master`
+
+### Summary
+
+同步旧 stage checklist 中已被后续阶段完成的 TODO：JEI  recipe viewing、guide recipe actions、stable cauldronclean、combustion controller/collector runtime 和 Stage 59 归档状态；保留真实的手工 GUI、动态/tagged 配方、可选联动和视觉增强延期项。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `bd79236` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
