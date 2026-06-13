@@ -17,9 +17,9 @@
 
 ## TODO
 
-- Crystal fluid placement from the original magma island is skipped until the SkyResources3 fluid registry migrates crystal fluid.
+- Crystal fluid placement from the original magma island is still not placed by the magma template; the fluid registry exists now, so the remaining decision is whether to add safe source placement to the starter island.
 - Garden of Glass uses a vanilla placeholder until a compatible Botania/Garden of Glass integration is available.
-- Void world/preset and true spawn island dimension handling remain pending for a later Stage 7 slice.
+- 自定义 void 维度、世界预设和共享 spawn 平台已在 Stage 22 完成。
 
 ## Verification
 

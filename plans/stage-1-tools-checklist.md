@@ -1,7 +1,7 @@
 # 阶段 1 补充清单：基础工具与特殊物品壳子
 
 > 对应总计划：`plans/migration-plan.md` 的“基础注册与静态内容”和“配方与数据生成”前置补齐。
-> 状态：已完成静态注册、可视资源和普通 crafting 配方；行为类、实体和机器处理配方留待后续阶段。
+> 状态：本阶段已完成静态注册、可视资源和普通 crafting 配方；后续 Stage 3/6/23/24/25 已补齐实体、工具运行时、处理配方基础和灌注运行时。
 
 ## 目标
 
@@ -42,12 +42,12 @@
 - 三种 rock grinder 的旧版 crafting 配方。
 - `sandstone_infusion_stone` 与 `red_sandstone_infusion_stone` 的旧版 crafting 配方。
 
-## 暂缓迁移
+## 后续阶段已补齐
 
-- `heavy_snowball` 的来源仍依赖旧版 freezer 处理配方，等待自定义机器 recipe type 设计。
-- `alchemical_infusion_stone` 的旧版配方依赖尚未拆分的 `alchemyComponent` meta 9/10。
-- cutting knife、rock grinder、infusion stone 目前只是静态物品壳子；耐久、工具属性、右键/处理逻辑和实体行为后续单独迁移。
-- `survivalist_fishing_rod` 需要 fishing rod 行为和 cast 模型覆盖，未混入本轮静态工具批次。
+- `heavy_snowball` 的 freezer 来源已通过 `skyresources3:process` freezer 配方生成：`process/freezer/heavy_snowball.json`。
+- `alchemical_infusion_stone` 的旧版配方已通过独立物品和 datagen 配方恢复：`alchemical_infusion_stone.json`。
+- cutting knife、rock grinder 和 infusion stone 的耐久、工具属性、运行时处理逻辑已在 Stage 3/24/25 补齐。
+- `survivalist_fishing_rod` 的 fishing rod 行为、cast 模型、配方和自定义钓鱼掉落已在 Stage 6 及后续回归任务补齐。
 
 ## 验证
 

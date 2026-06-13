@@ -20,7 +20,7 @@
   - 四角同层和下一层必须为 `minecraft:logs` 标签方块。
   - 上方中心必须为 `dark_matter_block`。
   - 上方其余 8 格必须为 `minecraft:leaves` 标签方块。
-- 灌注复用 `InfusionStoneItem.findRecipe` 的当前内置配方列表。
+- 灌注复用 `InfusionRecipes`，通过 `skyresources3:process` NeoForge recipe type 解析运行时配方。
 - 配方匹配成功时：
   - 校验健康宝石已有生命值不少于配方消耗。
   - 移除核心下方目标方块且不掉落原方块。
@@ -31,11 +31,11 @@
 - 客户端交互采用乐观返回，服务端仍校验内部槽位，避免 GUI/Menu 同步迁移前交互被客户端旧状态阻断。
 - `LifeInfuserMenu` / `LifeInfuserScreen` 已接入：普通空手右键打开界面，蹲下空手右键仍按输入物品优先、健康宝石其次的顺序快速取回。
 
-## 暂缓迁移
+## 后续阶段已补齐
 
 - 物品 handler capability 自动化插入/抽出已在生命机器物品自动化能力任务中迁移。
-- 将生命灌注从硬编码列表迁移为 NeoForge recipe type 留待配方系统阶段。
-- JEI/EMI 生命灌注分类联动留待联动阶段。
+- 生命灌注 recipe type 迁移已在 Stage 25 完成，运行时不再依赖内置硬编码配方列表。
+- JEI 生命灌注分类联动已在配方查看器集成阶段恢复；REI/EMI 暂不重复实现。
 
 ## 验证
 

@@ -22,14 +22,18 @@
 - 新增 `/island visit <player>`。
 - 新增 `/island reset [type] confirm`。
 - 新增 `/island info` 和 `/skyresources3 island info`。
-- 创建空岛时在主世界高空生成 5x5 草方块起始平台，并放置一棵橡树树苗。
+- 创建空岛时优先使用 `skyresources3:void_island` 维度；若运行环境没有加载该维度，则回退到主世界。
+- 默认 `grass` 模板生成 5x5 草方块起始平台并放置一棵橡树树苗。
 - 空岛命令受 `enableVoidIslandFeatures` 配置开关控制。
 
-## 暂缓迁移
+## 后续阶段已补齐
 
-- 自定义 void 维度、世界预设和 chunk generator 留待世界生成阶段。
+- 自定义 void 维度、世界预设和共享 spawn 平台已在 Stage 22 完成。
+- 起始岛、砂岛、雪岛、木岛、草岛、Garden of Glass 占位和 magma island 模板已在 Stage 21 完成。
+
+## 仍暂缓迁移
+
 - 旧 VoidIslandControl 离线访问、离开事件钩子和完整事件广播留待后续空岛阶段。
-- 起始箱、岛屿模板和 magma island 生成逻辑留待岛屿类型阶段。
 
 ## 验证
 

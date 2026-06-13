@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Project-specific NeoForge migration documentation and verification expectations."}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Plan updates must reference current package/resource layout accurately."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Quality and GameTest evidence conventions for migrated behavior."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Avoid re-planning work already represented by current code/tests."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Keep plan state aligned across code, generated data, commands, and docs."}
