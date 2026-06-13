@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec index for single-repo NeoForge documentation and validation scope."}
+{"file": ".trellis/spec/backend/guide-guidelines.md", "reason": "Guide key/action/manual client validation contracts used by the smoke runbook."}
+{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "JEI optional integration and absent-viewer fallback contract."}
+{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Island/team command manual smoke expectations."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Docs-only validation and process cleanup rules."}
+{"file": ".trellis/spec/guides/index.md", "reason": "Shared thinking guide index required before implementation."}
