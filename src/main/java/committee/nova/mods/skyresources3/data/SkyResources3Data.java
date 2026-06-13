@@ -15,6 +15,7 @@ public final class SkyResources3Data {
     public static void gatherData(final GatherDataEvent.Client event) {
         event.createProvider(SkyResources3DataMapProvider::new);
         event.createProvider(SkyResources3RecipeProvider.Runner::new);
+        event.createProvider(SkyResources3IntegrationRecipeProvider::new);
         event.createProvider(SkyResources3BlockTagsProvider::new);
         event.createProvider(SkyResources3ItemTagsProvider::new);
         event.createProvider((output, lookupProvider) -> new LootTableProvider(

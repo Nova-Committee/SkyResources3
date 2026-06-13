@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "integrateddynamics"
+    }
+  ],
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": "integrateddynamics:menril_berries"
+    },
+    {
+      "ingredient": "minecraft:birch_sapling"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "integrateddynamics:menril_sapling"
+    }
+  ],
+  "parameter": 12.0,
+  "process": "infusion"
+}

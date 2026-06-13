@@ -82,6 +82,8 @@
   "guide.skyresources3.stage3.aqueous.text": "Aqueous Concentrators and Deconcentrators automate Water Extractor-style insert and extract behavior for water handling setups.",
   "guide.skyresources3.stage4.stage4.title": "Stage 4 - Powerful Materials",
   "guide.skyresources3.stage4.stage4.text": "Stage 4 focuses on dark matter, light matter, stronger automation, End access, and life-based machines.",
+  "guide.skyresources3.stage4.integratedDynamics.title": "Integrated Dynamics Support",
+  "guide.skyresources3.stage4.integratedDynamics.text": "When Integrated Dynamics is loaded, SkyResources3 adds Life Infusion recipes for Menril Berries and Menril Saplings. Infuse light blue dye with a red mushroom for berries, then infuse those berries with a birch sapling for the sapling.",
   "guide.skyresources3.stage4.dmWarper.title": "Dark Matter Warper",
   "guide.skyresources3.stage4.dmWarper.text": "The Dark Matter Warper consumes dark matter fuel to transform nearby mobs and optionally affect players or animals according to config.",
   "guide.skyresources3.stage4.end.title": "The End",

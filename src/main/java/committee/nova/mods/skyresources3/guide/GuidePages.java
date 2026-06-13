@@ -183,7 +183,12 @@ public final class GuidePages {
                     recipe(GuideRecipeTargets.PROCESS_COMBUSTION, stack(() -> ModItems.ALCHEMICAL_COAL.get()))
             ),
             page("aqueous", STAGE_3, stack(() -> ModItems.AQUEOUS_CONCENTRATOR.get())),
-            page("stage4", STAGE_4, stack(() -> ModItems.DARK_MATTER.get())),
+            page(
+                    "stage4",
+                    STAGE_4,
+                    stack(() -> ModItems.DARK_MATTER.get()),
+                    link("integratedDynamics", stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get()))
+            ),
             page("dmWarper", STAGE_4, stack(() -> ModItems.DARK_MATTER_WARPER.get())),
             page(
                     "end",
@@ -201,6 +206,12 @@ public final class GuidePages {
                     image("end2", stack(() -> ModItems.SILVERFISH_DISRUPTOR.get()))
             ),
             page("healthGem", STAGE_4, stack(() -> ModItems.HEALTH_GEM.get())),
+            page(
+                    "integratedDynamics",
+                    STAGE_4,
+                    stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get()),
+                    recipe(GuideRecipeTargets.PROCESS_INFUSION, stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get()))
+            ),
             page(
                     "lifeInfuser",
                     STAGE_4,

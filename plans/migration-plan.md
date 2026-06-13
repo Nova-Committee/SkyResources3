@@ -142,15 +142,16 @@
 
 ### 9. 联动模组
 
-Stage 59 已完成可用性审计，详见 `plans/integration-availability.md`。当前阶段只记录目标版本、候选坐标、阻塞原因和 TODO；尚未新增 Gradle 依赖或运行时代码。
+Stage 59 已完成可用性审计，详见 `plans/integration-availability.md`。JEI、Jade 和 Integrated Dynamics 的可用部分已分阶段迁移；剩余目标继续按矩阵记录阻塞原因和 TODO。
 
 优先级：
 
-1. JEI -> 已确认 JEI 有 1.21.11 NeoForge 文件；REI 可作为备选；EMI 暂缓。
-2. The One Probe -> 未确认 1.21.11 NeoForge 文件；Jade/WTHIT 已确认可作为替代目标。
-3. CraftTweaker -> 未确认 1.21.11 NeoForge 文件，脚本入口暂缓。
-4. Forestry/Binnie's/Extra Bees -> 未确认稳定 1.21.11 NeoForge 生态，保留 TODO。
-5. AE2、TConstruct、Thermal、IC2、Actually Additions 等 -> 当前审计多数未确认 1.21.11 NeoForge 版本；Integrated Dynamics 已确认可后续单独评估。
+1. JEI -> 已实现配方查看器和指南 recipe action；REI/EMI 暂不重复实现。
+2. The One Probe -> 未恢复旧 TOP API；已用 Jade 迁移热源、温度和多方块探针提示，WTHIT 仅保留备选。
+3. Integrated Dynamics -> 已用条件 Life Infusion 配方恢复 Menril Berries/Sapling 获取；更深 API 交互暂不需要。
+4. CraftTweaker -> 未确认 1.21.11 NeoForge 文件，脚本入口暂缓。
+5. Forestry/Binnie's/Extra Bees -> 未确认稳定 1.21.11 NeoForge 生态，保留 TODO。
+6. AE2、TConstruct、Thermal、IC2、Actually Additions 等 -> 当前审计多数未确认 1.21.11 NeoForge 版本。
 
 每个联动必须记录：
 
@@ -186,6 +187,6 @@ Stage 59 已完成可用性审计，详见 `plans/integration-availability.md`�
 
 - TODO：确认旧项目 ARR 资源迁移到目标 MIT 项目的许可策略。
 - TODO：VoidIslandControl 只有 1.12.2 jar，本地未找到源码；完整内置化需要先提取行为清单，必要时反编译仅作理解参考。
-- TODO：按 `plans/integration-availability.md` 逐项实现可用联动；JEI/Jade 或 WTHIT 优先，其余等待目标版本/API。
+- TODO：按 `plans/integration-availability.md` 逐项实现剩余可用联动；已完成 JEI、Jade 和 Integrated Dynamics 最小联动，其余等待目标版本/API。
 - TODO：确认 1.21.11 世界预设/空岛 chunk generator 的最佳实现方式。
 - TODO：团队权限边界需要在实现前细化：成员是否共享机器权限、是否共享死亡回家点、访客是否可交互。

@@ -20,7 +20,7 @@
 | CraftTweaker 脚本入口 | `plugin/ctweaker/**` | CraftTweaker | Modrinth 精确过滤 0 个；公开页面兼容范围未确认到 1.21.11 | 无已验证 1.21.11 NeoForge 坐标 | 暂缓 | 保留脚本 API TODO；待 CraftTweaker 提供 1.21.11 NeoForge 后再迁移 ZenCode 入口 |
 | Forestry / Binnie's / Extra Bees 养蜂生态 | `plugin/forestry/**`、`plugin/extrabees/**` | Forestry、Binnie's Mods、Extra Bees 或替代养蜂模组 | Forestry/Binnie's 精确过滤 0 个；`extra-bees` 未找到可信项目 | 无已验证坐标 | 暂缓 | Bee Attractor 继续保留本模组玩法；外部蜂箱掉落联动等待生态稳定 |
 | AE2 | `plugin/ae2/AE2Plugin.java` | Applied Energistics 2 | Modrinth slug `ae2` 精确过滤 0 个；官方/CurseForge 片段显示当前路线不等同 1.21.11 | 无已验证 1.21.11 NeoForge 坐标 | 暂缓 | 后续只在 AE2 发布 1.21.11 NeoForge 后接入特定物品/配方兼容 |
-| Integrated Dynamics | `plugin/integdyn/IntegratedDynamicsPlugin.java` | Integrated Dynamics | `1.21.11-1.24.1-1692` 命中 25 个 NeoForge 文件 | `maven.modrinth:integrated-dynamics:1.21.11-1.24.1-1692`；POM 200 OK | 可后续实现 | 先确认当前 API 是否仍支持旧联动行为，再实现最小兼容 |
+| Integrated Dynamics | `plugin/integdyn/IntegratedDynamicsPlugin.java` | Integrated Dynamics | `1.21.11-1.24.1-1692` Maven POM/JAR 已验证；JAR 内确认 `menril_berries` 与 `menril_sapling` 物品资源 | `maven.modrinth:integrated-dynamics:1.21.11-1.24.1-1692`；未新增 API 依赖 | 已实现最小配方联动 | 已用条件 Life Infusion 配方恢复 Menril Berries/Sapling 获取；更深 API 交互暂不需要 |
 | TConstruct | `plugin/tconstruct/TConPlugin.java` | Tinkers' Construct | 精确过滤 0 个 | 无已验证坐标 | 暂缓 | 等待 1.21.11 NeoForge 或替代 API |
 | Thermal 系列 | `plugin/thermal/ThermalPlugin.java` | Thermal Foundation / Thermal Expansion | 两者精确过滤均 0 个 | 无已验证坐标 | 暂缓 | 等待 Thermal 系列目标版本 |
 | IC2 / Tech Reborn | `plugin/ic2/IC2Plugin.java`、`plugin/techreborn/TechRebornPlugin.java` | IC2Classic 或 Tech Reborn | 精确过滤均 0 个；IC2Classic 搜索结果最高到 1.19.2 | 无已验证坐标 | 暂缓 | 不直接移植旧 IC2 API；只保留配方/物品兼容 TODO |
@@ -34,6 +34,5 @@
 
 ## 后续顺序
 
-1. Integrated Dynamics 可在具体功能需要时单独开小任务。
-2. WTHIT 仅在需要非 Jade 探针生态兼容时再评估，不和 Jade 同阶段重复实现。
-3. 其他旧联动维持 TODO，直到有明确 1.21.11 NeoForge 版本和 API 证据。
+1. WTHIT 仅在需要非 Jade 探针生态兼容时再评估，不和 Jade 同阶段重复实现。
+2. 其他旧联动维持 TODO，直到有明确 1.21.11 NeoForge 版本和 API 证据。
