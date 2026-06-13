@@ -539,3 +539,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 16: GUI 菜单与指南自动化收口
+
+**Date**: 2026-06-14
+**Task**: GUI 菜单与指南自动化收口
+**Branch**: `master`
+
+### Summary
+
+新增指南数据完整性和菜单注册 GameTest，更新迁移审计与指南测试规范。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `eced791` | (see git log) |
+| `6fc75ae` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
