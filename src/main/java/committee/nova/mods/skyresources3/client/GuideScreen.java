@@ -1,7 +1,10 @@
 package committee.nova.mods.skyresources3.client;
 
+import committee.nova.mods.skyresources3.guide.GuideAction;
 import committee.nova.mods.skyresources3.guide.GuidePage;
 import committee.nova.mods.skyresources3.guide.GuidePages;
+import committee.nova.mods.skyresources3.guide.GuideStructure;
+import committee.nova.mods.skyresources3.guide.GuideStructures;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,12 +29,17 @@ public final class GuideScreen extends Screen {
     private static final int INDEX_MAX_WIDTH = 148;
     private static final int INDEX_GAP = 12;
     private static final int RESULT_ROW_HEIGHT = 18;
+    private static final int ACTION_MAX_ROWS = 4;
+    private static final int ACTION_ROW_HEIGHT = 20;
+    private static final int ACTION_GAP = 6;
+    private static final int STRUCTURE_ROW_HEIGHT = 18;
     private static final int ICON_SIZE = 16;
     private static final int BACKGROUND_COLOR = 0xC0101010;
     private static final int PANEL_COLOR = 0xF0E7D8BD;
     private static final int BORDER_COLOR = 0xFF6B5A44;
     private static final int SELECTED_ROW_COLOR = 0x50FFFFFF;
     private static final int HOVERED_ROW_COLOR = 0x30FFFFFF;
+    private static final int ACTION_ROW_COLOR = 0x20FFFFFF;
     private static final int TEXT_COLOR = 0xFF2F261C;
     private static final int MUTED_TEXT_COLOR = 0xFF5D5142;
 
@@ -39,6 +47,8 @@ public final class GuideScreen extends Screen {
     private int selectedPageIndex;
     private String searchText = "";
     private EditBox searchBox;
+    private GuideStructure currentStructure;
+    private Component feedbackMessage;
 
     public GuideScreen() {
         super(Component.translatable("screen.skyresources3.guide.title"));
@@ -66,6 +76,7 @@ public final class GuideScreen extends Screen {
         this.searchBox.setResponder(value -> {
             this.searchText = value;
             this.selectedPageIndex = 0;
+            this.clearTransientView();
             this.clampSelection();
         });
         this.addRenderableWidget(this.searchBox);
@@ -102,7 +113,7 @@ public final class GuideScreen extends Screen {
                 .build());
         this.addRenderableWidget(Button.builder(
                         Component.translatable("gui.done"),
-                        button -> this.onClose()
+                        button -> this.closeCurrentView()
                 )
                 .bounds(panelX + panelWidth - PANEL_PADDING - CLOSE_BUTTON_WIDTH, footerY, CLOSE_BUTTON_WIDTH, BUTTON_SIZE)
                 .build());
@@ -130,7 +141,19 @@ public final class GuideScreen extends Screen {
         if (super.mouseClicked(event, doubleClick)) {
             return true;
         }
-        return event.button() == 0 && this.selectResultAt(event.x(), event.y());
+        if (event.button() != 0) {
+            return false;
+        }
+        return this.selectActionAt(event.x(), event.y()) || this.selectResultAt(event.x(), event.y());
+    }
+
+    @Override
+    public void onClose() {
+        if (this.currentStructure != null) {
+            this.clearTransientView();
+            return;
+        }
+        super.onClose();
     }
 
     @Override
@@ -158,6 +181,11 @@ public final class GuideScreen extends Screen {
                     panelY + panelHeight / 2 - this.font.lineHeight,
                     MUTED_TEXT_COLOR
             );
+            return;
+        }
+
+        if (this.currentStructure != null) {
+            this.renderStructurePreview(guiGraphics, mouseX, mouseY, panelX, panelY, panelWidth, panelHeight);
             return;
         }
 
@@ -245,9 +273,21 @@ public final class GuideScreen extends Screen {
         if (bodyBottom <= bodyY) {
             return;
         }
-        guiGraphics.enableScissor(contentX, bodyY, contentX + contentWidth, bodyBottom);
-        guiGraphics.drawWordWrap(this.font, page.text(), contentX, bodyY, contentWidth, TEXT_COLOR);
-        guiGraphics.disableScissor();
+        final int actionRows = this.visibleActionRows(page.actions(), bodyBottom - bodyY);
+        final int actionTop = actionRows == 0 ? bodyBottom : bodyBottom - actionRows * ACTION_ROW_HEIGHT;
+        int textBottom = actionRows == 0 ? bodyBottom : actionTop - ACTION_GAP;
+        if (this.feedbackMessage != null && textBottom - bodyY > this.font.lineHeight + 2) {
+            textBottom -= this.font.lineHeight + 2;
+            guiGraphics.drawWordWrap(this.font, this.feedbackMessage, contentX, textBottom, contentWidth, MUTED_TEXT_COLOR);
+        }
+        if (textBottom > bodyY) {
+            guiGraphics.enableScissor(contentX, bodyY, contentX + contentWidth, textBottom);
+            guiGraphics.drawWordWrap(this.font, page.text(), contentX, bodyY, contentWidth, TEXT_COLOR);
+            guiGraphics.disableScissor();
+        }
+        if (actionRows > 0) {
+            this.renderActions(guiGraphics, mouseX, mouseY, page.actions(), contentX, actionTop, contentWidth, actionRows);
+        }
     }
 
     private void renderResultIndex(
@@ -281,7 +321,16 @@ public final class GuideScreen extends Screen {
         final int visibleRows = this.visibleResultRows(panelY, panelHeight);
         guiGraphics.enableScissor(listX, listY, listX + listWidth, listBottom);
         for (int index = 0; index < Math.min(visibleRows, pages.size()); index++) {
-            this.renderResultRow(guiGraphics, mouseX, mouseY, pages.get(index), index, listX, listY, listWidth);
+            this.renderResultRow(
+                    guiGraphics,
+                    mouseX,
+                    mouseY,
+                    pages.get(index),
+                    index,
+                    listX,
+                    listY,
+                    listWidth
+            );
         }
         guiGraphics.disableScissor();
     }
@@ -343,6 +392,161 @@ public final class GuideScreen extends Screen {
         );
     }
 
+    private void renderActions(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final List<GuideAction> actions,
+            final int x,
+            final int y,
+            final int width,
+            final int visibleRows
+    ) {
+        for (int index = 0; index < Math.min(visibleRows, actions.size()); index++) {
+            this.renderActionRow(
+                    guiGraphics,
+                    mouseX,
+                    mouseY,
+                    actions.get(index),
+                    x,
+                    y + index * ACTION_ROW_HEIGHT,
+                    width
+            );
+        }
+    }
+
+    private void renderActionRow(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final GuideAction action,
+            final int x,
+            final int y,
+            final int width
+    ) {
+        final boolean hovered = this.isInside(mouseX, mouseY, x, y, width, ACTION_ROW_HEIGHT - 1);
+        guiGraphics.fill(x, y, x + width, y + ACTION_ROW_HEIGHT - 1, hovered ? HOVERED_ROW_COLOR : ACTION_ROW_COLOR);
+        final ItemStack icon = action.icon();
+        if (!icon.isEmpty()) {
+            guiGraphics.renderFakeItem(icon, x + 1, y + 1);
+        }
+
+        final Component type = Component.translatable(
+                "screen.skyresources3.guide.action_type." + action.type().name().toLowerCase(Locale.ROOT)
+        );
+        final int typeWidth = this.font.width(type);
+        final int labelX = x + ICON_SIZE + 6;
+        final int labelWidth = Math.max(16, width - ICON_SIZE - typeWidth - 14);
+        guiGraphics.drawString(
+                this.font,
+                this.truncate(action.label().getString(), labelWidth),
+                labelX,
+                y + 6,
+                TEXT_COLOR,
+                false
+        );
+        guiGraphics.drawString(
+                this.font,
+                type,
+                x + width - typeWidth - 4,
+                y + 6,
+                MUTED_TEXT_COLOR,
+                false
+        );
+        if (hovered) {
+            guiGraphics.setTooltipForNextFrame(this.font, this.actionTooltip(action), mouseX, mouseY);
+        }
+    }
+
+    private void renderStructurePreview(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final int panelX,
+            final int panelY,
+            final int panelWidth,
+            final int panelHeight
+    ) {
+        final GuideStructure structure = this.currentStructure;
+        final int contentX = panelX + PANEL_PADDING;
+        final int contentY = panelY + 48;
+        final int contentWidth = panelWidth - PANEL_PADDING * 2;
+        final int contentBottom = panelY + panelHeight - FOOTER_HEIGHT;
+        guiGraphics.drawString(this.font, structure.title(), contentX, contentY, TEXT_COLOR, false);
+        guiGraphics.drawString(
+                this.font,
+                Component.translatable("screen.skyresources3.guide.structure_count", structure.blocks().size()),
+                contentX,
+                contentY + 14,
+                MUTED_TEXT_COLOR,
+                false
+        );
+        guiGraphics.drawString(
+                this.font,
+                Component.translatable("screen.skyresources3.guide.structure_close_hint"),
+                contentX,
+                contentBottom - this.font.lineHeight,
+                MUTED_TEXT_COLOR,
+                false
+        );
+
+        final int listY = contentY + 32;
+        final int listBottom = contentBottom - this.font.lineHeight - 4;
+        final int visibleRows = Math.max(0, (listBottom - listY) / STRUCTURE_ROW_HEIGHT);
+        guiGraphics.enableScissor(contentX, listY, contentX + contentWidth, listBottom);
+        for (int index = 0; index < Math.min(visibleRows, structure.blocks().size()); index++) {
+            this.renderStructureBlockRow(
+                    guiGraphics,
+                    mouseX,
+                    mouseY,
+                    structure.blocks().get(index),
+                    contentX,
+                    listY,
+                    contentWidth,
+                    index
+            );
+        }
+        guiGraphics.disableScissor();
+    }
+
+    private void renderStructureBlockRow(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final GuideStructure.BlockEntry block,
+            final int x,
+            final int listY,
+            final int width,
+            final int index
+    ) {
+        final int rowY = listY + index * STRUCTURE_ROW_HEIGHT;
+        final boolean hovered = this.isInside(mouseX, mouseY, x, rowY, width, STRUCTURE_ROW_HEIGHT - 1);
+        if (hovered) {
+            guiGraphics.fill(x, rowY, x + width, rowY + STRUCTURE_ROW_HEIGHT - 1, HOVERED_ROW_COLOR);
+        }
+        final ItemStack icon = block.icon();
+        if (!icon.isEmpty()) {
+            guiGraphics.renderFakeItem(icon, x + 1, rowY + 1);
+        }
+        final Component position = Component.translatable(
+                "screen.skyresources3.guide.structure_position",
+                block.position()
+        );
+        final int positionWidth = this.font.width(position);
+        guiGraphics.drawString(this.font, position, x + ICON_SIZE + 6, rowY + 5, MUTED_TEXT_COLOR, false);
+        guiGraphics.drawString(
+                this.font,
+                this.truncate(icon.getHoverName().getString(), width - ICON_SIZE - positionWidth - 18),
+                x + ICON_SIZE + positionWidth + 10,
+                rowY + 5,
+                TEXT_COLOR,
+                false
+        );
+        if (hovered && !icon.isEmpty()) {
+            guiGraphics.setTooltipForNextFrame(this.font, icon, mouseX, mouseY);
+        }
+    }
+
     private List<GuidePage> currentCategoryPages() {
         final List<String> categories = GuidePages.categories();
         if (categories.isEmpty()) {
@@ -368,6 +572,7 @@ public final class GuideScreen extends Screen {
         if (categories.isEmpty()) {
             return;
         }
+        this.clearTransientView();
         this.selectedCategoryIndex = Math.floorMod(this.selectedCategoryIndex + direction, categories.size());
         this.selectedPageIndex = 0;
     }
@@ -377,6 +582,7 @@ public final class GuideScreen extends Screen {
         if (pages.isEmpty()) {
             return;
         }
+        this.clearTransientView();
         this.selectedPageIndex = Math.floorMod(this.selectedPageIndex + direction, pages.size());
     }
 
@@ -431,8 +637,119 @@ public final class GuideScreen extends Screen {
         if (index < 0 || index >= Math.min(this.visibleResultRows(panelY, panelHeight), pages.size())) {
             return false;
         }
+        this.clearTransientView();
         this.selectedPageIndex = index;
         return true;
+    }
+
+    private boolean selectActionAt(final double mouseX, final double mouseY) {
+        if (this.currentStructure != null) {
+            return false;
+        }
+        final GuidePage page = this.selectedPage();
+        if (page == null || page.actions().isEmpty()) {
+            return false;
+        }
+
+        final int panelX = this.panelX();
+        final int panelY = this.panelY();
+        final int panelWidth = this.panelWidth();
+        final int panelHeight = this.panelHeight();
+        final boolean wideIndex = this.hasWideIndex(panelWidth);
+        final int contentX = wideIndex
+                ? panelX + PANEL_PADDING + this.indexWidth(panelWidth) + INDEX_GAP
+                : panelX + PANEL_PADDING;
+        final int iconY = panelY + 58 + 24;
+        final int bodyY = iconY + 30;
+        final int bodyBottom = panelY + panelHeight - FOOTER_HEIGHT;
+        final int contentWidth = wideIndex
+                ? panelWidth - PANEL_PADDING * 2 - this.indexWidth(panelWidth) - INDEX_GAP
+                : panelWidth - PANEL_PADDING * 2;
+        final int visibleRows = this.visibleActionRows(page.actions(), bodyBottom - bodyY);
+        final int actionTop = bodyBottom - visibleRows * ACTION_ROW_HEIGHT;
+        if (visibleRows <= 0 || !this.isInside((int) mouseX, (int) mouseY, contentX, actionTop, contentWidth, visibleRows * ACTION_ROW_HEIGHT)) {
+            return false;
+        }
+
+        final int actionIndex = ((int) mouseY - actionTop) / ACTION_ROW_HEIGHT;
+        if (actionIndex < 0 || actionIndex >= Math.min(visibleRows, page.actions().size())) {
+            return false;
+        }
+        return this.handleAction(page.actions().get(actionIndex));
+    }
+
+    private boolean handleAction(final GuideAction action) {
+        return switch (action.type()) {
+            case LINK -> this.openGuidePage(action.target());
+            case IMAGE -> this.openStructure(action.target());
+            case RECIPE -> {
+                this.feedbackMessage = Component.translatable("screen.skyresources3.guide.recipe_pending", action.label());
+                yield true;
+            }
+        };
+    }
+
+    private boolean openGuidePage(final String pageId) {
+        final GuidePage target = GuidePages.find(pageId).orElse(null);
+        if (target == null) {
+            this.feedbackMessage = Component.translatable("screen.skyresources3.guide.missing_page", pageId);
+            return true;
+        }
+        final List<String> categories = GuidePages.categories();
+        final int categoryIndex = categories.indexOf(target.categoryKey());
+        if (categoryIndex < 0) {
+            this.feedbackMessage = Component.translatable("screen.skyresources3.guide.missing_page", pageId);
+            return true;
+        }
+
+        this.searchText = "";
+        if (this.searchBox != null) {
+            this.searchBox.setValue("");
+        }
+        this.clearTransientView();
+        this.selectedCategoryIndex = categoryIndex;
+        final List<GuidePage> categoryPages = this.currentCategoryPages();
+        this.selectedPageIndex = Math.max(0, categoryPages.indexOf(target));
+        return true;
+    }
+
+    private boolean openStructure(final String structureId) {
+        this.currentStructure = GuideStructures.find(structureId).orElse(null);
+        if (this.currentStructure == null) {
+            this.feedbackMessage = Component.translatable("screen.skyresources3.guide.missing_structure", structureId);
+        } else {
+            this.feedbackMessage = null;
+        }
+        return true;
+    }
+
+    private GuidePage selectedPage() {
+        final List<GuidePage> pages = this.visiblePages();
+        if (pages.isEmpty()) {
+            return null;
+        }
+        return pages.get(this.selectedPageIndex);
+    }
+
+    private int visibleActionRows(final List<GuideAction> actions, final int availableHeight) {
+        return Math.min(actions.size(), Math.min(ACTION_MAX_ROWS, Math.max(0, availableHeight / ACTION_ROW_HEIGHT)));
+    }
+
+    private Component actionTooltip(final GuideAction action) {
+        return switch (action.type()) {
+            case LINK -> Component.translatable("screen.skyresources3.guide.action_tooltip.link");
+            case RECIPE -> Component.translatable("screen.skyresources3.guide.action_tooltip.recipe");
+            case IMAGE -> Component.translatable("screen.skyresources3.guide.action_tooltip.image");
+        };
+    }
+
+    private void closeCurrentView() {
+        this.onClose();
+    }
+
+    private void clearTransientView() {
+        this.currentStructure = null;
+        this.feedbackMessage = null;
     }
 
     private int indexWidth(final int panelWidth) {
