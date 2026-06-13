@@ -82,6 +82,20 @@ public final class HealthGemItem extends Item {
                 .getIntOr(HEALTH_KEY, 0);
     }
 
+    public static boolean canReceiveHealth(final ItemStack itemStack, final int health) {
+        return health > 0
+                && itemStack.getItem() instanceof HealthGemItem
+                && getHealthInjected(itemStack) + health <= Config.healthGemMaxHealth;
+    }
+
+    public static boolean addStoredHealth(final ItemStack itemStack, final int health) {
+        if (!canReceiveHealth(itemStack, health)) {
+            return false;
+        }
+        setHealthInjected(itemStack, getHealthInjected(itemStack) + health);
+        return true;
+    }
+
     private static boolean canInject(final Player player, final ItemStack itemStack) {
         final ItemCooldowns cooldowns = player.getCooldowns();
         return !cooldowns.isOnCooldown(itemStack)

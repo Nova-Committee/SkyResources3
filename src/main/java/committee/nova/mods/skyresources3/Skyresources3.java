@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.event.HealthGemEvents;
 import committee.nova.mods.skyresources3.event.RockGrinderEvents;
 import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModCapabilities;
 import committee.nova.mods.skyresources3.registry.ModCreativeTabs;
 import committee.nova.mods.skyresources3.registry.ModDataComponents;
@@ -31,6 +32,7 @@ public final class Skyresources3 {
         modEventBus.addListener(ModCapabilities::register);
 
         ModBlocks.register(modEventBus);
+        ModBlockEntityTypes.register(modEventBus);
         ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
         ModEntityTypes.register(modEventBus);
