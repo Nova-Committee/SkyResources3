@@ -13,6 +13,7 @@
 ## Compatibility Decisions
 
 - [x] Legacy ARR resources are not automatically relicensed by being present in the MIT target project. Until the project owner records an explicit relicensing decision, migrated legacy assets must be treated as project-provided/legacy-derived assets that need a license note or later replacement.
+- [x] Repository license files are now present: `LICENSE` contains the MIT license matching `gradle.properties`, and `RESOURCE_LICENSE.md` documents the conservative boundary for legacy ARR-derived resources.
 - [x] Old VoidIslandControl event broadcast hooks are not a migration blocker for this task. The current mod has the core behavior built in and no verified external 1.12.2 VIC API consumers in the 1.21.11 target.
 - [x] Existing overworld island saved records should not be silently moved to `skyresources3:void_island`. If old-save support becomes required, add an explicit migration command/tool so the owner can control the operation.
 - [x] External Mojang profile lookup, rename history, and duplicate cached-name conflict handling stay outside the local-cache MVP.
@@ -22,6 +23,7 @@
 - [x] `./gradlew.bat runData` passed on 2026-06-14; data generator reported `BUILD SUCCESSFUL` and `written: 0`.
 - [x] `./gradlew.bat runGameTestServer` passed on 2026-06-14 with Gradle exit code 0.
 - [x] `./gradlew.bat build` passed on 2026-06-14; final task result was `BUILD SUCCESSFUL`.
+- [x] Controlled `./gradlew.bat runClient --no-daemon` startup smoke captured client loading evidence on 2026-06-14; see `plans/client-smoke-resource-license-closeout-checklist.md`.
 - [x] `git diff --check` passed on 2026-06-14.
 - [x] `git diff --cached --check` passed on 2026-06-14.
 - [x] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"` passed on 2026-06-14; Serena resolved the project as Java with LSP configuration.
@@ -31,7 +33,7 @@
 
 ## Manual Validation
 
-- [ ] `./gradlew.bat runClient` GUI smoke test is still required before a release tag because the automated session cannot prove visual interaction:
+- [ ] `./gradlew.bat runClient` GUI interaction smoke test is still required before a release tag because a timed automated startup can prove client boot/loading, but not user-facing clicks:
   - Guide screen opens and search/action links work.
   - JEI recipe action degrades safely when JEI is absent or opens recipes when JEI is present.
   - Representative machine menus open without client-only classloading or layout errors.

@@ -36,6 +36,8 @@ Core principles for this repository:
 - Use Java 21 language level, as configured by `java.toolchain.languageVersion`.
 - Keep source packages under `committee.nova.mods.skyresources3`.
 - Keep resource paths under the `skyresources3` namespace.
+- Keep license metadata aligned: when `gradle.properties` `mod_license` changes, verify the repository root `LICENSE`
+  and any resource-specific license notes such as `RESOURCE_LICENSE.md` still match the intended release boundary.
 - Use `Skyresources3.MODID` for annotation and registry namespace references in Java.
 - Register blocks, items, and creative tabs through `DeferredRegister` and register those deferred registers on the mod event bus.
 - Keep config keys and runtime config fields centralized in `Config.java` until the file becomes too large.
