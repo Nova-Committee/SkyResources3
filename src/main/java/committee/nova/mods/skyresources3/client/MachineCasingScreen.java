@@ -102,6 +102,14 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                     TEXT_COLOR,
                     false
             );
+            guiGraphics.drawString(
+                    this.font,
+                    this.condenserProgressText(),
+                    19,
+                    34,
+                    this.menu.condenserMaxProgress() > 0 ? 0x207020 : 0x902020,
+                    false
+            );
         } else if (this.menu.hasHeater()) {
             guiGraphics.drawString(
                     this.font,
@@ -120,5 +128,16 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    private Component condenserProgressText() {
+        if (this.menu.condenserMaxProgress() <= 0) {
+            return Component.translatable("screen.skyresources3.machine_casing.condenser.idle");
+        }
+        return Component.translatable(
+                "screen.skyresources3.machine_casing.condenser.progress",
+                this.menu.condenserProgress(),
+                this.menu.condenserMaxProgress()
+        );
     }
 }

@@ -33,6 +33,8 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
     private final DataSlot usesCombustionChamber;
     private final DataSlot installedMachineMode;
     private final DataSlot validMultiblock;
+    private final DataSlot condenserProgress;
+    private final DataSlot condenserMaxProgress;
 
     public MachineCasingMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
@@ -78,6 +80,8 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
         this.usesCombustionChamber = this.addDataSlot(usesCombustionChamberSlot(data.blockEntity()));
         this.installedMachineMode = this.addDataSlot(installedMachineModeSlot(data.blockEntity()));
         this.validMultiblock = this.addDataSlot(validMultiblockSlot(playerInventory, data));
+        this.condenserProgress = this.addDataSlot(condenserProgressSlot(data.blockEntity()));
+        this.condenserMaxProgress = this.addDataSlot(condenserMaxProgressSlot(data.blockEntity()));
     }
 
     public static void writeClientSideData(final RegistryFriendlyByteBuf buffer, final BlockPos pos) {
@@ -116,6 +120,14 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
 
     public boolean hasCondenser() {
         return this.installedMachineMode() == MachineCasingBlockEntity.MACHINE_MODE_CONDENSER;
+    }
+
+    public int condenserProgress() {
+        return this.condenserProgress.get();
+    }
+
+    public int condenserMaxProgress() {
+        return this.condenserMaxProgress.get();
     }
 
     public int installedMachineMode() {
@@ -279,6 +291,38 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
             @Override
             public int get() {
                 return data.blockEntity().hasValidMultiblock(playerInventory.player.level()) ? 1 : 0;
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
+    private static DataSlot condenserProgressSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return blockEntity.condenserProgress();
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
+    private static DataSlot condenserMaxProgressSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return blockEntity.condenserMaxProgress();
             }
 
             @Override

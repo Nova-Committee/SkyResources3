@@ -1,0 +1,13 @@
+{
+  "type": "skyresources3:condenser",
+  "catalyst": "skyresources3:iron_ore_alchemical_dust",
+  "output": {
+    "count": 1,
+    "id": "minecraft:iron_ingot"
+  },
+  "parameter": 137.2,
+  "source": {
+    "type": "fluid",
+    "id": "skyresources3:crystal_fluid"
+  }
+}

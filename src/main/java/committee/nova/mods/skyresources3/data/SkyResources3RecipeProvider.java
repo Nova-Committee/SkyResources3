@@ -1,7 +1,9 @@
 package committee.nova.mods.skyresources3.data;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
+import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.recipe.ProcessIngredient;
 import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
@@ -12,6 +14,7 @@ import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -28,6 +31,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -448,6 +452,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
 
         this.buildProcessRecipes();
         this.buildCrucibleRecipes();
+        this.buildCondenserRecipes();
     }
 
     private void cuttingKnife(final ItemLike result, final ItemLike material, final String unlockName) {
@@ -630,6 +635,44 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 "lava",
                 new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME),
                 input(ModBlocks.BLAZE_POWDER_BLOCK.get())
+        );
+    }
+
+    private void buildCondenserRecipes() {
+        this.condenserFluidRecipe("iron_ingot", OreAlchemyDust.IRON, Items.IRON_INGOT);
+        this.condenserFluidRecipe("gold_ingot", OreAlchemyDust.GOLD, Items.GOLD_INGOT);
+        this.condenserFluidRecipe("copper_ingot", OreAlchemyDust.COPPER, Items.COPPER_INGOT);
+        this.condenserBlockRecipe("iron_ore", OreAlchemyDust.IRON, Blocks.STONE, Blocks.IRON_ORE);
+        this.condenserBlockRecipe("gold_ore", OreAlchemyDust.GOLD, Blocks.STONE, Blocks.GOLD_ORE);
+        this.condenserBlockRecipe("copper_ore", OreAlchemyDust.COPPER, Blocks.STONE, Blocks.COPPER_ORE);
+    }
+
+    private void condenserFluidRecipe(
+            final String name,
+            final OreAlchemyDust dust,
+            final ItemLike output
+    ) {
+        this.condenserRecipe(
+                "crystal_fluid/" + name,
+                dust,
+                CondenserRecipe.Source.fluid(BuiltInRegistries.FLUID.getKey(ModFluids.CRYSTAL_FLUID.get())),
+                condenserFluidParameter(dust),
+                output
+        );
+    }
+
+    private void condenserBlockRecipe(
+            final String name,
+            final OreAlchemyDust dust,
+            final Block source,
+            final ItemLike output
+    ) {
+        this.condenserRecipe(
+                BuiltInRegistries.BLOCK.getKey(source).getPath() + "/" + name,
+                dust,
+                CondenserRecipe.Source.block(BuiltInRegistries.BLOCK.getKey(source)),
+                condenserBlockParameter(dust),
+                output
         );
     }
 
@@ -1213,6 +1256,26 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         );
     }
 
+    private void condenserRecipe(
+            final String name,
+            final OreAlchemyDust dust,
+            final CondenserRecipe.Source source,
+            final float parameter,
+            final ItemLike output
+    ) {
+        this.output.accept(
+                id("condenser/" + name),
+                new CondenserRecipe(
+                        "",
+                        Ingredient.of(ModItems.ORE_ALCHEMICAL_DUSTS.get(dust).get()),
+                        source,
+                        new ItemStack(output),
+                        parameter
+                ),
+                null
+        );
+    }
+
     private void processRecipe(
             final String process,
             final String name,
@@ -1248,6 +1311,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
 
     private ProcessIngredient input(final TagKey<Item> tag, final int count) {
         return new ProcessIngredient(this.tag(tag), count);
+    }
+
+    private static float condenserFluidParameter(final OreAlchemyDust dust) {
+        return (float) (Math.pow(1.4D, dust.legacyRarity()) * 50.0D);
+    }
+
+    private static float condenserBlockParameter(final OreAlchemyDust dust) {
+        return (float) (Math.pow(1.72D, dust.legacyRarity()) * 62.0D);
     }
 
     private static ResourceKey<Recipe<?>> id(final String path) {

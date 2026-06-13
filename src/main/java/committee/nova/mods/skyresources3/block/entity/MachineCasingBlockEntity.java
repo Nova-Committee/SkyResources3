@@ -7,6 +7,8 @@ import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.machine.CombustionRecipeLogic;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
+import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
+import committee.nova.mods.skyresources3.recipe.CondenserRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
@@ -16,7 +18,9 @@ import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -32,11 +36,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public final class MachineCasingBlockEntity extends BlockEntity {
     public static final int FUEL_SLOT = 0;
@@ -53,6 +60,11 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     private static final String ITEM_HEAT_MAX_KEY = "item_heat_max";
     private static final String HEAT_PER_TICK_KEY = "heat_per_tick";
     private static final String POWERED_KEY = "powered";
+    private static final String CONDENSER_TIME_KEY = "condenser_time";
+    private static final String CONDENSER_MAX_TIME_KEY = "condenser_max_time";
+    private static final String CONDENSER_CATALYST_LEFT_KEY = "condenser_catalyst_left";
+    private static final String CONDENSER_CATALYST_KEY = "condenser_catalyst";
+    private static final String CONDENSER_RECIPE_HASH_KEY = "condenser_recipe_hash";
 
     private final FuelItemHandler fuelItems = new FuelItemHandler(this);
     private ItemStack heater = ItemStack.EMPTY;
@@ -60,6 +72,11 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     private float itemHeat;
     private float itemHeatMax;
     private float heatPerTick;
+    private int condenserTime;
+    private int condenserMaxTime;
+    private float condenserCatalystLeft;
+    private ItemStack condenserCatalyst = ItemStack.EMPTY;
+    private int condenserRecipeHash;
     private boolean powered;
 
     public MachineCasingBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -76,6 +93,11 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         this.itemHeatMax = input.getFloatOr(ITEM_HEAT_MAX_KEY, 0.0F);
         this.heatPerTick = input.getFloatOr(HEAT_PER_TICK_KEY, 0.0F);
         this.powered = input.getBooleanOr(POWERED_KEY, false);
+        this.condenserTime = input.getIntOr(CONDENSER_TIME_KEY, 0);
+        this.condenserMaxTime = input.getIntOr(CONDENSER_MAX_TIME_KEY, 0);
+        this.condenserCatalystLeft = input.getFloatOr(CONDENSER_CATALYST_LEFT_KEY, 0.0F);
+        this.condenserCatalyst = input.read(CONDENSER_CATALYST_KEY, HEATER_CODEC).orElse(ItemStack.EMPTY);
+        this.condenserRecipeHash = input.getIntOr(CONDENSER_RECIPE_HASH_KEY, 0);
     }
 
     @Override
@@ -88,6 +110,11 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         output.putFloat(ITEM_HEAT_MAX_KEY, this.itemHeatMax);
         output.putFloat(HEAT_PER_TICK_KEY, this.heatPerTick);
         output.putBoolean(POWERED_KEY, this.powered);
+        output.putInt(CONDENSER_TIME_KEY, this.condenserTime);
+        output.putInt(CONDENSER_MAX_TIME_KEY, this.condenserMaxTime);
+        output.putFloat(CONDENSER_CATALYST_LEFT_KEY, this.condenserCatalystLeft);
+        output.store(CONDENSER_CATALYST_KEY, HEATER_CODEC, this.condenserCatalyst);
+        output.putInt(CONDENSER_RECIPE_HASH_KEY, this.condenserRecipeHash);
     }
 
     @Override
@@ -104,12 +131,15 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             }
         } else if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
             this.provideHeat(level, heatProvider.variant());
+        } else if (this.heater.getItem() instanceof CondenserItem condenser) {
+            this.condense(level, condenser.variant());
         } else {
             this.currentHeat = 0.0F;
             this.itemHeat = 0.0F;
             this.itemHeatMax = 0.0F;
             this.heatPerTick = 0.0F;
             this.powered = level.hasNeighborSignal(this.worldPosition);
+            this.clearCondenserRuntime();
         }
         this.setChanged();
     }
@@ -158,6 +188,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         this.itemHeat = 0.0F;
         this.itemHeatMax = 0.0F;
         this.heatPerTick = 0.0F;
+        this.clearCondenserRuntime();
         this.setChanged();
         return removed;
     }
@@ -220,6 +251,14 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return Math.round(this.heatPerTick);
     }
 
+    public int condenserProgress() {
+        return this.condenserTime;
+    }
+
+    public int condenserMaxProgress() {
+        return this.condenserMaxTime;
+    }
+
     public boolean hasValidMultiblock(final Level level) {
         final BlockPos chamber = this.worldPosition.above();
         return level.getBlockState(chamber).isAir()
@@ -276,6 +315,171 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         container.setItem(0, this.fuelItems.stack(FUEL_SLOT).copy());
         container.setItem(1, this.heater.copy());
         Containers.dropContents(this.level, this.worldPosition, container);
+    }
+
+    private void condense(final ServerLevel level, final MachineVariant condenserVariant) {
+        this.currentHeat = 0.0F;
+        this.itemHeat = 0.0F;
+        this.itemHeatMax = 0.0F;
+        this.heatPerTick = 0.0F;
+        this.powered = level.hasNeighborSignal(this.worldPosition);
+        if (this.powered) {
+            return;
+        }
+
+        final BlockPos sourcePos = this.worldPosition.above();
+        final Optional<CondenserRecipe.Source> source = this.condenserSource(level, sourcePos);
+        if (source.isEmpty()) {
+            this.resetCondenserProgress();
+            return;
+        }
+
+        final ItemStack catalyst = this.activeCondenserCatalyst();
+        final Optional<RecipeHolder<CondenserRecipe>> holder = CondenserRecipes.find(level, catalyst, source.get());
+        if (holder.isEmpty()) {
+            this.resetCondenserProgress();
+            return;
+        }
+
+        final CondenserRecipe recipe = holder.get().value();
+        final int recipeHash = recipe.runtimeKeyHash();
+        if (this.condenserRecipeHash != recipeHash) {
+            this.condenserTime = 0;
+            this.condenserRecipeHash = recipeHash;
+        }
+        this.condenserMaxTime = this.condenserMaxTime(recipe, condenserVariant);
+
+        if (this.condenserCatalystLeft <= 0.0F && !this.consumeCondenserCatalyst(recipe)) {
+            this.resetCondenserProgress();
+            return;
+        }
+
+        if (this.condenserTime < this.condenserMaxTime) {
+            this.condenserTime++;
+            this.condenserCatalystLeft = Math.max(
+                    0.0F,
+                    this.condenserCatalystLeft - this.condenserCatalystDrainPerTick(recipe, condenserVariant)
+            );
+            this.playCondenserEffects(level);
+            if (this.condenserTime < this.condenserMaxTime) {
+                return;
+            }
+        }
+
+        if (!this.routeCondenserOutput(level, recipe.output())) {
+            return;
+        }
+
+        level.setBlock(sourcePos, Blocks.AIR.defaultBlockState(), 3);
+        this.clearAdjacentFlowingFluids(level, sourcePos);
+        this.condenserTime = 0;
+        if (this.condenserCatalystLeft <= 0.0F) {
+            this.condenserCatalyst = ItemStack.EMPTY;
+        }
+    }
+
+    private Optional<CondenserRecipe.Source> condenserSource(final ServerLevel level, final BlockPos sourcePos) {
+        final BlockState state = level.getBlockState(sourcePos);
+        final FluidState fluidState = state.getFluidState();
+        if (!fluidState.isEmpty() && fluidState.isSource()) {
+            final Identifier id = BuiltInRegistries.FLUID.getKey(fluidState.getType());
+            return Optional.of(CondenserRecipe.Source.fluid(id));
+        }
+        if (state.isAir()) {
+            return Optional.empty();
+        }
+        return Optional.of(CondenserRecipe.Source.block(BuiltInRegistries.BLOCK.getKey(state.getBlock())));
+    }
+
+    private ItemStack activeCondenserCatalyst() {
+        if (this.condenserCatalystLeft > 0.0F && !this.condenserCatalyst.isEmpty()) {
+            return this.condenserCatalyst;
+        }
+        return this.fuelItems.stack(FUEL_SLOT);
+    }
+
+    private boolean consumeCondenserCatalyst(final CondenserRecipe recipe) {
+        final ItemStack slotStack = this.fuelItems.stack(FUEL_SLOT);
+        if (!recipe.isCatalyst(slotStack)) {
+            return false;
+        }
+
+        final ItemStack nextCatalyst = slotStack.copyWithCount(1);
+        if (!ItemStack.isSameItemSameComponents(this.condenserCatalyst, nextCatalyst)) {
+            this.condenserTime = 0;
+        }
+        this.condenserCatalyst = nextCatalyst;
+        this.condenserCatalystLeft = 1.0F;
+        slotStack.shrink(1);
+        if (slotStack.isEmpty()) {
+            this.fuelItems.setStack(FUEL_SLOT, ItemStack.EMPTY);
+        }
+        return true;
+    }
+
+    private int condenserMaxTime(final CondenserRecipe recipe, final MachineVariant condenserVariant) {
+        return Math.max(1, Math.round(recipe.parameter() / Math.max(0.001F, condenserVariant.speed())));
+    }
+
+    private float condenserCatalystDrainPerTick(
+            final CondenserRecipe recipe,
+            final MachineVariant condenserVariant
+    ) {
+        final double parameter = Math.max(1.0D, recipe.parameter());
+        final double efficiency = Math.max(0.001D, this.combinedEfficiency(condenserVariant));
+        return (float) (Math.pow(parameter, 1.3D) / 50.0D / (2400.0D * parameter / 50.0D * efficiency));
+    }
+
+    private boolean routeCondenserOutput(final ServerLevel level, final ItemStack output) {
+        final BlockPos outputPos = this.worldPosition.below();
+        final ResourceHandler<ItemResource> handler =
+                level.getCapability(Capabilities.Item.BLOCK, outputPos, Direction.UP);
+        if (handler == null) {
+            Containers.dropItemStack(
+                    level,
+                    outputPos.getX() + 0.5D,
+                    outputPos.getY() + 0.5D,
+                    outputPos.getZ() + 0.5D,
+                    output.copy()
+            );
+            return true;
+        }
+
+        try (Transaction transaction = Transaction.openRoot()) {
+            final int inserted = handler.insert(ItemResource.of(output), output.getCount(), transaction);
+            if (inserted != output.getCount()) {
+                return false;
+            }
+            transaction.commit();
+            return true;
+        }
+    }
+
+    private void clearAdjacentFlowingFluids(final ServerLevel level, final BlockPos sourcePos) {
+        for (final Direction direction : Direction.Plane.HORIZONTAL) {
+            final BlockPos neighbor = sourcePos.relative(direction);
+            final FluidState fluidState = level.getFluidState(neighbor);
+            if (!fluidState.isEmpty() && !fluidState.isSource()) {
+                level.setBlock(neighbor, Blocks.AIR.defaultBlockState(), 3);
+            }
+        }
+    }
+
+    private void playCondenserEffects(final ServerLevel level) {
+        if (level.getGameTime() % 10L != 0L) {
+            return;
+        }
+        level.sendParticles(
+                ParticleTypes.SMOKE,
+                this.worldPosition.getX() + 0.5D,
+                this.worldPosition.getY() + 1.1D,
+                this.worldPosition.getZ() + 0.5D,
+                2,
+                0.2D,
+                0.1D,
+                0.2D,
+                0.01D
+        );
     }
 
     private void heatUp(final ServerLevel level, final MachineVariant heaterVariant) {
@@ -459,6 +663,9 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     private boolean isValidFuel(final ItemStack stack) {
+        if (this.heater.getItem() instanceof CondenserItem) {
+            return this.level instanceof ServerLevel serverLevel && CondenserRecipes.hasCatalyst(serverLevel, stack);
+        }
         final MachineVariant variant = this.installedFuelVariant();
         if (variant == null || this.level == null) {
             return false;
@@ -474,6 +681,18 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             return heatProvider.variant();
         }
         return null;
+    }
+
+    private void resetCondenserProgress() {
+        this.condenserTime = 0;
+        this.condenserMaxTime = 0;
+        this.condenserRecipeHash = 0;
+    }
+
+    private void clearCondenserRuntime() {
+        this.resetCondenserProgress();
+        this.condenserCatalystLeft = 0.0F;
+        this.condenserCatalyst = ItemStack.EMPTY;
     }
 
     private boolean isStructureBlockValid(final Level level, final BlockPos chamber, final BlockPos pos) {

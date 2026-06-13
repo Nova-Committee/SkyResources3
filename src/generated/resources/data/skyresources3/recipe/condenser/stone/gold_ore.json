@@ -1,0 +1,13 @@
+{
+  "type": "skyresources3:condenser",
+  "catalyst": "skyresources3:gold_ore_alchemical_dust",
+  "output": {
+    "count": 1,
+    "id": "minecraft:gold_ore"
+  },
+  "parameter": 933.3272,
+  "source": {
+    "type": "block",
+    "id": "minecraft:stone"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "skyresources3:condenser",
+  "catalyst": "skyresources3:copper_ore_alchemical_dust",
+  "output": {
+    "count": 1,
+    "id": "minecraft:copper_ore"
+  },
+  "parameter": 106.64,
+  "source": {
+    "type": "block",
+    "id": "minecraft:stone"
+  }
+}

@@ -4,7 +4,7 @@
 
 - Port the old casing-installed Condenser machine item entry point.
 - Reuse the existing Machine Casing installed-machine workflow instead of adding a new block.
-- Keep Condenser runtime recipes deferred until the ore alchemical dust matrix and a fluid-aware condenser recipe contract are migrated.
+- Keep the item/install slice separate from the later runtime recipe contract.
 
 ## Legacy Behavior Notes
 
@@ -21,7 +21,7 @@
 - [x] Allow Machine Casings to install Condensers without changing the existing saved installed-machine key.
 - [x] Expose an installed-machine mode to the menu so the screen does not label Condensers as Heat Providers.
 - [x] Add datagen recipes, manual item model definitions, texture, and language entries.
-- [ ] Add condenser runtime recipes after ore alchemical dusts and a fluid-aware recipe contract are available.
+- [x] Add condenser runtime recipes after ore alchemical dusts and a fluid-aware recipe contract are available.
 
 ## Verification
 

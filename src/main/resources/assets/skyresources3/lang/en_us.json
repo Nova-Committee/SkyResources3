@@ -69,6 +69,8 @@
   "screen.skyresources3.machine_casing.heat_provider.active": "Heat Provider: Active",
   "screen.skyresources3.machine_casing.heat_provider.idle": "Heat Provider: Idle",
   "screen.skyresources3.machine_casing.condenser.installed": "Condenser: Installed",
+  "screen.skyresources3.machine_casing.condenser.progress": "Progress: %s / %s ticks",
+  "screen.skyresources3.machine_casing.condenser.idle": "Progress: Idle",
   "block.skyresources3.combustion_collector": "Combustion Collector",
   "block.skyresources3.combustion_controller": "Smart Combustion Controller",
   "container.skyresources3.combustion_collector": "Combustion Collector",

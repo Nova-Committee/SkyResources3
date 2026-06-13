@@ -204,8 +204,7 @@ systems that read casing-provided heat such as the Crucible.
   saves that already installed combustion heaters.
 - Combustion heaters own combustion multiblock heat accumulation and pulse crafting.
 - Heat providers own direct heat-source output for blocks above them, especially Crucibles.
-- Condensers may be installed in casings, but their runtime catalyst/fluid recipes remain deferred until ore
-  alchemical dusts and a fluid-aware condenser recipe contract are available.
+- Condensers own fluid/block-aware world-source recipe execution and use the casing slot as their catalyst slot.
 - The casing fuel slot validates against the currently installed machine variant; if no installed machine exists, the
   slot rejects insertion.
 - Heat provider output is `variant.heatPerTick()` while active and `0` while redstone-powered or out of fuel.
@@ -223,7 +222,9 @@ systems that read casing-provided heat such as the Crucible.
 | Fuel does not match installed machine variant | Reject through slot/menu/capability validation |
 | Heat provider is redstone-powered | Report `0` heat and do not consume new fuel |
 | Combustion heater installed | Continue using combustion chamber validation and controller/collector routing |
-| Condenser installed before condenser recipes exist | Show condenser mode, reject fuel/catalyst insertion, and do not run heat logic |
+| Condenser is redstone-powered | Pause condenser progress without consuming a new catalyst or source |
+| Condenser has no matching source above | Reset progress display, keep any partially consumed stored catalyst |
+| Condenser output below is blocked by a full item handler | Keep completed progress and retry output without clearing the source |
 
 ### 5. Good/Base/Bad Cases
 
@@ -259,6 +260,106 @@ Correct:
 final int heat = HeatSources.getHeatSourceValue(level, this.worldPosition.below());
 if (heat <= 0) {
     return 0;
+}
+```
+
+## Condenser Recipe Contract
+
+### 1. Scope / Trigger
+
+Use this contract when changing `CondenserRecipe`, `CondenserRecipes`, condenser data generation, or
+`MachineCasingBlockEntity` Condenser runtime behavior.
+
+### 2. Signatures
+
+- Recipe model:
+  ```java
+  public final class CondenserRecipe implements Recipe<CondenserRecipeInput>
+  ```
+- Runtime lookup:
+  ```java
+  public static Optional<RecipeHolder<CondenserRecipe>> find(
+          ServerLevel level,
+          ItemStack catalyst,
+          CondenserRecipe.Source source
+  )
+  ```
+- Casing runtime:
+  ```java
+  private void condense(ServerLevel level, MachineVariant condenserVariant)
+  ```
+
+### 3. Contracts
+
+#### JSON Contract
+
+Generated condenser recipes live under:
+
+```text
+src/generated/resources/data/skyresources3/recipe/condenser/<source>/<name>.json
+```
+
+Every condenser recipe must contain:
+
+- `catalyst`: a vanilla/NeoForge `Ingredient`; one item is consumed when no stored catalyst charge remains.
+- `source`: an object with `type` (`fluid` or `block`) and `id` (`namespace:path`) for the world block above the casing.
+- `output`: a non-empty item stack.
+- `parameter`: positive legacy timing value; runtime converts it to progress ticks through the installed Condenser speed.
+- `group`: optional string, defaulting to empty.
+
+#### Runtime Contracts
+
+- Condenser recipes use the dedicated `skyresources3:condenser` type; do not encode fluid or block world sources in
+  `SkyResourcesProcessRecipe`.
+- `CondenserRecipes.find` is the server-side lookup path for runtime execution.
+- The block above the casing is interpreted as a source fluid only when its fluid state is a source; otherwise a
+  non-air block is matched by block id.
+- Redstone power pauses the Condenser without clearing progress.
+- Successful completion clears the source above the casing, clears adjacent flowing fluid blocks, and sends the output
+  to an item handler below before falling back to dropping the item below.
+- Initial generated recipes should stay to stable vanilla/SkyResources content until the mod/tag integration policy is
+  explicit.
+
+### 4. Validation Matrix
+
+| Condition | Expected behavior |
+|---|---|
+| Slot item is not used by any condenser recipe | Reject through menu/capability insertion |
+| Source above is air or non-matching | No craft; progress display resets |
+| Source above is a flowing non-source fluid | No craft |
+| Source and catalyst match but output handler below is full | Do not clear source; retry output later |
+| No item handler exists below | Drop the condenser output below the casing |
+
+### 5. Good/Base/Bad Cases
+
+- Good: `MachineCasingBlockEntity` resolves a `CondenserRecipe.Source` from the world and calls `CondenserRecipes.find`.
+- Base: Data generation creates one JSON recipe per stable vanilla output and source pair.
+- Bad: Reusing `SkyResourcesProcessRecipe` for fluid/block world sources or duplicating condenser output tables in the
+  block entity.
+
+### 6. Tests Required
+
+- `./gradlew.bat compileJava`
+- `./gradlew.bat runData` when condenser recipes change
+- `./gradlew.bat build`
+- `./gradlew.bat runGameTestServer` for Condenser runtime or casing slot validation changes
+- `git diff --check`
+
+### 7. Wrong vs Correct
+
+Wrong:
+```java
+// Duplicates recipe behavior in the machine runtime.
+if (stack.is(ModItems.ORE_ALCHEMICAL_DUSTS.get(OreAlchemyDust.IRON).get())) {
+    return new ItemStack(Items.IRON_INGOT);
+}
+```
+
+Correct:
+```java
+final Optional<RecipeHolder<CondenserRecipe>> holder = CondenserRecipes.find(level, catalyst, source);
+if (holder.isEmpty()) {
+    return;
 }
 ```
 
@@ -313,6 +414,7 @@ Guidelines:
 - Use `ProcessIngredient` for counted inputs rather than encoding repeated items as repeated list entries.
 - Prefer item tags for old ore-dictionary-style inputs when the output does not depend on a specific variant.
 - Generate one recipe per distinct old output/parameter pair. For example, rock grinder gravel -> sand and gravel -> flint remain separate recipes because their chance parameters differ.
+- Generate condenser recipes from `SkyResources3RecipeProvider`; keep them under `recipe/condenser/<source>/<name>.json`.
 - Do not add fluid process JSON until the project has a fluid capability/storage design for 1.21.11.
 - Do not generate dynamic old ore-dictionary integration recipes until the target mod/tag policy is explicit. Prefer stable vanilla/SkyResources recipes first.
 
