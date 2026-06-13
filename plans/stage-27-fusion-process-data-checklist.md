@@ -9,6 +9,8 @@
 - [x] Confirmed old fusion `parameter` is the per-progress-tick catalyst drain; user-facing full-craft percentage is `parameter * 10000`.
 - [x] Generated fixed vanilla/SkyResources fusion recipes from `SkyResources3RecipeProvider`.
 - [x] Recorded fusion parameter semantics and dynamic ore-dictionary deferral in `.trellis/spec/backend/recipe-guidelines.md`.
+- [x] Follow-up: Fusion Table runtime now consumes `ProcessRecipes.FUSION` and the old catalyst yield values.
+- [x] Follow-up: Fusion Table menu/screen/network state is now implemented.
 
 ## Migrated Recipes
 
@@ -33,8 +35,6 @@
 
 ## Deferred
 
-- [ ] Fusion table block entity/menu/screen/runtime will consume `ProcessRecipes.FUSION` in a later machine migration slice.
-- [ ] Fusion catalyst item values wait for the fusion table runtime slice; old defaults are primus/secundus/tertius/quartus dust = `0.75`, `1.75`, `4.50`, `32.00`.
 - [ ] Dynamic ore-dictionary ore dust recipes beyond the stable vanilla iron, gold, and copper set wait for the target
   mod/tag integration policy.
 - [ ] CraftTweaker-style catalyst/recipe mutation is deferred until integration dependencies and scripting support are selected.
