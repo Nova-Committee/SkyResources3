@@ -24,6 +24,8 @@
 - [x] `./gradlew.bat runGameTestServer` passed again on 2026-06-14 with Gradle exit code 0.
 - [x] `./gradlew.bat build` passed again on 2026-06-14; final task result was `BUILD SUCCESSFUL`.
 - [x] Controlled `./gradlew.bat runClient --no-daemon` startup smoke captured client loading evidence on 2026-06-14; see `plans/client-smoke-resource-license-closeout-checklist.md`.
+- [x] A later desktop GUI smoke attempt on 2026-06-14 reached an existing local singleplayer world and found a guide-key
+  default conflict with Minecraft 1.21.11 `key.quickActions`; the guide default key was moved from `G` to `Y`.
 - [x] Guide/menu automated integrity coverage was added on 2026-06-14:
   - `GuideMenuGameTests.guide_data_integrity` verifies guide translation keys, inline action markers, link targets, recipe targets, structure targets, and structure block icons.
   - `GuideMenuGameTests.menu_type_registration` verifies all migrated machine menu type ids resolve through the runtime registry.
@@ -41,6 +43,7 @@
 
 - [ ] `./gradlew.bat runClient` GUI interaction smoke test is still required before a release tag because a timed automated startup can prove client boot/loading, but not user-facing clicks:
   - Follow `plans/client-manual-smoke-runbook.md` and record the result.
+  - Use the configured `key.skyresources3.guide` key; the default is now `Y`.
   - Guide screen opens and search/action links work.
   - JEI recipe action degrades safely when JEI is absent or opens recipes when JEI is present.
   - Representative machine menus open without client-only classloading or layout errors.

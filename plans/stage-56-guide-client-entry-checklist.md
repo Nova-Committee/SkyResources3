@@ -7,7 +7,7 @@
 - [x] Inspect current client setup and old guide/keybinding behavior.
 - [x] Verify NeoForge 1.21.11 key mapping and client tick APIs against local classpath.
 - [x] Add a client guide screen backed by `GuidePages`.
-- [x] Register a default `G` guide keybinding.
+- [x] Register a default `Y` guide keybinding.
 - [x] Add English translations for screen labels and keybinding names.
 - [x] Keep rich text, search, recipes, and image widgets deferred.
 

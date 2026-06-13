@@ -33,7 +33,7 @@ public final class SkyResources3Client {
     private static final KeyMapping OPEN_GUIDE = new KeyMapping(
             "key.skyresources3.guide",
             InputConstants.Type.KEYSYM,
-            InputConstants.KEY_G,
+            InputConstants.KEY_Y,
             KEY_CATEGORY
     );
 

@@ -1,7 +1,7 @@
 # Client Manual Smoke Runbook
 
 > Purpose: complete the final visual/click-through validation that headless Gradle gates and GameTests cannot prove.
-> Current startup evidence: `run/logs/latest.log` from 2026-06-14 04:12.
+> Current startup evidence: `run/logs/latest.log` from 2026-06-14 04:56.
 
 ## Preconditions
 
@@ -23,7 +23,8 @@
 
 ## Guide Smoke
 
-1. Join a local world and press `G` (`key.skyresources3.guide`) with no other screen open.
+1. Join a local world and press the configured `key.skyresources3.guide` key with no other screen open. The default is
+   `Y` to avoid Minecraft 1.21.11's built-in `G` quick-actions key.
 2. Confirm the `Sky Resources Guide` screen opens.
 3. Type `fusion` into the search box.
 4. Confirm search narrows results and selecting the Fusion Table page clears/jumps predictably.
@@ -79,5 +80,6 @@ When a human completes the click-through, update:
 - `plans/client-smoke-resource-license-closeout-checklist.md`
 - `plans/final-validation-compatibility-closeout-checklist.md`
 - `plans/final-migration-gap-audit.md`
+- `plans/client-gui-smoke-execution-evidence.md`
 
 Record the date, profile used, and any observed issue. Do not mark the manual item complete from startup logs alone.

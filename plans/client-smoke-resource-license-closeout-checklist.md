@@ -32,9 +32,17 @@
   - Minecraft and JEI texture atlases were created, including `minecraft:textures/atlas/gui.png-atlas` and `jei:textures/atlas/gui.png-atlas`.
 - [x] No crash marker was observed in the captured log tail.
 
+## Client GUI Smoke Execution Attempt
+
+- [x] A later desktop attempt on 2026-06-14 reached an existing local singleplayer world; see
+  `plans/client-gui-smoke-execution-evidence.md`.
+- [x] The attempt found that the guide default key `G` conflicted with Minecraft 1.21.11 `key.quickActions`.
+  The default guide key was moved to `Y`.
+- [x] No intentional Gradle/Java client process was left running after the GUI attempt.
+
 ## Still Manual Before Release
 
-- [ ] Follow `plans/client-manual-smoke-runbook.md` in a local client world and record the result.
+- [ ] Follow `plans/client-manual-smoke-runbook.md` in a focused local client world and record the remaining result.
 - [ ] Open guide screen and verify search/action links by clicking them.
 - [ ] Verify JEI recipe action opens recipes when JEI is present.
 - [ ] Verify JEI absence/fallback behavior in a separate no-JEI client run if packaging a no-JEI profile.
