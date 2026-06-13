@@ -58,7 +58,10 @@
 
 ### Main Changes
 
-(Add details)
+- Added `plans/final-validation-compatibility-closeout-checklist.md` with final validation evidence and manual GUI release-prep items.
+- Updated `plans/migration-plan.md` and `plans/final-migration-gap-audit.md` with ARR resource policy, VoidIslandControl compatibility decisions, old-save migration policy, and validation evidence.
+- Reclassified stale Stage 18/19 compatibility TODOs as non-blocking enhancements.
+- Archived `.trellis/tasks/06-14-final-validation-compatibility-closeout`.
 
 ### Git Commits
 
@@ -68,7 +71,13 @@
 
 ### Testing
 
-- [OK] (Add test results)
+- [OK] `./gradlew.bat runData`
+- [OK] `./gradlew.bat runGameTestServer`
+- [OK] `./gradlew.bat build`
+- [OK] `git diff --check`
+- [OK] `git diff --cached --check`
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
+- [OK] Targeted legacy network/resource namespace scans
 
 ### Status
 
@@ -443,6 +452,40 @@
 | Hash | Message |
 |------|---------|
 | `ea60c0e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 14: 最终验证兼容收口
+
+**Date**: 2026-06-14
+**Task**: 最终验证兼容收口
+**Branch**: `master`
+
+### Summary
+
+完成最终验证与兼容性收口：记录 ARR 资源策略、VIC 事件/旧档迁移取舍，运行 runData、runGameTestServer、build、空白检查、Serena Java/LSP 检查和旧网络/资源命名扫描，并归档 Trellis 任务。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2619a94` | (see git log) |
+| `943be73` | (see git log) |
 
 ### Testing
 
