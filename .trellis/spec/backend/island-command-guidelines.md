@@ -50,6 +50,10 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Island reset is restricted to personal island owners and currently rebuilds only the starter island footprint.
 - New islands are created in `skyresources3:void_island` when the data-pack dimension is available, with overworld fallback only for missing-dimension recovery.
 - `/island spawn` teleports to a generated spawn platform in `skyresources3:void_island` when available, with the old overworld origin-heightmap behavior as fallback.
+- Island protection currently uses a fixed horizontal radius around each island center, derived from `IslandRecord.home().below()`.
+- Island owners and members of the owner's `TeamSavedData` team may break, place, and right-click blocks inside that protected island range.
+- Visitors and unrelated players must not be allowed to break, place, or right-click blocks inside another team's protected island range.
+- Island protection handlers must run before custom world-mutating interaction handlers such as processing tools or cauldron cleaning.
 - Player-facing command messages use `Component.translatable` with keys in `assets/skyresources3/lang/en_us.json`.
 
 ### 4. Validation & Error Matrix
@@ -65,6 +69,9 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Visit target is offline -> reject visit.
 - Visit target has no own or team island -> reject visit.
 - Team member runs `/island reset confirm` without owning a personal island -> reject reset.
+- Non-member modifies another island's protected range -> cancel the event and show localized denial feedback.
+- Owner or team member modifies the protected range -> allow the event to continue.
+- Position is outside every known protected range -> leave the event untouched.
 
 ### 5. Good/Base/Bad Cases
 

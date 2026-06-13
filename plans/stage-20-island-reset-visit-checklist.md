@@ -21,10 +21,10 @@
 
 ## Deferred Migration
 
-- Full island wipe/protection boundaries are deferred until island ownership areas are modeled.
+- Full island wipe remains deferred; Stage 66 adds a fixed-radius island protection boundary for break/place/right-click events.
 - Offline player visit lookup is deferred until player-name history or profile cache support exists.
 - Custom void-world spawn, vanilla shared-spawn resolution, island type templates, and world presets are deferred to the world generation phase.
-- Visit permissions and visitor interaction limits are deferred to the team/island permission phase.
+- Visit permissions and visitor interaction limits are handled by Stage 66 fixed-radius island protection.
 
 ## Verification
 

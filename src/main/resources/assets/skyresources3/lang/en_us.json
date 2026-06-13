@@ -405,6 +405,7 @@
   "message.skyresources3.island.visit.self": "Use /island home to return to your own island.",
   "message.skyresources3.island.visit.target_no_island": "%s does not have an island you can visit.",
   "message.skyresources3.island.visit.success": "Visiting %s's island at %s.",
+  "message.skyresources3.island.protection.denied": "Only %s's island team can modify this island.",
   "message.skyresources3.island.reset.not_owner": "Only an island owner can reset an island.",
   "message.skyresources3.island.reset.confirm": "This resets only the starter platform area as %s. Run %s to continue.",
   "message.skyresources3.island.reset.done": "Reset %s starter island platform and teleported to %s.",

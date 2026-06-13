@@ -53,6 +53,18 @@ public final class IslandSavedData extends SavedData {
         return this.islands.size();
     }
 
+    public Optional<IslandRecord> findIslandAt(
+            final ResourceKey<Level> dimension,
+            final BlockPos pos,
+            final int horizontalRadius
+    ) {
+        return this.islands.values()
+                .stream()
+                .filter(island -> island.dimension().equals(dimension))
+                .filter(island -> island.isWithinHorizontalRange(pos, horizontalRadius))
+                .findFirst();
+    }
+
     public IslandRecord createIsland(
             final UUID owner,
             final String ownerName,
@@ -98,5 +110,11 @@ public final class IslandSavedData extends SavedData {
                 BlockPos.CODEC.fieldOf("home").forGetter(IslandRecord::home),
                 Codec.STRING.optionalFieldOf("type", IslandTemplate.DEFAULT_ID).forGetter(IslandRecord::type)
         ).apply(instance, IslandRecord::new));
+
+        public boolean isWithinHorizontalRange(final BlockPos pos, final int horizontalRadius) {
+            final BlockPos center = this.home.below();
+            return Math.abs(pos.getX() - center.getX()) <= horizontalRadius
+                    && Math.abs(pos.getZ() - center.getZ()) <= horizontalRadius;
+        }
     }
 }
