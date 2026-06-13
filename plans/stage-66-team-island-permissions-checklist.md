@@ -15,4 +15,4 @@
 - [x] Add localized denial message.
 - [x] Update island command spec, migration plan, and deferred checklist notes.
 - [x] Run compileJava, runData, build, runGameTestServer.
-- [ ] Chinese commit and archive Trellis task.
+- [x] Chinese commit and archive Trellis task.
