@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "入口规范，确认本任务涉及 backend/client menu 边界"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "新增 menu/client 类和注册项需符合包结构"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "遵循 NeoForge 1.21.11 菜单、转移、测试质量要求"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "方块交互和服务端菜单打开需要保持安全失败语义"}
+{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "确保 GUI 切片不误引入外部集成依赖"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "确认复用现有 Menu/Screen 模式且避免过度抽象"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "检查 BlockEntity/Menu/Screen/registry 的跨层数据流"}
