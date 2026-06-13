@@ -25,7 +25,7 @@
 
 ## 暂缓迁移
 
-- 物品 handler capability 自动化插入/抽出留待机器 capability 阶段。
+- 物品 handler capability 自动化插入/抽出已在生命机器物品自动化能力任务中迁移。
 - `LifeInfuser` 方块实体、多方块校验和生命灌注执行逻辑留待后续阶段。
 
 ## 验证

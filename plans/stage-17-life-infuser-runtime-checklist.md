@@ -33,7 +33,7 @@
 
 ## 暂缓迁移
 
-- 物品 handler capability 自动化插入/抽出留待机器 capability 阶段。
+- 物品 handler capability 自动化插入/抽出已在生命机器物品自动化能力任务中迁移。
 - 将生命灌注从硬编码列表迁移为 NeoForge recipe type 留待配方系统阶段。
 - JEI/EMI 生命灌注分类联动留待联动阶段。
 

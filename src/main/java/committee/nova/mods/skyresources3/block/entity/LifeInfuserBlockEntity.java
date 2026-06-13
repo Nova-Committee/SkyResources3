@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Containers;
@@ -16,16 +17,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 public final class LifeInfuserBlockEntity extends BlockEntity {
     public static final int GEM_SLOT = 0;
     public static final int INPUT_SLOT = 1;
     public static final int SLOT_COUNT = 2;
+    private static final String ITEMS_KEY = "items";
     private static final String GEM_KEY = "gem";
     private static final String INPUT_KEY = "input";
 
-    private ItemStack gem = ItemStack.EMPTY;
-    private ItemStack input = ItemStack.EMPTY;
+    private final LifeInfuserItemHandler items = new LifeInfuserItemHandler(this);
     private boolean powered;
 
     public LifeInfuserBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -35,64 +39,52 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(final ValueInput input) {
         super.loadAdditional(input);
-        this.gem = input.read(GEM_KEY, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
-        this.input = input.read(INPUT_KEY, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        input.readChild(ITEMS_KEY, this.items);
+        this.loadLegacyStack(input, GEM_KEY, GEM_SLOT);
+        this.loadLegacyStack(input, INPUT_KEY, INPUT_SLOT);
         this.powered = false;
     }
 
     @Override
     protected void saveAdditional(final ValueOutput output) {
         super.saveAdditional(output);
-        output.store(GEM_KEY, ItemStack.OPTIONAL_CODEC, this.gem);
-        output.store(INPUT_KEY, ItemStack.OPTIONAL_CODEC, this.input);
+        output.putChild(ITEMS_KEY, this.items);
     }
 
     public boolean canInsertGem(final ItemStack stack) {
-        return this.gem.isEmpty() && stack.getItem() instanceof HealthGemItem;
+        return this.items.stack(GEM_SLOT).isEmpty() && this.mayPlaceInSlot(GEM_SLOT, stack);
     }
 
     public boolean canInsertInput(final ItemStack stack) {
-        return this.input.isEmpty() && !stack.isEmpty() && !(stack.getItem() instanceof HealthGemItem);
+        return this.items.stack(INPUT_SLOT).isEmpty() && this.mayPlaceInSlot(INPUT_SLOT, stack);
     }
 
     public void insertGem(final ItemStack stack) {
-        this.gem = stack.copyWithCount(1);
-        this.setChanged();
+        this.items.setStack(GEM_SLOT, stack.copyWithCount(1));
     }
 
     public void insertInput(final ItemStack stack) {
-        this.input = stack.copy();
-        this.setChanged();
+        this.items.setStack(INPUT_SLOT, stack.copy());
     }
 
     public boolean hasGem() {
-        return !this.gem.isEmpty();
+        return !this.items.stack(GEM_SLOT).isEmpty();
     }
 
     public boolean hasInput() {
-        return !this.input.isEmpty();
+        return !this.items.stack(INPUT_SLOT).isEmpty();
     }
 
     public ItemStack removeGem() {
-        final ItemStack removed = this.gem;
-        this.gem = ItemStack.EMPTY;
-        this.setChanged();
-        return removed;
+        return this.removeStackNoUpdate(GEM_SLOT);
     }
 
     public ItemStack removeInput() {
-        final ItemStack removed = this.input;
-        this.input = ItemStack.EMPTY;
-        this.setChanged();
-        return removed;
+        return this.removeStackNoUpdate(INPUT_SLOT);
     }
 
     public ItemStack getStackInSlot(final int slot) {
-        return switch (slot) {
-            case GEM_SLOT -> this.gem;
-            case INPUT_SLOT -> this.input;
-            default -> ItemStack.EMPTY;
-        };
+        return this.items.stack(slot);
     }
 
     public void setStackInSlot(final int slot, final ItemStack stack) {
@@ -129,8 +121,8 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
         if (!isMachineSlot(slot)) {
             return ItemStack.EMPTY;
         }
-        final ItemStack removed = this.getStackInSlot(slot);
-        this.setMachineStack(slot, ItemStack.EMPTY);
+        final ItemStack removed = this.items.stack(slot);
+        this.items.setStack(slot, ItemStack.EMPTY);
         return removed;
     }
 
@@ -140,6 +132,10 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
             case INPUT_SLOT -> !stack.isEmpty() && !(stack.getItem() instanceof HealthGemItem);
             default -> false;
         };
+    }
+
+    public ResourceHandler<ItemResource> getItemHandler() {
+        return this.items;
     }
 
     public void dropContents(final ServerLevel level) {
@@ -193,37 +189,103 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
         }
 
         final BlockPos targetPos = this.worldPosition.below();
+        final ItemStack inputStack = this.items.stack(INPUT_SLOT);
+        final ItemStack gemStack = this.items.stack(GEM_SLOT);
         final Optional<InfusionRecipes.Match> recipe = InfusionRecipes.find(
                 level,
                 level.getBlockState(targetPos),
-                this.input
+                inputStack
         );
-        if (recipe.isEmpty() || !HealthGemItem.canConsumeStoredHealth(this.gem, recipe.get().healthCost())) {
+        if (recipe.isEmpty() || !HealthGemItem.canConsumeStoredHealth(gemStack, recipe.get().healthCost())) {
             return;
         }
         if (!level.destroyBlock(targetPos, false)) {
             return;
         }
 
-        HealthGemItem.consumeStoredHealth(this.gem, recipe.get().healthCost());
-        this.input.shrink(recipe.get().ingredientCount());
-        if (this.input.isEmpty()) {
-            this.input = ItemStack.EMPTY;
+        HealthGemItem.consumeStoredHealth(gemStack, recipe.get().healthCost());
+        inputStack.shrink(recipe.get().ingredientCount());
+        if (inputStack.isEmpty()) {
+            this.items.setStack(INPUT_SLOT, ItemStack.EMPTY);
         }
         Block.popResource(level, targetPos, recipe.get().createOutput());
         this.setChanged();
     }
 
-    private void setMachineStack(final int slot, final ItemStack stack) {
-        if (slot == GEM_SLOT) {
-            this.gem = stack;
-        } else if (slot == INPUT_SLOT) {
-            this.input = stack;
+    private void loadLegacyStack(final ValueInput input, final String key, final int slot) {
+        if (!this.items.stack(slot).isEmpty()) {
+            return;
         }
-        this.setChanged();
+        input.read(key, ItemStack.OPTIONAL_CODEC)
+                .filter(stack -> !stack.isEmpty())
+                .ifPresent(stack -> this.items.setStack(slot, stack));
+    }
+
+    private void setMachineStack(final int slot, final ItemStack stack) {
+        this.items.setStack(slot, stack);
     }
 
     private static boolean isMachineSlot(final int slot) {
         return slot >= 0 && slot < SLOT_COUNT;
+    }
+
+    private static final class LifeInfuserItemHandler extends ItemStacksResourceHandler {
+        private final LifeInfuserBlockEntity owner;
+
+        private LifeInfuserItemHandler(final LifeInfuserBlockEntity owner) {
+            super(SLOT_COUNT);
+            this.owner = owner;
+        }
+
+        @Override
+        public void deserialize(final ValueInput input) {
+            super.deserialize(input);
+            if (this.size() != SLOT_COUNT) {
+                this.setStacks(NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY));
+            }
+        }
+
+        @Override
+        public boolean isValid(final int index, final ItemResource resource) {
+            return isMachineSlot(index) && this.owner.mayPlaceInSlot(index, resource.toStack());
+        }
+
+        @Override
+        protected int getCapacity(final int index, final ItemResource resource) {
+            if (!isMachineSlot(index) || resource.isEmpty()) {
+                return 0;
+            }
+            if (index == GEM_SLOT) {
+                return 1;
+            }
+            return resource.toStack().getMaxStackSize();
+        }
+
+        @Override
+        protected void onContentsChanged(final int index, final ItemStack previousContents) {
+            this.owner.setChanged();
+        }
+
+        private ItemStack stack(final int slot) {
+            return isMachineSlot(slot) ? this.stacks.get(slot) : ItemStack.EMPTY;
+        }
+
+        private void setStack(final int slot, final ItemStack stack) {
+            if (!isMachineSlot(slot)) {
+                return;
+            }
+            final ItemStack stored = stack.isEmpty()
+                    ? ItemStack.EMPTY
+                    : stack.copyWithCount(Math.min(stack.getCount(), this.slotCapacity(slot, stack)));
+            this.stacks.set(slot, stored);
+            this.owner.setChanged();
+        }
+
+        private int slotCapacity(final int slot, final ItemStack stack) {
+            if (slot == GEM_SLOT) {
+                return 1;
+            }
+            return stack.isEmpty() ? 0 : stack.getMaxStackSize();
+        }
     }
 }

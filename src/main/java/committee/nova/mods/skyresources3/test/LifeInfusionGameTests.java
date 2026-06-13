@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.test;
 
 import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModItems;
@@ -18,6 +19,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public final class LifeInfusionGameTests {
     private static final BlockPos TARGET_POS = new BlockPos(2, 1, 2);
@@ -102,6 +107,78 @@ public final class LifeInfusionGameTests {
         helper.succeed();
     }
 
+    public static void lifeInjectorItemCapabilityTransfers(final GameTestHelper helper) {
+        helper.setBlock(TARGET_POS, ModBlocks.LIFE_INJECTOR.get());
+
+        final LifeInjectorBlockEntity lifeInjector = lifeInjectorAt(helper, TARGET_POS);
+        final ResourceHandler<ItemResource> handler = itemHandlerAt(helper, TARGET_POS);
+        final ItemStack healthGem = new ItemStack(ModItems.HEALTH_GEM.get());
+
+        helper.assertValueEqual(
+                0,
+                insert(handler, LifeInjectorBlockEntity.GEM_SLOT, new ItemStack(Items.DIRT), 1),
+                "Life Injector capability should reject non-health gems"
+        );
+        helper.assertValueEqual(
+                1,
+                insert(handler, LifeInjectorBlockEntity.GEM_SLOT, healthGem, 1),
+                "Life Injector capability should insert one health gem"
+        );
+        helper.assertTrue(lifeInjector.hasGem(), "Life Injector should contain the inserted health gem");
+        helper.assertValueEqual(
+                1,
+                extract(handler, LifeInjectorBlockEntity.GEM_SLOT, healthGem, 1),
+                "Life Injector capability should extract one health gem"
+        );
+        helper.assertTrue(!lifeInjector.hasGem(), "Life Injector should be empty after extraction");
+        helper.succeed();
+    }
+
+    public static void lifeInfuserItemCapabilityTransfers(final GameTestHelper helper) {
+        helper.setBlock(TARGET_POS, ModBlocks.LIFE_INFUSER.get());
+
+        final LifeInfuserBlockEntity lifeInfuser = lifeInfuserAt(helper, TARGET_POS);
+        final ResourceHandler<ItemResource> handler = itemHandlerAt(helper, TARGET_POS);
+        final ItemStack healthGem = new ItemStack(ModItems.HEALTH_GEM.get());
+        final ItemStack seeds = new ItemStack(Items.WHEAT_SEEDS, 4);
+
+        helper.assertValueEqual(
+                0,
+                insert(handler, LifeInfuserBlockEntity.GEM_SLOT, new ItemStack(Items.DIRT), 1),
+                "Life Infuser gem slot should reject non-health gems"
+        );
+        helper.assertValueEqual(
+                0,
+                insert(handler, LifeInfuserBlockEntity.INPUT_SLOT, healthGem, 1),
+                "Life Infuser input slot should reject health gems"
+        );
+        helper.assertValueEqual(
+                1,
+                insert(handler, LifeInfuserBlockEntity.GEM_SLOT, healthGem, 1),
+                "Life Infuser gem slot should accept one health gem"
+        );
+        helper.assertValueEqual(
+                4,
+                insert(handler, LifeInfuserBlockEntity.INPUT_SLOT, seeds, seeds.getCount()),
+                "Life Infuser input slot should accept regular inputs"
+        );
+        helper.assertTrue(lifeInfuser.hasGem(), "Life Infuser should contain the inserted health gem");
+        helper.assertTrue(lifeInfuser.hasInput(), "Life Infuser should contain the inserted input");
+        helper.assertValueEqual(
+                1,
+                extract(handler, LifeInfuserBlockEntity.GEM_SLOT, healthGem, 1),
+                "Life Infuser gem slot should extract one health gem"
+        );
+        helper.assertValueEqual(
+                4,
+                extract(handler, LifeInfuserBlockEntity.INPUT_SLOT, seeds, seeds.getCount()),
+                "Life Infuser input slot should extract the inserted input"
+        );
+        helper.assertTrue(!lifeInfuser.hasGem(), "Life Infuser should have no gem after extraction");
+        helper.assertTrue(!lifeInfuser.hasInput(), "Life Infuser should have no input after extraction");
+        helper.succeed();
+    }
+
     private static void setupLifeInfuserMultiblock(final GameTestHelper helper) {
         helper.setBlock(INFUSER_POS, ModBlocks.LIFE_INFUSER.get());
         for (int x = -1; x <= 1; x++) {
@@ -140,6 +217,57 @@ public final class LifeInfusionGameTests {
                 "Expected a Life Infuser block entity"
         );
         return (LifeInfuserBlockEntity) blockEntity;
+    }
+
+    private static LifeInjectorBlockEntity lifeInjectorAt(
+            final GameTestHelper helper,
+            final BlockPos relativePos
+    ) {
+        final BlockEntity blockEntity = helper.getLevel().getBlockEntity(helper.absolutePos(relativePos));
+        helper.assertTrue(
+                blockEntity instanceof LifeInjectorBlockEntity,
+                "Expected a Life Injector block entity"
+        );
+        return (LifeInjectorBlockEntity) blockEntity;
+    }
+
+    private static ResourceHandler<ItemResource> itemHandlerAt(
+            final GameTestHelper helper,
+            final BlockPos relativePos
+    ) {
+        final ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(
+                Capabilities.Item.BLOCK,
+                helper.absolutePos(relativePos),
+                Direction.UP
+        );
+        helper.assertTrue(handler != null, "Expected an item transfer capability");
+        return handler;
+    }
+
+    private static int insert(
+            final ResourceHandler<ItemResource> handler,
+            final int slot,
+            final ItemStack stack,
+            final int amount
+    ) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            final int inserted = handler.insert(slot, ItemResource.of(stack), amount, transaction);
+            transaction.commit();
+            return inserted;
+        }
+    }
+
+    private static int extract(
+            final ResourceHandler<ItemResource> handler,
+            final int slot,
+            final ItemStack stack,
+            final int amount
+    ) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            final int extracted = handler.extract(slot, ItemResource.of(stack), amount, transaction);
+            transaction.commit();
+            return extracted;
+        }
     }
 
     private LifeInfusionGameTests() {

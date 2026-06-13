@@ -19,6 +19,16 @@ public final class ModCapabilities {
         );
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.LIFE_INJECTOR.get(),
+                (lifeInjector, direction) -> lifeInjector.getItemHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.LIFE_INFUSER.get(),
+                (lifeInfuser, direction) -> lifeInfuser.getItemHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
                 ModBlockEntityTypes.DIRT_FURNACE.get(),
                 (dirtFurnace, direction) -> dirtFurnace.getItemHandler(direction)
         );

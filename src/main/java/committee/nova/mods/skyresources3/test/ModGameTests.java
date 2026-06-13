@@ -57,6 +57,16 @@ public final class ModGameTests {
                     "life_infuser_process",
                     () -> LifeInfusionGameTests::lifeInfuserUsesProcessRecipe
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LIFE_INJECTOR_ITEM_CAPABILITY =
+            TEST_FUNCTIONS.register(
+                    "life_injector_item_capability",
+                    () -> LifeInfusionGameTests::lifeInjectorItemCapabilityTransfers
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LIFE_INFUSER_ITEM_CAPABILITY =
+            TEST_FUNCTIONS.register(
+                    "life_infuser_item_capability",
+                    () -> LifeInfusionGameTests::lifeInfuserItemCapabilityTransfers
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_drops_output",
@@ -85,6 +95,8 @@ public final class ModGameTests {
         registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);
         registerFunctionTest(event, "infusion_stone_process", INFUSION_STONE_PROCESS, environment);
         registerFunctionTest(event, "life_infuser_process", LIFE_INFUSER_PROCESS, environment);
+        registerFunctionTest(event, "life_injector_item_capability", LIFE_INJECTOR_ITEM_CAPABILITY, environment);
+        registerFunctionTest(event, "life_infuser_item_capability", LIFE_INFUSER_ITEM_CAPABILITY, environment);
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
     }
