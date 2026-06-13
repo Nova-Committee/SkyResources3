@@ -1,0 +1,15 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:jungle_log"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "id": "minecraft:jungle_planks"
+    }
+  ],
+  "process": "knife"
+}

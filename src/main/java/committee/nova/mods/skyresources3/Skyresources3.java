@@ -14,6 +14,7 @@ import committee.nova.mods.skyresources3.registry.ModCreativeTabs;
 import committee.nova.mods.skyresources3.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.registry.ModRecipeTypes;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -37,6 +38,7 @@ public final class Skyresources3 {
         ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
         ModEntityTypes.register(modEventBus);
+        ModRecipeTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
 
         NeoForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);

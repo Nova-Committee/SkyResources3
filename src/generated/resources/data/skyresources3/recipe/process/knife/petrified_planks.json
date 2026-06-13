@@ -1,0 +1,15 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "skyresources3:petrified_wood"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "id": "skyresources3:petrified_planks"
+    }
+  ],
+  "process": "knife"
+}

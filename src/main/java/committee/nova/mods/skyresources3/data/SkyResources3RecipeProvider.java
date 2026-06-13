@@ -1,8 +1,12 @@
 package committee.nova.mods.skyresources3.data;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.recipe.ProcessIngredient;
+import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
+import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModItems;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -14,6 +18,9 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -263,6 +270,8 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 )
                 .unlockedBy("has_dry_cactus", has(ModBlocks.DRY_CACTUS.get()))
                 .save(this.output, id("light_gray_dye_from_dry_cactus"));
+
+        this.buildProcessRecipes();
     }
 
     private void cuttingKnife(final ItemLike result, final ItemLike material, final String unlockName) {
@@ -285,6 +294,198 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("  X")
                 .unlockedBy(unlockName, has(material))
                 .save(this.output);
+    }
+
+    private void buildProcessRecipes() {
+        this.buildFreezerRecipes();
+        this.buildRockGrinderRecipes();
+        this.buildKnifeRecipes();
+        this.buildCombustionRecipes();
+    }
+
+    private void buildFreezerRecipes() {
+        this.processRecipe(
+                ProcessRecipes.FREEZER,
+                "heavy_snowball",
+                40.0F,
+                ModItems.HEAVY_SNOWBALL.get(),
+                1,
+                input(Items.SNOWBALL, 4)
+        );
+        this.processRecipe(
+                ProcessRecipes.FREEZER,
+                "coarse_dirt",
+                800.0F,
+                Blocks.COARSE_DIRT,
+                1,
+                input(ModBlocks.HEAVY_SNOW.get())
+        );
+        this.processRecipe(
+                ProcessRecipes.FREEZER,
+                "frozen_iron_ingot",
+                3000.0F,
+                ModItems.FROZEN_IRON_INGOT.get(),
+                1,
+                input(Items.IRON_INGOT)
+        );
+        this.processRecipe(
+                ProcessRecipes.FREEZER,
+                "soul_sand",
+                1500.0F,
+                Blocks.SOUL_SAND,
+                1,
+                input(ModBlocks.SANDY_NETHERRACK.get())
+        );
+    }
+
+    private void buildRockGrinderRecipes() {
+        this.processRecipe(
+                ProcessRecipes.ROCK_GRINDER,
+                "gravel",
+                1.0F,
+                Blocks.GRAVEL,
+                1,
+                input(Blocks.COBBLESTONE)
+        );
+        this.processRecipe(ProcessRecipes.ROCK_GRINDER, "sand", 1.0F, Blocks.SAND, 1, input(Blocks.GRAVEL));
+        this.processRecipe(ProcessRecipes.ROCK_GRINDER, "flint", 0.3F, Items.FLINT, 1, input(Blocks.GRAVEL));
+        this.processRecipe(
+                ProcessRecipes.ROCK_GRINDER,
+                "crushed_stone",
+                0.44F,
+                ModItems.CRUSHED_STONE.get(),
+                1,
+                input(Blocks.STONE)
+        );
+        this.processRecipe(
+                ProcessRecipes.ROCK_GRINDER,
+                "crushed_netherrack",
+                0.44F,
+                ModItems.CRUSHED_NETHERRACK.get(),
+                1,
+                input(Blocks.NETHERRACK)
+        );
+        this.processRecipe(
+                ProcessRecipes.ROCK_GRINDER,
+                "sawdust",
+                1.5F,
+                ModItems.SAWDUST.get(),
+                1,
+                input(ItemTags.LOGS)
+        );
+    }
+
+    private void buildKnifeRecipes() {
+        this.processRecipe(
+                ProcessRecipes.KNIFE,
+                "cactus_fruit",
+                0.0F,
+                ModItems.CACTUS_FRUIT.get(),
+                2,
+                input(Blocks.CACTUS)
+        );
+        this.processRecipe(ProcessRecipes.KNIFE, "melon_slice", 0.0F, Items.MELON_SLICE, 9, input(Blocks.MELON));
+        this.processRecipe(ProcessRecipes.KNIFE, "oak_planks", 0.0F, Blocks.OAK_PLANKS, 6, input(Blocks.OAK_LOG));
+        this.processRecipe(
+                ProcessRecipes.KNIFE,
+                "spruce_planks",
+                0.0F,
+                Blocks.SPRUCE_PLANKS,
+                6,
+                input(Blocks.SPRUCE_LOG)
+        );
+        this.processRecipe(ProcessRecipes.KNIFE, "birch_planks", 0.0F, Blocks.BIRCH_PLANKS, 6, input(Blocks.BIRCH_LOG));
+        this.processRecipe(
+                ProcessRecipes.KNIFE,
+                "jungle_planks",
+                0.0F,
+                Blocks.JUNGLE_PLANKS,
+                6,
+                input(Blocks.JUNGLE_LOG)
+        );
+        this.processRecipe(
+                ProcessRecipes.KNIFE,
+                "acacia_planks",
+                0.0F,
+                Blocks.ACACIA_PLANKS,
+                6,
+                input(Blocks.ACACIA_LOG)
+        );
+        this.processRecipe(
+                ProcessRecipes.KNIFE,
+                "dark_oak_planks",
+                0.0F,
+                Blocks.DARK_OAK_PLANKS,
+                6,
+                input(Blocks.DARK_OAK_LOG)
+        );
+        this.processRecipe(ProcessRecipes.KNIFE, "sticks_from_planks", 0.0F, Items.STICK, 6, input(ItemTags.PLANKS));
+        this.processRecipe(
+                ProcessRecipes.KNIFE,
+                "petrified_planks",
+                0.0F,
+                ModBlocks.PETRIFIED_PLANKS.get(),
+                6,
+                input(ModBlocks.PETRIFIED_WOOD.get())
+        );
+        this.processRecipe(
+                ProcessRecipes.KNIFE,
+                "sticks_from_petrified_planks",
+                0.0F,
+                Items.STICK,
+                6,
+                input(ModBlocks.PETRIFIED_PLANKS.get())
+        );
+    }
+
+    private void buildCombustionRecipes() {
+        this.processRecipe(
+                ProcessRecipes.COMBUSTION,
+                "primus_alchemical_dust",
+                335.0F,
+                ModItems.PRIMUS_ALCHEMICAL_DUST.get(),
+                5,
+                input(Items.GUNPOWDER, 3),
+                input(Items.BLAZE_POWDER, 2),
+                input(Items.CHARCOAL)
+        );
+    }
+
+    private void processRecipe(
+            final String process,
+            final String name,
+            final float parameter,
+            final ItemLike output,
+            final int outputCount,
+            final ProcessIngredient... inputs
+    ) {
+        this.output.accept(
+                id("process/" + process + "/" + name),
+                new SkyResourcesProcessRecipe(
+                        "",
+                        process,
+                        List.of(inputs),
+                        List.of(new ItemStack(output, outputCount)),
+                        parameter
+                ),
+                null
+        );
+    }
+
+    private static ProcessIngredient input(final ItemLike item) {
+        return input(item, 1);
+    }
+
+    private static ProcessIngredient input(final ItemLike item, final int count) {
+        return new ProcessIngredient(Ingredient.of(item), count);
+    }
+
+    private ProcessIngredient input(final TagKey<Item> tag) {
+        return input(tag, 1);
+    }
+
+    private ProcessIngredient input(final TagKey<Item> tag, final int count) {
+        return new ProcessIngredient(this.tag(tag), count);
     }
 
     private static ResourceKey<Recipe<?>> id(final String path) {

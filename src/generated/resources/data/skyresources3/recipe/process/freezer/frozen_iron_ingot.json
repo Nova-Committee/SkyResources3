@@ -1,0 +1,16 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:iron_ingot"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "skyresources3:frozen_iron_ingot"
+    }
+  ],
+  "parameter": 3000.0,
+  "process": "freezer"
+}
