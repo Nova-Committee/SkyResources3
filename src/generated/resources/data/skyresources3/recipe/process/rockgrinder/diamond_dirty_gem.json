@@ -1,0 +1,16 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:stone"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "skyresources3:diamond_dirty_gem"
+    }
+  ],
+  "parameter": 0.033,
+  "process": "rockgrinder"
+}

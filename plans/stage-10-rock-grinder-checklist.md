@@ -9,3 +9,4 @@
 - [x] Run build and GameTest server; datagen only if generated data changes.
 - [x] Commit this migration slice with a Chinese message.
 - [x] Follow-up: runtime drops now come from `skyresources3:process` rock grinder recipes instead of a hardcoded output table.
+- [x] Follow-up: stable vanilla Dirty Gem `rockgrinder` recipes are now generated.

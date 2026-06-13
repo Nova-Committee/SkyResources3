@@ -748,6 +748,21 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 1,
                 input(ItemTags.LOGS)
         );
+        this.dirtyGemRockGrinderRecipe(DirtyGem.EMERALD, Blocks.STONE);
+        this.dirtyGemRockGrinderRecipe(DirtyGem.DIAMOND, Blocks.STONE);
+        this.dirtyGemRockGrinderRecipe(DirtyGem.QUARTZ, Blocks.NETHERRACK);
+        this.dirtyGemRockGrinderRecipe(DirtyGem.LAPIS, Blocks.STONE);
+    }
+
+    private void dirtyGemRockGrinderRecipe(final DirtyGem gem, final ItemLike source) {
+        this.processRecipe(
+                ProcessRecipes.ROCK_GRINDER,
+                gem.itemId(),
+                gem.legacyRarity(),
+                ModItems.DIRTY_GEMS.get(gem).get(),
+                1,
+                input(source)
+        );
     }
 
     private void buildCauldronCleanRecipes() {

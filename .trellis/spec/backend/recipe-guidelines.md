@@ -84,6 +84,10 @@ Runtime systems that produce processing outputs must query `ProcessRecipes` from
 
 For `ProcessRecipes.INFUSION`, recipe inputs have a positional convention on top of unordered matching: input `0` is the consumed ingredient stack, input `1` is the target block represented by `BlockState#getBlock().asItem()` or an item tag. The `parameter` is the health cost. Runtime code should use `InfusionRecipes` instead of reading those fields directly.
 
+For `ProcessRecipes.ROCK_GRINDER`, the `parameter` preserves the old output chance. Stable Dirty Gem source recipes
+may be generated for vanilla-backed gems using the old `GemRegisterInfo.rarity` and `parentBlock`. Dynamic modded gem
+recipes remain deferred until the target compatibility policy is explicit.
+
 For `ProcessRecipes.FUSION`, the `parameter` preserves the old fusion table's per-progress-tick catalyst drain. A full legacy craft has 100 progress ticks, so the user-facing catalyst percentage is `parameter * 10000`. Catalyst item yield values are a separate fusion-table runtime concern and should not be encoded as normal fusion recipe inputs.
 
 For `ProcessRecipes.CAULDRON_CLEAN`, the `parameter` preserves the old output chance. Stable Dirty Gem cleaning recipes
