@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "检查 GameTest 注册和验证命令是否满足项目质量门"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "确认失败路径仍通过命令返回 0 和 sendFailure 表达"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "复核命令 -> SavedData -> 传送/状态断言的数据流"}
+{"file": "plans/stage-18-void-island-commands-checklist.md", "reason": "同步 visit/reset 等空岛命令状态"}
+{"file": "plans/stage-19-team-island-collaboration-checklist.md", "reason": "同步团队 invite/accept/home/leave/disband 和剩余暂缓项"}
