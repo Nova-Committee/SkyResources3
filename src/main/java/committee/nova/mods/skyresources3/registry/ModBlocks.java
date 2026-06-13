@@ -13,6 +13,7 @@ import committee.nova.mods.skyresources3.block.FreezerBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
 import committee.nova.mods.skyresources3.block.QuickDropperBlock;
+import committee.nova.mods.skyresources3.block.RockCleanerBlock;
 import committee.nova.mods.skyresources3.block.RockCrusherBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -122,6 +123,11 @@ public final class ModBlocks {
     public static final DeferredBlock<RockCrusherBlock> ROCK_CRUSHER = BLOCKS.registerBlock(
             "rock_crusher",
             RockCrusherBlock::new,
+            () -> properties(6.0F, 12.0F, SoundType.METAL)
+    );
+    public static final DeferredBlock<RockCleanerBlock> ROCK_CLEANER = BLOCKS.registerBlock(
+            "rock_cleaner",
+            RockCleanerBlock::new,
             () -> properties(6.0F, 12.0F, SoundType.METAL)
     );
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:iron_ingot",
+    "Y": "minecraft:cauldron",
+    "Z": "skyresources3:advanced_power_component"
+  },
+  "pattern": [
+    "XXX",
+    "XYX",
+    "XZX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:rock_cleaner"
+  }
+}

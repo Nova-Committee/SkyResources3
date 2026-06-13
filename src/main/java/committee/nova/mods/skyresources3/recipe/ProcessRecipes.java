@@ -14,6 +14,7 @@ public final class ProcessRecipes {
     public static final String INFUSION = "infusion";
     public static final String KNIFE = "knife";
     public static final String ROCK_GRINDER = "rockgrinder";
+    public static final String CAULDRON_CLEAN = "cauldronclean";
 
     public static Optional<RecipeHolder<SkyResourcesProcessRecipe>> find(
             final ServerLevel level,

@@ -32,6 +32,7 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.CRUCIBLE.get(),
                 ModBlocks.CRUCIBLE_INSERTER.get(),
                 ModBlocks.ROCK_CRUSHER.get(),
+                ModBlocks.ROCK_CLEANER.get(),
                 ModBlocks.IRON_FREEZER.get(),
                 ModBlocks.LIGHT_FREEZER.get()
         );

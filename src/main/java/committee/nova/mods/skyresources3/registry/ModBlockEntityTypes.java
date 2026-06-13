@@ -10,6 +10,7 @@ import committee.nova.mods.skyresources3.block.entity.FreezerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.QuickDropperBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.RockCleanerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.RockCrusherBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -68,6 +69,11 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "rock_crusher",
                     () -> new BlockEntityType<>(RockCrusherBlockEntity::new, ModBlocks.ROCK_CRUSHER.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RockCleanerBlockEntity>> ROCK_CLEANER =
+            BLOCK_ENTITY_TYPES.register(
+                    "rock_cleaner",
+                    () -> new BlockEntityType<>(RockCleanerBlockEntity::new, ModBlocks.ROCK_CLEANER.get())
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =
             BLOCK_ENTITY_TYPES.register(

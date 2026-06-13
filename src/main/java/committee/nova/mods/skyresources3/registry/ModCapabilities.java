@@ -43,9 +43,19 @@ public final class ModCapabilities {
                 (rockCrusher, direction) -> rockCrusher.getItemHandler()
         );
         event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.ROCK_CLEANER.get(),
+                (rockCleaner, direction) -> rockCleaner.getItemHandler()
+        );
+        event.registerBlockEntity(
                 Capabilities.Energy.BLOCK,
                 ModBlockEntityTypes.ROCK_CRUSHER.get(),
                 (rockCrusher, direction) -> rockCrusher.getEnergyHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Energy.BLOCK,
+                ModBlockEntityTypes.ROCK_CLEANER.get(),
+                (rockCleaner, direction) -> rockCleaner.getEnergyHandler()
         );
         event.registerBlockEntity(
                 Capabilities.Fluid.BLOCK,
@@ -56,6 +66,11 @@ public final class ModCapabilities {
                 Capabilities.Fluid.BLOCK,
                 ModBlockEntityTypes.CRUCIBLE.get(),
                 (crucible, direction) -> crucible.getFluidHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                ModBlockEntityTypes.ROCK_CLEANER.get(),
+                (rockCleaner, direction) -> rockCleaner.getFluidHandler()
         );
         event.registerItem(
                 Capabilities.Fluid.ITEM,

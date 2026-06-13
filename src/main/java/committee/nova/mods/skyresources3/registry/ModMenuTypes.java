@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.menu.DirtFurnaceMenu;
 import committee.nova.mods.skyresources3.menu.FreezerMenu;
 import committee.nova.mods.skyresources3.menu.FusionTableMenu;
 import committee.nova.mods.skyresources3.menu.QuickDropperMenu;
+import committee.nova.mods.skyresources3.menu.RockCleanerMenu;
 import committee.nova.mods.skyresources3.menu.RockCrusherMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -30,6 +31,8 @@ public final class ModMenuTypes {
             MENU_TYPES.register("crucible_inserter", () -> IMenuTypeExtension.create(CrucibleInserterMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<RockCrusherMenu>> ROCK_CRUSHER =
             MENU_TYPES.register("rock_crusher", () -> IMenuTypeExtension.create(RockCrusherMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<RockCleanerMenu>> ROCK_CLEANER =
+            MENU_TYPES.register("rock_cleaner", () -> IMenuTypeExtension.create(RockCleanerMenu::new));
 
     public static void register(final IEventBus modEventBus) {
         MENU_TYPES.register(modEventBus);
