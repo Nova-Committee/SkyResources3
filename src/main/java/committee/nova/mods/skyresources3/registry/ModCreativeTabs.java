@@ -108,6 +108,9 @@ public final class ModCreativeTabs {
                         for (final MachineVariant variant : MachineVariant.values()) {
                             output.accept(ModItems.HEAT_PROVIDERS.get(variant).get());
                         }
+                        for (final MachineVariant variant : MachineVariant.values()) {
+                            output.accept(ModItems.CONDENSERS.get(variant).get());
+                        }
                     })
                     .build()
     );

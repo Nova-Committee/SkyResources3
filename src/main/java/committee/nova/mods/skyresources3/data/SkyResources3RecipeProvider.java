@@ -537,6 +537,13 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.heatProviderRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
         this.heatProviderRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
         this.heatProviderRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
+        this.condenserRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.condenserRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
+        this.condenserRecipe(MachineVariant.IRON, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
+        this.condenserRecipe(MachineVariant.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
+        this.condenserRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
+        this.condenserRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
+        this.condenserRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
 
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_COLLECTOR.get())
                 .define('X', Items.IRON_INGOT)
@@ -583,6 +590,22 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .define('Y', component)
                 .pattern("XYX")
                 .pattern("XYX")
+                .pattern("X X")
+                .unlockedBy(unlockName, has(component))
+                .save(this.output);
+    }
+
+    private void condenserRecipe(
+            final MachineVariant variant,
+            final Ingredient material,
+            final ItemLike component,
+            final String unlockName
+    ) {
+        this.shaped(RecipeCategory.MISC, ModItems.CONDENSERS.get(variant).get())
+                .define('X', material)
+                .define('Y', component)
+                .pattern("XYX")
+                .pattern("X X")
                 .pattern("X X")
                 .unlockedBy(unlockName, has(component))
                 .save(this.output);

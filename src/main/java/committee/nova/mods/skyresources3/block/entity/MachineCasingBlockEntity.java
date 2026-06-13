@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.block.entity;
 import com.mojang.serialization.Codec;
 import committee.nova.mods.skyresources3.block.MachineCasingBlock;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.machine.CombustionRecipeLogic;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
@@ -40,6 +41,10 @@ import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 public final class MachineCasingBlockEntity extends BlockEntity {
     public static final int FUEL_SLOT = 0;
     public static final int SLOT_COUNT = 1;
+    public static final int MACHINE_MODE_NONE = 0;
+    public static final int MACHINE_MODE_COMBUSTION_HEATER = 1;
+    public static final int MACHINE_MODE_HEAT_PROVIDER = 2;
+    public static final int MACHINE_MODE_CONDENSER = 3;
     private static final Codec<ItemStack> HEATER_CODEC = ItemStack.OPTIONAL_CODEC;
     private static final String FUEL_KEY = "fuel";
     private static final String HEATER_KEY = "heater";
@@ -129,7 +134,9 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     public boolean canInstallMachine(final ItemStack stack) {
-        return stack.getItem() instanceof CombustionHeaterItem || stack.getItem() instanceof HeatProviderItem;
+        return stack.getItem() instanceof CombustionHeaterItem
+                || stack.getItem() instanceof HeatProviderItem
+                || stack.getItem() instanceof CondenserItem;
     }
 
     public boolean installHeater(final ItemStack stack, final Player player) {
@@ -225,6 +232,19 @@ public final class MachineCasingBlockEntity extends BlockEntity {
 
     public boolean usesCombustionChamber() {
         return this.heater.getItem() instanceof CombustionHeaterItem;
+    }
+
+    public int installedMachineMode() {
+        if (this.heater.getItem() instanceof CombustionHeaterItem) {
+            return MACHINE_MODE_COMBUSTION_HEATER;
+        }
+        if (this.heater.getItem() instanceof HeatProviderItem) {
+            return MACHINE_MODE_HEAT_PROVIDER;
+        }
+        if (this.heater.getItem() instanceof CondenserItem) {
+            return MACHINE_MODE_CONDENSER;
+        }
+        return MACHINE_MODE_NONE;
     }
 
     public int heatSourceValue() {

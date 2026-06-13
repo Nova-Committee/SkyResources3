@@ -60,26 +60,28 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
     @Override
     protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
-        guiGraphics.drawString(
-                this.font,
-                Component.translatable(
-                        "screen.skyresources3.machine_casing.heat",
-                        this.menu.currentHeat(),
-                        this.menu.maxHeat()
-                ),
-                19,
-                24,
-                TEXT_COLOR,
-                false
-        );
-        guiGraphics.drawString(
-                this.font,
-                Component.translatable("screen.skyresources3.machine_casing.heat_per_tick", this.menu.heatPerTick()),
-                19,
-                34,
-                TEXT_COLOR,
-                false
-        );
+        if (this.menu.usesHeatDisplay()) {
+            guiGraphics.drawString(
+                    this.font,
+                    Component.translatable(
+                            "screen.skyresources3.machine_casing.heat",
+                            this.menu.currentHeat(),
+                            this.menu.maxHeat()
+                    ),
+                    19,
+                    24,
+                    TEXT_COLOR,
+                    false
+            );
+            guiGraphics.drawString(
+                    this.font,
+                    Component.translatable("screen.skyresources3.machine_casing.heat_per_tick", this.menu.heatPerTick()),
+                    19,
+                    34,
+                    TEXT_COLOR,
+                    false
+            );
+        }
         if (this.menu.usesCombustionChamber()) {
             guiGraphics.drawString(
                     this.font,
@@ -89,6 +91,15 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                     19,
                     44,
                     this.menu.hasValidMultiblock() ? 0x207020 : 0x902020,
+                    false
+            );
+        } else if (this.menu.hasCondenser()) {
+            guiGraphics.drawString(
+                    this.font,
+                    Component.translatable("screen.skyresources3.machine_casing.condenser.installed"),
+                    19,
+                    24,
+                    TEXT_COLOR,
                     false
             );
         } else if (this.menu.hasHeater()) {

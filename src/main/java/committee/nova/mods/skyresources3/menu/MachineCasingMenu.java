@@ -31,6 +31,7 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
     private final DataSlot heatPerTick;
     private final DataSlot hasHeater;
     private final DataSlot usesCombustionChamber;
+    private final DataSlot installedMachineMode;
     private final DataSlot validMultiblock;
 
     public MachineCasingMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
@@ -75,6 +76,7 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
         this.heatPerTick = this.addDataSlot(heatPerTickSlot(data.blockEntity()));
         this.hasHeater = this.addDataSlot(hasHeaterSlot(data.blockEntity()));
         this.usesCombustionChamber = this.addDataSlot(usesCombustionChamberSlot(data.blockEntity()));
+        this.installedMachineMode = this.addDataSlot(installedMachineModeSlot(data.blockEntity()));
         this.validMultiblock = this.addDataSlot(validMultiblockSlot(playerInventory, data));
     }
 
@@ -104,6 +106,20 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
 
     public boolean usesCombustionChamber() {
         return this.usesCombustionChamber.get() > 0;
+    }
+
+    public boolean usesHeatDisplay() {
+        final int mode = this.installedMachineMode();
+        return mode == MachineCasingBlockEntity.MACHINE_MODE_COMBUSTION_HEATER
+                || mode == MachineCasingBlockEntity.MACHINE_MODE_HEAT_PROVIDER;
+    }
+
+    public boolean hasCondenser() {
+        return this.installedMachineMode() == MachineCasingBlockEntity.MACHINE_MODE_CONDENSER;
+    }
+
+    public int installedMachineMode() {
+        return this.installedMachineMode.get();
     }
 
     public boolean hasValidMultiblock() {
@@ -228,6 +244,22 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
             @Override
             public int get() {
                 return blockEntity.usesCombustionChamber() ? 1 : 0;
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
+    private static DataSlot installedMachineModeSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return blockEntity.installedMachineMode();
             }
 
             @Override

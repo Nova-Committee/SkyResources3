@@ -198,11 +198,14 @@ systems that read casing-provided heat such as the Crucible.
 ### 3. Contracts
 
 - Machine Casings may install exactly one casing machine item at a time.
-- Current supported installed machine item classes are `CombustionHeaterItem` and `HeatProviderItem`.
+- Current supported installed machine item classes are `CombustionHeaterItem`, `HeatProviderItem`, and
+  `CondenserItem`.
 - The stored installed-machine stack remains serialized under the existing `heater` key for compatibility with older
   saves that already installed combustion heaters.
 - Combustion heaters own combustion multiblock heat accumulation and pulse crafting.
 - Heat providers own direct heat-source output for blocks above them, especially Crucibles.
+- Condensers may be installed in casings, but their runtime catalyst/fluid recipes remain deferred until ore
+  alchemical dusts and a fluid-aware condenser recipe contract are available.
 - The casing fuel slot validates against the currently installed machine variant; if no installed machine exists, the
   slot rejects insertion.
 - Heat provider output is `variant.heatPerTick()` while active and `0` while redstone-powered or out of fuel.
@@ -220,6 +223,7 @@ systems that read casing-provided heat such as the Crucible.
 | Fuel does not match installed machine variant | Reject through slot/menu/capability validation |
 | Heat provider is redstone-powered | Report `0` heat and do not consume new fuel |
 | Combustion heater installed | Continue using combustion chamber validation and controller/collector routing |
+| Condenser installed before condenser recipes exist | Show condenser mode, reject fuel/catalyst insertion, and do not run heat logic |
 
 ### 5. Good/Base/Bad Cases
 
