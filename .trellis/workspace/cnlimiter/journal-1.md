@@ -606,3 +606,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 18: 最终验证证据刷新
+
+**Date**: 2026-06-14
+**Task**: 最终验证证据刷新
+**Branch**: `master`
+
+### Summary
+
+刷新最终验证证据：在燃烧自动化回归收口后的当前状态重新通过 runData、runGameTestServer、build、旧网络/API/资源命名空间扫描、git diff 检查与 Serena Java 探针；更新最终验证清单和迁移缺口审计，保留手工 GUI 点击流为发布前人工验收项。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3fd84a5` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
