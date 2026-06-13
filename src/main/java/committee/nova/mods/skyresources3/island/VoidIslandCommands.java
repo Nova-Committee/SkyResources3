@@ -2,9 +2,12 @@ package committee.nova.mods.skyresources3.island;
 
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -24,7 +27,7 @@ public final class VoidIslandCommands {
     private static final Set<Relative> NO_RELATIVE_MOVEMENT = Set.of();
 
     public static void register(final RegisterCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(islandNode()));
+        event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(islandNode()).then(teamNode()));
         event.getDispatcher().register(islandNode());
     }
 
@@ -32,7 +35,31 @@ public final class VoidIslandCommands {
         return Commands.literal("island")
                 .then(Commands.literal("create").executes(context -> createIsland(context.getSource())))
                 .then(Commands.literal("home").executes(context -> teleportHome(context.getSource())))
-                .then(Commands.literal("info").executes(context -> showInfo(context.getSource())));
+                .then(Commands.literal("info").executes(context -> showInfo(context.getSource())))
+                .then(Commands.literal("invite")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .executes(context -> invitePlayer(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("accept").executes(context -> acceptInvite(context.getSource())))
+                .then(Commands.literal("leave").executes(context -> leaveTeam(context.getSource())));
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> teamNode() {
+        return Commands.literal("team")
+                .then(Commands.literal("create").executes(context -> createTeam(context.getSource())))
+                .then(Commands.literal("invite")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .executes(context -> invitePlayer(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("accept").executes(context -> acceptInvite(context.getSource())))
+                .then(Commands.literal("leave").executes(context -> leaveTeam(context.getSource())))
+                .then(Commands.literal("disband").executes(context -> disbandTeam(context.getSource())))
+                .then(Commands.literal("home").executes(context -> teleportTeamHome(context.getSource())))
+                .then(Commands.literal("info").executes(context -> showTeamInfo(context.getSource())));
     }
 
     private static int createIsland(final CommandSourceStack source) throws CommandSyntaxException {
@@ -43,8 +70,14 @@ public final class VoidIslandCommands {
         final ServerPlayer player = source.getPlayerOrException();
         final ServerLevel islandLevel = source.getServer().overworld();
         final IslandSavedData islands = IslandSavedData.get(islandLevel);
+        final TeamSavedData teams = TeamSavedData.get(islandLevel);
+        final Optional<TeamSavedData.TeamRecord> team = teams.getTeamFor(player.getUUID());
+        if (team.isPresent() && !team.get().isOwner(player.getUUID())) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.create.member_blocked"));
+            return 0;
+        }
         if (islands.getIsland(player.getUUID()).isPresent()) {
-            source.sendFailure(Component.literal("You already have an island."));
+            source.sendFailure(Component.translatable("message.skyresources3.island.already_exists"));
             return 0;
         }
 
@@ -58,7 +91,10 @@ public final class VoidIslandCommands {
         );
         teleport(player, islandLevel, island.home());
         source.sendSuccess(
-                () -> Component.literal("Created island and teleported to " + formatPosition(island.home()) + "."),
+                () -> Component.translatable(
+                        "message.skyresources3.island.created",
+                        formatPosition(island.home())
+                ),
                 false
         );
         return 1;
@@ -71,21 +107,22 @@ public final class VoidIslandCommands {
 
         final ServerPlayer player = source.getPlayerOrException();
         final IslandSavedData islands = IslandSavedData.get(source.getServer().overworld());
-        final IslandSavedData.IslandRecord island = islands.getIsland(player.getUUID()).orElse(null);
+        final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
+        final IslandSavedData.IslandRecord island = getAccessibleIsland(player.getUUID(), islands, teams).orElse(null);
         if (island == null) {
-            source.sendFailure(Component.literal("You do not have an island yet. Use /island create first."));
+            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
             return 0;
         }
 
         final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
         if (targetLevel == null) {
-            source.sendFailure(Component.literal("The island dimension is not available."));
+            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
             return 0;
         }
 
         teleport(player, targetLevel, island.home());
         source.sendSuccess(
-                () -> Component.literal("Teleported to island home " + formatPosition(island.home()) + "."),
+                () -> Component.translatable("message.skyresources3.island.home", formatPosition(island.home())),
                 false
         );
         return 1;
@@ -98,24 +135,266 @@ public final class VoidIslandCommands {
 
         final ServerPlayer player = source.getPlayerOrException();
         final IslandSavedData islands = IslandSavedData.get(source.getServer().overworld());
-        final IslandSavedData.IslandRecord island = islands.getIsland(player.getUUID()).orElse(null);
+        final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
+        final IslandSavedData.IslandRecord island = getAccessibleIsland(player.getUUID(), islands, teams).orElse(null);
         if (island == null) {
-            source.sendFailure(Component.literal("You do not have an island yet. Use /island create first."));
+            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
             return 0;
         }
 
         source.sendSuccess(
-                () -> Component.literal("Island owner: " + island.ownerName()
-                        + ", dimension: " + island.dimension().identifier()
-                        + ", home: " + formatPosition(island.home())),
+                () -> Component.translatable(
+                        "message.skyresources3.island.info",
+                        island.ownerName(),
+                        island.dimension().identifier(),
+                        formatPosition(island.home())
+                ),
+                false
+        );
+        return 1;
+    }
+
+    private static int createTeam(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        if (teams.getTeamFor(player.getUUID()).isPresent()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.already_in_team"));
+            return 0;
+        }
+        if (islands.getIsland(player.getUUID()).isEmpty()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.create.no_island"));
+            return 0;
+        }
+
+        teams.createTeam(player.getUUID(), player.getName().getString());
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.team.created"),
+                false
+        );
+        return 1;
+    }
+
+    private static int invitePlayer(final CommandSourceStack source, final String targetName)
+            throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final ServerPlayer target = source.getServer().getPlayerList().getPlayerByName(targetName);
+        if (target == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.invite.target_missing", targetName));
+            return 0;
+        }
+        if (player.getUUID().equals(target.getUUID())) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.invite.self"));
+            return 0;
+        }
+
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        final Optional<TeamSavedData.TeamRecord> inviterTeam = teams.getTeamFor(player.getUUID());
+        if (inviterTeam.isPresent() && !inviterTeam.get().isOwner(player.getUUID())) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.invite.not_owner"));
+            return 0;
+        }
+        if (islands.getIsland(player.getUUID()).isEmpty()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.invite.no_island"));
+            return 0;
+        }
+        if (islands.getIsland(target.getUUID()).isPresent()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.invite.target_has_island", targetName));
+            return 0;
+        }
+        if (teams.getTeamFor(target.getUUID()).isPresent()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.invite.target_in_team", targetName));
+            return 0;
+        }
+        if (teams.getPendingInvitation(target.getUUID()).isPresent()) {
+            source.sendFailure(Component.translatable(
+                    "message.skyresources3.team.invite.target_pending",
+                    targetName
+            ));
+            return 0;
+        }
+
+        teams.invite(
+                player.getUUID(),
+                player.getName().getString(),
+                target.getUUID(),
+                target.getName().getString()
+        );
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.team.invite.sent", target.getName().getString()),
+                false
+        );
+        target.sendSystemMessage(Component.translatable(
+                "message.skyresources3.team.invite.received",
+                player.getName().getString()
+        ));
+        return 1;
+    }
+
+    private static int acceptInvite(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        if (islands.getIsland(player.getUUID()).isPresent()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.accept.has_island"));
+            return 0;
+        }
+        if (teams.getTeamFor(player.getUUID()).isPresent()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.already_in_team"));
+            return 0;
+        }
+
+        final TeamSavedData.TeamRecord team = teams.acceptInvitation(
+                player.getUUID(),
+                player.getName().getString()
+        ).orElse(null);
+        if (team == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.accept.missing"));
+            return 0;
+        }
+
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.team.accept.success", team.ownerName()),
+                false
+        );
+        return 1;
+    }
+
+    private static int leaveTeam(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
+        final TeamSavedData.TeamRecord team = teams.getTeamFor(player.getUUID()).orElse(null);
+        if (team == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.leave.not_in_team"));
+            return 0;
+        }
+        if (team.isOwner(player.getUUID())) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.leave.owner"));
+            return 0;
+        }
+
+        teams.leave(player.getUUID());
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.team.leave.success"),
+                false
+        );
+        return 1;
+    }
+
+    private static int disbandTeam(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
+        if (teams.getOwnedTeam(player.getUUID()).isEmpty()) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.disband.not_owner"));
+            return 0;
+        }
+
+        teams.disband(player.getUUID());
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.team.disband.success"),
+                false
+        );
+        return 1;
+    }
+
+    private static int teleportTeamHome(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final IslandSavedData islands = IslandSavedData.get(source.getServer().overworld());
+        final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
+        final TeamSavedData.TeamRecord team = teams.getTeamFor(player.getUUID()).orElse(null);
+        if (team == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.leave.not_in_team"));
+            return 0;
+        }
+
+        final IslandSavedData.IslandRecord island = islands.getIsland(team.owner()).orElse(null);
+        if (island == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.home.no_island"));
+            return 0;
+        }
+        final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
+        if (targetLevel == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            return 0;
+        }
+
+        teleport(player, targetLevel, island.home());
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.team.home.success", formatPosition(island.home())),
+                false
+        );
+        return 1;
+    }
+
+    private static int showTeamInfo(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
+        final TeamSavedData.TeamRecord team = teams.getTeamFor(player.getUUID()).orElse(null);
+        if (team == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.leave.not_in_team"));
+            return 0;
+        }
+
+        source.sendSuccess(
+                () -> Component.translatable(
+                        "message.skyresources3.team.info",
+                        team.ownerName(),
+                        team.playerCount(),
+                        team.playerNames(),
+                        team.invites().size()
+                ),
                 false
         );
         return 1;
     }
 
     private static int disabled(final CommandSourceStack source) {
-        source.sendFailure(Component.literal("Void island features are disabled in the config."));
+        source.sendFailure(Component.translatable("message.skyresources3.island.disabled"));
         return 0;
+    }
+
+    private static Optional<IslandSavedData.IslandRecord> getAccessibleIsland(
+            final UUID player,
+            final IslandSavedData islands,
+            final TeamSavedData teams
+    ) {
+        final Optional<IslandSavedData.IslandRecord> ownIsland = islands.getIsland(player);
+        if (ownIsland.isPresent()) {
+            return ownIsland;
+        }
+        return teams.getTeamFor(player).flatMap(team -> islands.getIsland(team.owner()));
     }
 
     private static BlockPos nextIslandCenter(final int islandCount) {
