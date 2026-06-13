@@ -86,6 +86,11 @@ For `ProcessRecipes.INFUSION`, recipe inputs have a positional convention on top
 
 For `ProcessRecipes.FUSION`, the `parameter` preserves the old fusion table's per-progress-tick catalyst drain. A full legacy craft has 100 progress ticks, so the user-facing catalyst percentage is `parameter * 10000`. Catalyst item yield values are a separate fusion-table runtime concern and should not be encoded as normal fusion recipe inputs.
 
+For `ProcessRecipes.CAULDRON_CLEAN`, the `parameter` preserves the old output chance. Stable Dirty Gem cleaning recipes
+may map vanilla-backed Dirty Gem items directly to concrete vanilla gem outputs with `parameter = 1.0F`. Dynamic modded
+gem outputs, ore-dictionary-style tags, and priority selection remain deferred until the target compatibility policy is
+explicit.
+
 ## Combustion Automation Contract
 
 ### 1. Scope / Trigger

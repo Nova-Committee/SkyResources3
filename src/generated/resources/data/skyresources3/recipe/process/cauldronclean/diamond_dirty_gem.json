@@ -1,0 +1,16 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "skyresources3:diamond_dirty_gem"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:diamond"
+    }
+  ],
+  "parameter": 1.0,
+  "process": "cauldronclean"
+}

@@ -20,7 +20,8 @@
 - [x] Add all Dirty Gem items to the SkyResources3 creative tab.
 - [x] Add item definitions, a shared item model, shared texture, and language entries.
 - [ ] Add variant tinting or per-gem textures after the client color strategy is selected.
-- [ ] Add built-in `cauldronclean` recipes in a focused follow-up after clean output/tag policy is explicit.
+- [x] Add stable vanilla `cauldronclean` recipes in a focused follow-up.
+- [ ] Add dynamic/tagged modded `cauldronclean` outputs after compatibility policy is explicit.
 
 ## Verification
 

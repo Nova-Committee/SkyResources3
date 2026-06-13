@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.data;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
@@ -619,6 +620,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     private void buildProcessRecipes() {
         this.buildFreezerRecipes();
         this.buildRockGrinderRecipes();
+        this.buildCauldronCleanRecipes();
         this.buildKnifeRecipes();
         this.buildInfusionRecipes();
         this.buildCombustionRecipes();
@@ -745,6 +747,24 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 ModItems.SAWDUST.get(),
                 1,
                 input(ItemTags.LOGS)
+        );
+    }
+
+    private void buildCauldronCleanRecipes() {
+        this.dirtyGemCleanRecipe(DirtyGem.EMERALD, Items.EMERALD);
+        this.dirtyGemCleanRecipe(DirtyGem.DIAMOND, Items.DIAMOND);
+        this.dirtyGemCleanRecipe(DirtyGem.QUARTZ, Items.QUARTZ);
+        this.dirtyGemCleanRecipe(DirtyGem.LAPIS, Items.LAPIS_LAZULI);
+    }
+
+    private void dirtyGemCleanRecipe(final DirtyGem gem, final ItemLike output) {
+        this.processRecipe(
+                ProcessRecipes.CAULDRON_CLEAN,
+                gem.itemId(),
+                1.0F,
+                output,
+                1,
+                input(ModItems.DIRTY_GEMS.get(gem).get())
         );
     }
 

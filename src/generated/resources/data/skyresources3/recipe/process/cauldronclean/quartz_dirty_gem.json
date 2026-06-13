@@ -1,0 +1,16 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "skyresources3:quartz_dirty_gem"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:quartz"
+    }
+  ],
+  "parameter": 1.0,
+  "process": "cauldronclean"
+}

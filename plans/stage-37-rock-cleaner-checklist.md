@@ -17,11 +17,12 @@
 - [x] Implemented manual water-cauldron cleaning from the same `cauldronclean` recipes.
 - [x] Copied old Rock Cleaner block and GUI textures to snake_case resource paths.
 - [x] Follow-up: Dirty Gem item family is now available as standalone 1.21.11 item ids.
+- [x] Follow-up: stable vanilla Dirty Gem `cauldronclean` recipes are now generated.
 
 ## Deferred
 
-- [ ] Add built-in `cauldronclean` generated recipes after clean gem output/tag policy and dynamic ore/alchemical dust
-  outputs are explicit. The old recipes depend on those outputs, so this stage intentionally does not invent replacements.
+- [ ] Add dynamic/tagged `cauldronclean` recipes after modded gem and ore/alchemical dust compatibility policy is
+  explicit.
 
 ## Verification
 
