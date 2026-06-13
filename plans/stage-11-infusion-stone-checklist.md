@@ -9,7 +9,8 @@
 - [x] Run build and GameTest server; datagen only if generated data changes.
 - [x] Commit this migration slice with a Chinese message.
 - [x] Follow-up: hand infusion and Life Infuser runtime recipes now come from `skyresources3:process` data.
+- [x] Follow-up: hand infusion runtime is covered by a focused GameTest.
 
 Deferred:
 - [x] Acacia sapling infusion from cactus fruit needle waits for the old cactus fruit needle block migration.
-- [ ] JEI infusion recipe category waits for the recipe system/UI migration batch.
+- [x] JEI infusion recipe category restored by the recipe viewer integration batch.

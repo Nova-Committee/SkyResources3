@@ -47,6 +47,16 @@ public final class ModGameTests {
                     "magmafied_stone_tick",
                     () -> RuntimeMigrationGameTests::magmafiedStoneTicksCrystalFluid
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> INFUSION_STONE_PROCESS =
+            TEST_FUNCTIONS.register(
+                    "infusion_stone_process",
+                    () -> LifeInfusionGameTests::infusionStoneUsesProcessRecipe
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LIFE_INFUSER_PROCESS =
+            TEST_FUNCTIONS.register(
+                    "life_infuser_process",
+                    () -> LifeInfusionGameTests::lifeInfuserUsesProcessRecipe
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_drops_output",
@@ -73,6 +83,8 @@ public final class ModGameTests {
         registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
         registerFunctionTest(event, "rock_grinder_process", ROCK_GRINDER_PROCESS, environment);
         registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);
+        registerFunctionTest(event, "infusion_stone_process", INFUSION_STONE_PROCESS, environment);
+        registerFunctionTest(event, "life_infuser_process", LIFE_INFUSER_PROCESS, environment);
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
     }

@@ -22,7 +22,7 @@
 - [ ] Add variant tinting or per-ore textures after the client color strategy is selected.
 - [x] Add Condenser recipes that consume the stable vanilla iron, gold, and copper dusts.
 - [x] Add Fusion recipes that create the stable vanilla iron, gold, and copper dusts.
-- [ ] Add cleaning recipes that consume these dusts in a focused follow-up slice.
+- [ ] Add cleaning recipes only after a stable output item/tag policy exists; the old cauldron-clean recipes emitted ore-dictionary `dust<Name>` outputs that do not have vanilla-backed 1.21.11 items in this port.
 - [ ] Add dynamic/tagged modded ore recipes once the compatibility policy is explicit.
 
 ## Verification

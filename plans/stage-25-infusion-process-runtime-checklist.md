@@ -11,6 +11,7 @@
 - [x] Switched `LifeInfuserBlockEntity` to use the same process recipe resolver.
 - [x] Added datagen for the migrated vanilla and SkyResources infusion recipes.
 - [x] Recorded the infusion input convention in `.trellis/spec/backend/recipe-guidelines.md`.
+- [x] Added GameTests for both hand infusion stone runtime and Life Infuser machine runtime.
 
 ## Verification
 
@@ -23,5 +24,5 @@
 
 ## Deferred
 
-- [ ] JEI/EMI infusion display waits for the recipe display integration slice.
-- [ ] Mod integration infusion recipes wait for per-mod 1.21.11 availability checks.
+- [x] JEI infusion display restored by the recipe display integration slice; REI/EMI remain intentionally unimplemented.
+- [x] Integrated Dynamics infusion recipes restored after the per-mod 1.21.11 availability check.

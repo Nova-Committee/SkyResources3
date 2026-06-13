@@ -22,4 +22,4 @@
 
 ## Deferred
 
-- [ ] Switch infusion stone runtime behavior to `skyresources3:process` in a focused follow-up slice.
+- [x] Switch infusion stone runtime behavior to `skyresources3:process` in a focused follow-up slice.

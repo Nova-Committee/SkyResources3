@@ -95,6 +95,9 @@ may map vanilla-backed Dirty Gem items directly to concrete vanilla gem outputs 
 gem outputs, ore-dictionary-style tags, and priority selection remain deferred until the target compatibility policy is
 explicit.
 
+Old ore alchemical dust cauldron-clean recipes emitted ore-dictionary `dust<Name>` outputs rather than vanilla-backed
+items. Do not add those recipes until the project has an explicit output item/tag priority policy for modded dusts.
+
 ## Combustion Automation Contract
 
 ### 1. Scope / Trigger
