@@ -47,6 +47,16 @@ public final class ModGameTests {
                     "magmafied_stone_tick",
                     () -> RuntimeMigrationGameTests::magmafiedStoneTicksCrystalFluid
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
+            TEST_FUNCTIONS.register(
+                    "condenser_drops_output",
+                    () -> MachineRuntimeGameTests::condenserDropsOutputWhenNoHandlerExists
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_BLOCKED_OUTPUT =
+            TEST_FUNCTIONS.register(
+                    "condenser_blocked_output",
+                    () -> MachineRuntimeGameTests::condenserKeepsSourceWhenOutputIsBlocked
+            );
 
     public static void register(final IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
@@ -63,6 +73,8 @@ public final class ModGameTests {
         registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
         registerFunctionTest(event, "rock_grinder_process", ROCK_GRINDER_PROCESS, environment);
         registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);
+        registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
+        registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
     }
 
     private static void registerFunctionTest(

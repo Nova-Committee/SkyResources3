@@ -9,10 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -39,7 +36,14 @@ public final class RuntimeMigrationGameTests {
 
         helper.assertTrue(event.isCanceled(), "Cutting knife should handle a matching process recipe");
         helper.assertTrue(helper.getBlockState(TOOL_BLOCK_POS).isAir(), "Cutting knife should consume the source block");
-        assertDroppedStack(helper, Items.OAK_PLANKS, EXPECTED_OAK_PLANKS, TOOL_BLOCK_POS);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                Items.OAK_PLANKS,
+                EXPECTED_OAK_PLANKS,
+                TOOL_BLOCK_POS,
+                ITEM_ASSERT_RADIUS,
+                "Dropped stack count should match migrated recipe output"
+        );
         helper.assertTrue(
                 player.getMainHandItem().getDamageValue() > 0,
                 "Cutting knife should take durability damage"
@@ -57,7 +61,14 @@ public final class RuntimeMigrationGameTests {
 
         helper.assertTrue(event.isCanceled(), "Rock grinder should handle a matching process recipe");
         helper.assertTrue(helper.getBlockState(TOOL_BLOCK_POS).isAir(), "Rock grinder should consume the source block");
-        assertDroppedStack(helper, Items.GRAVEL, EXPECTED_GRAVEL, TOOL_BLOCK_POS);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                Items.GRAVEL,
+                EXPECTED_GRAVEL,
+                TOOL_BLOCK_POS,
+                ITEM_ASSERT_RADIUS,
+                "Dropped stack count should match migrated recipe output"
+        );
         helper.assertTrue(
                 player.getMainHandItem().getDamageValue() > 0,
                 "Rock grinder should take durability damage"
@@ -94,21 +105,6 @@ public final class RuntimeMigrationGameTests {
         final ServerLevel level = helper.getLevel();
         final BlockPos absolutePos = helper.absolutePos(relativePos);
         return new BlockEvent.BreakEvent(level, absolutePos, level.getBlockState(absolutePos), player);
-    }
-
-    private static void assertDroppedStack(
-            final GameTestHelper helper,
-            final Item item,
-            final int expectedCount,
-            final BlockPos relativePos
-    ) {
-        final int actualCount = helper.getEntities(EntityType.ITEM, relativePos, ITEM_ASSERT_RADIUS)
-                .stream()
-                .map(ItemEntity::getItem)
-                .filter(stack -> stack.is(item))
-                .mapToInt(ItemStack::getCount)
-                .sum();
-        helper.assertValueEqual(expectedCount, actualCount, "Dropped stack count should match migrated recipe output");
     }
 
     private RuntimeMigrationGameTests() {

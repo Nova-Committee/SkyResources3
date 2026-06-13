@@ -27,7 +27,7 @@
 
 - [x] Add fusion recipes that create stable vanilla iron, gold, and copper ore alchemical dusts.
 - [ ] Add dynamic/tagged modded ore integration once the compatibility policy is explicit.
-- [ ] Add focused GameTests when reusable machine placement helpers exist.
+- [x] Add focused GameTests for successful Condenser output and blocked-output retry behavior.
 
 ## Verification
 
