@@ -48,7 +48,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - `/island reset` is only a confirmation prompt; `/island reset confirm` performs the reset with the stored type.
 - `/island reset <type>` prompts for a type switch; `/island reset <type> confirm` rebuilds the starter footprint and persists the new type.
 - Island reset is restricted to personal island owners and currently rebuilds only the starter island footprint.
-- `/island spawn` teleports to a temporary overworld origin-heightmap placeholder until custom void-world spawn handling exists.
+- New islands are created in `skyresources3:void_island` when the data-pack dimension is available, with overworld fallback only for missing-dimension recovery.
+- `/island spawn` teleports to a generated spawn platform in `skyresources3:void_island` when available, with the old overworld origin-heightmap behavior as fallback.
 - Player-facing command messages use `Component.translatable` with keys in `assets/skyresources3/lang/en_us.json`.
 
 ### 4. Validation & Error Matrix

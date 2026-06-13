@@ -70,7 +70,7 @@
   "message.skyresources3.island.dimension_missing": "The island dimension is not available.",
   "message.skyresources3.island.home": "Teleported to island home %s.",
   "message.skyresources3.island.info": "Island owner: %s, type: %s, dimension: %s, home: %s",
-  "message.skyresources3.island.spawn": "Teleported to temporary spawn %s.",
+  "message.skyresources3.island.spawn": "Teleported to island spawn %s.",
   "message.skyresources3.island.visit.target_missing": "Player %s is not online.",
   "message.skyresources3.island.visit.self": "Use /island home to return to your own island.",
   "message.skyresources3.island.visit.target_no_island": "%s does not have an island you can visit.",

@@ -27,7 +27,6 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 public final class VoidIslandCommands {
     private static final int ISLAND_ORIGIN = 8192;
     private static final int ISLAND_SPACING = 512;
-    private static final int ISLAND_Y = 192;
     private static final int ISLANDS_PER_ROW = 256;
     private static final int STARTER_RESET_RADIUS = 3;
     private static final int STARTER_RESET_MIN_Y_OFFSET = -1;
@@ -104,9 +103,10 @@ public final class VoidIslandCommands {
         }
 
         final ServerPlayer player = source.getPlayerOrException();
-        final ServerLevel islandLevel = source.getServer().overworld();
-        final IslandSavedData islands = IslandSavedData.get(islandLevel);
-        final TeamSavedData teams = TeamSavedData.get(islandLevel);
+        final ServerLevel storageLevel = source.getServer().overworld();
+        final ServerLevel islandLevel = VoidIslandWorld.getOrOverworld(source.getServer());
+        final IslandSavedData islands = IslandSavedData.get(storageLevel);
+        final TeamSavedData teams = TeamSavedData.get(storageLevel);
         final Optional<TeamSavedData.TeamRecord> team = teams.getTeamFor(player.getUUID());
         if (team.isPresent() && !team.get().isOwner(player.getUUID())) {
             source.sendFailure(Component.translatable("message.skyresources3.island.create.member_blocked"));
@@ -177,10 +177,18 @@ public final class VoidIslandCommands {
         }
 
         final ServerPlayer player = source.getPlayerOrException();
-        final ServerLevel spawnLevel = source.getServer().overworld();
-        final BlockPos spawn = spawnLevel.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, TEMPORARY_SPAWN_COLUMN);
+        final ServerLevel spawnLevel = VoidIslandWorld.get(source.getServer()).orElse(null);
+        final BlockPos spawn;
+        if (spawnLevel == null) {
+            final ServerLevel fallbackLevel = source.getServer().overworld();
+            spawn = fallbackLevel.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, TEMPORARY_SPAWN_COLUMN);
+            teleport(player, fallbackLevel, spawn);
+        } else {
+            VoidIslandWorld.ensureSpawnPlatform(spawnLevel);
+            spawn = VoidIslandWorld.spawnHome();
+            teleport(player, spawnLevel, spawn);
+        }
 
-        teleport(player, spawnLevel, spawn);
         source.sendSuccess(
                 () -> Component.translatable("message.skyresources3.island.spawn", formatPosition(spawn)),
                 false
@@ -592,7 +600,7 @@ public final class VoidIslandCommands {
     private static BlockPos nextIslandCenter(final int islandCount) {
         final int x = ISLAND_ORIGIN + islandCount % ISLANDS_PER_ROW * ISLAND_SPACING;
         final int z = ISLAND_ORIGIN + islandCount / ISLANDS_PER_ROW * ISLAND_SPACING;
-        return new BlockPos(x, ISLAND_Y, z);
+        return new BlockPos(x, VoidIslandWorld.ISLAND_Y, z);
     }
 
     private static void clearStarterIslandArea(final ServerLevel level, final BlockPos center) {
