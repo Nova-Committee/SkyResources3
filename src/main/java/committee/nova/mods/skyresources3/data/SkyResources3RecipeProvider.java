@@ -130,6 +130,28 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dark_matter", has(ModItems.DARK_MATTER.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.SILVERFISH_DISRUPTOR.get())
+                .define('X', ModItems.DARK_MATTER.get())
+                .define('Y', Items.ENDER_EYE)
+                .define('Z', ModItems.LIGHT_MATTER.get())
+                .pattern(" Y ")
+                .pattern(" Z ")
+                .pattern("XXX")
+                .unlockedBy("has_light_matter", has(ModItems.LIGHT_MATTER.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.END_PORTAL_CORE.get())
+                .define('X', ModBlocks.DARK_MATTER_BLOCK.get())
+                .define('Y', Items.ENDER_EYE)
+                .define('Z', ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get())
+                .define('A', ModItems.ALCHEMICAL_GOLD_INGOT.get())
+                .define('B', Blocks.QUARTZ_BLOCK)
+                .pattern("BYB")
+                .pattern("AZA")
+                .pattern("XXX")
+                .unlockedBy("has_quartz_amplification_component", has(ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get()))
+                .save(this.output);
+
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.FLUID_DROPPER.get())
                 .define('X', Blocks.COBBLESTONE)
                 .pattern("XXX")

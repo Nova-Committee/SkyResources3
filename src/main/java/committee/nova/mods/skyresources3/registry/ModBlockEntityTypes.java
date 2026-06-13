@@ -8,6 +8,7 @@ import committee.nova.mods.skyresources3.block.entity.CombustionCollectorBlockEn
 import committee.nova.mods.skyresources3.block.entity.CombustionControllerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.DarkMatterWarperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.DirtFurnaceBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.EndPortalCoreBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FluidDropperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FreezerBlockEntity;
@@ -62,6 +63,15 @@ public final class ModBlockEntityTypes {
                     () -> new BlockEntityType<>(
                             DarkMatterWarperBlockEntity::new,
                             ModBlocks.DARK_MATTER_WARPER.get()
+                    )
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EndPortalCoreBlockEntity>>
+            END_PORTAL_CORE =
+            BLOCK_ENTITY_TYPES.register(
+                    "end_portal_core",
+                    () -> new BlockEntityType<>(
+                            EndPortalCoreBlockEntity::new,
+                            ModBlocks.END_PORTAL_CORE.get()
                     )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidDropperBlockEntity>> FLUID_DROPPER =

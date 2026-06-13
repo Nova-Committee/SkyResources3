@@ -39,6 +39,11 @@ public final class ModCapabilities {
         );
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.END_PORTAL_CORE.get(),
+                (endPortalCore, direction) -> endPortalCore.getItemHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
                 ModBlockEntityTypes.CRUCIBLE_INSERTER.get(),
                 (crucibleInserter, direction) -> crucibleInserter.getItemHandler()
         );

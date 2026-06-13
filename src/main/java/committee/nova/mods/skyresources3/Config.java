@@ -84,6 +84,9 @@ public final class Config {
     private static final ModConfigSpec.BooleanValue DARK_MATTER_WARPER_EFFECT_NO_FUEL = BUILDER
             .comment("Allow the unfueled dark matter warper to apply short negative effects to nearby non-creative players.")
             .define("darkMatterWarperEffectNoFuel", true);
+    private static final ModConfigSpec.EnumValue<EndPortalDifficulty> END_PORTAL_MODE = BUILDER
+            .comment("End portal difficulty: NORMAL spawns armed silverfish, EASY spawns unarmed silverfish, WUSS spawns none.")
+            .defineEnum("endPortalMode", EndPortalDifficulty.NORMAL);
     private static final ModConfigSpec.BooleanValue ADD_BEETROOT_SEED_DROP = BUILDER
             .comment("Add beetroot seeds to grass drops.")
             .define("addBeetrootSeedDrop", true);
@@ -130,6 +133,7 @@ public final class Config {
     public static int darkMatterWarperFuelTime;
     public static boolean darkMatterWarperEffectPlayers;
     public static boolean darkMatterWarperEffectNoFuel;
+    public static EndPortalDifficulty endPortalMode;
     public static boolean addBeetrootSeedDrop;
     public static boolean addMelonSeedDrop;
     public static boolean addPumpkinSeedDrop;
@@ -164,6 +168,7 @@ public final class Config {
         darkMatterWarperFuelTime = DARK_MATTER_WARPER_FUEL_TIME.get();
         darkMatterWarperEffectPlayers = DARK_MATTER_WARPER_EFFECT_PLAYERS.get();
         darkMatterWarperEffectNoFuel = DARK_MATTER_WARPER_EFFECT_NO_FUEL.get();
+        endPortalMode = END_PORTAL_MODE.get();
         addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
         addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
         addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();
@@ -173,5 +178,11 @@ public final class Config {
     }
 
     private Config() {
+    }
+
+    public enum EndPortalDifficulty {
+        NORMAL,
+        EASY,
+        WUSS
     }
 }

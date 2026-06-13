@@ -48,6 +48,9 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> QUICK_DROPPER = blockItem("quick_dropper", ModBlocks.QUICK_DROPPER);
     public static final DeferredItem<BlockItem> DARK_MATTER_WARPER =
             blockItem("dark_matter_warper", ModBlocks.DARK_MATTER_WARPER);
+    public static final DeferredItem<BlockItem> END_PORTAL_CORE = blockItem("end_portal_core", ModBlocks.END_PORTAL_CORE);
+    public static final DeferredItem<BlockItem> SILVERFISH_DISRUPTOR =
+            blockItem("silverfish_disruptor", ModBlocks.SILVERFISH_DISRUPTOR);
     public static final DeferredItem<BlockItem> FLUID_DROPPER = blockItem("fluid_dropper", ModBlocks.FLUID_DROPPER);
     public static final DeferredItem<BlockItem> CRUCIBLE = blockItem("crucible", ModBlocks.CRUCIBLE);
     public static final DeferredItem<BlockItem> CRUCIBLE_INSERTER =

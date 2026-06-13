@@ -12,6 +12,7 @@ import committee.nova.mods.skyresources3.block.CrucibleInserterBlock;
 import committee.nova.mods.skyresources3.block.DarkMatterWarperBlock;
 import committee.nova.mods.skyresources3.block.DirtFurnaceBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
+import committee.nova.mods.skyresources3.block.EndPortalCoreBlock;
 import committee.nova.mods.skyresources3.block.FluidDropperBlock;
 import committee.nova.mods.skyresources3.block.FusionTableBlock;
 import committee.nova.mods.skyresources3.block.FreezerBlock;
@@ -21,6 +22,7 @@ import committee.nova.mods.skyresources3.block.MachineCasingBlock;
 import committee.nova.mods.skyresources3.block.QuickDropperBlock;
 import committee.nova.mods.skyresources3.block.RockCleanerBlock;
 import committee.nova.mods.skyresources3.block.RockCrusherBlock;
+import committee.nova.mods.skyresources3.block.SilverfishDisruptorBlock;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -119,6 +121,20 @@ public final class ModBlocks {
             "dark_matter_warper",
             DarkMatterWarperBlock::new,
             () -> properties(8.0F, 12.0F, SoundType.METAL).noOcclusion()
+    );
+    public static final DeferredBlock<EndPortalCoreBlock> END_PORTAL_CORE = BLOCKS.registerBlock(
+            "end_portal_core",
+            EndPortalCoreBlock::new,
+            () -> properties(6.0F, 12.0F, SoundType.METAL).noOcclusion()
+    );
+    public static final DeferredBlock<SilverfishDisruptorBlock> SILVERFISH_DISRUPTOR = BLOCKS.registerBlock(
+            "silverfish_disruptor",
+            SilverfishDisruptorBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .strength(0.5F, 0.5F)
+                    .sound(SoundType.GLASS)
+                    .noOcclusion()
     );
     public static final DeferredBlock<FluidDropperBlock> FLUID_DROPPER = BLOCKS.registerBlock(
             "fluid_dropper",
