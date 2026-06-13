@@ -24,6 +24,9 @@
 - [x] `./gradlew.bat runGameTestServer` passed on 2026-06-14 with Gradle exit code 0.
 - [x] `./gradlew.bat build` passed on 2026-06-14; final task result was `BUILD SUCCESSFUL`.
 - [x] Controlled `./gradlew.bat runClient --no-daemon` startup smoke captured client loading evidence on 2026-06-14; see `plans/client-smoke-resource-license-closeout-checklist.md`.
+- [x] Guide/menu automated integrity coverage was added on 2026-06-14:
+  - `GuideMenuGameTests.guide_data_integrity` verifies guide translation keys, inline action markers, link targets, recipe targets, structure targets, and structure block icons.
+  - `GuideMenuGameTests.menu_type_registration` verifies all migrated machine menu type ids resolve through the runtime registry.
 - [x] `git diff --check` passed on 2026-06-14.
 - [x] `git diff --cached --check` passed on 2026-06-14.
 - [x] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"` passed on 2026-06-14; Serena resolved the project as Java with LSP configuration.

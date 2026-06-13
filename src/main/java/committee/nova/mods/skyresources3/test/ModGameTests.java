@@ -112,6 +112,16 @@ public final class ModGameTests {
                     "survivalist_fishing_loot",
                     () -> SurvivalistFishingGameTests::survivalistRodUsesCustomFishingLoot
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> GUIDE_DATA_INTEGRITY =
+            TEST_FUNCTIONS.register(
+                    "guide_data_integrity",
+                    () -> GuideMenuGameTests::guideDataIntegrity
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> MENU_TYPE_REGISTRATION =
+            TEST_FUNCTIONS.register(
+                    "menu_type_registration",
+                    () -> GuideMenuGameTests::menuTypesResolve
+            );
 
     public static void register(final IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
@@ -141,6 +151,8 @@ public final class ModGameTests {
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
         registerFunctionTest(event, "survivalist_fishing_loot", SURVIVALIST_FISHING_LOOT, environment);
+        registerFunctionTest(event, "guide_data_integrity", GUIDE_DATA_INTEGRITY, environment);
+        registerFunctionTest(event, "menu_type_registration", MENU_TYPE_REGISTRATION, environment);
     }
 
     private static void registerFunctionTest(

@@ -39,6 +39,11 @@
 - [ ] Open representative machine menus and confirm layout/slot behavior visually.
 - [ ] Sanity-check island/team flows in a local client world.
 
+## Later Automation Evidence
+
+- [x] `GuideMenuGameTests.guide_data_integrity` now covers guide page/action/structure/translation consistency without claiming visual click coverage.
+- [x] `GuideMenuGameTests.menu_type_registration` now covers all migrated machine menu type registry ids without loading client-only screen classes.
+
 ## Validation
 
 - [x] `./gradlew.bat build`
