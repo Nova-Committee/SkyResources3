@@ -61,11 +61,13 @@ public enum IslandTemplate {
         public void build(final ServerLevel level, final BlockPos center) {
             final BlockState petrifiedWood = ModBlocks.PETRIFIED_WOOD.get().defaultBlockState();
             final BlockState magmafiedStone = ModBlocks.MAGMAFIED_STONE.get().defaultBlockState();
+            final BlockState crystalFluid = ModBlocks.CRYSTAL_FLUID.get().defaultBlockState();
             final BlockState soulSand = Blocks.SOUL_SAND.defaultBlockState();
             final BlockState netherWart = Blocks.NETHER_WART.defaultBlockState().setValue(NetherWartBlock.AGE, 3);
 
             set(level, center.east().south(), soulSand);
             set(level, center.south(), soulSand);
+            set(level, center.west().south(), crystalFluid);
             set(level, center, soulSand);
             set(level, center.west(), soulSand);
             set(level, center.east().north(), soulSand);

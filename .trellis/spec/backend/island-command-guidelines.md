@@ -48,6 +48,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Island ownership is stored in `IslandSavedData`, keyed by owner UUID.
 - Island saved data stores a starter template `type`; old records without `type` default to `grass`.
 - Supported island starter template ids are `grass`, `sand`, `snow`, `wood`, `gog`, and `magma`.
+- The `magma` starter template preserves the legacy VIC shape, including Crystal Fluid at the old `pos.west().south()`
+  relative position next to the Magmafied Stone progression setup.
 - Team ownership is stored in `TeamSavedData`, keyed by team owner UUID.
 - A team member without a personal island resolves `/island home` and `/island info` through the team owner's island.
 - `/island visit <player>` resolves the target player's own island first, then the target's team owner island. Online

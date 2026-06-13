@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.island.IslandSavedData;
 import committee.nova.mods.skyresources3.island.IslandTemplate;
 import committee.nova.mods.skyresources3.island.TeamSavedData;
 import committee.nova.mods.skyresources3.island.VoidIslandWorld;
+import committee.nova.mods.skyresources3.registry.ModBlocks;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
@@ -178,6 +179,33 @@ public final class IslandCommandGameTests {
                     home,
                     teamVisitor.blockPosition(),
                     "Offline team member name lookup should teleport to the team owner island"
+            );
+            helper.succeed();
+        } finally {
+            Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+        }
+    }
+
+    @SuppressWarnings("removal")
+    public static void magmaIslandPlacesCrystalFluid(final GameTestHelper helper) {
+        final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
+        Config.enableVoidIslandFeatures = true;
+
+        try {
+            final ServerPlayer player = makeNamedMockServerPlayerInLevel(helper, "magma_owner");
+            assertCommandSucceeds(helper, player, "island create magma");
+
+            final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
+            final IslandSavedData.IslandRecord island = getIslandOrFail(helper, islands, player);
+            final ServerLevel targetLevel = helper.getLevel().getServer().getLevel(island.dimension());
+            if (targetLevel == null) {
+                helper.fail("Expected target level for magma island");
+            }
+
+            final BlockPos center = island.home().below();
+            helper.assertTrue(
+                    targetLevel.getBlockState(center.west().south()).is(ModBlocks.CRYSTAL_FLUID.get()),
+                    "Magma island should place Crystal Fluid at the legacy VIC position"
             );
             helper.succeed();
         } finally {

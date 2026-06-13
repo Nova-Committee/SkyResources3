@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec entry point and required checklist for island template/runtime changes."}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Package/resource layout and naming conventions for Java mod code."}
+{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Island template ids, command behavior, and GameTest expectations."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "GameTest and build verification requirements."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse existing Crystal Fluid registration and template helpers."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Trace behavior across template, command creation, tests, and plan docs."}

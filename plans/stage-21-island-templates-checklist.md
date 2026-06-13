@@ -13,11 +13,11 @@
 - `IslandTemplate` centralizes starter island generation and command suggestions.
 - `IslandSavedData.IslandRecord` stores `type` through the saved-data codec.
 - `VoidIslandCommands` parses, validates, suggests, creates, resets, and reports island types through localized messages.
+- `IslandTemplate.MAGMA` now includes the old VIC Crystal Fluid source at `center.west().south()`; this was completed in Stage 70.
 - `island-command-guidelines.md` documents command signatures and saved-data compatibility.
 
 ## TODO
 
-- Crystal fluid placement from the original magma island is still not placed by the magma template; the fluid registry exists now, so the remaining decision is whether to add safe source placement to the starter island.
 - Garden of Glass uses a vanilla placeholder until a compatible Botania/Garden of Glass integration is available.
 - 自定义 void 维度、世界预设和共享 spawn 平台已在 Stage 22 完成。
 

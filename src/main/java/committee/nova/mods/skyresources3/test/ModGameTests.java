@@ -42,6 +42,11 @@ public final class ModGameTests {
                     "island_offline_visit",
                     () -> IslandCommandGameTests::visitTeleportsToOfflineSavedIsland
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_MAGMA_TEMPLATE =
+            TEST_FUNCTIONS.register(
+                    "island_magma_template",
+                    () -> IslandCommandGameTests::magmaIslandPlacesCrystalFluid
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_TEAM_COMMANDS =
             TEST_FUNCTIONS.register(
                     "island_team_commands",
@@ -117,6 +122,7 @@ public final class ModGameTests {
         registerFunctionTest(event, "island_spawn_platform", ISLAND_SPAWN_PLATFORM, environment);
         registerFunctionTest(event, "island_visit", ISLAND_VISIT, environment);
         registerFunctionTest(event, "island_offline_visit", ISLAND_OFFLINE_VISIT, environment);
+        registerFunctionTest(event, "island_magma_template", ISLAND_MAGMA_TEMPLATE, environment);
         registerFunctionTest(event, "island_team_commands", ISLAND_TEAM_COMMANDS, environment);
         registerFunctionTest(event, "island_trust_commands", ISLAND_TRUST_COMMANDS, environment);
         registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
