@@ -705,3 +705,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 21: 客户端 GUI 烟测实测
+
+**Date**: 2026-06-14
+**Task**: 客户端 GUI 烟测实测
+**Branch**: `master`
+
+### Summary
+
+尝试 runClient GUI 烟测，确认客户端可进入本地世界；发现并修复指南默认 G 与 Minecraft 1.21.11 quickActions 冲突，改为 Y；记录剩余 guide/JEI/机器 GUI 点击验证仍需手工完成。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d2905fa` | (see git log) |
+| `edce842` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
