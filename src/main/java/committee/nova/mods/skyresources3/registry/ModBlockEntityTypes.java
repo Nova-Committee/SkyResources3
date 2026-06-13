@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.entity.CrucibleBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.CrucibleInserterBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.DirtFurnaceBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FluidDropperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
@@ -55,6 +56,12 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "crucible",
                     () -> new BlockEntityType<>(CrucibleBlockEntity::new, ModBlocks.CRUCIBLE.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrucibleInserterBlockEntity>>
+            CRUCIBLE_INSERTER =
+            BLOCK_ENTITY_TYPES.register(
+                    "crucible_inserter",
+                    () -> new BlockEntityType<>(CrucibleInserterBlockEntity::new, ModBlocks.CRUCIBLE_INSERTER.get())
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =
             BLOCK_ENTITY_TYPES.register(

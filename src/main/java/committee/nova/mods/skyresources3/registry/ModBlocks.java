@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.BlazePowderBlock;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.CrucibleBlock;
+import committee.nova.mods.skyresources3.block.CrucibleInserterBlock;
 import committee.nova.mods.skyresources3.block.DirtFurnaceBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
 import committee.nova.mods.skyresources3.block.FluidDropperBlock;
@@ -110,6 +111,11 @@ public final class ModBlocks {
     public static final DeferredBlock<CrucibleBlock> CRUCIBLE = BLOCKS.registerBlock(
             "crucible",
             CrucibleBlock::new,
+            () -> properties(2.0F, 12.0F, SoundType.STONE).noOcclusion()
+    );
+    public static final DeferredBlock<CrucibleInserterBlock> CRUCIBLE_INSERTER = BLOCKS.registerBlock(
+            "crucible_inserter",
+            CrucibleInserterBlock::new,
             () -> properties(2.0F, 12.0F, SoundType.STONE).noOcclusion()
     );
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(

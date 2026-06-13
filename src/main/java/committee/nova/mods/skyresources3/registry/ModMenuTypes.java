@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.menu.CrucibleInserterMenu;
 import committee.nova.mods.skyresources3.menu.DirtFurnaceMenu;
 import committee.nova.mods.skyresources3.menu.FreezerMenu;
 import committee.nova.mods.skyresources3.menu.FusionTableMenu;
@@ -24,6 +25,8 @@ public final class ModMenuTypes {
             MENU_TYPES.register("freezer", () -> IMenuTypeExtension.create(FreezerMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<QuickDropperMenu>> QUICK_DROPPER =
             MENU_TYPES.register("quick_dropper", () -> IMenuTypeExtension.create(QuickDropperMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<CrucibleInserterMenu>> CRUCIBLE_INSERTER =
+            MENU_TYPES.register("crucible_inserter", () -> IMenuTypeExtension.create(CrucibleInserterMenu::new));
 
     public static void register(final IEventBus modEventBus) {
         MENU_TYPES.register(modEventBus);

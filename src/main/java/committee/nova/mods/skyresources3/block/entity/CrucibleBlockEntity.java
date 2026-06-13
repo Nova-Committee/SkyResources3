@@ -60,6 +60,7 @@ public final class CrucibleBlockEntity extends BlockEntity {
 
     public void serverTick(final ServerLevel level) {
         boolean changed = this.absorbItemEntities(level);
+        changed |= this.absorbInserter(level);
         changed |= this.meltStoredInput(level);
         if (changed) {
             this.markUpdated(level);
@@ -104,6 +105,20 @@ public final class CrucibleBlockEntity extends BlockEntity {
             }
         }
         return changed;
+    }
+
+    private boolean absorbInserter(final ServerLevel level) {
+        if (!(level.getBlockEntity(this.worldPosition.above()) instanceof CrucibleInserterBlockEntity inserter)) {
+            return false;
+        }
+
+        final ItemStack stack = inserter.getItem(0);
+        if (stack.isEmpty() || !this.tryInsertStack(level, stack)) {
+            return false;
+        }
+
+        inserter.setItem(0, stack);
+        return true;
     }
 
     private boolean tryInsertStack(final ServerLevel level, final ItemStack stack) {
