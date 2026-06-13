@@ -530,6 +530,13 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.combustionHeaterRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
         this.combustionHeaterRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
         this.combustionHeaterRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
+        this.heatProviderRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.heatProviderRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
+        this.heatProviderRecipe(MachineVariant.IRON, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
+        this.heatProviderRecipe(MachineVariant.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
+        this.heatProviderRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
+        this.heatProviderRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
+        this.heatProviderRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
 
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_COLLECTOR.get())
                 .define('X', Items.IRON_INGOT)
@@ -561,6 +568,22 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("XXX")
                 .pattern("X X")
                 .pattern("XYX")
+                .unlockedBy(unlockName, has(component))
+                .save(this.output);
+    }
+
+    private void heatProviderRecipe(
+            final MachineVariant variant,
+            final Ingredient material,
+            final ItemLike component,
+            final String unlockName
+    ) {
+        this.shaped(RecipeCategory.MISC, ModItems.HEAT_PROVIDERS.get(variant).get())
+                .define('X', material)
+                .define('Y', component)
+                .pattern("XYX")
+                .pattern("XYX")
+                .pattern("X X")
                 .unlockedBy(unlockName, has(component))
                 .save(this.output);
     }

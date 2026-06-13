@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CuttingKnifeItem;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
 import committee.nova.mods.skyresources3.item.InfusionStoneItem;
@@ -162,6 +163,8 @@ public final class ModItems {
     );
     public static final Map<MachineVariant, DeferredItem<CombustionHeaterItem>> COMBUSTION_HEATERS =
             registerCombustionHeaters();
+    public static final Map<MachineVariant, DeferredItem<HeatProviderItem>> HEAT_PROVIDERS =
+            registerHeatProviders();
 
     public static void register(final IEventBus modEventBus) {
         ITEMS.register(modEventBus);
@@ -188,6 +191,17 @@ public final class ModItems {
             ));
         }
         return Collections.unmodifiableMap(heaters);
+    }
+
+    private static Map<MachineVariant, DeferredItem<HeatProviderItem>> registerHeatProviders() {
+        final EnumMap<MachineVariant, DeferredItem<HeatProviderItem>> providers = new EnumMap<>(MachineVariant.class);
+        for (final MachineVariant variant : MachineVariant.values()) {
+            providers.put(variant, ITEMS.registerItem(
+                    variant.registryName("heat_provider"),
+                    properties -> new HeatProviderItem(properties, variant)
+            ));
+        }
+        return Collections.unmodifiableMap(providers);
     }
 
     private static DeferredItem<CuttingKnifeItem> cuttingKnife(

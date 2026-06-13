@@ -80,16 +80,29 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                 TEXT_COLOR,
                 false
         );
-        guiGraphics.drawString(
-                this.font,
-                Component.translatable(this.menu.hasValidMultiblock()
-                        ? "screen.skyresources3.machine_casing.multiblock.formed"
-                        : "screen.skyresources3.machine_casing.multiblock.missing"),
-                19,
-                44,
-                this.menu.hasValidMultiblock() ? 0x207020 : 0x902020,
-                false
-        );
+        if (this.menu.usesCombustionChamber()) {
+            guiGraphics.drawString(
+                    this.font,
+                    Component.translatable(this.menu.hasValidMultiblock()
+                            ? "screen.skyresources3.machine_casing.multiblock.formed"
+                            : "screen.skyresources3.machine_casing.multiblock.missing"),
+                    19,
+                    44,
+                    this.menu.hasValidMultiblock() ? 0x207020 : 0x902020,
+                    false
+            );
+        } else if (this.menu.hasHeater()) {
+            guiGraphics.drawString(
+                    this.font,
+                    Component.translatable(this.menu.currentHeat() > 0
+                            ? "screen.skyresources3.machine_casing.heat_provider.active"
+                            : "screen.skyresources3.machine_casing.heat_provider.idle"),
+                    19,
+                    44,
+                    this.menu.currentHeat() > 0 ? 0x207020 : 0x902020,
+                    false
+            );
+        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package committee.nova.mods.skyresources3.block;
 
 import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
-import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.menu.MachineCasingMenu;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
@@ -81,7 +80,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
-        if (!casing.hasHeater() && stack.getItem() instanceof CombustionHeaterItem) {
+        if (!casing.hasHeater() && casing.canInstallMachine(stack)) {
             return casing.installHeater(stack, player) ? InteractionResult.SUCCESS_SERVER : InteractionResult.PASS;
         }
         return this.openMenu(pos, player, casing);

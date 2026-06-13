@@ -171,6 +171,93 @@ for (int slot = 0; slot < SLOT_COUNT; slot++) {
 }
 ```
 
+## Machine Casing Installed Machine Contract
+
+### 1. Scope / Trigger
+
+Use this contract when changing `MachineCasingBlockEntity`, casing-installed machine items, casing menus/screens, or
+systems that read casing-provided heat such as the Crucible.
+
+### 2. Signatures
+
+- Install gate:
+  ```java
+  public boolean canInstallMachine(ItemStack stack)
+  ```
+- Installed-machine interaction:
+  ```java
+  public boolean installHeater(ItemStack stack, Player player)
+  public ItemStack removeHeater()
+  ```
+- Heat-provider bridge:
+  ```java
+  public int heatSourceValue()
+  public static int HeatSources.getHeatSourceValue(Level level, BlockPos pos)
+  ```
+
+### 3. Contracts
+
+- Machine Casings may install exactly one casing machine item at a time.
+- Current supported installed machine item classes are `CombustionHeaterItem` and `HeatProviderItem`.
+- The stored installed-machine stack remains serialized under the existing `heater` key for compatibility with older
+  saves that already installed combustion heaters.
+- Combustion heaters own combustion multiblock heat accumulation and pulse crafting.
+- Heat providers own direct heat-source output for blocks above them, especially Crucibles.
+- The casing fuel slot validates against the currently installed machine variant; if no installed machine exists, the
+  slot rejects insertion.
+- Heat provider output is `variant.heatPerTick()` while active and `0` while redstone-powered or out of fuel.
+- Do not add optional legacy metal/RF/fluid variants unless the corresponding target mod dependency and capability
+  policy is explicit.
+
+### 4. Validation & Error Matrix
+
+| Condition | Expected behavior |
+|---|---|
+| Right-click empty casing with supported machine item | Install one item and shrink the player's stack unless creative |
+| Right-click empty casing with unsupported item | Do not install; open/pass according to normal block interaction |
+| Shift-right-click casing with installed machine | Return installed machine and reset runtime heat/fuel display state |
+| Fuel inserted before machine is installed | Reject through the item transfer handler |
+| Fuel does not match installed machine variant | Reject through slot/menu/capability validation |
+| Heat provider is redstone-powered | Report `0` heat and do not consume new fuel |
+| Combustion heater installed | Continue using combustion chamber validation and controller/collector routing |
+
+### 5. Good/Base/Bad Cases
+
+- Good: `HeatSources.getHeatSourceValue` checks `MachineCasingBlockEntity.heatSourceValue()` before static block heat
+  maps, so Crucible code stays ignorant of installed machine item classes.
+- Base: Casing menus may expose one fuel slot while using DataSlots for active machine state.
+- Bad: Crucible, screen, or recipe code checking `instanceof HeatProviderItem` directly instead of reading
+  `HeatSources` or casing data.
+
+### 6. Tests Required
+
+- `./gradlew.bat compileJava`
+- `./gradlew.bat runData` when installed-machine recipes or generated data change
+- `./gradlew.bat build`
+- `./gradlew.bat runGameTestServer` for casing block-entity or heat-source behavior changes
+- `git diff --check`
+- Add focused GameTests when reusable machine placement helpers exist for asserting install/remove, redstone disable,
+  and Crucible heat transfer.
+
+### 7. Wrong vs Correct
+
+Wrong:
+```java
+// Leaks casing-machine knowledge into Crucible melting.
+if (level.getBlockEntity(pos.below()) instanceof MachineCasingBlockEntity casing
+        && casing.heater().getItem() instanceof HeatProviderItem) {
+    return 10;
+}
+```
+
+Correct:
+```java
+final int heat = HeatSources.getHeatSourceValue(level, this.worldPosition.below());
+if (heat <= 0) {
+    return 0;
+}
+```
+
 ## Water Extractor / Aqueous Machine Contract
 
 ### 1. Scope / Trigger

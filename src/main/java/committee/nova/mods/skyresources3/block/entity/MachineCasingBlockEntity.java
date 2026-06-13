@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.block.entity;
 import com.mojang.serialization.Codec;
 import committee.nova.mods.skyresources3.block.MachineCasingBlock;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.machine.CombustionRecipeLogic;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
@@ -96,6 +97,8 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             if (!this.hasValidMultiblock(level) && this.currentHeat > 0.0F) {
                 this.currentHeat = Math.max(0.0F, this.currentHeat - 1.0F);
             }
+        } else if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
+            this.provideHeat(level, heatProvider.variant());
         } else {
             this.currentHeat = 0.0F;
             this.itemHeat = 0.0F;
@@ -125,8 +128,12 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return !this.heater.isEmpty();
     }
 
+    public boolean canInstallMachine(final ItemStack stack) {
+        return stack.getItem() instanceof CombustionHeaterItem || stack.getItem() instanceof HeatProviderItem;
+    }
+
     public boolean installHeater(final ItemStack stack, final Player player) {
-        if (this.hasHeater() || !(stack.getItem() instanceof CombustionHeaterItem)) {
+        if (this.hasHeater() || !this.canInstallMachine(stack)) {
             return false;
         }
         this.heater = stack.copyWithCount(1);
@@ -189,10 +196,16 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     public int currentHeat() {
+        if (this.heater.getItem() instanceof HeatProviderItem) {
+            return this.heatSourceValue();
+        }
         return Math.round(this.currentHeat);
     }
 
     public int maxHeat() {
+        if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
+            return Math.round(heatProvider.variant().heatPerTick());
+        }
         return this.casingVariant().maxHeat();
     }
 
@@ -208,6 +221,17 @@ public final class MachineCasingBlockEntity extends BlockEntity {
                 && this.isStructureBlockValid(level, chamber, this.worldPosition.north().above())
                 && this.isStructureBlockValid(level, chamber, this.worldPosition.south().above())
                 && this.isStructureBlockValid(level, chamber, this.worldPosition.above(2));
+    }
+
+    public boolean usesCombustionChamber() {
+        return this.heater.getItem() instanceof CombustionHeaterItem;
+    }
+
+    public int heatSourceValue() {
+        if (!(this.heater.getItem() instanceof HeatProviderItem heatProvider) || this.powered || this.itemHeat <= 0.0F) {
+            return 0;
+        }
+        return Math.round(heatProvider.variant().heatPerTick());
     }
 
     public boolean isChamber(final BlockPos chamber) {
@@ -268,6 +292,29 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         if (fuel.isEmpty()) {
             this.fuelItems.setStack(FUEL_SLOT, fuelItem.getCraftingRemainder());
         }
+    }
+
+    private void provideHeat(final ServerLevel level, final MachineVariant providerVariant) {
+        this.powered = level.hasNeighborSignal(this.worldPosition);
+        if (this.powered) {
+            this.currentHeat = 0.0F;
+            this.heatPerTick = 0.0F;
+            return;
+        }
+
+        if (this.itemHeat <= 0.0F) {
+            this.consumeFuel(level, providerVariant);
+        }
+        if (this.itemHeat <= 0.0F) {
+            this.currentHeat = 0.0F;
+            this.heatPerTick = 0.0F;
+            this.itemHeatMax = 0.0F;
+            return;
+        }
+
+        this.heatPerTick = providerVariant.heatPerTick();
+        this.currentHeat = this.heatPerTick;
+        this.itemHeat = Math.max(0.0F, this.itemHeat - 1.0F);
     }
 
     private void tryCraftFromPulse(final ServerLevel level, final MachineVariant heaterVariant) {
@@ -392,10 +439,21 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     private boolean isValidFuel(final ItemStack stack) {
-        if (!(this.heater.getItem() instanceof CombustionHeaterItem heaterItem) || this.level == null) {
+        final MachineVariant variant = this.installedFuelVariant();
+        if (variant == null || this.level == null) {
             return false;
         }
-        return heaterItem.variant().isValidFuel(stack, this.level);
+        return variant.isValidFuel(stack, this.level);
+    }
+
+    private MachineVariant installedFuelVariant() {
+        if (this.heater.getItem() instanceof CombustionHeaterItem heaterItem) {
+            return heaterItem.variant();
+        }
+        if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
+            return heatProvider.variant();
+        }
+        return null;
     }
 
     private boolean isStructureBlockValid(final Level level, final BlockPos chamber, final BlockPos pos) {

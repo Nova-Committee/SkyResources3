@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:cobblestone",
+    "Y": "skyresources3:wooden_heat_component"
+  },
+  "pattern": [
+    "XYX",
+    "XYX",
+    "X X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:stone_heat_provider"
+  }
+}

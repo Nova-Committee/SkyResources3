@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.util;
 
+import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
@@ -23,6 +24,9 @@ public final class HeatSources {
     );
 
     public static int getHeatSourceValue(final Level level, final BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing) {
+            return casing.heatSourceValue();
+        }
         final BlockState state = level.getBlockState(pos);
         if (state.getFluidState().is(FluidTags.LAVA)) {
             return state.getFluidState().isSource() ? SOURCE_LAVA_VALUE : FLOWING_LAVA_VALUE;

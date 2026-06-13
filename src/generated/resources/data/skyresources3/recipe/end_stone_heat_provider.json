@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:end_stone",
+    "Y": "minecraft:ender_pearl"
+  },
+  "pattern": [
+    "XYX",
+    "XYX",
+    "X X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:end_stone_heat_provider"
+  }
+}
