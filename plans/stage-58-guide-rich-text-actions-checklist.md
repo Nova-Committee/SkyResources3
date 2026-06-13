@@ -16,7 +16,7 @@
 ## Deferred
 
 - [x] Inline placement matching old text markers through lightweight `{action:n}` markers.
-- [ ] JEI/EMI/REI recipe viewer integration.
+- [x] JEI recipe viewer integration was completed in Stage 60; EMI/REI duplicate viewer support remains optional.
 - [x] Rotating 3D structure renderer replaced for this port by a lower-risk 2D isometric `GuideScreen` structure preview.
 - [x] Scrollable action/structure lists.
 

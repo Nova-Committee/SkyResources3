@@ -46,7 +46,7 @@
 
 - [ ] Migrate dynamic old ore-dictionary fusion and ore dust recipes after target mod/tag integration policy is explicit.
 - [ ] Add fluid-capable process recipe data after fluid storage/capability design is in place.
-- [ ] Add JEI/EMI display categories after menu/screen and integration dependencies are selected.
+- [x] Add JEI display categories after menu/screen and integration dependencies are selected. REI/EMI duplicate viewer support remains optional while JEI is active.
 
 ## Verification
 

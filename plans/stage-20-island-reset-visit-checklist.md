@@ -22,7 +22,7 @@
 ## Deferred Migration
 
 - Local saved-identity support for offline invite/trust is completed in Stage 71; full external profile lookup and rename conflict handling remain deferred.
-- Custom void-world spawn, vanilla shared-spawn resolution, island type templates, and world presets are deferred to the world generation phase.
+- Island type templates, custom void-world spawn, and world preset are completed in Stages 21 and 22; vanilla shared-spawn resolution remains a compatibility decision.
 - Visit permissions and visitor interaction limits are handled by Stage 67 configurable island protection and trusted visitors.
 
 ## Verification

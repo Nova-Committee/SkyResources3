@@ -192,3 +192,7 @@ Stage 59 已完成可用性审计，详见 `plans/integration-availability.md`�
 - TODO：按 `plans/integration-availability.md` 逐项实现剩余可用联动；已完成 JEI、Jade 和 Integrated Dynamics 最小联动，其余等待目标版本/API。
 - TODO：确认是否需要把旧存档中的主世界空岛迁移到 `skyresources3:void_island`；新建空岛、world preset 和共享 spawn 平台已在 Stage 22 完成。
 - TODO：团队权限后续可继续细化角色矩阵和共享死亡回家点；当前已实现成员共享岛屿交互、可信访客白名单、可配置保护范围和本地缓存身份的离线 invite/trust。
+
+## 最终缺口审计
+
+详见 `plans/final-migration-gap-audit.md`。当前剩余工作应优先按该审计文档分类推进：先处理最终验证、资源许可决策和 VoidIslandControl 兼容性决策；联动版本阻塞、动态 modded recipe、视觉增强和更深团队权限不应混作主体迁移阻塞项。

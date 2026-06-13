@@ -24,7 +24,7 @@
 
 ## Deferred
 
-- [ ] JEI/EMI or scripting integrations remain deferred until integration policy is selected.
+- [x] JEI display integration is complete through the general process recipe category in Stage 60; EMI/REI duplicate viewer and scripting integrations remain optional/deferred.
 
 ## Verification
 
