@@ -1,0 +1,4 @@
+{"file": "plans/client-manual-smoke-runbook.md", "reason": "New release-prep runbook for manual guide, JEI, representative menu, and island/team smoke validation."}
+{"file": "plans/client-smoke-resource-license-closeout-checklist.md", "reason": "Updated to reference refreshed client startup evidence and the manual follow-up runbook."}
+{"file": "plans/final-validation-compatibility-closeout-checklist.md", "reason": "Updated manual validation item to point to the runbook while keeping visual click-through open."}
+{"file": "plans/final-migration-gap-audit.md", "reason": "Updated remaining migration gap and next-task guidance to use the runbook."}
