@@ -1,5 +1,7 @@
 package committee.nova.mods.skyresources3;
 
+import java.util.Arrays;
+import java.util.List;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -72,6 +74,25 @@ public final class Config {
     private static final ModConfigSpec.IntValue AQUEOUS_DECONCENTRATOR_SPEED = BUILDER
             .comment("Aqueous deconcentrator progress added per tick.")
             .defineInRange("aqueousDeconcentratorSpeed", 10, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue WILDLIFE_ATTRACTOR_POWER_USAGE = BUILDER
+            .comment("Energy consumed by the wildlife attractor per active tick.")
+            .defineInRange("wildlifeAttractorPowerUsage", 40, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue WILDLIFE_ATTRACTOR_WATER_USAGE = BUILDER
+            .comment("Water consumed by the wildlife attractor per active tick, in millibuckets.")
+            .defineInRange("wildlifeAttractorWaterUsage", 20, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue WILDLIFE_ATTRACTOR_MATTER_TIME = BUILDER
+            .comment("Active ticks provided by one plant matter in the wildlife attractor.")
+            .defineInRange("wildlifeAttractorMatterTime", 320, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue WILDLIFE_ATTRACTOR_WATER_CAPACITY = BUILDER
+            .comment("Water capacity of the wildlife attractor, in millibuckets.")
+            .defineInRange("wildlifeAttractorWaterCapacity", 4000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.ConfigValue<String> WILDLIFE_ATTRACTOR_ANIMAL_IDS = BUILDER
+            .comment("Comma-separated entity ids the wildlife attractor may spawn.")
+            .define(
+                    "wildlifeAttractorAnimalIds",
+                    "minecraft:sheep,minecraft:cow,minecraft:chicken,minecraft:pig,"
+                            + "minecraft:rabbit,minecraft:squid,minecraft:horse,minecraft:parrot"
+            );
     private static final ModConfigSpec.IntValue COMBUSTION_CONTROLLER_TICKS = BUILDER
             .comment("Cooldown in ticks between smart combustion controller crafts.")
             .defineInRange("combustionControllerTicks", 20, 0, Integer.MAX_VALUE);
@@ -129,6 +150,11 @@ public final class Config {
     public static int aqueousConcentratorSpeed;
     public static int aqueousDeconcentratorPowerUsage;
     public static int aqueousDeconcentratorSpeed;
+    public static int wildlifeAttractorPowerUsage;
+    public static int wildlifeAttractorWaterUsage;
+    public static int wildlifeAttractorMatterTime;
+    public static int wildlifeAttractorWaterCapacity;
+    public static List<String> wildlifeAttractorAnimalIds = List.of();
     public static int combustionControllerTicks;
     public static int darkMatterWarperFuelTime;
     public static boolean darkMatterWarperEffectPlayers;
@@ -164,6 +190,11 @@ public final class Config {
         aqueousConcentratorSpeed = AQUEOUS_CONCENTRATOR_SPEED.get();
         aqueousDeconcentratorPowerUsage = AQUEOUS_DECONCENTRATOR_POWER_USAGE.get();
         aqueousDeconcentratorSpeed = AQUEOUS_DECONCENTRATOR_SPEED.get();
+        wildlifeAttractorPowerUsage = WILDLIFE_ATTRACTOR_POWER_USAGE.get();
+        wildlifeAttractorWaterUsage = WILDLIFE_ATTRACTOR_WATER_USAGE.get();
+        wildlifeAttractorMatterTime = WILDLIFE_ATTRACTOR_MATTER_TIME.get();
+        wildlifeAttractorWaterCapacity = WILDLIFE_ATTRACTOR_WATER_CAPACITY.get();
+        wildlifeAttractorAnimalIds = parseEntityIdList(WILDLIFE_ATTRACTOR_ANIMAL_IDS.get());
         combustionControllerTicks = COMBUSTION_CONTROLLER_TICKS.get();
         darkMatterWarperFuelTime = DARK_MATTER_WARPER_FUEL_TIME.get();
         darkMatterWarperEffectPlayers = DARK_MATTER_WARPER_EFFECT_PLAYERS.get();
@@ -175,6 +206,13 @@ public final class Config {
         addCocoaBeanDrop = ADD_COCOA_BEAN_DROP.get();
         addCarrotDrop = ADD_CARROT_DROP.get();
         addPotatoDrop = ADD_POTATO_DROP.get();
+    }
+
+    private static List<String> parseEntityIdList(final String value) {
+        return Arrays.stream(value.split(","))
+                .map(String::trim)
+                .filter(id -> !id.isEmpty())
+                .toList();
     }
 
     private Config() {

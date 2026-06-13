@@ -219,6 +219,16 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_water_extractor", has(ModItems.WATER_EXTRACTOR.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.WILDLIFE_ATTRACTOR.get())
+                .define('X', Blocks.HAY_BLOCK)
+                .define('Y', Blocks.CHEST)
+                .define('Z', Items.REDSTONE)
+                .pattern("XXX")
+                .pattern("XYX")
+                .pattern("XZX")
+                .unlockedBy("has_hay_block", has(Blocks.HAY_BLOCK))
+                .save(this.output);
+
         this.buildCombustionMachineRecipes();
 
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())

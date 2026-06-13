@@ -18,6 +18,7 @@ import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.QuickDropperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.RockCleanerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.RockCrusherBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.WildlifeAttractorBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -108,6 +109,15 @@ public final class ModBlockEntityTypes {
                             AqueousMachineBlockEntity::new,
                             ModBlocks.AQUEOUS_CONCENTRATOR.get(),
                             ModBlocks.AQUEOUS_DECONCENTRATOR.get()
+                    )
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WildlifeAttractorBlockEntity>>
+            WILDLIFE_ATTRACTOR =
+            BLOCK_ENTITY_TYPES.register(
+                    "wildlife_attractor",
+                    () -> new BlockEntityType<>(
+                            WildlifeAttractorBlockEntity::new,
+                            ModBlocks.WILDLIFE_ATTRACTOR.get()
                     )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MachineCasingBlockEntity>> MACHINE_CASING =

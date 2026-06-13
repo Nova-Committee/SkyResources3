@@ -61,6 +61,8 @@ public final class ModItems {
             blockItem("aqueous_concentrator", ModBlocks.AQUEOUS_CONCENTRATOR);
     public static final DeferredItem<BlockItem> AQUEOUS_DECONCENTRATOR =
             blockItem("aqueous_deconcentrator", ModBlocks.AQUEOUS_DECONCENTRATOR);
+    public static final DeferredItem<BlockItem> WILDLIFE_ATTRACTOR =
+            blockItem("wildlife_attractor", ModBlocks.WILDLIFE_ATTRACTOR);
     public static final Map<MachineVariant, DeferredItem<BlockItem>> MACHINE_CASINGS = registerMachineCasingItems();
     public static final DeferredItem<BlockItem> COMBUSTION_COLLECTOR =
             blockItem("combustion_collector", ModBlocks.COMBUSTION_COLLECTOR);

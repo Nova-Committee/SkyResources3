@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "skyresources3:block/wildlife_attractor_top",
+    "up": "skyresources3:block/wildlife_attractor_top",
+    "north": "skyresources3:block/wildlife_attractor_side",
+    "south": "skyresources3:block/wildlife_attractor_side",
+    "west": "skyresources3:block/wildlife_attractor_side",
+    "east": "skyresources3:block/wildlife_attractor_side",
+    "particle": "skyresources3:block/wildlife_attractor_side"
+  }
+}

@@ -23,6 +23,7 @@ import committee.nova.mods.skyresources3.block.QuickDropperBlock;
 import committee.nova.mods.skyresources3.block.RockCleanerBlock;
 import committee.nova.mods.skyresources3.block.RockCrusherBlock;
 import committee.nova.mods.skyresources3.block.SilverfishDisruptorBlock;
+import committee.nova.mods.skyresources3.block.WildlifeAttractorBlock;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -170,6 +171,14 @@ public final class ModBlocks {
             "aqueous_deconcentrator",
             AqueousDeconcentratorBlock::new,
             () -> properties(2.0F, 12.0F, SoundType.METAL)
+    );
+    public static final DeferredBlock<WildlifeAttractorBlock> WILDLIFE_ATTRACTOR = BLOCKS.registerBlock(
+            "wildlife_attractor",
+            WildlifeAttractorBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.GRASS)
+                    .strength(2.0F, 12.0F)
+                    .sound(SoundType.GRASS)
     );
     public static final Map<MachineVariant, DeferredBlock<MachineCasingBlock>> MACHINE_CASINGS =
             registerMachineCasings();

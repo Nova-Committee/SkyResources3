@@ -64,6 +64,11 @@ public final class ModCapabilities {
         );
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.WILDLIFE_ATTRACTOR.get(),
+                (wildlifeAttractor, direction) -> wildlifeAttractor.getItemHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
                 ModBlockEntityTypes.MACHINE_CASING.get(),
                 (machineCasing, direction) -> machineCasing.getItemHandler()
         );
@@ -93,6 +98,11 @@ public final class ModCapabilities {
                 (aqueousMachine, direction) -> aqueousMachine.getEnergyHandler()
         );
         event.registerBlockEntity(
+                Capabilities.Energy.BLOCK,
+                ModBlockEntityTypes.WILDLIFE_ATTRACTOR.get(),
+                (wildlifeAttractor, direction) -> wildlifeAttractor.getEnergyHandler()
+        );
+        event.registerBlockEntity(
                 Capabilities.Fluid.BLOCK,
                 ModBlockEntityTypes.FLUID_DROPPER.get(),
                 (fluidDropper, direction) -> fluidDropper.getFluidHandler()
@@ -111,6 +121,11 @@ public final class ModCapabilities {
                 Capabilities.Fluid.BLOCK,
                 ModBlockEntityTypes.AQUEOUS_MACHINE.get(),
                 (aqueousMachine, direction) -> aqueousMachine.getFluidHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                ModBlockEntityTypes.WILDLIFE_ATTRACTOR.get(),
+                (wildlifeAttractor, direction) -> wildlifeAttractor.getFluidHandler()
         );
         event.registerItem(
                 Capabilities.Fluid.ITEM,

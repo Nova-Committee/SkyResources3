@@ -14,6 +14,7 @@ import committee.nova.mods.skyresources3.menu.MachineCasingMenu;
 import committee.nova.mods.skyresources3.menu.QuickDropperMenu;
 import committee.nova.mods.skyresources3.menu.RockCleanerMenu;
 import committee.nova.mods.skyresources3.menu.RockCrusherMenu;
+import committee.nova.mods.skyresources3.menu.WildlifeAttractorMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -45,6 +46,8 @@ public final class ModMenuTypes {
             MENU_TYPES.register("rock_cleaner", () -> IMenuTypeExtension.create(RockCleanerMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<AqueousMachineMenu>> AQUEOUS_MACHINE =
             MENU_TYPES.register("aqueous_machine", () -> IMenuTypeExtension.create(AqueousMachineMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<WildlifeAttractorMenu>> WILDLIFE_ATTRACTOR =
+            MENU_TYPES.register("wildlife_attractor", () -> IMenuTypeExtension.create(WildlifeAttractorMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCasingMenu>> MACHINE_CASING =
             MENU_TYPES.register("machine_casing", () -> IMenuTypeExtension.create(MachineCasingMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<CombustionCollectorMenu>> COMBUSTION_COLLECTOR =

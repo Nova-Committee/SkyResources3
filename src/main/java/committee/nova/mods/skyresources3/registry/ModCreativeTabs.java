@@ -47,6 +47,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.ROCK_CLEANER.get());
                         output.accept(ModItems.AQUEOUS_CONCENTRATOR.get());
                         output.accept(ModItems.AQUEOUS_DECONCENTRATOR.get());
+                        output.accept(ModItems.WILDLIFE_ATTRACTOR.get());
                         for (final MachineVariant variant : MachineVariant.values()) {
                             output.accept(ModItems.MACHINE_CASINGS.get(variant).get());
                         }

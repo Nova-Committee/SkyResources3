@@ -48,6 +48,7 @@ public final class SkyResources3Client {
         event.register(ModMenuTypes.ROCK_CRUSHER.get(), RockCrusherScreen::new);
         event.register(ModMenuTypes.ROCK_CLEANER.get(), RockCleanerScreen::new);
         event.register(ModMenuTypes.AQUEOUS_MACHINE.get(), AqueousMachineScreen::new);
+        event.register(ModMenuTypes.WILDLIFE_ATTRACTOR.get(), WildlifeAttractorScreen::new);
         event.register(ModMenuTypes.MACHINE_CASING.get(), MachineCasingScreen::new);
         event.register(ModMenuTypes.COMBUSTION_COLLECTOR.get(), CombustionCollectorScreen::new);
         event.register(ModMenuTypes.COMBUSTION_CONTROLLER.get(), CombustionControllerScreen::new);
