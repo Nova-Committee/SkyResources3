@@ -20,8 +20,8 @@
 
 ## Deferred Migration
 
-- Full player-name history/profile-cache support remains deferred for rename conflicts and UUID resolution.
-- Offline invite/trust remains deferred because those flows need durable UUID identity, not only saved display names.
+- Local saved-identity support for offline invite/trust is completed in Stage 71.
+- Full external profile lookup, player-name history, and duplicate cached-name conflict resolution remain deferred.
 - Old VoidIslandControl leave event hooks and full event broadcast remain deferred.
 
 ## Verification

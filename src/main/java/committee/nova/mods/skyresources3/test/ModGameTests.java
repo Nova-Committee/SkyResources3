@@ -57,6 +57,11 @@ public final class ModGameTests {
                     "island_trust_commands",
                     () -> IslandCommandGameTests::trustListAndUntrustVisitor
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_OFFLINE_IDENTITY =
+            TEST_FUNCTIONS.register(
+                    "island_offline_identity",
+                    () -> IslandCommandGameTests::offlineIdentityInviteAndTrust
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CUTTING_KNIFE_PROCESS =
             TEST_FUNCTIONS.register(
                     "cutting_knife_process",
@@ -125,6 +130,7 @@ public final class ModGameTests {
         registerFunctionTest(event, "island_magma_template", ISLAND_MAGMA_TEMPLATE, environment);
         registerFunctionTest(event, "island_team_commands", ISLAND_TEAM_COMMANDS, environment);
         registerFunctionTest(event, "island_trust_commands", ISLAND_TRUST_COMMANDS, environment);
+        registerFunctionTest(event, "island_offline_identity", ISLAND_OFFLINE_IDENTITY, environment);
         registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
         registerFunctionTest(event, "rock_grinder_process", ROCK_GRINDER_PROCESS, environment);
         registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);

@@ -14,3 +14,7 @@
 - [x] Update island command spec, migration plan, and deferred checklist notes.
 - [x] Run compileJava, runData, build, runGameTestServer.
 - [x] Chinese commit and archive Trellis task.
+
+## Stage 71 Follow-up
+
+- Offline cached-name trust creation is handled by `plans/stage-71-offline-identity-team-commands-checklist.md`.

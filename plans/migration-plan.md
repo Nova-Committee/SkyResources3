@@ -128,7 +128,7 @@
   - 岛屿创建、重置、回家、访问、邀请、离开事件。
   - 起始岛、砂岛、雪岛、木岛、草岛、magma island。
   - Void 世界/维度或空岛世界预设。
-- 当前状态：岛屿创建、回家、在线/保存名离线访问、重置确认、模板切换、保护半径内重置清理、起始模板、magma island Crystal Fluid 源、void 维度/world preset 和共享 spawn 平台已完成；旧离开事件钩子、完整事件广播和更完整 profile cache 仍按风险 TODO 保留。
+- 当前状态：岛屿创建、回家、在线/保存名离线访问、本地缓存身份的离线 invite/trust、重置确认、模板切换、保护半径内重置清理、起始模板、magma island Crystal Fluid 源、void 维度/world preset 和共享 spawn 平台已完成；旧离开事件钩子、完整事件广播、外部 profile 查询和重命名冲突处理仍按风险 TODO 保留。
 - 旧 jar 仅作为行为参考，不作为运行依赖。
 - 迁移 `VICPlugin` 中的 magma island 生成逻辑。
 - 验证：GameTest 或专用 server run，至少验证创建岛屿、传送、重置。
@@ -191,4 +191,4 @@ Stage 59 已完成可用性审计，详见 `plans/integration-availability.md`�
 - TODO：VoidIslandControl 只有 1.12.2 jar，本地未找到源码；完整内置化需要先提取行为清单，必要时反编译仅作理解参考。
 - TODO：按 `plans/integration-availability.md` 逐项实现剩余可用联动；已完成 JEI、Jade 和 Integrated Dynamics 最小联动，其余等待目标版本/API。
 - TODO：确认是否需要把旧存档中的主世界空岛迁移到 `skyresources3:void_island`；新建空岛、world preset 和共享 spawn 平台已在 Stage 22 完成。
-- TODO：团队权限后续可继续细化角色矩阵和共享死亡回家点；当前已实现成员共享岛屿交互、可信访客白名单和可配置保护范围。
+- TODO：团队权限后续可继续细化角色矩阵和共享死亡回家点；当前已实现成员共享岛屿交互、可信访客白名单、可配置保护范围和本地缓存身份的离线 invite/trust。

@@ -21,7 +21,7 @@
 
 ## Deferred Migration
 
-- Full player-name history/profile-cache support remains deferred for offline invite/trust and rename conflict handling.
+- Local saved-identity support for offline invite/trust is completed in Stage 71; full external profile lookup and rename conflict handling remain deferred.
 - Custom void-world spawn, vanilla shared-spawn resolution, island type templates, and world presets are deferred to the world generation phase.
 - Visit permissions and visitor interaction limits are handled by Stage 67 configurable island protection and trusted visitors.
 

@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.island.IslandSavedData;
 import committee.nova.mods.skyresources3.island.IslandTemplate;
+import committee.nova.mods.skyresources3.island.PlayerIdentitySavedData;
 import committee.nova.mods.skyresources3.island.TeamSavedData;
 import committee.nova.mods.skyresources3.island.VoidIslandWorld;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
@@ -291,6 +292,52 @@ public final class IslandCommandGameTests {
         }
     }
 
+    @SuppressWarnings("removal")
+    public static void offlineIdentityInviteAndTrust(final GameTestHelper helper) {
+        final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
+        Config.enableVoidIslandFeatures = true;
+
+        try {
+            final ServerLevel storageLevel = helper.getLevel().getServer().overworld();
+            final PlayerIdentitySavedData identities = PlayerIdentitySavedData.get(storageLevel);
+            final UUID memberId = UUID.randomUUID();
+            final String memberName = "cached_member";
+            final UUID trustedId = UUID.randomUUID();
+            final String trustedName = "cached_guest";
+            identities.remember(memberId, memberName);
+            identities.remember(trustedId, trustedName);
+
+            final ServerPlayer owner = makeNamedMockServerPlayerInLevel(helper, "cached_owner");
+            assertCommandSucceeds(helper, owner, "island create");
+            assertCommandSucceeds(helper, owner, "skyresources3 team invite " + memberName.toUpperCase());
+
+            final TeamSavedData teams = TeamSavedData.get(storageLevel);
+            helper.assertTrue(
+                    teams.getPendingInvitation(memberId).isPresent(),
+                    "Offline cached team invite should persist against the cached UUID"
+            );
+
+            final ServerPlayer member = makeNamedMockServerPlayerInLevel(helper, memberId, memberName);
+            assertCommandSucceeds(helper, member, "island accept");
+            final TeamSavedData.TeamRecord team = getTeamOrFail(helper, teams, owner);
+            helper.assertTrue(
+                    team.includes(memberId),
+                    "Cached offline invite should be accepted by the later online player"
+            );
+
+            assertCommandSucceeds(helper, owner, "island trust " + trustedName.toUpperCase());
+            final IslandSavedData islands = IslandSavedData.get(storageLevel);
+            final IslandSavedData.IslandRecord island = getIslandOrFail(helper, islands, owner);
+            helper.assertTrue(
+                    island.isTrustedVisitor(trustedId),
+                    "Offline cached trust should persist the cached visitor UUID"
+            );
+            helper.succeed();
+        } finally {
+            Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+        }
+    }
+
     private static IslandSavedData.IslandRecord getIslandOrFail(
             final GameTestHelper helper,
             final IslandSavedData islands,
@@ -336,8 +383,16 @@ public final class IslandCommandGameTests {
     }
 
     private static ServerPlayer makeNamedMockServerPlayerInLevel(final GameTestHelper helper, final String name) {
+        return makeNamedMockServerPlayerInLevel(helper, UUID.randomUUID(), name);
+    }
+
+    private static ServerPlayer makeNamedMockServerPlayerInLevel(
+            final GameTestHelper helper,
+            final UUID uuid,
+            final String name
+    ) {
         final ServerLevel level = helper.getLevel();
-        final GameProfile profile = new GameProfile(UUID.randomUUID(), name);
+        final GameProfile profile = new GameProfile(uuid, name);
         final CommonListenerCookie cookie = CommonListenerCookie.createInitial(profile, false);
         final ServerPlayer player = new NamedMockServerPlayer(
                 level.getServer(),

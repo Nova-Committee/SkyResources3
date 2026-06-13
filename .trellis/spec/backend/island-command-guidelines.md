@@ -51,10 +51,12 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - The `magma` starter template preserves the legacy VIC shape, including Crystal Fluid at the old `pos.west().south()`
   relative position next to the Magmafied Stone progression setup.
 - Team ownership is stored in `TeamSavedData`, keyed by team owner UUID.
+- Player identity lookup is stored in `PlayerIdentitySavedData` as a local `UUID -> last known name` cache for players
+  this mod has already observed. Do not use it as an external profile service or full rename-history index.
 - A team member without a personal island resolves `/island home` and `/island info` through the team owner's island.
 - `/island visit <player>` resolves the target player's own island first, then the target's team owner island. Online
   targets resolve by UUID; offline targets may resolve by the last saved island owner or team member name stored in
-  `IslandSavedData` / `TeamSavedData`.
+  `IslandSavedData` / `TeamSavedData`, then by `PlayerIdentitySavedData` if a cached UUID exists.
 - `/island reset` is only a confirmation prompt; `/island reset confirm` performs the reset with the stored type.
 - `/island reset <type>` prompts for a type switch; `/island reset <type> confirm` clears the island reset area, rebuilds the selected starter template, and persists the new type.
 - Island reset is restricted to personal island owners. Reset clearing uses the configured island protection radius and caps the clear radius by island spacing so one reset cannot wipe a neighboring island.
@@ -64,7 +66,11 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
   `voidIslandSpawnPlatformBlock`; defaults must remain radius `2` and `minecraft:grass_block`.
 - Island protection uses the configured horizontal radius around each island center, derived from `IslandRecord.home().below()`.
 - Trusted visitors are stored on `IslandSavedData.IslandRecord` so solo island owners can grant access without creating a team.
-- Trust creation is online-only until a player-name history or profile-cache layer exists; untrust may remove a stored visitor by name.
+- Trust creation resolves online targets first, then cached local identities from `PlayerIdentitySavedData`; unresolved
+  offline names still fail. Untrust may remove a stored visitor by name.
+- Team invitations resolve online targets first, then cached local identities from `PlayerIdentitySavedData`; unresolved
+  offline names still fail. Cached offline invitations are persisted by UUID and can be accepted when the player later
+  joins with the same UUID.
 - Island owners and members of the owner's `TeamSavedData` team may break, place, and right-click blocks inside that protected island range.
 - Trusted visitors may break, place, and right-click blocks inside the protected island range.
 - Untrusted visitors and unrelated players must not be allowed to break, place, or right-click blocks inside another team's protected island range.
@@ -84,6 +90,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Team owner has no island -> reject team creation/invite/home.
 - Team owner tries `/island leave` or `/skyresources3 team leave` -> reject and require disband.
 - Invite target already has a pending team invitation -> reject invite to keep accept semantics unambiguous.
+- Invite target is offline but has a cached local identity -> persist a pending invitation against the cached UUID.
+- Invite target is offline and has no cached local identity -> reject invite.
 - Visit target is offline but matches a saved island owner name -> teleport to that island.
 - Visit target is offline but matches a saved team owner/member name -> teleport to that team's owner island.
 - Visit target is offline and has no saved island/team name match -> reject visit.
@@ -96,6 +104,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Trusted visitor modifies the protected range -> allow the event to continue.
 - Non-owner team member manages trusted visitors -> reject.
 - Island owner trusts an online non-member visitor -> persist the visitor UUID and last known name.
+- Island owner trusts an offline cached non-member visitor -> persist the cached visitor UUID and last known name.
+- Island owner trusts an offline name with no cached local identity -> reject.
 - Island owner untrusts a stored visitor name -> remove the visitor from the island record.
 - Position is outside every known protected range -> leave the event untouched.
 
@@ -114,6 +124,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 
 When command execution GameTests are added, cover create/invite/accept/home/reset/visit and rejection paths for existing islands, existing teams, members resetting team islands, and offline visit targets.
 Command GameTests should execute commands through the Brigadier dispatcher and assert saved-data side effects, not just positive command return values.
+Command GameTests for cached offline identities should assert that invite/trust writes the cached UUID, and that a later
+player with the same UUID can accept the stored invitation.
 Command GameTests for `/island spawn` should assert command execution and teleport behavior. If the
 GameTest server exposes `skyresources3:void_island`, assert generated platform block state through the
 command path; otherwise assert fallback command behavior and cover platform config through
