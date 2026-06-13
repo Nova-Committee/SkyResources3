@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FreezerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.QuickDropperBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -37,6 +38,11 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "dirt_furnace",
                     () -> new BlockEntityType<>(DirtFurnaceBlockEntity::new, ModBlocks.DIRT_FURNACE.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuickDropperBlockEntity>> QUICK_DROPPER =
+            BLOCK_ENTITY_TYPES.register(
+                    "quick_dropper",
+                    () -> new BlockEntityType<>(QuickDropperBlockEntity::new, ModBlocks.QUICK_DROPPER.get())
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =
             BLOCK_ENTITY_TYPES.register(

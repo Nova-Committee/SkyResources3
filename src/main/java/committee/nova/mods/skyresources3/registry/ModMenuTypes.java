@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.menu.DirtFurnaceMenu;
 import committee.nova.mods.skyresources3.menu.FreezerMenu;
 import committee.nova.mods.skyresources3.menu.FusionTableMenu;
+import committee.nova.mods.skyresources3.menu.QuickDropperMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -21,6 +22,8 @@ public final class ModMenuTypes {
             MENU_TYPES.register("dirt_furnace", () -> IMenuTypeExtension.create(DirtFurnaceMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<FreezerMenu>> FREEZER =
             MENU_TYPES.register("freezer", () -> IMenuTypeExtension.create(FreezerMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<QuickDropperMenu>> QUICK_DROPPER =
+            MENU_TYPES.register("quick_dropper", () -> IMenuTypeExtension.create(QuickDropperMenu::new));
 
     public static void register(final IEventBus modEventBus) {
         MENU_TYPES.register(modEventBus);

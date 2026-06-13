@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "skyresources3:block/quick_dropper",
+    "up": "skyresources3:block/iron_machine",
+    "north": "skyresources3:block/iron_machine",
+    "south": "skyresources3:block/iron_machine",
+    "west": "skyresources3:block/iron_machine",
+    "east": "skyresources3:block/iron_machine",
+    "particle": "skyresources3:block/quick_dropper"
+  }
+}

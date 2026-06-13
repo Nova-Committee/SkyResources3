@@ -34,6 +34,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.ALCHEMICAL_GLASS.get());
                         output.accept(ModItems.FUSION_TABLE.get());
                         output.accept(ModItems.DIRT_FURNACE.get());
+                        output.accept(ModItems.QUICK_DROPPER.get());
                         output.accept(ModItems.MINI_FREEZER.get());
                         output.accept(ModItems.IRON_FREEZER.get());
                         output.accept(ModItems.LIGHT_FREEZER.get());

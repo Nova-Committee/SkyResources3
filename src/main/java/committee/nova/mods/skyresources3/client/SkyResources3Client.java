@@ -33,6 +33,7 @@ public final class SkyResources3Client {
         event.register(ModMenuTypes.FUSION_TABLE.get(), FusionTableScreen::new);
         event.register(ModMenuTypes.DIRT_FURNACE.get(), DirtFurnaceScreen::new);
         event.register(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
+        event.register(ModMenuTypes.QUICK_DROPPER.get(), QuickDropperScreen::new);
     }
 
     @SubscribeEvent

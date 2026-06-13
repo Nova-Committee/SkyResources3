@@ -27,6 +27,7 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.DARK_MATTER_BLOCK.get(),
                 ModBlocks.LIGHT_MATTER_BLOCK.get(),
                 ModBlocks.ALCHEMICAL_GLASS.get(),
+                ModBlocks.QUICK_DROPPER.get(),
                 ModBlocks.IRON_FREEZER.get(),
                 ModBlocks.LIGHT_FREEZER.get()
         );

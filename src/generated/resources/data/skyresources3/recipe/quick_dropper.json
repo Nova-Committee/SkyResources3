@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:iron_ingot",
+    "Y": "minecraft:dropper",
+    "Z": "minecraft:glowstone"
+  },
+  "pattern": [
+    "XXX",
+    "XZX",
+    "XYX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:quick_dropper"
+  }
+}

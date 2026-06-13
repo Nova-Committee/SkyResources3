@@ -8,6 +8,7 @@ import committee.nova.mods.skyresources3.block.FusionTableBlock;
 import committee.nova.mods.skyresources3.block.FreezerBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
+import committee.nova.mods.skyresources3.block.QuickDropperBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -71,6 +72,11 @@ public final class ModBlocks {
                     .mapColor(MapColor.DIRT)
                     .strength(0.5F, 0.5F)
                     .sound(SoundType.GRAVEL)
+    );
+    public static final DeferredBlock<QuickDropperBlock> QUICK_DROPPER = BLOCKS.registerBlock(
+            "quick_dropper",
+            QuickDropperBlock::new,
+            () -> properties(6.0F, 12.0F, SoundType.METAL)
     );
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
             "mini_freezer",

@@ -27,6 +27,11 @@ public final class ModCapabilities {
                 ModBlockEntityTypes.FREEZER.get(),
                 (freezer, direction) -> freezer.getItemHandler()
         );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.QUICK_DROPPER.get(),
+                (quickDropper, direction) -> quickDropper.getItemHandler()
+        );
         event.registerItem(
                 Capabilities.Fluid.ITEM,
                 (stack, context) -> context == null

@@ -105,6 +105,16 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_wooden_heat_component", has(ModItems.WOODEN_HEAT_COMPONENT.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.QUICK_DROPPER.get())
+                .define('X', Items.IRON_INGOT)
+                .define('Y', Blocks.DROPPER)
+                .define('Z', Blocks.GLOWSTONE)
+                .pattern("XXX")
+                .pattern("XZX")
+                .pattern("XYX")
+                .unlockedBy("has_dropper", has(Blocks.DROPPER))
+                .save(this.output);
+
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
                 .define('X', ModItems.HEAVY_SNOWBALL.get())
                 .pattern("XX")
