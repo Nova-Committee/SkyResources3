@@ -92,6 +92,11 @@ public final class ModGameTests {
                     "condenser_blocked_output",
                     () -> MachineRuntimeGameTests::condenserKeepsSourceWhenOutputIsBlocked
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SURVIVALIST_FISHING_LOOT =
+            TEST_FUNCTIONS.register(
+                    "survivalist_fishing_loot",
+                    () -> SurvivalistFishingGameTests::survivalistRodUsesCustomFishingLoot
+            );
 
     public static void register(final IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
@@ -117,6 +122,7 @@ public final class ModGameTests {
         registerFunctionTest(event, "life_infuser_item_capability", LIFE_INFUSER_ITEM_CAPABILITY, environment);
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
+        registerFunctionTest(event, "survivalist_fishing_loot", SURVIVALIST_FISHING_LOOT, environment);
     }
 
     private static void registerFunctionTest(

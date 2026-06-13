@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend entry point and required pre-development spec checklist for NeoForge code changes."}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Package/resource layout and naming conventions for test and resource updates."}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Event handler guard style and failure handling expectations."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "GameTest registration convention, verification commands, and code quality rules."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse existing GameTest helper and registration patterns instead of duplicating abstractions."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Verify event-to-loot-to-world entity boundary behavior across runtime layers."}

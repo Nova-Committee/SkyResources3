@@ -1,7 +1,7 @@
 # 阶段 5 实施清单：健康宝石基础行为
 
 > 对应总计划：`plans/migration-plan.md` 的“实体、渲染与特殊物品”和“方块实体与机器逻辑”前置迁移。
-> 状态：已迁移健康宝石注册、资源、基础数据存储、潜行右键注入生命行为和最大生命值加成；生命灌注机器运行时联动留待后续阶段。
+> 状态：已迁移健康宝石注册、资源、基础数据存储、潜行右键注入生命行为、最大生命值加成、生命灌注机器运行时联动，并补齐 Survivalist Fishing Rod 的事件层钓鱼掉落迁移验证。
 
 ## 目标
 
@@ -24,6 +24,8 @@
 - 当健康宝石移除或加成降低时，移除/更新本模组的生命加成并夹取玩家当前生命值。
 - `HealthGemItem.getHealthInjected` 提供后续生命灌注机器读取入口。
 - `HealthGemItem.getHealthBoost` 保留旧版按配置比例计算最大生命加成的入口。
+- `LifeInjector` 已完成健康宝石自动注入运行时逻辑；`LifeInfuser` 已完成健康宝石自动消耗/灌注运行时逻辑。
+- `survivalist_fishing_rod` 使用原版 `FishingHook` 配合 NeoForge `ItemFishedEvent` 迁移旧版自定义掉落表行为，避免为 1.12.2 自定义鱼钩实体做不必要的完整重建。
 
 ## 已迁移资源
 
@@ -32,13 +34,12 @@
 - `assets/skyresources3/textures/item/health_gem.png`
 - `assets/skyresources3/lang/en_us.json`
 
-## 暂缓迁移
+## 后续迁移
 
-- `LifeInjector` 已完成健康宝石自动注入运行时逻辑；`LifeInfuser` 已完成健康宝石自动消耗/灌注运行时逻辑。
 - 健康宝石旧配方来自 `infusionRecipes`，依赖生命灌注 recipe type，未在本批迁移。
-- `survivalist_fishing_rod` 依赖自定义鱼钩实体，留待实体批次单独迁移。
 
 ## 验证
 
 - `gradlew.bat build`：通过。
 - JSON 解析与 item model 贴图引用检查：通过。
+- `runGameTestServer` 覆盖 Survivalist Fishing Rod 自定义钓鱼掉落、事件取消和零耐久损耗契约。

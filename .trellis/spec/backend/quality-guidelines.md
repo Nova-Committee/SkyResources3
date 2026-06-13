@@ -62,6 +62,85 @@ Current formatting conventions:
 
 ---
 
+## Legacy Entity Behavior Migration Contract
+
+### 1. Scope / Trigger
+
+Use this contract when a 1.12.2 feature used a custom entity primarily to alter vanilla event results, drops, damage,
+or stats, and Minecraft `1.21.11` / NeoForge already exposes an event or hook for the observable behavior.
+
+### 2. Signatures
+
+- Event handler:
+  ```java
+  public static void onItemFished(final ItemFishedEvent event)
+  ```
+- Registration:
+  ```java
+  NeoForge.EVENT_BUS.addListener(ExampleEvents::onItemFished);
+  ```
+- Custom loot table lookup:
+  ```java
+  ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, id("gameplay/example"));
+  LootTable table = serverLevel.getServer().reloadableRegistries().getLootTable(key);
+  ```
+
+### 3. Contracts
+
+- Preserve the vanilla entity lifecycle when the vanilla entity can still provide casting, ticking, owner tracking,
+  sounds, stats, and client synchronization.
+- Replace only the behavior that differs from vanilla at the narrow event boundary.
+- If the event exposes damage or cancellation state, set those fields explicitly instead of relying on the vanilla
+  default after cancellation.
+- Keep custom data in the existing data pack/resource system, such as loot tables, instead of hard-coding item lists.
+
+### 4. Validation & Error Matrix
+
+| Condition | Expected behavior |
+|---|---|
+| Player is not a server player | Return without side effects |
+| Held item is not the migrated custom item | Return without side effects |
+| Hook is not in a `ServerLevel` | Return without side effects |
+| Event is canceled to suppress vanilla output | Explicitly set any required returned damage value |
+| Custom loot table yields items | Spawn items/experience using vanilla-equivalent positioning and motion |
+
+### 5. Good/Base/Bad Cases
+
+- Good: `SurvivalistFishingEvents` keeps vanilla `FishingHook` behavior and replaces only fishing loot through
+  `ItemFishedEvent`.
+- Base: A legacy custom entity may remain deferred when its unique pathing, AI, rendering, or synchronized data cannot
+  be represented through an existing event.
+- Bad: Recreating a full 1.12.2 entity class in `1.21.11` only to swap a loot table or returned damage value.
+
+### 6. Tests Required
+
+- `./gradlew.bat compileJava` must pass after event/API imports.
+- `./gradlew.bat build` must pass to verify resources and packaging.
+- Add GameTests for event-boundary behavior when it can be asserted server-side. For fishing-style migrations, assert
+  event cancellation, custom output spawning, original output suppression, and returned damage semantics.
+
+### 7. Wrong vs Correct
+
+Wrong:
+```java
+// Full custom entity just to choose a different loot table.
+public final class ExampleFishingHook extends FishingHook {
+}
+```
+
+Correct:
+```java
+public static void onItemFished(final ItemFishedEvent event) {
+    if (!isExampleRod(event.getEntity())) {
+        return;
+    }
+    event.damageRodBy(0);
+    event.setCanceled(true);
+}
+```
+
+---
+
 ## Block Entity Item Transfer Contract
 
 ### 1. Scope / Trigger
