@@ -26,6 +26,10 @@ public record GuideAction(
         return new GuideAction(Type.RECIPE, "", "", iconSupplier);
     }
 
+    public static GuideAction recipe(final String target, final Supplier<ItemStack> iconSupplier) {
+        return new GuideAction(Type.RECIPE, target, "", iconSupplier);
+    }
+
     public static GuideAction image(
             final String structureId,
             final String labelKey,

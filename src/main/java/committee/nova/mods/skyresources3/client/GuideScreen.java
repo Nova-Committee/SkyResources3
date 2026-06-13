@@ -683,7 +683,11 @@ public final class GuideScreen extends Screen {
             case LINK -> this.openGuidePage(action.target());
             case IMAGE -> this.openStructure(action.target());
             case RECIPE -> {
-                this.feedbackMessage = Component.translatable("screen.skyresources3.guide.recipe_pending", action.label());
+                if (GuideRecipeIntegration.open(action)) {
+                    this.feedbackMessage = null;
+                } else {
+                    this.feedbackMessage = Component.translatable("screen.skyresources3.guide.recipe_unavailable", action.label());
+                }
                 yield true;
             }
         };

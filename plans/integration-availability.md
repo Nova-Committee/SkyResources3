@@ -15,7 +15,7 @@
 
 | 旧联动范围 | 旧源码位置 | 1.21.11 目标候选 | 版本证据 | 候选坐标/来源 | 状态 | TODO |
 |------------|------------|------------------|----------|---------------|------|------|
-| JEI 配方展示与指南 recipe 按钮 | `jei/**`、`base/guide/GuideRecipeButton.java`、`recipe/ProcessRecipeManager.java` | JEI 优先，REI 备选，EMI 暂缓 | JEI `27.4.0.22` 命中 14 个 NeoForge 文件；REI `21.11.814+neoforge` 命中 1 个；EMI 精确过滤 0 个 | `maven.modrinth:jei:27.4.0.22`、`maven.modrinth:rei:21.11.814+neoforge`；POM 均 200 OK | 可后续实现 | 下一阶段先接 JEI recipe categories 和 guide recipe open 行为；REI 仅在 JEI API 不合适时评估 |
+| JEI 配方展示与指南 recipe 按钮 | `jei/**`、`base/guide/GuideRecipeButton.java`、`recipe/ProcessRecipeManager.java` | JEI 27.4.0.22 | 官方 Maven 与 1.21.11 API 已验证；`runData` 日志确认发现 `skyresources3:jei` plugin | `mezz.jei:jei-1.21.11-common-api:27.4.0.22`、`mezz.jei:jei-1.21.11-neoforge-api:27.4.0.22`、`mezz.jei:jei-1.21.11-neoforge:27.4.0.22` | 已实现 | 已接入 Process/Crucible/Condenser/Heat Sources 分类和指南 recipe action；REI/EMI 暂不重复实现 |
 | 探针信息显示 | `plugin/theoneprobe/**` | Jade 或 WTHIT | The One Probe 精确过滤 0 个；Jade `21.1.7+neoforge` 命中 5 个；WTHIT `neo-18.2.2` 命中 7 个 | `maven.modrinth:jade:21.1.7+neoforge`、`maven.modrinth:wthit:neo-18.2.2`；POM 均 200 OK | 替代目标可后续实现 | 将旧温度、多方块、热源提示映射到 Jade/WTHIT API；不继续迁移 TOP API |
 | CraftTweaker 脚本入口 | `plugin/ctweaker/**` | CraftTweaker | Modrinth 精确过滤 0 个；公开页面兼容范围未确认到 1.21.11 | 无已验证 1.21.11 NeoForge 坐标 | 暂缓 | 保留脚本 API TODO；待 CraftTweaker 提供 1.21.11 NeoForge 后再迁移 ZenCode 入口 |
 | Forestry / Binnie's / Extra Bees 养蜂生态 | `plugin/forestry/**`、`plugin/extrabees/**` | Forestry、Binnie's Mods、Extra Bees 或替代养蜂模组 | Forestry/Binnie's 精确过滤 0 个；`extra-bees` 未找到可信项目 | 无已验证坐标 | 暂缓 | Bee Attractor 继续保留本模组玩法；外部蜂箱掉落联动等待生态稳定 |
@@ -34,7 +34,6 @@
 
 ## 后续顺序
 
-1. 下一批联动优先做 JEI recipe viewer，覆盖现有 `ProcessRecipe`、热源、指南 recipe action。
-2. 探针联动在 JEI 后处理，优先 Jade；WTHIT 作为候选备选。
-3. Integrated Dynamics 可在具体功能需要时单独开小任务。
-4. 其他旧联动维持 TODO，直到有明确 1.21.11 NeoForge 版本和 API 证据。
+1. 探针联动在 JEI 后处理，优先 Jade；WTHIT 作为候选备选。
+2. Integrated Dynamics 可在具体功能需要时单独开小任务。
+3. 其他旧联动维持 TODO，直到有明确 1.21.11 NeoForge 版本和 API 证据。

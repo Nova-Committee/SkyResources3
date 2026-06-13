@@ -42,15 +42,25 @@ public final class GuidePages {
                     link("magmaIsland", stack(() -> ModItems.PETRIFIED_WOOD.get()))
             ),
             page("sandIsland", STAGE_1, stack(Items.SAND)),
-            page("lifeInfusion", STAGE_1, stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get())),
-            page("knife", STAGE_1, stack(() -> ModItems.CACTUS_CUTTING_KNIFE.get())),
+            page(
+                    "lifeInfusion",
+                    STAGE_1,
+                    stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get()),
+                    recipe(GuideRecipeTargets.PROCESS_INFUSION, stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get()))
+            ),
+            page(
+                    "knife",
+                    STAGE_1,
+                    stack(() -> ModItems.CACTUS_CUTTING_KNIFE.get()),
+                    recipe(GuideRecipeTargets.PROCESS_KNIFE, stack(() -> ModItems.CACTUS_CUTTING_KNIFE.get()))
+            ),
             page("snowIsland", STAGE_1, stack(Blocks.SNOW)),
             page(
                     "freezer",
                     STAGE_1,
                     stack(() -> ModItems.MINI_FREEZER.get()),
                     recipe(stack(() -> ModItems.MINI_FREEZER.get())),
-                    recipe(stack(() -> ModItems.IRON_FREEZER.get())),
+                    recipe(GuideRecipeTargets.PROCESS_FREEZER, stack(() -> ModItems.FLESHY_SNOW_NUGGET.get())),
                     recipe(stack(() -> ModItems.LIGHT_FREEZER.get())),
                     image("ironFreezer", stack(() -> ModItems.IRON_FREEZER.get()))
             ),
@@ -76,6 +86,7 @@ public final class GuidePages {
                     stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get()),
                     link("casing", stack(() -> ModItems.MACHINE_CASINGS.get(MachineVariant.WOODEN).get())),
                     recipe(stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get())),
+                    recipe(GuideRecipeTargets.PROCESS_COMBUSTION, stack(() -> ModItems.ALCHEMICAL_COAL.get())),
                     image("combustion", stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get()))
             ),
             page("waterExtractor", STAGE_2, stack(() -> ModItems.WATER_EXTRACTOR.get())),
@@ -88,9 +99,24 @@ public final class GuidePages {
                     recipe(stack(() -> ModItems.BLAZE_POWDER_BLOCK.get())),
                     image("lava", stack(() -> ModItems.BLAZE_POWDER_BLOCK.get()))
             ),
-            page("heatSources", STAGE_2, stack(Items.TORCH)),
-            page("heatProvider", STAGE_2, stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get())),
-            page("rockGrinder", STAGE_2, stack(() -> ModItems.STONE_GRINDER.get())),
+            page(
+                    "heatSources",
+                    STAGE_2,
+                    stack(Items.TORCH),
+                    recipe(GuideRecipeTargets.HEAT_SOURCES, stack(Items.TORCH))
+            ),
+            page(
+                    "heatProvider",
+                    STAGE_2,
+                    stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get()),
+                    recipe(GuideRecipeTargets.HEAT_SOURCES, stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get()))
+            ),
+            page(
+                    "rockGrinder",
+                    STAGE_2,
+                    stack(() -> ModItems.STONE_GRINDER.get()),
+                    recipe(GuideRecipeTargets.PROCESS_ROCK_GRINDER, stack(() -> ModItems.CRUSHED_STONE.get()))
+            ),
             page(
                     "metalCreation",
                     STAGE_2,
@@ -101,20 +127,61 @@ public final class GuidePages {
                     link("condenser", stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get())),
                     image("crystalSetup", stack(() -> ModItems.CRUCIBLE.get()))
             ),
-            page("crucible", STAGE_2, stack(() -> ModItems.CRUCIBLE.get())),
+            page(
+                    "crucible",
+                    STAGE_2,
+                    stack(() -> ModItems.CRUCIBLE.get()),
+                    recipe(GuideRecipeTargets.CRUCIBLE, stack(() -> ModItems.CRYSTAL_FLUID_BUCKET.get()))
+            ),
             page("fluidDropper", STAGE_2, stack(() -> ModItems.FLUID_DROPPER.get())),
-            page("fusionTable", STAGE_2, stack(() -> ModItems.FUSION_TABLE.get())),
-            page("condenser", STAGE_2, stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get())),
+            page(
+                    "fusionTable",
+                    STAGE_2,
+                    stack(() -> ModItems.FUSION_TABLE.get()),
+                    recipe(GuideRecipeTargets.PROCESS_FUSION, stack(() -> ModItems.PRIMUS_ALCHEMICAL_DUST.get()))
+            ),
+            page(
+                    "condenser",
+                    STAGE_2,
+                    stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get()),
+                    recipe(GuideRecipeTargets.CONDENSER, stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get()))
+            ),
             page("crucibleInserter", STAGE_2, stack(() -> ModItems.CRUCIBLE_INSERTER.get())),
             page("combustionCollector", STAGE_2, stack(() -> ModItems.COMBUSTION_COLLECTOR.get())),
-            page("crushedStone", STAGE_2, stack(() -> ModItems.CRUSHED_STONE.get())),
-            page("gemProduction", STAGE_2, stack(() -> ModItems.DIRTY_GEMS.get(DirtyGem.EMERALD).get())),
+            page(
+                    "crushedStone",
+                    STAGE_2,
+                    stack(() -> ModItems.CRUSHED_STONE.get()),
+                    recipe(GuideRecipeTargets.PROCESS_CAULDRON_CLEAN, stack(() -> ModItems.CRUSHED_STONE.get()))
+            ),
+            page(
+                    "gemProduction",
+                    STAGE_2,
+                    stack(() -> ModItems.DIRTY_GEMS.get(DirtyGem.EMERALD).get()),
+                    recipe(GuideRecipeTargets.PROCESS_ROCK_GRINDER, stack(() -> ModItems.DIRTY_GEMS.get(DirtyGem.EMERALD).get())),
+                    recipe(GuideRecipeTargets.PROCESS_CAULDRON_CLEAN, stack(Items.EMERALD))
+            ),
             page("wildlifeAttractor", STAGE_2, stack(() -> ModItems.WILDLIFE_ATTRACTOR.get())),
             page("stage3", STAGE_3, stack(Items.GLOWSTONE_DUST)),
             page("quickDropper", STAGE_3, stack(() -> ModItems.QUICK_DROPPER.get())),
-            page("rockCrusher", STAGE_3, stack(() -> ModItems.ROCK_CRUSHER.get())),
-            page("rockCleaner", STAGE_3, stack(() -> ModItems.ROCK_CLEANER.get())),
-            page("combustionController", STAGE_3, stack(() -> ModItems.COMBUSTION_CONTROLLER.get())),
+            page(
+                    "rockCrusher",
+                    STAGE_3,
+                    stack(() -> ModItems.ROCK_CRUSHER.get()),
+                    recipe(GuideRecipeTargets.PROCESS_ROCK_GRINDER, stack(() -> ModItems.CRUSHED_STONE.get()))
+            ),
+            page(
+                    "rockCleaner",
+                    STAGE_3,
+                    stack(() -> ModItems.ROCK_CLEANER.get()),
+                    recipe(GuideRecipeTargets.PROCESS_CAULDRON_CLEAN, stack(() -> ModItems.CRUSHED_STONE.get()))
+            ),
+            page(
+                    "combustionController",
+                    STAGE_3,
+                    stack(() -> ModItems.COMBUSTION_CONTROLLER.get()),
+                    recipe(GuideRecipeTargets.PROCESS_COMBUSTION, stack(() -> ModItems.ALCHEMICAL_COAL.get()))
+            ),
             page("aqueous", STAGE_3, stack(() -> ModItems.AQUEOUS_CONCENTRATOR.get())),
             page("stage4", STAGE_4, stack(() -> ModItems.DARK_MATTER.get())),
             page("dmWarper", STAGE_4, stack(() -> ModItems.DARK_MATTER_WARPER.get())),
@@ -182,6 +249,10 @@ public final class GuidePages {
 
     private static GuideAction recipe(final Supplier<ItemStack> iconSupplier) {
         return GuideAction.recipe(iconSupplier);
+    }
+
+    private static GuideAction recipe(final String target, final Supplier<ItemStack> iconSupplier) {
+        return GuideAction.recipe(target, iconSupplier);
     }
 
     private static GuideAction image(final String structureId, final Supplier<ItemStack> iconSupplier) {
