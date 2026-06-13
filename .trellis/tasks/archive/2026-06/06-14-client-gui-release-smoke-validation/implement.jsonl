@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Project backend spec index for the NeoForge mod and relevant guideline routing."}
+{"file": ".trellis/spec/backend/guide-guidelines.md", "reason": "Guide action, recipe fallback, and visual-client validation contracts."}
+{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "Optional JEI integration contract and recipe-viewer fallback behavior."}
+{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Island/team command surface used in the local client smoke flow."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Build, validation, and code quality requirements for Java/NeoForge changes."}
+{"file": ".trellis/spec/guides/index.md", "reason": "Shared thinking-guide index for cross-layer and reuse considerations."}

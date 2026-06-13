@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Quality-check routing for backend/mod changes."}
+{"file": ".trellis/spec/backend/guide-guidelines.md", "reason": "Verify guide action and manual visual evidence claims."}
+{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "Verify JEI integration fallback and optional-mod boundary."}
+{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Verify island/team command smoke evidence is scoped correctly."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Verify build, checks, and documentation quality expectations."}
