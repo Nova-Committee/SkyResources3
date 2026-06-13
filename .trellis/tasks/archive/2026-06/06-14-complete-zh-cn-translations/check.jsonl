@@ -1,0 +1,5 @@
+{"type":"validation","command":"python structured json/key/placeholder check","result":"pass","summary":"en_us.json 与 zh_cn.json 均为 445 个键，缺失键 0，额外键 0，占位符差异 0，键顺序一致。"}
+{"type":"validation","command":"git diff --check","result":"pass"}
+{"type":"validation","command":"./gradlew.bat build","result":"pass","summary":"BUILD SUCCESSFUL；资源处理与打包通过。"}
+{"type":"validation","command":"./gradlew.bat runData","result":"pass","summary":"BUILD SUCCESSFUL；数据生成器完成，未写出新的生成资源。"}
+{"type":"validation","command":"powershell -ExecutionPolicy Bypass -File \"scripts/check-serena-java.ps1\"","result":"pass","summary":"Serena 项目识别为 Java，Java 项目识别检查通过。"}
