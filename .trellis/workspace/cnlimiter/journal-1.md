@@ -19,7 +19,10 @@
 
 ### Main Changes
 
-(Add details)
+- Added `SurvivalistFishingGameTests` and registered `survivalist_fishing_loot` in `ModGameTests`.
+- Verified `SurvivalistFishingEvents` cancels vanilla fishing drops, suppresses the sentinel vanilla output, spawns custom loot/XP, and sets rod damage to `0`.
+- Updated `plans/stage-5-health-gem-checklist.md` to mark Survivalist Fishing Rod as migrated through the event-layer strategy.
+- Added the legacy entity behavior migration contract to backend quality guidelines.
 
 ### Git Commits
 
@@ -29,7 +32,10 @@
 
 ### Testing
 
-- [OK] (Add test results)
+- [OK] `./gradlew.bat compileJava`
+- [OK] `./gradlew.bat build`
+- [OK] `./gradlew.bat runGameTestServer`
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
 
 ### Status
 
@@ -210,6 +216,39 @@
 - [OK] `git diff --check`
 - [OK] `git diff --cached --check`
 - [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 7: 生存者钓鱼竿回归验证
+
+**Date**: 2026-06-14
+**Task**: 生存者钓鱼竿回归验证
+**Branch**: `master`
+
+### Summary
+
+为 Survivalist Fishing Rod 增加 GameTest，验证自定义钓鱼掉落、事件取消、原版掉落抑制和零耐久损耗；同步阶段 5 清单，并将旧自定义实体可由事件边界替代的迁移合同写入 backend 质量规范。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c6d6cd0` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
 
 ### Status
 
