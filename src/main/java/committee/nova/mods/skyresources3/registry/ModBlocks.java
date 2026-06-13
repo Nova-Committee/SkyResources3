@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.DirtFurnaceBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
+import committee.nova.mods.skyresources3.block.FluidDropperBlock;
 import committee.nova.mods.skyresources3.block.FusionTableBlock;
 import committee.nova.mods.skyresources3.block.FreezerBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
@@ -77,6 +78,11 @@ public final class ModBlocks {
             "quick_dropper",
             QuickDropperBlock::new,
             () -> properties(6.0F, 12.0F, SoundType.METAL)
+    );
+    public static final DeferredBlock<FluidDropperBlock> FLUID_DROPPER = BLOCKS.registerBlock(
+            "fluid_dropper",
+            FluidDropperBlock::new,
+            () -> properties(2.0F, 12.0F, SoundType.STONE)
     );
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
             "mini_freezer",

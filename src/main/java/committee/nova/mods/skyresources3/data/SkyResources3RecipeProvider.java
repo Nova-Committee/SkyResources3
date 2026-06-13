@@ -115,6 +115,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dropper", has(Blocks.DROPPER))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.FLUID_DROPPER.get())
+                .define('X', Blocks.COBBLESTONE)
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("X X")
+                .unlockedBy("has_cobblestone", has(Blocks.COBBLESTONE))
+                .save(this.output);
+
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
                 .define('X', ModItems.HEAVY_SNOWBALL.get())
                 .pattern("XX")

@@ -32,6 +32,11 @@ public final class ModCapabilities {
                 ModBlockEntityTypes.QUICK_DROPPER.get(),
                 (quickDropper, direction) -> quickDropper.getItemHandler()
         );
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                ModBlockEntityTypes.FLUID_DROPPER.get(),
+                (fluidDropper, direction) -> fluidDropper.getFluidHandler()
+        );
         event.registerItem(
                 Capabilities.Fluid.ITEM,
                 (stack, context) -> context == null

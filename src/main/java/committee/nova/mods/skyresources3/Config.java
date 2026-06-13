@@ -39,6 +39,9 @@ public final class Config {
     private static final ModConfigSpec.IntValue WATER_EXTRACTOR_CAPACITY = BUILDER
             .comment("Water capacity of the water extractor, in millibuckets.")
             .defineInRange("waterExtractorCapacity", 4000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue FLUID_DROPPER_CAPACITY = BUILDER
+            .comment("Fluid capacity of the fluid dropper, in millibuckets.")
+            .defineInRange("fluidDropperCapacity", 1000, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.BooleanValue ADD_BEETROOT_SEED_DROP = BUILDER
             .comment("Add beetroot seeds to grass drops.")
             .define("addBeetrootSeedDrop", true);
@@ -70,6 +73,7 @@ public final class Config {
     public static int healthGemMaxHealth;
     public static double healthGemPercentage;
     public static int waterExtractorCapacity;
+    public static int fluidDropperCapacity;
     public static boolean addBeetrootSeedDrop;
     public static boolean addMelonSeedDrop;
     public static boolean addPumpkinSeedDrop;
@@ -89,6 +93,7 @@ public final class Config {
         healthGemMaxHealth = HEALTH_GEM_MAX_HEALTH.get();
         healthGemPercentage = HEALTH_GEM_PERCENTAGE.get();
         waterExtractorCapacity = WATER_EXTRACTOR_CAPACITY.get();
+        fluidDropperCapacity = FLUID_DROPPER_CAPACITY.get();
         addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
         addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
         addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();

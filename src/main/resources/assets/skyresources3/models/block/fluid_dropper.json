@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "skyresources3:block/fluid_dropper",
+    "up": "minecraft:block/furnace_top",
+    "north": "minecraft:block/furnace_side",
+    "south": "minecraft:block/furnace_side",
+    "west": "minecraft:block/furnace_side",
+    "east": "minecraft:block/furnace_side",
+    "particle": "skyresources3:block/fluid_dropper"
+  }
+}
