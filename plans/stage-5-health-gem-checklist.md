@@ -34,7 +34,7 @@
 
 ## 暂缓迁移
 
-- `LifeInjector` 已完成健康宝石自动注入运行时逻辑；`LifeInfuser` 与健康宝石的自动消耗/灌注逻辑留待机器运行时阶段。
+- `LifeInjector` 已完成健康宝石自动注入运行时逻辑；`LifeInfuser` 已完成健康宝石自动消耗/灌注运行时逻辑。
 - 健康宝石旧配方来自 `infusionRecipes`，依赖生命灌注 recipe type，未在本批迁移。
 - `survivalist_fishing_rod` 依赖自定义鱼钩实体，留待实体批次单独迁移。
 

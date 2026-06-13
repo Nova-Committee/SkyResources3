@@ -106,7 +106,7 @@ public final class InfusionStoneItem extends Item {
         return hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
     }
 
-    private static Optional<InfusionRecipe> findRecipe(final BlockState state, final ItemStack ingredient) {
+    public static Optional<InfusionRecipe> findRecipe(final BlockState state, final ItemStack ingredient) {
         for (final InfusionRecipe recipe : recipes()) {
             if (recipe.matches(state, ingredient)) {
                 return Optional.of(recipe);
@@ -175,7 +175,7 @@ public final class InfusionStoneItem extends Item {
         boolean matches(BlockState state);
     }
 
-    private record InfusionRecipe(
+    public record InfusionRecipe(
             ItemLike ingredient,
             int ingredientCount,
             TargetMatcher target,
@@ -189,7 +189,7 @@ public final class InfusionStoneItem extends Item {
                     && ingredientStack.getCount() >= this.ingredientCount;
         }
 
-        ItemStack createOutput() {
+        public ItemStack createOutput() {
             return new ItemStack(this.output, this.outputCount);
         }
     }

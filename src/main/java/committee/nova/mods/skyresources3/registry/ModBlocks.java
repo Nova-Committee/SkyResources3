@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
+import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -55,8 +56,9 @@ public final class ModBlocks {
             "alchemical_glass",
             () -> properties(0.3F, 0.3F, SoundType.GLASS).noOcclusion()
     );
-    public static final DeferredBlock<Block> LIFE_INFUSER = BLOCKS.registerSimpleBlock(
+    public static final DeferredBlock<LifeInfuserBlock> LIFE_INFUSER = BLOCKS.registerBlock(
             "life_infuser",
+            LifeInfuserBlock::new,
             () -> machineWood()
     );
     public static final DeferredBlock<LifeInjectorBlock> LIFE_INJECTOR = BLOCKS.registerBlock(

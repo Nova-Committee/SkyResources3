@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,6 +19,11 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "life_injector",
                     () -> new BlockEntityType<>(LifeInjectorBlockEntity::new, ModBlocks.LIFE_INJECTOR.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LifeInfuserBlockEntity>> LIFE_INFUSER =
+            BLOCK_ENTITY_TYPES.register(
+                    "life_infuser",
+                    () -> new BlockEntityType<>(LifeInfuserBlockEntity::new, ModBlocks.LIFE_INFUSER.get())
             );
 
     public static void register(final IEventBus modEventBus) {
