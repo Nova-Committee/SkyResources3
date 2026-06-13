@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec index and required guideline routing for this Java NeoForge task."}
+{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Command signatures, saved-data contracts, and island protection validation rules."}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "SavedData persistence and config-storage constraints."}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Player-facing validation and event-handler guard patterns."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "NeoForge code quality and verification requirements."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Avoid duplicating command and permission logic."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Feature spans config, saved data, commands, events, resources, and plans."}

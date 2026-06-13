@@ -16,3 +16,7 @@
 - [x] Update island command spec, migration plan, and deferred checklist notes.
 - [x] Run compileJava, runData, build, runGameTestServer.
 - [x] Chinese commit and archive Trellis task.
+
+## Stage 67 Follow-up
+
+- Configurable protection radius and trusted visitors are handled by `plans/stage-67-team-island-trust-protection-checklist.md`.

@@ -13,8 +13,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 public final class IslandProtectionEvents {
-    public static final int PROTECTION_RADIUS = 128;
-
     public static void onBlockBreak(final BlockEvent.BreakEvent event) {
         if (event.isCanceled() || !(event.getLevel() instanceof ServerLevel level)) {
             return;
@@ -57,7 +55,7 @@ public final class IslandProtectionEvents {
         final IslandSavedData islands = IslandSavedData.get(storageLevel);
         final TeamSavedData teams = TeamSavedData.get(storageLevel);
         final Optional<IslandSavedData.IslandRecord> island =
-                islands.findIslandAt(level.dimension(), pos, PROTECTION_RADIUS);
+                islands.findIslandAt(level.dimension(), pos, Config.islandProtectionRadius);
         if (island.isEmpty() || canModify(player.getUUID(), island.get(), teams)) {
             return false;
         }
@@ -75,6 +73,9 @@ public final class IslandProtectionEvents {
             final TeamSavedData teams
     ) {
         if (island.owner().equals(player)) {
+            return true;
+        }
+        if (island.isTrustedVisitor(player)) {
             return true;
         }
         return teams.getOwnedTeam(island.owner())

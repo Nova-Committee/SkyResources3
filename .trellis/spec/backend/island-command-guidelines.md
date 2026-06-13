@@ -18,6 +18,9 @@
 - `/island home`
 - `/island spawn`
 - `/island visit <player>`
+- `/island trust <player>`
+- `/island untrust <player>`
+- `/island trusted`
 - `/island reset`
 - `/island reset <type>`
 - `/island reset confirm`
@@ -29,6 +32,9 @@
 - `/skyresources3 island ...`
 - `/skyresources3 team create`
 - `/skyresources3 team invite <player>`
+- `/skyresources3 team trust <player>`
+- `/skyresources3 team untrust <player>`
+- `/skyresources3 team trusted`
 - `/skyresources3 team accept`
 - `/skyresources3 team leave`
 - `/skyresources3 team disband`
@@ -50,9 +56,12 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Island reset is restricted to personal island owners and currently rebuilds only the starter island footprint.
 - New islands are created in `skyresources3:void_island` when the data-pack dimension is available, with overworld fallback only for missing-dimension recovery.
 - `/island spawn` teleports to a generated spawn platform in `skyresources3:void_island` when available, with the old overworld origin-heightmap behavior as fallback.
-- Island protection currently uses a fixed horizontal radius around each island center, derived from `IslandRecord.home().below()`.
+- Island protection uses the configured horizontal radius around each island center, derived from `IslandRecord.home().below()`.
+- Trusted visitors are stored on `IslandSavedData.IslandRecord` so solo island owners can grant access without creating a team.
+- Trust creation is online-only until a player-name history or profile-cache layer exists; untrust may remove a stored visitor by name.
 - Island owners and members of the owner's `TeamSavedData` team may break, place, and right-click blocks inside that protected island range.
-- Visitors and unrelated players must not be allowed to break, place, or right-click blocks inside another team's protected island range.
+- Trusted visitors may break, place, and right-click blocks inside the protected island range.
+- Untrusted visitors and unrelated players must not be allowed to break, place, or right-click blocks inside another team's protected island range.
 - Island protection handlers must run before custom world-mutating interaction handlers such as processing tools or cauldron cleaning.
 - Player-facing command messages use `Component.translatable` with keys in `assets/skyresources3/lang/en_us.json`.
 
@@ -71,6 +80,10 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Team member runs `/island reset confirm` without owning a personal island -> reject reset.
 - Non-member modifies another island's protected range -> cancel the event and show localized denial feedback.
 - Owner or team member modifies the protected range -> allow the event to continue.
+- Trusted visitor modifies the protected range -> allow the event to continue.
+- Non-owner team member manages trusted visitors -> reject.
+- Island owner trusts an online non-member visitor -> persist the visitor UUID and last known name.
+- Island owner untrusts a stored visitor name -> remove the visitor from the island record.
 - Position is outside every known protected range -> leave the event untouched.
 
 ### 5. Good/Base/Bad Cases

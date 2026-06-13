@@ -17,6 +17,9 @@ public final class Config {
     private static final ModConfigSpec.BooleanValue ENABLE_VOID_ISLAND_FEATURES = BUILDER
             .comment("Enable built-in void island progression features as they are migrated.")
             .define("enableVoidIslandFeatures", true);
+    private static final ModConfigSpec.IntValue ISLAND_PROTECTION_RADIUS = BUILDER
+            .comment("Horizontal radius around an island center protected from unrelated player interaction.")
+            .defineInRange("islandProtectionRadius", 128, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.BooleanValue ENABLE_MAGMA_ISLAND = BUILDER
             .comment("Enable the migrated magma island progression path when island generation is implemented.")
             .define("enableMagmaIsland", true);
@@ -131,6 +134,7 @@ public final class Config {
 
     public static boolean enableMigrationDebugLogging;
     public static boolean enableVoidIslandFeatures;
+    public static int islandProtectionRadius;
     public static boolean enableMagmaIsland;
     public static int heavySnowballDamage;
     public static int explosiveHeavySnowballDamage;
@@ -171,6 +175,7 @@ public final class Config {
     static void onLoad(final ModConfigEvent event) {
         enableMigrationDebugLogging = ENABLE_MIGRATION_DEBUG_LOGGING.get();
         enableVoidIslandFeatures = ENABLE_VOID_ISLAND_FEATURES.get();
+        islandProtectionRadius = ISLAND_PROTECTION_RADIUS.get();
         enableMagmaIsland = ENABLE_MAGMA_ISLAND.get();
         heavySnowballDamage = HEAVY_SNOWBALL_DAMAGE.get();
         explosiveHeavySnowballDamage = EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE.get();

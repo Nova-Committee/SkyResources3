@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
@@ -72,7 +73,7 @@ public final class IslandSavedData extends SavedData {
             final BlockPos home,
             final String type
     ) {
-        final IslandRecord island = new IslandRecord(owner, ownerName, dimension, home, type);
+        final IslandRecord island = new IslandRecord(owner, ownerName, dimension, home, type, Map.of());
         this.islands.put(owner, island);
         this.setDirty();
         return island;
@@ -89,11 +90,45 @@ public final class IslandSavedData extends SavedData {
                 island.ownerName(),
                 island.dimension(),
                 island.home(),
-                type
+                type,
+                island.trustedVisitors()
         );
         this.islands.put(owner, updated);
         this.setDirty();
         return Optional.of(updated);
+    }
+
+    public Optional<IslandRecord> trustVisitor(
+            final UUID owner,
+            final UUID visitor,
+            final String visitorName
+    ) {
+        final IslandRecord island = this.islands.get(owner);
+        if (island == null) {
+            return Optional.empty();
+        }
+
+        final IslandRecord updated = island.withTrustedVisitor(visitor, visitorName);
+        this.islands.put(owner, updated);
+        this.setDirty();
+        return Optional.of(updated);
+    }
+
+    public Optional<String> untrustVisitor(final UUID owner, final String visitorName) {
+        final IslandRecord island = this.islands.get(owner);
+        if (island == null) {
+            return Optional.empty();
+        }
+
+        final UUID visitor = island.findTrustedVisitor(visitorName).orElse(null);
+        if (visitor == null) {
+            return Optional.empty();
+        }
+
+        final String storedName = island.trustedVisitors().get(visitor);
+        this.islands.put(owner, island.withoutTrustedVisitor(visitor));
+        this.setDirty();
+        return Optional.of(storedName);
     }
 
     public record IslandRecord(
@@ -101,20 +136,63 @@ public final class IslandSavedData extends SavedData {
             String ownerName,
             ResourceKey<Level> dimension,
             BlockPos home,
-            String type
+            String type,
+            Map<UUID, String> trustedVisitors
     ) {
         private static final Codec<IslandRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 UUIDUtil.STRING_CODEC.fieldOf("owner").forGetter(IslandRecord::owner),
                 Codec.STRING.fieldOf("owner_name").forGetter(IslandRecord::ownerName),
                 ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(IslandRecord::dimension),
                 BlockPos.CODEC.fieldOf("home").forGetter(IslandRecord::home),
-                Codec.STRING.optionalFieldOf("type", IslandTemplate.DEFAULT_ID).forGetter(IslandRecord::type)
+                Codec.STRING.optionalFieldOf("type", IslandTemplate.DEFAULT_ID).forGetter(IslandRecord::type),
+                Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING)
+                        .optionalFieldOf("trusted_visitors", Map.of())
+                        .forGetter(IslandRecord::trustedVisitors)
         ).apply(instance, IslandRecord::new));
+
+        public IslandRecord {
+            trustedVisitors = Map.copyOf(trustedVisitors);
+        }
 
         public boolean isWithinHorizontalRange(final BlockPos pos, final int horizontalRadius) {
             final BlockPos center = this.home.below();
             return Math.abs(pos.getX() - center.getX()) <= horizontalRadius
                     && Math.abs(pos.getZ() - center.getZ()) <= horizontalRadius;
+        }
+
+        public boolean isTrustedVisitor(final UUID player) {
+            return this.trustedVisitors.containsKey(player);
+        }
+
+        public boolean hasTrustedVisitors() {
+            return !this.trustedVisitors.isEmpty();
+        }
+
+        public String trustedVisitorNames() {
+            return this.trustedVisitors.values()
+                    .stream()
+                    .sorted(String.CASE_INSENSITIVE_ORDER)
+                    .collect(Collectors.joining(", "));
+        }
+
+        public Optional<UUID> findTrustedVisitor(final String visitorName) {
+            return this.trustedVisitors.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue().equalsIgnoreCase(visitorName))
+                    .map(Map.Entry::getKey)
+                    .findFirst();
+        }
+
+        private IslandRecord withTrustedVisitor(final UUID visitor, final String visitorName) {
+            final Map<UUID, String> updatedVisitors = new HashMap<>(this.trustedVisitors);
+            updatedVisitors.put(visitor, visitorName);
+            return new IslandRecord(this.owner, this.ownerName, this.dimension, this.home, this.type, updatedVisitors);
+        }
+
+        private IslandRecord withoutTrustedVisitor(final UUID visitor) {
+            final Map<UUID, String> updatedVisitors = new HashMap<>(this.trustedVisitors);
+            updatedVisitors.remove(visitor);
+            return new IslandRecord(this.owner, this.ownerName, this.dimension, this.home, this.type, updatedVisitors);
         }
     }
 }

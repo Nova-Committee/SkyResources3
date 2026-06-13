@@ -57,6 +57,20 @@ public final class VoidIslandCommands {
                                         context.getSource(),
                                         StringArgumentType.getString(context, "player")
                                 ))))
+                .then(Commands.literal("trust")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .executes(context -> trustVisitor(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("untrust")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .suggests(VoidIslandCommands::suggestTrustedVisitors)
+                                .executes(context -> untrustVisitor(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("trusted").executes(context -> listTrustedVisitors(context.getSource())))
                 .then(Commands.literal("reset")
                         .executes(context -> requestReset(context.getSource(), null))
                         .then(Commands.literal("confirm").executes(context -> resetIsland(context.getSource(), null)))
@@ -77,6 +91,20 @@ public final class VoidIslandCommands {
                                         context.getSource(),
                                         StringArgumentType.getString(context, "player")
                                 ))))
+                .then(Commands.literal("trust")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .executes(context -> trustVisitor(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("untrust")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .suggests(VoidIslandCommands::suggestTrustedVisitors)
+                                .executes(context -> untrustVisitor(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("trusted").executes(context -> listTrustedVisitors(context.getSource())))
                 .then(Commands.literal("accept").executes(context -> acceptInvite(context.getSource())))
                 .then(Commands.literal("leave").executes(context -> leaveTeam(context.getSource())));
     }
@@ -237,6 +265,125 @@ public final class VoidIslandCommands {
                         "message.skyresources3.island.visit.success",
                         target.getName().getString(),
                         formatPosition(island.home())
+                ),
+                false
+        );
+        return 1;
+    }
+
+    private static int trustVisitor(final CommandSourceStack source, final String targetName)
+            throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerPlayer target = source.getServer().getPlayerList().getPlayerByName(targetName);
+        if (target == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.trust.target_missing", targetName));
+            return 0;
+        }
+        if (player.getUUID().equals(target.getUUID())) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.trust.self"));
+            return 0;
+        }
+
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        final IslandSavedData.IslandRecord island = getOwnedIslandForTrust(source, player, islands, teams).orElse(null);
+        if (island == null) {
+            return 0;
+        }
+
+        if (teams.getOwnedTeam(player.getUUID()).map(team -> team.includes(target.getUUID())).orElse(false)) {
+            source.sendFailure(Component.translatable(
+                    "message.skyresources3.island.trust.already_member",
+                    target.getName().getString()
+            ));
+            return 0;
+        }
+        if (island.isTrustedVisitor(target.getUUID())) {
+            source.sendFailure(Component.translatable(
+                    "message.skyresources3.island.trust.already_trusted",
+                    target.getName().getString()
+            ));
+            return 0;
+        }
+
+        islands.trustVisitor(
+                player.getUUID(),
+                target.getUUID(),
+                target.getName().getString()
+        );
+        source.sendSuccess(
+                () -> Component.translatable(
+                        "message.skyresources3.island.trust.success",
+                        target.getName().getString()
+                ),
+                false
+        );
+        target.sendSystemMessage(Component.translatable(
+                "message.skyresources3.island.trust.received",
+                player.getName().getString()
+        ));
+        return 1;
+    }
+
+    private static int untrustVisitor(final CommandSourceStack source, final String targetName)
+            throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        final IslandSavedData.IslandRecord island = getOwnedIslandForTrust(source, player, islands, teams).orElse(null);
+        if (island == null) {
+            return 0;
+        }
+
+        final String removedName = islands.untrustVisitor(player.getUUID(), targetName).orElse(null);
+        if (removedName == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.untrust.missing", targetName));
+            return 0;
+        }
+
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.island.untrust.success", removedName),
+                false
+        );
+        return 1;
+    }
+
+    private static int listTrustedVisitors(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        final IslandSavedData.IslandRecord island = getOwnedIslandForTrust(source, player, islands, teams).orElse(null);
+        if (island == null) {
+            return 0;
+        }
+
+        if (!island.hasTrustedVisitors()) {
+            source.sendSuccess(
+                    () -> Component.translatable("message.skyresources3.island.trusted.empty"),
+                    false
+            );
+            return 1;
+        }
+
+        source.sendSuccess(
+                () -> Component.translatable(
+                        "message.skyresources3.island.trusted.list",
+                        island.trustedVisitorNames()
                 ),
                 false
         );
@@ -597,6 +744,24 @@ public final class VoidIslandCommands {
         return teams.getTeamFor(player).flatMap(team -> islands.getIsland(team.owner()));
     }
 
+    private static Optional<IslandSavedData.IslandRecord> getOwnedIslandForTrust(
+            final CommandSourceStack source,
+            final ServerPlayer player,
+            final IslandSavedData islands,
+            final TeamSavedData teams
+    ) {
+        final Optional<IslandSavedData.IslandRecord> island = islands.getIsland(player.getUUID());
+        if (island.isPresent()) {
+            return island;
+        }
+        if (teams.getTeamFor(player.getUUID()).isPresent()) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.trust.not_owner"));
+            return Optional.empty();
+        }
+        source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+        return Optional.empty();
+    }
+
     private static BlockPos nextIslandCenter(final int islandCount) {
         final int x = ISLAND_ORIGIN + islandCount % ISLANDS_PER_ROW * ISLAND_SPACING;
         final int z = ISLAND_ORIGIN + islandCount / ISLANDS_PER_ROW * ISLAND_SPACING;
@@ -635,6 +800,22 @@ public final class VoidIslandCommands {
             final SuggestionsBuilder builder
     ) {
         IslandTemplate.ids().forEach(builder::suggest);
+        return builder.buildFuture();
+    }
+
+    private static CompletableFuture<Suggestions> suggestTrustedVisitors(
+            final CommandContext<CommandSourceStack> context,
+            final SuggestionsBuilder builder
+    ) {
+        try {
+            final ServerPlayer player = context.getSource().getPlayerOrException();
+            final IslandSavedData islands = IslandSavedData.get(context.getSource().getServer().overworld());
+            islands.getIsland(player.getUUID())
+                    .map(IslandSavedData.IslandRecord::trustedVisitors)
+                    .ifPresent(visitors -> visitors.values().forEach(builder::suggest));
+        } catch (final CommandSyntaxException ignored) {
+            // Suggestions are optional for non-player command sources.
+        }
         return builder.buildFuture();
     }
 
