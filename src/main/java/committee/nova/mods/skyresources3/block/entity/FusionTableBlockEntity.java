@@ -32,12 +32,12 @@ public final class FusionTableBlockEntity extends BlockEntity {
     private static final String CATALYST_LEFT_KEY = "itemLeft";
     private static final String PROGRESS_KEY = "progress";
 
-    private static final int CATALYST_SLOT = 0;
-    private static final int FIRST_INPUT_SLOT = 1;
-    private static final int INPUT_SLOT_COUNT = 9;
-    private static final int OUTPUT_SLOT = 10;
-    private static final int SLOT_COUNT = 11;
-    private static final int MAX_PROGRESS = 100;
+    public static final int CATALYST_SLOT = 0;
+    public static final int FIRST_INPUT_SLOT = 1;
+    public static final int INPUT_SLOT_COUNT = 9;
+    public static final int OUTPUT_SLOT = 10;
+    public static final int SLOT_COUNT = 11;
+    public static final int MAX_PROGRESS = 100;
     private static final int YIELD_ROUNDING_SCALE = 10_000;
 
     private final FusionTableItemHandler items = new FusionTableItemHandler(this);
@@ -112,6 +112,59 @@ public final class FusionTableBlockEntity extends BlockEntity {
         return this.items;
     }
 
+    public ItemStack getStackInSlot(final int slot) {
+        if (!isMachineSlot(slot)) {
+            return ItemStack.EMPTY;
+        }
+        return this.items.stack(slot);
+    }
+
+    public void setStackInSlot(final int slot, final ItemStack stack) {
+        if (!isMachineSlot(slot)) {
+            return;
+        }
+        final ItemStack stored = stack.isEmpty() ? ItemStack.EMPTY : stack.copy();
+        this.items.setStack(slot, stored);
+        this.updateFilterFromMenu(slot, stored);
+    }
+
+    public ItemStack removeStack(final int slot, final int amount) {
+        if (!isMachineSlot(slot) || amount <= 0) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack stack = this.items.stack(slot);
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack removed = stack.split(amount);
+        if (stack.isEmpty()) {
+            this.items.setStack(slot, ItemStack.EMPTY);
+        }
+        this.clearMenuFilterIfInputEmpty(slot);
+        this.setChanged();
+        return removed;
+    }
+
+    public ItemStack removeStackNoUpdate(final int slot) {
+        if (!isMachineSlot(slot)) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack removed = this.items.stack(slot);
+        this.items.setStack(slot, ItemStack.EMPTY);
+        this.clearMenuFilterIfInputEmpty(slot);
+        return removed;
+    }
+
+    public boolean mayPlaceInSlot(final int slot, final ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        if (slot == CATALYST_SLOT) {
+            return isCatalyst(stack);
+        }
+        return isInputSlot(slot) && slot != OUTPUT_SLOT;
+    }
+
     public void dropContents() {
         if (this.level == null) {
             return;
@@ -157,6 +210,10 @@ public final class FusionTableBlockEntity extends BlockEntity {
         this.catalystLeft = 0.0F;
         this.yieldAmount = 0.0D;
         this.setChanged();
+    }
+
+    public static boolean isCatalyst(final ItemStack stack) {
+        return getCatalystValue(stack) > 0.0F;
     }
 
     private boolean tryStartRecipe(final ServerLevel level) {
@@ -284,10 +341,6 @@ public final class FusionTableBlockEntity extends BlockEntity {
         output.grow(stack.getCount());
     }
 
-    private static boolean isCatalyst(final ItemStack stack) {
-        return getCatalystValue(stack) > 0.0F;
-    }
-
     private static float getCatalystValue(final ItemStack stack) {
         if (stack.isEmpty()) {
             return 0.0F;
@@ -311,8 +364,29 @@ public final class FusionTableBlockEntity extends BlockEntity {
         return !filterStack.isEmpty() && ItemStack.isSameItemSameComponents(filterStack, resource.toStack());
     }
 
+    private static boolean isMachineSlot(final int slot) {
+        return slot >= 0 && slot < SLOT_COUNT;
+    }
+
+    private static boolean isInputSlot(final int slot) {
+        return slot >= FIRST_INPUT_SLOT && slot < OUTPUT_SLOT;
+    }
+
     private static double roundYield(final double value) {
         return Math.round(value * YIELD_ROUNDING_SCALE) / (double) YIELD_ROUNDING_SCALE;
+    }
+
+    private void updateFilterFromMenu(final int slot, final ItemStack stack) {
+        if (!isInputSlot(slot)) {
+            return;
+        }
+        this.setFilter(slot - FIRST_INPUT_SLOT, stack);
+    }
+
+    private void clearMenuFilterIfInputEmpty(final int slot) {
+        if (isInputSlot(slot) && this.items.stack(slot).isEmpty()) {
+            this.setFilter(slot - FIRST_INPUT_SLOT, ItemStack.EMPTY);
+        }
     }
 
     private static class StoredItemStacks extends ItemStacksResourceHandler {
