@@ -26,6 +26,9 @@
 - [x] Controlled `./gradlew.bat runClient --no-daemon` startup smoke captured client loading evidence on 2026-06-14; see `plans/client-smoke-resource-license-closeout-checklist.md`.
 - [x] A later desktop GUI smoke attempt on 2026-06-14 reached an existing local singleplayer world and found a guide-key
   default conflict with Minecraft 1.21.11 `key.quickActions`; the guide default key was moved from `G` to `Y`.
+- [x] A focused hidden-launcher retry on 2026-06-14 removed visible terminal focus pollution, loaded a Minecraft
+  NeoForge client window with SkyResources3/Jade/JEI, and still produced only white-window captures; no visual
+  click-through item was closed by that retry.
 - [x] Guide/menu automated integrity coverage was added on 2026-06-14:
   - `GuideMenuGameTests.guide_data_integrity` verifies guide translation keys, inline action markers, link targets, recipe targets, structure targets, and structure block icons.
   - `GuideMenuGameTests.menu_type_registration` verifies all migrated machine menu type ids resolve through the runtime registry.
@@ -48,6 +51,7 @@
   - JEI recipe action degrades safely when JEI is absent or opens recipes when JEI is present.
   - Representative machine menus open without client-only classloading or layout errors.
   - Island/team command flows are manually sanity-checked in a local world.
+  - The focused hidden-launcher retry did not replace this manual check because the captured client window remained white.
   - Headless Gradle gates and GameTests must not be treated as proof for this visual/click-through item.
 
 ## Remaining Non-Blocking TODOs

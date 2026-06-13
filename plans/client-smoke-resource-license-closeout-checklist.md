@@ -38,6 +38,9 @@
   `plans/client-gui-smoke-execution-evidence.md`.
 - [x] The attempt found that the guide default key `G` conflicted with Minecraft 1.21.11 `key.quickActions`.
   The default guide key was moved to `Y`.
+- [x] A focused hidden-launcher retry on 2026-06-14 removed visible helper-terminal focus pollution, but the client
+  window captures stayed white after SkyResources3/Jade/JEI loaded, so it did not prove guide, JEI, machine, or
+  island/team click-through.
 - [x] No intentional Gradle/Java client process was left running after the GUI attempt.
 
 ## Still Manual Before Release

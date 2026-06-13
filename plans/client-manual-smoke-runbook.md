@@ -69,7 +69,7 @@ Pass if commands execute without client disconnects, success/failure text is loc
 Only run this if preparing a distribution profile without JEI:
 
 1. Start a no-JEI client profile.
-2. Open the guide with `G`.
+2. Open the guide with the configured `key.skyresources3.guide` key; the default is `Y`.
 3. Click the same recipe actions used in the JEI-present run.
 4. Pass if the guide shows the localized fallback/unavailable message and the client does not crash.
 

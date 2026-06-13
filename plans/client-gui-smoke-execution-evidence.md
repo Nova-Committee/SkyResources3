@@ -13,6 +13,19 @@ The full manual GUI click-through is still not complete. Native desktop input au
 focus changed between Codex, Windows Terminal, and the GLFW Minecraft window, so guide search/actions, JEI recipe action
 clicks, representative machine screens, and island/team chat command flows remain manual release-prep items.
 
+## Focused Retry
+
+A follow-up attempt under `.trellis/tasks/06-14-client-gui-focused-smoke-closeout/evidence/` launched
+`./gradlew.bat runClient --no-daemon` through a hidden PowerShell wrapper so the launcher terminal would not steal focus.
+The client process created a `Minecraft NeoForge* 1.21.11` window, loaded SkyResources3, Jade, and JEI, initialized OpenAL,
+and created the Minecraft and JEI GUI atlases. After both the initial and long-wait captures, the visible GLFW window
+remained a white client area, so the retry did not produce direct visual evidence for main-menu, guide, JEI, machine, or
+island/team click-through.
+
+This narrows the remaining blocker: terminal focus pollution is no longer the main explanation for the missing GUI
+evidence. In this desktop session, the client window/render capture itself did not become a usable visual target, so the
+manual runbook still needs a human-observed focused client session before release.
+
 ## Observed Evidence
 
 - `interactive-runclient-2-main-menu.png`: client reached the Minecraft main menu.
@@ -32,6 +45,7 @@ in Git.
 - Client launch: passed.
 - Existing world entry: passed in the `interactive-runclient-2` attempt.
 - Guide default key conflict: found and fixed by changing the default from `G` to `Y`.
+- Hidden-launcher focused retry: partial; client loaded but visible captures stayed white.
 - Guide screen open/search/action click-through: not completed.
 - JEI recipe action click-through: not completed.
 - Representative machine screen click-through: not completed.

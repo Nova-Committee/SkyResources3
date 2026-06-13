@@ -48,6 +48,9 @@ core runtime implementation gaps. The remaining work falls into three groups:
 - A later desktop GUI smoke attempt reached an existing local singleplayer world, found a guide default-key conflict with
   Minecraft 1.21.11 `key.quickActions`, and moved the guide default from `G` to `Y`; guide/JEI/machine visual clicks
   remain manual release-prep.
+- A hidden-launcher focused retry removed visible terminal focus pollution and loaded a Minecraft NeoForge client window
+  with SkyResources3, Jade, and JEI, but the window captures stayed white after waiting. This did not prove any guide,
+  JEI, machine, or island/team click-through item, so the manual GUI blocker remains open.
 - `GuideMenuGameTests.guide_data_integrity` and `GuideMenuGameTests.menu_type_registration` passed through `./gradlew.bat runGameTestServer`, covering guide translation/action/structure consistency and all migrated menu type registry ids.
 - `MachineRuntimeGameTests.combustionControllerUsesFilterPriority` and `MachineRuntimeGameTests.combustionCollectorDropsOverflow` passed through `./gradlew.bat runGameTestServer`, covering Smart Combustion Controller filter priority and Combustion Collector overflow/drop fallback.
 - `git diff --check`, `git diff --cached --check`, and `scripts/check-serena-java.ps1` passed again in the refreshed final validation run.
@@ -58,6 +61,8 @@ core runtime implementation gaps. The remaining work falls into three groups:
 1. **Manual GUI click-through**
    - Automated final gates have been refreshed in the post-combustion state.
    - Run `plans/client-manual-smoke-runbook.md` for guide, JEI action fallback, representative machine GUIs, and island/team flows before a release tag. Guide/menu data and registry integrity now have GameTest coverage, and the client has reached a local world, but visual clicks remain manual release-prep unless a focused interactive client session is completed.
+   - The focused hidden-launcher retry narrowed the blocker to unusable client-window/render capture in this desktop
+     session rather than visible helper-terminal focus theft.
 
 2. **Resource/license decision**
    - Resolved in `plans/migration-plan.md`, `LICENSE`, and `RESOURCE_LICENSE.md`: legacy ARR resources need explicit owner relicensing, attribution/license notes, or replacement before public MIT-release claims.
