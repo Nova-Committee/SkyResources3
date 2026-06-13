@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.CuttingKnifeItem;
+import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
@@ -96,6 +97,7 @@ public final class ModItems {
     public static final DeferredItem<Item> QUARTUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("quartus_alchemical_dust");
     public static final Map<OreAlchemyDust, DeferredItem<Item>> ORE_ALCHEMICAL_DUSTS =
             registerOreAlchemyDusts();
+    public static final Map<DirtyGem, DeferredItem<Item>> DIRTY_GEMS = registerDirtyGems();
     public static final DeferredItem<Item> ALCHEMICAL_COAL = ITEMS.registerSimpleItem("alchemical_coal");
     public static final DeferredItem<Item> WOODEN_HEAT_COMPONENT = ITEMS.registerSimpleItem("wooden_heat_component");
     public static final DeferredItem<Item> ALCHEMICAL_GOLD_INGOT = ITEMS.registerSimpleItem("alchemical_gold_ingot");
@@ -227,6 +229,14 @@ public final class ModItems {
             dusts.put(dust, ITEMS.registerSimpleItem(dust.itemId()));
         }
         return Collections.unmodifiableMap(dusts);
+    }
+
+    private static Map<DirtyGem, DeferredItem<Item>> registerDirtyGems() {
+        final EnumMap<DirtyGem, DeferredItem<Item>> gems = new EnumMap<>(DirtyGem.class);
+        for (final DirtyGem gem : DirtyGem.values()) {
+            gems.put(gem, ITEMS.registerSimpleItem(gem.itemId()));
+        }
+        return Collections.unmodifiableMap(gems);
     }
 
     private static DeferredItem<CuttingKnifeItem> cuttingKnife(

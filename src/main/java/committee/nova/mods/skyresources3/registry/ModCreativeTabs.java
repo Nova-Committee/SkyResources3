@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import net.minecraft.core.registries.Registries;
@@ -71,6 +72,9 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.QUARTUS_ALCHEMICAL_DUST.get());
                         for (final OreAlchemyDust dust : OreAlchemyDust.values()) {
                             output.accept(ModItems.ORE_ALCHEMICAL_DUSTS.get(dust).get());
+                        }
+                        for (final DirtyGem gem : DirtyGem.values()) {
+                            output.accept(ModItems.DIRTY_GEMS.get(gem).get());
                         }
                         output.accept(ModItems.ALCHEMICAL_COAL.get());
                         output.accept(ModItems.WOODEN_HEAT_COMPONENT.get());

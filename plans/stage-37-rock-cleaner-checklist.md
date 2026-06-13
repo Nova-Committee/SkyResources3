@@ -16,10 +16,12 @@
 - [x] Implemented machine progress, energy use, water use, output buffering, and capped 2x output chance.
 - [x] Implemented manual water-cauldron cleaning from the same `cauldronclean` recipes.
 - [x] Copied old Rock Cleaner block and GUI textures to snake_case resource paths.
+- [x] Follow-up: Dirty Gem item family is now available as standalone 1.21.11 item ids.
 
 ## Deferred
 
-- [ ] Add built-in `cauldronclean` generated recipes after dirty gems and dynamic ore/alchemical dust outputs are migrated. The old recipes depend on those item families, so this stage intentionally does not invent replacement outputs.
+- [ ] Add built-in `cauldronclean` generated recipes after clean gem output/tag policy and dynamic ore/alchemical dust
+  outputs are explicit. The old recipes depend on those outputs, so this stage intentionally does not invent replacements.
 
 ## Verification
 
