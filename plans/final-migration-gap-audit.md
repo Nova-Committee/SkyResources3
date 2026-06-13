@@ -53,7 +53,7 @@ core runtime implementation gaps. The remaining work falls into three groups:
 
 1. **Manual GUI click-through**
    - Automated final gates have been refreshed in the post-combustion state.
-   - Run a targeted `runClient` smoke test for guide, JEI action fallback, representative machine GUIs, and island/team flows before a release tag. Guide/menu data and registry integrity now have GameTest coverage, but visual clicks remain manual release-prep unless an interactive client session is completed.
+   - Run `plans/client-manual-smoke-runbook.md` for guide, JEI action fallback, representative machine GUIs, and island/team flows before a release tag. Guide/menu data and registry integrity now have GameTest coverage, but visual clicks remain manual release-prep unless an interactive client session is completed.
 
 2. **Resource/license decision**
    - Resolved in `plans/migration-plan.md`, `LICENSE`, and `RESOURCE_LICENSE.md`: legacy ARR resources need explicit owner relicensing, attribution/license notes, or replacement before public MIT-release claims.
@@ -82,5 +82,5 @@ core runtime implementation gaps. The remaining work falls into three groups:
 
 ## Recommended Next Large Tasks
 
-1. **Manual client smoke test before release**: verify guide actions, JEI behavior, representative machine GUI visuals, and island/team flows through `runClient`.
+1. **Manual client smoke test before release**: follow `plans/client-manual-smoke-runbook.md` to verify guide actions, JEI behavior, representative machine GUI visuals, and island/team flows through `runClient`.
 2. **Optional enhancement/integration backlog**: continue only after compatible target artifacts or a concrete release requirement exists.

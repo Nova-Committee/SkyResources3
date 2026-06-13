@@ -40,6 +40,7 @@
 ## Manual Validation
 
 - [ ] `./gradlew.bat runClient` GUI interaction smoke test is still required before a release tag because a timed automated startup can prove client boot/loading, but not user-facing clicks:
+  - Follow `plans/client-manual-smoke-runbook.md` and record the result.
   - Guide screen opens and search/action links work.
   - JEI recipe action degrades safely when JEI is absent or opens recipes when JEI is present.
   - Representative machine menus open without client-only classloading or layout errors.

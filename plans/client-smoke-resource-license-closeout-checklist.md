@@ -20,6 +20,7 @@
 
 - [x] Controlled command: `./gradlew.bat runClient --no-daemon`, started through a PowerShell watchdog on 2026-06-14.
 - [x] The watchdog stopped the process after startup evidence was captured, so no Gradle/Java client process was intentionally left running.
+- [x] Startup evidence was refreshed on 2026-06-14 at 04:12; see `plans/client-manual-smoke-runbook.md` for the manual follow-up package.
 - [x] Evidence observed in `run/logs/latest.log`:
   - `Mod List` included `SkyResources3 1.0.0 (skyresources3)`.
   - Client environment reached `Render thread`.
@@ -33,6 +34,7 @@
 
 ## Still Manual Before Release
 
+- [ ] Follow `plans/client-manual-smoke-runbook.md` in a local client world and record the result.
 - [ ] Open guide screen and verify search/action links by clicking them.
 - [ ] Verify JEI recipe action opens recipes when JEI is present.
 - [ ] Verify JEI absence/fallback behavior in a separate no-JEI client run if packaging a no-JEI profile.
