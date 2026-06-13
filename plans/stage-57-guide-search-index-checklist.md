@@ -11,10 +11,13 @@
 - [x] Render clickable guide-page result entries.
 - [x] Add English translations for search and empty-result labels.
 
+## Completed Follow-up
+
+- [x] Cross-category search.
+- [x] Scrollable result list.
+
 ## Deferred
 
-- [ ] Cross-category search.
-- [ ] Scrollable result list.
 - [ ] Old rich-text recipe/link/image buttons.
 
 ## Verification

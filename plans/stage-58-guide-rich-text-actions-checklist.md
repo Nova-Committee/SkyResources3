@@ -18,7 +18,7 @@
 - [ ] Inline placement matching old text markers.
 - [ ] JEI/EMI/REI recipe viewer integration.
 - [ ] Rotating 3D structure renderer.
-- [ ] Scrollable action/structure lists.
+- [x] Scrollable action/structure lists.
 
 ## Verification
 

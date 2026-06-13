@@ -116,6 +116,7 @@
 - 迁移旧 `SkyResourcesGuide` 页面结构。
 - 决策是否保留自研 GUI，或迁移为 Patchouli/原生书/自定义 screen。
 - 迁移 VoidIslandControl 相关指南页。
+- 已迁移自研指南 Screen、按键入口、页面搜索、跨分类搜索、可点击动作和可滚动结果/动作/结构列表。
 - 验证：`gradlew.bat build`，手动打开指南。
 - 建议提交：`迁移指南系统`
 

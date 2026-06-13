@@ -45,6 +45,9 @@ public final class GuideScreen extends Screen {
 
     private int selectedCategoryIndex;
     private int selectedPageIndex;
+    private int resultScrollOffset;
+    private int actionScrollOffset;
+    private int structureScrollOffset;
     private String searchText = "";
     private EditBox searchBox;
     private GuideStructure currentStructure;
@@ -76,6 +79,9 @@ public final class GuideScreen extends Screen {
         this.searchBox.setResponder(value -> {
             this.searchText = value;
             this.selectedPageIndex = 0;
+            this.resultScrollOffset = 0;
+            this.actionScrollOffset = 0;
+            this.structureScrollOffset = 0;
             this.clearTransientView();
             this.clampSelection();
         });
@@ -148,6 +154,24 @@ public final class GuideScreen extends Screen {
     }
 
     @Override
+    public boolean mouseScrolled(
+            final double mouseX,
+            final double mouseY,
+            final double scrollX,
+            final double scrollY
+    ) {
+        if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+            return true;
+        }
+        if (scrollY == 0.0D) {
+            return false;
+        }
+        return this.scrollStructureAt(mouseX, mouseY, scrollY)
+                || this.scrollActionListAt(mouseX, mouseY, scrollY)
+                || this.scrollResultIndexAt(mouseX, mouseY, scrollY);
+    }
+
+    @Override
     public void onClose() {
         if (this.currentStructure != null) {
             this.clearTransientView();
@@ -210,7 +234,7 @@ public final class GuideScreen extends Screen {
                 panelY,
                 panelWidth,
                 panelHeight,
-                categoryPages.size(),
+                this.isSearching() ? GuidePages.pages().size() : categoryPages.size(),
                 pages
         );
         if (pages.isEmpty()) {
@@ -230,7 +254,7 @@ public final class GuideScreen extends Screen {
         final Component category = Component.translatable(
                 "screen.skyresources3.guide.category_counter",
                 page.category(),
-                this.selectedCategoryIndex + 1,
+                this.categoryIndex(page.categoryKey()) + 1,
                 categories.size()
         );
         final Component pageCounter = Component.translatable(
@@ -273,8 +297,8 @@ public final class GuideScreen extends Screen {
         if (bodyBottom <= bodyY) {
             return;
         }
-        final int actionRows = this.visibleActionRows(page.actions(), bodyBottom - bodyY);
-        final int actionTop = actionRows == 0 ? bodyBottom : bodyBottom - actionRows * ACTION_ROW_HEIGHT;
+        final int actionRows = this.visibleActionRows(page.actions(), this.actionAvailableHeight(panelY, panelHeight));
+        final int actionTop = actionRows == 0 ? bodyBottom : this.actionTop(panelY, panelHeight, actionRows);
         int textBottom = actionRows == 0 ? bodyBottom : actionTop - ACTION_GAP;
         if (this.feedbackMessage != null && textBottom - bodyY > this.font.lineHeight + 2) {
             textBottom -= this.font.lineHeight + 2;
@@ -319,17 +343,22 @@ public final class GuideScreen extends Screen {
         final int listWidth = this.indexWidth(panelWidth);
         final int listBottom = this.resultListBottom(panelY, panelHeight);
         final int visibleRows = this.visibleResultRows(panelY, panelHeight);
+        final int firstIndex = this.resultScrollOffset;
+        final int rowCount = Math.min(visibleRows, Math.max(0, pages.size() - firstIndex));
         guiGraphics.enableScissor(listX, listY, listX + listWidth, listBottom);
-        for (int index = 0; index < Math.min(visibleRows, pages.size()); index++) {
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+            final int pageIndex = firstIndex + rowIndex;
             this.renderResultRow(
                     guiGraphics,
                     mouseX,
                     mouseY,
-                    pages.get(index),
-                    index,
+                    pages.get(pageIndex),
+                    pageIndex,
+                    rowIndex,
                     listX,
                     listY,
-                    listWidth
+                    listWidth,
+                    this.isSearching()
             );
         }
         guiGraphics.disableScissor();
@@ -340,13 +369,15 @@ public final class GuideScreen extends Screen {
             final int mouseX,
             final int mouseY,
             final GuidePage page,
-            final int index,
+            final int pageIndex,
+            final int rowIndex,
             final int listX,
             final int listY,
-            final int listWidth
+            final int listWidth,
+            final boolean showCategory
     ) {
-        final int rowY = listY + index * RESULT_ROW_HEIGHT;
-        if (index == this.selectedPageIndex) {
+        final int rowY = listY + rowIndex * RESULT_ROW_HEIGHT;
+        if (pageIndex == this.selectedPageIndex) {
             guiGraphics.fill(listX, rowY, listX + listWidth, rowY + RESULT_ROW_HEIGHT - 1, SELECTED_ROW_COLOR);
         } else if (this.isInside(mouseX, mouseY, listX, rowY, listWidth, RESULT_ROW_HEIGHT - 1)) {
             guiGraphics.fill(listX, rowY, listX + listWidth, rowY + RESULT_ROW_HEIGHT - 1, HOVERED_ROW_COLOR);
@@ -358,14 +389,33 @@ public final class GuideScreen extends Screen {
         }
         final int titleX = listX + ICON_SIZE + 5;
         final int titleWidth = listWidth - ICON_SIZE - 8;
-        guiGraphics.drawString(
-                this.font,
-                this.truncate(page.title().getString(), titleWidth),
-                titleX,
-                rowY + 5,
-                TEXT_COLOR,
-                false
-        );
+        if (showCategory) {
+            guiGraphics.drawString(
+                    this.font,
+                    this.truncate(page.title().getString(), titleWidth),
+                    titleX,
+                    rowY + 1,
+                    TEXT_COLOR,
+                    false
+            );
+            guiGraphics.drawString(
+                    this.font,
+                    this.truncate(page.category().getString(), titleWidth),
+                    titleX,
+                    rowY + 9,
+                    MUTED_TEXT_COLOR,
+                    false
+            );
+        } else {
+            guiGraphics.drawString(
+                    this.font,
+                    this.truncate(page.title().getString(), titleWidth),
+                    titleX,
+                    rowY + 5,
+                    TEXT_COLOR,
+                    false
+            );
+        }
     }
 
     private void renderNoResults(
@@ -402,14 +452,16 @@ public final class GuideScreen extends Screen {
             final int width,
             final int visibleRows
     ) {
-        for (int index = 0; index < Math.min(visibleRows, actions.size()); index++) {
+        final int firstIndex = this.actionScrollOffset;
+        final int rowCount = Math.min(visibleRows, Math.max(0, actions.size() - firstIndex));
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
             this.renderActionRow(
                     guiGraphics,
                     mouseX,
                     mouseY,
-                    actions.get(index),
+                    actions.get(firstIndex + rowIndex),
                     x,
-                    y + index * ACTION_ROW_HEIGHT,
+                    y + rowIndex * ACTION_ROW_HEIGHT,
                     width
             );
         }
@@ -490,20 +542,22 @@ public final class GuideScreen extends Screen {
                 false
         );
 
-        final int listY = contentY + 32;
-        final int listBottom = contentBottom - this.font.lineHeight - 4;
-        final int visibleRows = Math.max(0, (listBottom - listY) / STRUCTURE_ROW_HEIGHT);
+        final int listY = this.structureListY(panelY);
+        final int listBottom = this.structureListBottom(panelY, panelHeight);
+        final int visibleRows = this.visibleStructureRows(panelY, panelHeight);
+        final int firstIndex = this.structureScrollOffset;
+        final int rowCount = Math.min(visibleRows, Math.max(0, structure.blocks().size() - firstIndex));
         guiGraphics.enableScissor(contentX, listY, contentX + contentWidth, listBottom);
-        for (int index = 0; index < Math.min(visibleRows, structure.blocks().size()); index++) {
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
             this.renderStructureBlockRow(
                     guiGraphics,
                     mouseX,
                     mouseY,
-                    structure.blocks().get(index),
+                    structure.blocks().get(firstIndex + rowIndex),
                     contentX,
                     listY,
                     contentWidth,
-                    index
+                    rowIndex
             );
         }
         guiGraphics.disableScissor();
@@ -555,16 +609,22 @@ public final class GuideScreen extends Screen {
         return GuidePages.pagesInCategory(categories.get(this.selectedCategoryIndex));
     }
 
+    private int categoryIndex(final String categoryKey) {
+        return Math.max(0, GuidePages.categories().indexOf(categoryKey));
+    }
+
     private List<GuidePage> visiblePages() {
         final String query = this.normalizedSearch();
-        return this.currentCategoryPages().stream()
+        final List<GuidePage> sourcePages = query.isEmpty() ? this.currentCategoryPages() : GuidePages.pages();
+        return sourcePages.stream()
                 .filter(page -> query.isEmpty() || this.matchesSearch(page, query))
                 .toList();
     }
 
     private boolean matchesSearch(final GuidePage page, final String query) {
         return page.id().toLowerCase(Locale.ROOT).contains(query)
-                || page.title().getString().toLowerCase(Locale.ROOT).contains(query);
+                || page.title().getString().toLowerCase(Locale.ROOT).contains(query)
+                || page.text().getString().toLowerCase(Locale.ROOT).contains(query);
     }
 
     private void changeCategory(final int direction) {
@@ -575,6 +635,9 @@ public final class GuideScreen extends Screen {
         this.clearTransientView();
         this.selectedCategoryIndex = Math.floorMod(this.selectedCategoryIndex + direction, categories.size());
         this.selectedPageIndex = 0;
+        this.resultScrollOffset = 0;
+        this.actionScrollOffset = 0;
+        this.clampSelection();
     }
 
     private void changePage(final int direction) {
@@ -584,6 +647,9 @@ public final class GuideScreen extends Screen {
         }
         this.clearTransientView();
         this.selectedPageIndex = Math.floorMod(this.selectedPageIndex + direction, pages.size());
+        this.actionScrollOffset = 0;
+        this.clampSelection();
+        this.keepSelectedResultVisible();
     }
 
     private void clampSelection() {
@@ -591,12 +657,33 @@ public final class GuideScreen extends Screen {
         if (categories.isEmpty()) {
             this.selectedCategoryIndex = 0;
             this.selectedPageIndex = 0;
+            this.resultScrollOffset = 0;
+            this.actionScrollOffset = 0;
+            this.structureScrollOffset = 0;
             return;
         }
 
         this.selectedCategoryIndex = Math.floorMod(this.selectedCategoryIndex, categories.size());
         final List<GuidePage> pages = this.visiblePages();
         this.selectedPageIndex = pages.isEmpty() ? 0 : Math.floorMod(this.selectedPageIndex, pages.size());
+        final int panelY = this.panelY();
+        final int panelHeight = this.panelHeight();
+        final int resultRows = this.visibleResultRows(panelY, panelHeight);
+        this.resultScrollOffset = this.clampScrollOffset(this.resultScrollOffset, pages.size(), resultRows);
+
+        final GuidePage page = pages.isEmpty() ? null : pages.get(this.selectedPageIndex);
+        final int actionRows = page == null
+                ? 0
+                : this.visibleActionRows(page.actions(), this.actionAvailableHeight(panelY, panelHeight));
+        final int actionCount = page == null ? 0 : page.actions().size();
+        this.actionScrollOffset = this.clampScrollOffset(this.actionScrollOffset, actionCount, actionRows);
+
+        final int structureCount = this.currentStructure == null ? 0 : this.currentStructure.blocks().size();
+        this.structureScrollOffset = this.clampScrollOffset(
+                this.structureScrollOffset,
+                structureCount,
+                this.visibleStructureRows(panelY, panelHeight)
+        );
     }
 
     private int panelX() {
@@ -632,13 +719,15 @@ public final class GuideScreen extends Screen {
             return false;
         }
 
-        final int index = ((int) mouseY - listY) / RESULT_ROW_HEIGHT;
+        final int rowIndex = ((int) mouseY - listY) / RESULT_ROW_HEIGHT;
+        final int pageIndex = this.resultScrollOffset + rowIndex;
         final List<GuidePage> pages = this.visiblePages();
-        if (index < 0 || index >= Math.min(this.visibleResultRows(panelY, panelHeight), pages.size())) {
+        if (rowIndex < 0 || rowIndex >= this.visibleResultRows(panelY, panelHeight) || pageIndex >= pages.size()) {
             return false;
         }
         this.clearTransientView();
-        this.selectedPageIndex = index;
+        this.selectedPageIndex = pageIndex;
+        this.actionScrollOffset = 0;
         return true;
     }
 
@@ -659,23 +748,105 @@ public final class GuideScreen extends Screen {
         final int contentX = wideIndex
                 ? panelX + PANEL_PADDING + this.indexWidth(panelWidth) + INDEX_GAP
                 : panelX + PANEL_PADDING;
-        final int iconY = panelY + 58 + 24;
-        final int bodyY = iconY + 30;
-        final int bodyBottom = panelY + panelHeight - FOOTER_HEIGHT;
         final int contentWidth = wideIndex
                 ? panelWidth - PANEL_PADDING * 2 - this.indexWidth(panelWidth) - INDEX_GAP
                 : panelWidth - PANEL_PADDING * 2;
-        final int visibleRows = this.visibleActionRows(page.actions(), bodyBottom - bodyY);
-        final int actionTop = bodyBottom - visibleRows * ACTION_ROW_HEIGHT;
+        final int visibleRows = this.visibleActionRows(page.actions(), this.actionAvailableHeight(panelY, panelHeight));
+        final int actionTop = this.actionTop(panelY, panelHeight, visibleRows);
         if (visibleRows <= 0 || !this.isInside((int) mouseX, (int) mouseY, contentX, actionTop, contentWidth, visibleRows * ACTION_ROW_HEIGHT)) {
             return false;
         }
 
-        final int actionIndex = ((int) mouseY - actionTop) / ACTION_ROW_HEIGHT;
-        if (actionIndex < 0 || actionIndex >= Math.min(visibleRows, page.actions().size())) {
+        final int rowIndex = ((int) mouseY - actionTop) / ACTION_ROW_HEIGHT;
+        final int actionIndex = this.actionScrollOffset + rowIndex;
+        if (rowIndex < 0 || rowIndex >= visibleRows || actionIndex >= page.actions().size()) {
             return false;
         }
         return this.handleAction(page.actions().get(actionIndex));
+    }
+
+    private boolean scrollResultIndexAt(final double mouseX, final double mouseY, final double scrollY) {
+        if (this.currentStructure != null) {
+            return false;
+        }
+        final int panelX = this.panelX();
+        final int panelY = this.panelY();
+        final int panelWidth = this.panelWidth();
+        final int panelHeight = this.panelHeight();
+        if (!this.hasWideIndex(panelWidth)) {
+            return false;
+        }
+
+        final int listX = this.resultListX(panelX);
+        final int listY = this.resultListY(panelY);
+        final int listWidth = this.indexWidth(panelWidth);
+        final int listHeight = this.resultListBottom(panelY, panelHeight) - listY;
+        if (!this.isInside((int) mouseX, (int) mouseY, listX, listY, listWidth, listHeight)) {
+            return false;
+        }
+
+        final int visibleRows = this.visibleResultRows(panelY, panelHeight);
+        final int oldOffset = this.resultScrollOffset;
+        this.resultScrollOffset = this.scrollOffset(this.resultScrollOffset, this.visiblePages().size(), visibleRows, scrollY);
+        return oldOffset != this.resultScrollOffset;
+    }
+
+    private boolean scrollActionListAt(final double mouseX, final double mouseY, final double scrollY) {
+        if (this.currentStructure != null) {
+            return false;
+        }
+        final GuidePage page = this.selectedPage();
+        if (page == null || page.actions().isEmpty()) {
+            return false;
+        }
+
+        final int panelX = this.panelX();
+        final int panelY = this.panelY();
+        final int panelWidth = this.panelWidth();
+        final int panelHeight = this.panelHeight();
+        final boolean wideIndex = this.hasWideIndex(panelWidth);
+        final int contentX = wideIndex
+                ? panelX + PANEL_PADDING + this.indexWidth(panelWidth) + INDEX_GAP
+                : panelX + PANEL_PADDING;
+        final int contentWidth = wideIndex
+                ? panelWidth - PANEL_PADDING * 2 - this.indexWidth(panelWidth) - INDEX_GAP
+                : panelWidth - PANEL_PADDING * 2;
+        final int visibleRows = this.visibleActionRows(page.actions(), this.actionAvailableHeight(panelY, panelHeight));
+        final int actionTop = this.actionTop(panelY, panelHeight, visibleRows);
+        if (visibleRows <= 0 || !this.isInside((int) mouseX, (int) mouseY, contentX, actionTop, contentWidth, visibleRows * ACTION_ROW_HEIGHT)) {
+            return false;
+        }
+
+        final int oldOffset = this.actionScrollOffset;
+        this.actionScrollOffset = this.scrollOffset(this.actionScrollOffset, page.actions().size(), visibleRows, scrollY);
+        return oldOffset != this.actionScrollOffset;
+    }
+
+    private boolean scrollStructureAt(final double mouseX, final double mouseY, final double scrollY) {
+        if (this.currentStructure == null) {
+            return false;
+        }
+
+        final int panelX = this.panelX();
+        final int panelY = this.panelY();
+        final int panelWidth = this.panelWidth();
+        final int panelHeight = this.panelHeight();
+        final int contentX = panelX + PANEL_PADDING;
+        final int contentWidth = panelWidth - PANEL_PADDING * 2;
+        final int listY = this.structureListY(panelY);
+        final int listBottom = this.structureListBottom(panelY, panelHeight);
+        if (!this.isInside((int) mouseX, (int) mouseY, contentX, listY, contentWidth, listBottom - listY)) {
+            return false;
+        }
+
+        final int oldOffset = this.structureScrollOffset;
+        this.structureScrollOffset = this.scrollOffset(
+                this.structureScrollOffset,
+                this.currentStructure.blocks().size(),
+                this.visibleStructureRows(panelY, panelHeight),
+                scrollY
+        );
+        return oldOffset != this.structureScrollOffset;
     }
 
     private boolean handleAction(final GuideAction action) {
@@ -707,6 +878,9 @@ public final class GuideScreen extends Screen {
         }
 
         this.searchText = "";
+        this.resultScrollOffset = 0;
+        this.actionScrollOffset = 0;
+        this.structureScrollOffset = 0;
         if (this.searchBox != null) {
             this.searchBox.setValue("");
         }
@@ -714,11 +888,13 @@ public final class GuideScreen extends Screen {
         this.selectedCategoryIndex = categoryIndex;
         final List<GuidePage> categoryPages = this.currentCategoryPages();
         this.selectedPageIndex = Math.max(0, categoryPages.indexOf(target));
+        this.keepSelectedResultVisible();
         return true;
     }
 
     private boolean openStructure(final String structureId) {
         this.currentStructure = GuideStructures.find(structureId).orElse(null);
+        this.structureScrollOffset = 0;
         if (this.currentStructure == null) {
             this.feedbackMessage = Component.translatable("screen.skyresources3.guide.missing_structure", structureId);
         } else {
@@ -739,6 +915,70 @@ public final class GuideScreen extends Screen {
         return Math.min(actions.size(), Math.min(ACTION_MAX_ROWS, Math.max(0, availableHeight / ACTION_ROW_HEIGHT)));
     }
 
+    private int actionAvailableHeight(final int panelY, final int panelHeight) {
+        final int iconY = panelY + 58 + 24;
+        final int bodyY = iconY + 30;
+        final int bodyBottom = panelY + panelHeight - FOOTER_HEIGHT;
+        return bodyBottom - bodyY;
+    }
+
+    private int actionTop(final int panelY, final int panelHeight, final int visibleRows) {
+        return panelY + panelHeight - FOOTER_HEIGHT - visibleRows * ACTION_ROW_HEIGHT;
+    }
+
+    private int structureListY(final int panelY) {
+        return panelY + 80;
+    }
+
+    private int structureListBottom(final int panelY, final int panelHeight) {
+        return panelY + panelHeight - FOOTER_HEIGHT - this.font.lineHeight - 4;
+    }
+
+    private int visibleStructureRows(final int panelY, final int panelHeight) {
+        return Math.max(0, (this.structureListBottom(panelY, panelHeight) - this.structureListY(panelY)) / STRUCTURE_ROW_HEIGHT);
+    }
+
+    private int scrollOffset(
+            final int currentOffset,
+            final int totalRows,
+            final int visibleRows,
+            final double scrollY
+    ) {
+        if (totalRows <= visibleRows || visibleRows <= 0) {
+            return 0;
+        }
+        final int step = Math.max(1, (int) Math.ceil(Math.abs(scrollY)));
+        final int nextOffset = scrollY > 0.0D ? currentOffset - step : currentOffset + step;
+        return this.clampScrollOffset(nextOffset, totalRows, visibleRows);
+    }
+
+    private int clampScrollOffset(final int offset, final int totalRows, final int visibleRows) {
+        if (totalRows <= visibleRows || visibleRows <= 0) {
+            return 0;
+        }
+        final int maxOffset = Math.max(0, totalRows - visibleRows);
+        return Math.max(0, Math.min(offset, maxOffset));
+    }
+
+    private void ensureSelectedResultVisible(final int totalRows, final int visibleRows) {
+        if (totalRows <= 0 || visibleRows <= 0) {
+            this.resultScrollOffset = 0;
+            return;
+        }
+        if (this.selectedPageIndex < this.resultScrollOffset) {
+            this.resultScrollOffset = this.selectedPageIndex;
+        } else if (this.selectedPageIndex >= this.resultScrollOffset + visibleRows) {
+            this.resultScrollOffset = this.selectedPageIndex - visibleRows + 1;
+        }
+        this.resultScrollOffset = this.clampScrollOffset(this.resultScrollOffset, totalRows, visibleRows);
+    }
+
+    private void keepSelectedResultVisible() {
+        final int panelY = this.panelY();
+        final int panelHeight = this.panelHeight();
+        this.ensureSelectedResultVisible(this.visiblePages().size(), this.visibleResultRows(panelY, panelHeight));
+    }
+
     private Component actionTooltip(final GuideAction action) {
         return switch (action.type()) {
             case LINK -> Component.translatable("screen.skyresources3.guide.action_tooltip.link");
@@ -754,6 +994,7 @@ public final class GuideScreen extends Screen {
     private void clearTransientView() {
         this.currentStructure = null;
         this.feedbackMessage = null;
+        this.structureScrollOffset = 0;
     }
 
     private int indexWidth(final int panelWidth) {
@@ -782,6 +1023,10 @@ public final class GuideScreen extends Screen {
 
     private String normalizedSearch() {
         return this.searchText.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private boolean isSearching() {
+        return !this.normalizedSearch().isEmpty();
     }
 
     private String truncate(final String text, final int width) {
