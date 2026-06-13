@@ -15,6 +15,7 @@
 - [x] Follow-up: cutting knife and rock grinder runtime logic now consumes process recipe data.
 - [x] Follow-up: infusion stone and Life Infuser runtime logic now consumes process recipe data.
 - [x] Follow-up: low-risk vanilla/SkyResources combustion recipe data has been expanded.
+- [x] Follow-up: directly mappable vanilla/SkyResources fusion recipe data has been generated.
 
 ## Generated Process Recipes
 
@@ -43,7 +44,7 @@
 
 ## Deferred
 
-- [ ] Migrate fusion recipes after verifying old `alchemyComponent`, `baseComponent`, and `techComponent` metadata mappings per recipe.
+- [ ] Migrate dynamic old ore-dictionary fusion and ore dust recipes after target mod/tag integration policy is explicit.
 - [ ] Add fluid-capable process recipe data after fluid storage/capability design is in place.
 - [ ] Add JEI/EMI display categories after menu/screen and integration dependencies are selected.
 

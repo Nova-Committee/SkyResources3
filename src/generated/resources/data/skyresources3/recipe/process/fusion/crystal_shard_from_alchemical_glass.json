@@ -1,0 +1,16 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "skyresources3:alchemical_glass"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 16,
+      "id": "skyresources3:crystal_shard"
+    }
+  ],
+  "parameter": 0.006,
+  "process": "fusion"
+}

@@ -84,6 +84,8 @@ Runtime systems that produce processing outputs must query `ProcessRecipes` from
 
 For `ProcessRecipes.INFUSION`, recipe inputs have a positional convention on top of unordered matching: input `0` is the consumed ingredient stack, input `1` is the target block represented by `BlockState#getBlock().asItem()` or an item tag. The `parameter` is the health cost. Runtime code should use `InfusionRecipes` instead of reading those fields directly.
 
+For `ProcessRecipes.FUSION`, the `parameter` preserves the old fusion table's per-progress-tick catalyst drain. A full legacy craft has 100 progress ticks, so the user-facing catalyst percentage is `parameter * 10000`. Catalyst item yield values are a separate fusion-table runtime concern and should not be encoded as normal fusion recipe inputs.
+
 ---
 
 ## Data Generation
@@ -97,12 +99,13 @@ Guidelines:
 - Prefer item tags for old ore-dictionary-style inputs when the output does not depend on a specific variant.
 - Generate one recipe per distinct old output/parameter pair. For example, rock grinder gravel -> sand and gravel -> flint remain separate recipes because their chance parameters differ.
 - Do not add fluid process JSON until the project has a fluid capability/storage design for 1.21.11.
+- Do not generate dynamic old ore-dictionary integration recipes until the target mod/tag policy is explicit. Prefer stable vanilla/SkyResources recipes first.
 
 ---
 
 ## Common Mistakes
 
-- Treating `parameter` as one universal concept. Its meaning depends on the process: heat, ticks, chance, catalyst usage, or health cost.
+- Treating `parameter` as one universal concept. Its meaning depends on the process: heat, ticks, chance, per-tick catalyst drain, or health cost.
 - Matching process names with ad hoc string literals outside `ProcessRecipes`.
 - Using `ItemStack` as an input format when a tag-capable `Ingredient` is needed.
 - Adding client-only recipe display or JEI classes to common recipe code.

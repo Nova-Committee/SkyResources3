@@ -302,6 +302,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.buildKnifeRecipes();
         this.buildInfusionRecipes();
         this.buildCombustionRecipes();
+        this.buildFusionRecipes();
     }
 
     private void buildFreezerRecipes() {
@@ -735,6 +736,145 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ProcessIngredient... inputs
     ) {
         this.processRecipe(ProcessRecipes.COMBUSTION, name, heat, output, outputCount, inputs);
+    }
+
+    private void buildFusionRecipes() {
+        this.fusionRecipe(
+                "secundus_alchemical_dust",
+                0.0025F,
+                ModItems.SECUNDUS_ALCHEMICAL_DUST.get(),
+                5,
+                input(Items.REDSTONE, 2),
+                input(Items.BLAZE_POWDER, 2),
+                input(ModItems.ALCHEMICAL_IRON_INGOT.get())
+        );
+        this.fusionRecipe(
+                "tertius_alchemical_dust",
+                0.004F,
+                ModItems.TERTIUS_ALCHEMICAL_DUST.get(),
+                5,
+                input(Items.GLOWSTONE_DUST, 2),
+                input(Items.LAPIS_LAZULI, 2),
+                input(ModItems.ALCHEMICAL_GOLD_INGOT.get())
+        );
+        this.fusionRecipe(
+                "quartus_alchemical_dust",
+                0.035F,
+                ModItems.QUARTUS_ALCHEMICAL_DUST.get(),
+                5,
+                input(ModItems.DARK_MATTER.get()),
+                input(ModItems.LIGHT_MATTER.get()),
+                input(ModItems.ALCHEMICAL_COAL.get(), 6),
+                input(Items.EMERALD, 2),
+                input(ModItems.ALCHEMICAL_DIAMOND.get(), 6)
+        );
+        this.fusionRecipe(
+                "alchemical_coal",
+                0.0015F,
+                ModItems.ALCHEMICAL_COAL.get(),
+                1,
+                input(Items.COAL),
+                input(Items.GUNPOWDER, 3)
+        );
+        this.fusionRecipe(
+                "alchemical_iron_ingot",
+                0.002F,
+                ModItems.ALCHEMICAL_IRON_INGOT.get(),
+                1,
+                input(Items.IRON_INGOT),
+                input(Items.BLAZE_POWDER, 3)
+        );
+        this.fusionRecipe(
+                "alchemical_gold_ingot",
+                0.005F,
+                ModItems.ALCHEMICAL_GOLD_INGOT.get(),
+                1,
+                input(Items.GOLD_INGOT),
+                input(Items.GLOWSTONE_DUST, 3)
+        );
+        this.fusionRecipe(
+                "alchemical_diamond",
+                0.03F,
+                ModItems.ALCHEMICAL_DIAMOND.get(),
+                1,
+                input(Items.DIAMOND),
+                input(Items.REDSTONE, 8)
+        );
+        this.fusionRecipe(
+                "dark_oak_sapling",
+                0.0015F,
+                Blocks.DARK_OAK_SAPLING,
+                1,
+                input(Items.NETHER_WART),
+                input(Items.GUNPOWDER, 2),
+                input(Items.ROTTEN_FLESH)
+        );
+        this.fusionRecipe(
+                "magmafied_stone",
+                0.009F,
+                ModBlocks.MAGMAFIED_STONE.get(),
+                1,
+                input(Blocks.MAGMA_BLOCK),
+                input(Blocks.STONE),
+                input(ModItems.ALCHEMICAL_COAL.get(), 2)
+        );
+        this.fusionRecipe(
+                "alchemical_glass",
+                0.004F,
+                ModBlocks.ALCHEMICAL_GLASS.get(),
+                1,
+                input(Blocks.SAND),
+                input(ModItems.CRYSTAL_SHARD.get()),
+                input(Items.PRISMARINE_CRYSTALS)
+        );
+        this.fusionRecipe(
+                "petrified_wood",
+                0.001F,
+                ModBlocks.PETRIFIED_WOOD.get(),
+                1,
+                input(ItemTags.LOGS),
+                input(Items.ROTTEN_FLESH),
+                input(Items.COAL)
+        );
+        this.fusionRecipe(
+                "dirt_from_soul_sand",
+                0.0012F,
+                Blocks.DIRT,
+                1,
+                input(Blocks.SOUL_SAND),
+                input(ModItems.ENRICHED_BONEMEAL.get(), 3)
+        );
+        this.fusionRecipe(
+                "crystal_shard_from_glass",
+                0.001F,
+                ModItems.CRYSTAL_SHARD.get(),
+                2,
+                input(Blocks.GLASS)
+        );
+        this.fusionRecipe(
+                "crystal_shard_from_alchemical_glass",
+                0.006F,
+                ModItems.CRYSTAL_SHARD.get(),
+                16,
+                input(ModBlocks.ALCHEMICAL_GLASS.get())
+        );
+        this.fusionRecipe(
+                "dirt_from_plant_matter",
+                0.008F,
+                Blocks.DIRT,
+                1,
+                input(ModItems.PLANT_MATTER.get(), 6)
+        );
+    }
+
+    private void fusionRecipe(
+            final String name,
+            final float catalystUse,
+            final ItemLike output,
+            final int outputCount,
+            final ProcessIngredient... inputs
+    ) {
+        this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, outputCount, inputs);
     }
 
     private void processRecipe(
