@@ -27,12 +27,16 @@
 - `crystal_shard_from_glass`
 - `crystal_shard_from_alchemical_glass`
 - `dirt_from_plant_matter`
+- `iron_ore_alchemical_dust`
+- `gold_ore_alchemical_dust`
+- `copper_ore_alchemical_dust`
 
 ## Deferred
 
 - [ ] Fusion table block entity/menu/screen/runtime will consume `ProcessRecipes.FUSION` in a later machine migration slice.
 - [ ] Fusion catalyst item values wait for the fusion table runtime slice; old defaults are primus/secundus/tertius/quartus dust = `0.75`, `1.75`, `4.50`, `32.00`.
-- [ ] Dynamic ore-dictionary ore dust recipes wait for the target mod/tag integration policy.
+- [ ] Dynamic ore-dictionary ore dust recipes beyond the stable vanilla iron, gold, and copper set wait for the target
+  mod/tag integration policy.
 - [ ] CraftTweaker-style catalyst/recipe mutation is deferred until integration dependencies and scripting support are selected.
 
 ## Verification

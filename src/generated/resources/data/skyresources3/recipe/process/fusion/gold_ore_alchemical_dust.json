@@ -1,0 +1,20 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:wheat"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:glowstone_dust"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "skyresources3:gold_ore_alchemical_dust"
+    }
+  ],
+  "parameter": 0.0039999997,
+  "process": "fusion"
+}

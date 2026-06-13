@@ -1,0 +1,20 @@
+{
+  "type": "skyresources3:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:rotten_flesh"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:blaze_powder"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "skyresources3:iron_ore_alchemical_dust"
+    }
+  ],
+  "parameter": 0.0023999999,
+  "process": "fusion"
+}

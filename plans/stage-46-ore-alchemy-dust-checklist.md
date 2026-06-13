@@ -20,7 +20,10 @@
 - [x] Add all ore alchemical dust items to the SkyResources3 creative tab.
 - [x] Add item definitions, a shared item model, shared texture, and language entries.
 - [ ] Add variant tinting or per-ore textures after the client color strategy is selected.
-- [ ] Add Condenser/fusion/cleaning recipes that consume these dusts in focused follow-up slices.
+- [x] Add Condenser recipes that consume the stable vanilla iron, gold, and copper dusts.
+- [x] Add Fusion recipes that create the stable vanilla iron, gold, and copper dusts.
+- [ ] Add cleaning recipes that consume these dusts in a focused follow-up slice.
+- [ ] Add dynamic/tagged modded ore recipes once the compatibility policy is explicit.
 
 ## Verification
 

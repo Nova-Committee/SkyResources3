@@ -1236,6 +1236,24 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 1,
                 input(ModItems.PLANT_MATTER.get(), 6)
         );
+        this.oreAlchemyDustFusionRecipe(
+                OreAlchemyDust.IRON,
+                Items.ROTTEN_FLESH,
+                Items.BLAZE_POWDER,
+                2
+        );
+        this.oreAlchemyDustFusionRecipe(
+                OreAlchemyDust.GOLD,
+                Items.WHEAT,
+                Items.GLOWSTONE_DUST,
+                2
+        );
+        this.oreAlchemyDustFusionRecipe(
+                OreAlchemyDust.COPPER,
+                Items.PUMPKIN_SEEDS,
+                Items.GUNPOWDER,
+                2
+        );
     }
 
     private void fusionRecipe(
@@ -1246,6 +1264,22 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ProcessIngredient... inputs
     ) {
         this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, outputCount, inputs);
+    }
+
+    private void oreAlchemyDustFusionRecipe(
+            final OreAlchemyDust dust,
+            final ItemLike component,
+            final ItemLike rarityDust,
+            final int rarityDustCount
+    ) {
+        this.fusionRecipe(
+                dust.itemId(),
+                oreAlchemyFusionParameter(dust),
+                ModItems.ORE_ALCHEMICAL_DUSTS.get(dust).get(),
+                1,
+                input(component),
+                input(rarityDust, rarityDustCount)
+        );
     }
 
     private void crucibleRecipe(final String name, final FluidStack output, final ProcessIngredient input) {
@@ -1319,6 +1353,10 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
 
     private static float condenserBlockParameter(final OreAlchemyDust dust) {
         return (float) (Math.pow(1.72D, dust.legacyRarity()) * 62.0D);
+    }
+
+    private static float oreAlchemyFusionParameter(final OreAlchemyDust dust) {
+        return dust.legacyRarity() * 0.0008F;
     }
 
     private static ResourceKey<Recipe<?>> id(final String path) {

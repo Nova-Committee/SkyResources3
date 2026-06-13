@@ -417,6 +417,9 @@ Guidelines:
 - Generate condenser recipes from `SkyResources3RecipeProvider`; keep them under `recipe/condenser/<source>/<name>.json`.
 - Do not add fluid process JSON until the project has a fluid capability/storage design for 1.21.11.
 - Do not generate dynamic old ore-dictionary integration recipes until the target mod/tag policy is explicit. Prefer stable vanilla/SkyResources recipes first.
+- Stable ore alchemical dust fusion recipes may be generated for vanilla-backed dusts using the old `rarity * 0.0008F`
+  catalyst drain formula. The old secondary `dust<Name>` ore-dictionary variants remain deferred until the target tag
+  compatibility policy is explicit.
 
 ---
 
