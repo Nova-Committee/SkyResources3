@@ -573,3 +573,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 17: 燃烧自动化回归收口
+
+**Date**: 2026-06-14
+**Task**: 燃烧自动化回归收口
+**Branch**: `master`
+
+### Summary
+
+补齐 Smart Combustion Controller 过滤优先级和 Combustion Collector 溢出/掉落回退 GameTest，更新迁移缺口审计、Stage 39 清单和燃烧配方规范；验证 compileJava、runGameTestServer、runData、build、git diff --check、git diff --cached --check、scripts/check-serena-java.ps1 均通过。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f97460e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
