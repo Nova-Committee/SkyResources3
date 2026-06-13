@@ -356,3 +356,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 11: 岩浆岛放置液态水晶
+
+**Date**: 2026-06-14
+**Task**: 岩浆岛放置液态水晶
+**Branch**: `master`
+
+### Summary
+
+按旧 VICPlugin 的 pos.west().south() 位置补齐 magma island Crystal Fluid 源放置；新增 /island create magma GameTest 断言流体位置；同步 Stage 21、Stage 70、总迁移计划和 island command spec。验证通过 compileJava、runGameTestServer、build、git diff --check、git diff --cached --check。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e63ca96` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
