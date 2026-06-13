@@ -80,6 +80,8 @@ Use `ProcessRecipes.find(level, process, items, parameter)` when the process has
 
 Use `ProcessRecipes.find(level, process, items)` or `ProcessRecipes.findAll(level, process, items)` when the recipe parameter is descriptive output data such as grinder chance or freezer ticks.
 
+Runtime systems that produce processing outputs must query `ProcessRecipes` from a `ServerLevel`. Do not duplicate output tables in event handlers, items, block entities, or screens. Client/item methods that do not receive a `Level`, such as `Item#getDestroySpeed`, may keep a narrow built-in candidate hint for interaction speed only; those hints must not spawn outputs or replace server recipe matching.
+
 ---
 
 ## Data Generation

@@ -7,6 +7,7 @@
 - [x] Preserve existing resources and crafting recipes.
 - [x] Run build and GameTest server; no generated data changed, so datagen/resource validation was not needed.
 - [x] Commit this migration slice with a Chinese message.
+- [x] Follow-up: runtime block outputs now come from `skyresources3:process` knife recipes instead of a hardcoded output table.
 
 Note: A dedicated GameTest class was not added because the current Gradle source sets do not expose the GameTest API to
 `compileJava`; expanding that test setup is left for a focused testing-infrastructure pass.

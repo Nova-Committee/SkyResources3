@@ -1,21 +1,23 @@
 package committee.nova.mods.skyresources3.event;
 
 import committee.nova.mods.skyresources3.item.RockGrinderItem;
-import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
+import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import java.util.List;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 public final class RockGrinderEvents {
     public static void onBlockBreak(final BlockEvent.BreakEvent event) {
-        if (event.isCanceled() || !(event.getLevel() instanceof Level level) || level.isClientSide()) {
+        if (event.isCanceled() || !(event.getLevel() instanceof ServerLevel level)) {
             return;
         }
 
@@ -29,7 +31,7 @@ public final class RockGrinderEvents {
             return;
         }
 
-        final List<GrinderDrop> drops = findDrops(event.getState());
+        final List<GrinderDrop> drops = findDrops(level, event.getState());
         if (drops.isEmpty()) {
             return;
         }
@@ -52,26 +54,28 @@ public final class RockGrinderEvents {
                 || state.is(BlockTags.LOGS);
     }
 
-    private static List<GrinderDrop> findDrops(final BlockState state) {
-        if (state.is(Blocks.COBBLESTONE)) {
-            return List.of(new GrinderDrop(new ItemStack(Blocks.GRAVEL), 1.0F));
+    private static List<GrinderDrop> findDrops(final ServerLevel level, final BlockState state) {
+        final ItemStack input = stackForState(state);
+        if (input.isEmpty()) {
+            return List.of();
         }
-        if (state.is(Blocks.GRAVEL)) {
-            return List.of(
-                    new GrinderDrop(new ItemStack(Blocks.SAND), 1.0F),
-                    new GrinderDrop(new ItemStack(Items.FLINT), 0.3F)
-            );
-        }
-        if (state.is(Blocks.STONE)) {
-            return List.of(new GrinderDrop(new ItemStack(ModItems.CRUSHED_STONE.get()), 0.44F));
-        }
-        if (state.is(Blocks.NETHERRACK)) {
-            return List.of(new GrinderDrop(new ItemStack(ModItems.CRUSHED_NETHERRACK.get()), 0.44F));
-        }
-        if (state.is(BlockTags.LOGS)) {
-            return List.of(new GrinderDrop(new ItemStack(ModItems.SAWDUST.get()), 1.5F));
-        }
-        return List.of();
+        return ProcessRecipes.findAll(level, ProcessRecipes.ROCK_GRINDER, List.of(input))
+                .stream()
+                .flatMap(recipe -> dropsFor(recipe.value()).stream())
+                .toList();
+    }
+
+    private static List<GrinderDrop> dropsFor(final SkyResourcesProcessRecipe recipe) {
+        return recipe.outputs()
+                .stream()
+                .filter(output -> !output.isEmpty())
+                .map(output -> new GrinderDrop(output, recipe.parameter()))
+                .toList();
+    }
+
+    private static ItemStack stackForState(final BlockState state) {
+        final Item item = state.getBlock().asItem();
+        return item == Items.AIR ? ItemStack.EMPTY : new ItemStack(item);
     }
 
     private record GrinderDrop(ItemStack stack, float chance) {

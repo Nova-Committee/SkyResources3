@@ -8,3 +8,4 @@
 - [x] Register all three rock grinders with the new behavior while preserving resources and crafting recipes.
 - [x] Run build and GameTest server; datagen only if generated data changes.
 - [x] Commit this migration slice with a Chinese message.
+- [x] Follow-up: runtime drops now come from `skyresources3:process` rock grinder recipes instead of a hardcoded output table.
