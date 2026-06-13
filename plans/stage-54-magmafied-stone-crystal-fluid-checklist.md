@@ -13,10 +13,10 @@
 - [x] Spawned short-lived cobblestone item entities at matching fluid positions.
 - [x] Preserved lava-extinguish sound and smoke feedback on successful generation.
 - [x] Switched `ModBlocks.MAGMAFIED_STONE` from simple block registration to the dedicated behavior class.
+- [x] Added a GameTest that places Magmafied Stone beside Crystal Fluid and drives block ticks until cobblestone output appears.
 
 ## Deferred
 
-- [ ] Automated GameTests for block scheduled-tick behavior wait for reusable placement/tick helpers.
 - [ ] Dirty and molten crystal fluid textures remain resource-only legacy leftovers unless a concrete old runtime registration is found.
 
 ## Verification

@@ -32,6 +32,21 @@ public final class ModGameTests {
                     "island_spawn_platform",
                     () -> IslandCommandGameTests::spawnGeneratesConfiguredPlatform
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CUTTING_KNIFE_PROCESS =
+            TEST_FUNCTIONS.register(
+                    "cutting_knife_process",
+                    () -> RuntimeMigrationGameTests::cuttingKnifeUsesProcessRecipe
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ROCK_GRINDER_PROCESS =
+            TEST_FUNCTIONS.register(
+                    "rock_grinder_process",
+                    () -> RuntimeMigrationGameTests::rockGrinderUsesProcessRecipe
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> MAGMAFIED_STONE_TICK =
+            TEST_FUNCTIONS.register(
+                    "magmafied_stone_tick",
+                    () -> RuntimeMigrationGameTests::magmafiedStoneTicksCrystalFluid
+            );
 
     public static void register(final IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
@@ -45,6 +60,9 @@ public final class ModGameTests {
         );
         registerFunctionTest(event, "island_create_reset", ISLAND_CREATE_RESET, environment);
         registerFunctionTest(event, "island_spawn_platform", ISLAND_SPAWN_PLATFORM, environment);
+        registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
+        registerFunctionTest(event, "rock_grinder_process", ROCK_GRINDER_PROCESS, environment);
+        registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);
     }
 
     private static void registerFunctionTest(

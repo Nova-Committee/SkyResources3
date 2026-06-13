@@ -10,6 +10,7 @@
 - [x] Switched rock grinder drops from hardcoded tables to `ProcessRecipes.findAll`, preserving multi-output inputs such as gravel.
 - [x] Kept item destroy-speed checks as narrow built-in hints because `Item#getDestroySpeed` has no `Level` recipe context.
 - [x] Recorded the runtime recipe lookup rule in `.trellis/spec/backend/recipe-guidelines.md`.
+- [x] Added command-free GameTests for cutting knife and rock grinder block-break event handlers, proving migrated runtime outputs come from the process recipe set.
 
 ## Verification
 
@@ -22,4 +23,3 @@
 ## Deferred
 
 - [ ] Switch infusion stone runtime behavior to `skyresources3:process` in a focused follow-up slice.
-- [ ] Add GameTest coverage for processing tool recipe lookup after the GameTest source-set setup is expanded.
