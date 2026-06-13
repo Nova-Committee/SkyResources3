@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 3
+- **Total Sessions**: 4
 - **Last Active**: 2026-06-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~106 | Active |
+| `journal-1.md` | ~139 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 4 | 2026-06-14 | 迁移生命机器菜单界面 | `00e6ba5` | `master` |
 | 3 | 2026-06-14 | 补充生命灌注运行时回归测试 | `3f4f98c` | `master` |
 | 2 | 2026-06-14 | 可配置空岛出生平台 | `e74abb7` | `master` |
 | 1 | 2026-06-14 | 岛屿命令 GameTest 夹具 | `5d18982` | `master` |

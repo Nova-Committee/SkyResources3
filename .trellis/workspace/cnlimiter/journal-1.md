@@ -104,3 +104,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: 迁移生命机器菜单界面
+
+**Date**: 2026-06-14
+**Task**: 迁移生命机器菜单界面
+**Branch**: `master`
+
+### Summary
+
+为 Life Injector 与 Life Infuser 接入 MenuType、SimpleMenuProvider、客户端 Screen 和槽位同步，保留潜行空手快速取回语义，并同步阶段清单。验证通过 compileJava、build、runGameTestServer、diff 检查和 Serena Java 探针。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `00e6ba5` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
