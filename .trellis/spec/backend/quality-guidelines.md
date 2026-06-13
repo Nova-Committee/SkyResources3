@@ -261,6 +261,11 @@ Use `RegisterGameTestsEvent` to register function-based test instances. Command-
 `minecraft:empty` structure and a no-op `TestEnvironmentDefinition.AllOf(List.of())` environment. Prefer assertions
 against durable state such as `SavedData` when a command mutates server data.
 
+When a GameTest command resolves online players by name, do not create multiple players with repeated
+`GameTestHelper#makeMockServerPlayerInLevel()` calls: the vanilla helper uses the fixed profile name
+`test-mock-player`. Create named mock `ServerPlayer` instances and register them through `PlayerList#placeNewPlayer`
+so `/command <player>` resolves the intended target.
+
 If a verification command fails because of pre-existing project state, record the command and the failure clearly in the task summary.
 
 ---

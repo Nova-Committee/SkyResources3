@@ -32,6 +32,21 @@ public final class ModGameTests {
                     "island_spawn_platform",
                     () -> IslandCommandGameTests::spawnGeneratesConfiguredPlatform
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_VISIT =
+            TEST_FUNCTIONS.register(
+                    "island_visit",
+                    () -> IslandCommandGameTests::visitTeleportsToOnlinePlayerIsland
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_TEAM_COMMANDS =
+            TEST_FUNCTIONS.register(
+                    "island_team_commands",
+                    () -> IslandCommandGameTests::teamInviteHomeLeaveAndDisband
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_TRUST_COMMANDS =
+            TEST_FUNCTIONS.register(
+                    "island_trust_commands",
+                    () -> IslandCommandGameTests::trustListAndUntrustVisitor
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CUTTING_KNIFE_PROCESS =
             TEST_FUNCTIONS.register(
                     "cutting_knife_process",
@@ -90,6 +105,9 @@ public final class ModGameTests {
         );
         registerFunctionTest(event, "island_create_reset", ISLAND_CREATE_RESET, environment);
         registerFunctionTest(event, "island_spawn_platform", ISLAND_SPAWN_PLATFORM, environment);
+        registerFunctionTest(event, "island_visit", ISLAND_VISIT, environment);
+        registerFunctionTest(event, "island_team_commands", ISLAND_TEAM_COMMANDS, environment);
+        registerFunctionTest(event, "island_trust_commands", ISLAND_TRUST_COMMANDS, environment);
         registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
         registerFunctionTest(event, "rock_grinder_process", ROCK_GRINDER_PROCESS, environment);
         registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);

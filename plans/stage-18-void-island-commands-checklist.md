@@ -18,6 +18,9 @@
   - home 坐标
 - 新增 `/island create` 和 `/skyresources3 island create`。
 - 新增 `/island home` 和 `/skyresources3 island home`。
+- 新增 `/island spawn`。
+- 新增 `/island visit <player>`。
+- 新增 `/island reset [type] confirm`。
 - 新增 `/island info` 和 `/skyresources3 island info`。
 - 创建空岛时在主世界高空生成 5x5 草方块起始平台，并放置一棵橡树树苗。
 - 空岛命令受 `enableVoidIslandFeatures` 配置开关控制。
@@ -25,8 +28,7 @@
 ## 暂缓迁移
 
 - 自定义 void 维度、世界预设和 chunk generator 留待世界生成阶段。
-- 旧 VoidIslandControl 岛屿类型、重置、访问、邀请、离开事件留待后续空岛阶段。
-- 团队共享岛屿、权限和邀请流程留待团队阶段。
+- 旧 VoidIslandControl 离线访问、离开事件钩子和完整事件广播留待后续空岛阶段。
 - 起始箱、岛屿模板和 magma island 生成逻辑留待岛屿类型阶段。
 
 ## 验证

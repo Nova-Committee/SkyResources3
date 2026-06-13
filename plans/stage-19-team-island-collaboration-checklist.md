@@ -36,12 +36,18 @@
 - 岛主可通过 trust/untrust/trusted 命令维护可信访客白名单。
 - 可信访客可在受保护岛屿范围内交互；未信任访客仍会被拒绝。
 
+## Stage 68 已补齐
+
+- `/island visit <player>` 已补充 GameTest，验证在线玩家可访问目标玩家空岛 home。
+- `/island invite`、`/island accept`、`/island home`、`/island leave`、`/skyresources3 team home` 和 `/skyresources3 team disband` 已补充团队闭环 GameTest。
+- `/island trust`、`/island trusted` 和 `/island untrust` 已补充可信访客持久化 GameTest。
+
 ## 暂缓迁移
 
 - 细分角色矩阵仍留待后续权限深化阶段。
 - 离线邀请、玩家名历史解析和 UUID 缓存留待账户数据阶段。
 - 团队共享出生点、死亡回家点和跨维度保护留待空岛系统深化阶段。
-- `/island reset`、`/island visit`、`/island leave` 与旧 VIC 完整命令兼容留待后续阶段。
+- 旧 VIC 完整离开事件、离线访问和更细粒度访问控制留待后续阶段。
 
 ## 验证
 

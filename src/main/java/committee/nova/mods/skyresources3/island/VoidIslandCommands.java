@@ -57,20 +57,6 @@ public final class VoidIslandCommands {
                                         context.getSource(),
                                         StringArgumentType.getString(context, "player")
                                 ))))
-                .then(Commands.literal("trust")
-                        .then(Commands.argument("player", StringArgumentType.word())
-                                .executes(context -> trustVisitor(
-                                        context.getSource(),
-                                        StringArgumentType.getString(context, "player")
-                                ))))
-                .then(Commands.literal("untrust")
-                        .then(Commands.argument("player", StringArgumentType.word())
-                                .suggests(VoidIslandCommands::suggestTrustedVisitors)
-                                .executes(context -> untrustVisitor(
-                                        context.getSource(),
-                                        StringArgumentType.getString(context, "player")
-                                ))))
-                .then(Commands.literal("trusted").executes(context -> listTrustedVisitors(context.getSource())))
                 .then(Commands.literal("reset")
                         .executes(context -> requestReset(context.getSource(), null))
                         .then(Commands.literal("confirm").executes(context -> resetIsland(context.getSource(), null)))
