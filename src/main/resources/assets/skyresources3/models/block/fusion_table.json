@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "minecraft:block/oak_planks",
+    "up": "skyresources3:block/fusion_table_top",
+    "north": "skyresources3:block/fusion_table_side",
+    "south": "skyresources3:block/fusion_table_side",
+    "west": "skyresources3:block/fusion_table_side",
+    "east": "skyresources3:block/fusion_table_side",
+    "particle": "skyresources3:block/fusion_table_side"
+  }
+}

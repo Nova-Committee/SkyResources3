@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
+import committee.nova.mods.skyresources3.block.FusionTableBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +57,11 @@ public final class ModBlocks {
             "alchemical_glass",
             () -> properties(0.3F, 0.3F, SoundType.GLASS).noOcclusion()
     );
+    public static final DeferredBlock<FusionTableBlock> FUSION_TABLE = BLOCKS.registerBlock(
+            "fusion_table",
+            FusionTableBlock::new,
+            () -> machineWood(3.0F, 10.0F)
+    );
     public static final DeferredBlock<LifeInfuserBlock> LIFE_INFUSER = BLOCKS.registerBlock(
             "life_infuser",
             LifeInfuserBlock::new,
@@ -105,9 +111,13 @@ public final class ModBlocks {
     }
 
     private static BlockBehaviour.Properties machineWood() {
+        return machineWood(6.0F, 12.0F);
+    }
+
+    private static BlockBehaviour.Properties machineWood(final float destroyTime, final float explosionResistance) {
         return BlockBehaviour.Properties.of()
                 .mapColor(MapColor.WOOD)
-                .strength(6.0F, 12.0F)
+                .strength(destroyTime, explosionResistance)
                 .sound(SoundType.WOOD)
                 .noOcclusion();
     }

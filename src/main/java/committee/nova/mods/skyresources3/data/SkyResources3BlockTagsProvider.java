@@ -28,7 +28,7 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.LIGHT_MATTER_BLOCK.get(),
                 ModBlocks.ALCHEMICAL_GLASS.get()
         );
-        this.tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.PETRIFIED_PLANKS.get());
+        this.tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.PETRIFIED_PLANKS.get(), ModBlocks.FUSION_TABLE.get());
         this.tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.HEAVY_SNOW.get());
         this.tag(BlockTags.NEEDS_STONE_TOOL).add(
                 ModBlocks.COMPRESSED_COAL_BLOCK.get(),
