@@ -12,6 +12,7 @@ import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
 import committee.nova.mods.skyresources3.item.InfusionStoneItem;
+import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.item.RockGrinderItem;
 import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
@@ -93,6 +94,8 @@ public final class ModItems {
     public static final DeferredItem<Item> SECUNDUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("secundus_alchemical_dust");
     public static final DeferredItem<Item> TERTIUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("tertius_alchemical_dust");
     public static final DeferredItem<Item> QUARTUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("quartus_alchemical_dust");
+    public static final Map<OreAlchemyDust, DeferredItem<Item>> ORE_ALCHEMICAL_DUSTS =
+            registerOreAlchemyDusts();
     public static final DeferredItem<Item> ALCHEMICAL_COAL = ITEMS.registerSimpleItem("alchemical_coal");
     public static final DeferredItem<Item> WOODEN_HEAT_COMPONENT = ITEMS.registerSimpleItem("wooden_heat_component");
     public static final DeferredItem<Item> ALCHEMICAL_GOLD_INGOT = ITEMS.registerSimpleItem("alchemical_gold_ingot");
@@ -216,6 +219,14 @@ public final class ModItems {
             ));
         }
         return Collections.unmodifiableMap(condensers);
+    }
+
+    private static Map<OreAlchemyDust, DeferredItem<Item>> registerOreAlchemyDusts() {
+        final EnumMap<OreAlchemyDust, DeferredItem<Item>> dusts = new EnumMap<>(OreAlchemyDust.class);
+        for (final OreAlchemyDust dust : OreAlchemyDust.values()) {
+            dusts.put(dust, ITEMS.registerSimpleItem(dust.itemId()));
+        }
+        return Collections.unmodifiableMap(dusts);
     }
 
     private static DeferredItem<CuttingKnifeItem> cuttingKnife(

@@ -106,6 +106,28 @@ Keep `gradle.properties`, `Skyresources3.MODID`, resource directories, translati
 - Generated custom process recipes live under `src/generated/resources/data/skyresources3/recipe/process/<process>/<name>.json`.
 - Generated resources should be committed when they are part of the runtime data pack. Do not commit `.cache` files created by the data generator.
 
+### Legacy Metadata Item Families
+
+When porting old 1.12.2 items that used metadata for many visible variants, split them into standalone 1.21.11 item
+ids instead of recreating metadata-style containers. Keep a small typed enum as the single source of truth when later
+recipes need the same legacy ordering or metadata:
+
+```java
+public enum ExampleFamily {
+    IRON("iron", "Iron");
+
+    public String itemId() {
+        return this.id + "_example_item";
+    }
+}
+
+public static final Map<ExampleFamily, DeferredItem<Item>> EXAMPLE_ITEMS = registerExampleItems();
+```
+
+Each standalone item must still have its own `assets/skyresources3/items/<id>.json` definition and translation key. Use
+a shared item model and texture only when the old item also shared a base asset or the task explicitly defers variant
+tinting.
+
 ---
 
 ## Examples
