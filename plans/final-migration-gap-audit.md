@@ -9,8 +9,8 @@
 SkyResources3 has migrated the main NeoForge 1.21.11 mod body far enough that most remaining items are no longer
 core runtime implementation gaps. The remaining work falls into three groups:
 
-1. **Must finish before declaring full migration complete**: final validation, stale checklist cleanup, license/resource
-   decision, and explicit decisions for old VoidIslandControl compatibility behavior.
+1. **Must finish before declaring full migration complete**: automated final validation has been refreshed, while
+   visual GUI click-through remains a manual release-prep item that cannot be proven by headless gates.
 2. **Allowed deferrals under `plans/ask.md`**: optional integrations without verified 1.21.11 NeoForge artifacts, dynamic
    ore-dictionary/tagged modded recipes that depend on those integrations, and external profile lookup.
 3. **Enhancements**: visual variants, richer team roles, old save migration, and deeper
@@ -40,20 +40,20 @@ core runtime implementation gaps. The remaining work falls into three groups:
 
 ## 2026-06-14 Validation Evidence
 
-- `./gradlew.bat runData` passed; data generation reported `BUILD SUCCESSFUL` and did not write generated file changes.
-- `./gradlew.bat runGameTestServer` passed with Gradle exit code 0.
-- `./gradlew.bat build` passed; Gradle reported `BUILD SUCCESSFUL`.
+- `./gradlew.bat runData` passed again after the combustion automation closeout; data generation reported `BUILD SUCCESSFUL` and did not write generated file changes.
+- `./gradlew.bat runGameTestServer` passed again with Gradle exit code 0.
+- `./gradlew.bat build` passed again; Gradle reported `BUILD SUCCESSFUL`.
 - Controlled `./gradlew.bat runClient --no-daemon` startup smoke reached the client render/resource loading phase with SkyResources3, Jade, and JEI loaded; interactive GUI clicks remain manual release-prep.
 - `GuideMenuGameTests.guide_data_integrity` and `GuideMenuGameTests.menu_type_registration` passed through `./gradlew.bat runGameTestServer`, covering guide translation/action/structure consistency and all migrated menu type registry ids.
 - `MachineRuntimeGameTests.combustionControllerUsesFilterPriority` and `MachineRuntimeGameTests.combustionCollectorDropsOverflow` passed through `./gradlew.bat runGameTestServer`, covering Smart Combustion Controller filter priority and Combustion Collector overflow/drop fallback.
-- `git diff --check`, `git diff --cached --check`, and `scripts/check-serena-java.ps1` passed.
-- Targeted scans found no old Forge network API/message names, old `com.bartz24.skyresources` package references, `voidislandcontrol` runtime references, or non-`skyresources3` resource namespace references in runtime/generated JSON/TOML/MCMeta resources.
+- `git diff --check`, `git diff --cached --check`, and `scripts/check-serena-java.ps1` passed again in the refreshed final validation run.
+- Targeted scans again found no old Forge network API/message names, old `com.bartz24.skyresources` package references, `voidislandcontrol` runtime references, or non-`skyresources3` resource namespace references in runtime/generated JSON/TOML/MCMeta resources.
 
 ## Must Finish Before Calling Migration Complete
 
-1. **Final validation pass**
-   - Run `./gradlew.bat runData`, `./gradlew.bat runGameTestServer`, and `./gradlew.bat build` in the final state.
-   - Run or explicitly track a targeted `runClient` smoke test for guide, JEI action fallback, and representative machine GUIs. Guide/menu data and registry integrity now have GameTest coverage, but visual clicks remain manual release-prep unless an interactive client session is completed.
+1. **Manual GUI click-through**
+   - Automated final gates have been refreshed in the post-combustion state.
+   - Run a targeted `runClient` smoke test for guide, JEI action fallback, representative machine GUIs, and island/team flows before a release tag. Guide/menu data and registry integrity now have GameTest coverage, but visual clicks remain manual release-prep unless an interactive client session is completed.
 
 2. **Resource/license decision**
    - Resolved in `plans/migration-plan.md`, `LICENSE`, and `RESOURCE_LICENSE.md`: legacy ARR resources need explicit owner relicensing, attribution/license notes, or replacement before public MIT-release claims.
@@ -82,6 +82,5 @@ core runtime implementation gaps. The remaining work falls into three groups:
 
 ## Recommended Next Large Tasks
 
-1. **Final validation evidence**: run final gates and fill `plans/final-validation-compatibility-closeout-checklist.md`.
-2. **Manual client smoke test before release**: verify guide actions, JEI behavior, representative machine GUI visuals, and island/team flows through `runClient`.
-3. **Optional enhancement/integration backlog**: continue only after compatible target artifacts or a concrete release requirement exists.
+1. **Manual client smoke test before release**: verify guide actions, JEI behavior, representative machine GUI visuals, and island/team flows through `runClient`.
+2. **Optional enhancement/integration backlog**: continue only after compatible target artifacts or a concrete release requirement exists.

@@ -20,17 +20,20 @@
 
 ## Final Validation
 
-- [x] `./gradlew.bat runData` passed on 2026-06-14; data generator reported `BUILD SUCCESSFUL` and `written: 0`.
-- [x] `./gradlew.bat runGameTestServer` passed on 2026-06-14 with Gradle exit code 0.
-- [x] `./gradlew.bat build` passed on 2026-06-14; final task result was `BUILD SUCCESSFUL`.
+- [x] `./gradlew.bat runData` passed again on 2026-06-14 after the combustion automation closeout; data generator reported `BUILD SUCCESSFUL` and `written: 0`.
+- [x] `./gradlew.bat runGameTestServer` passed again on 2026-06-14 with Gradle exit code 0.
+- [x] `./gradlew.bat build` passed again on 2026-06-14; final task result was `BUILD SUCCESSFUL`.
 - [x] Controlled `./gradlew.bat runClient --no-daemon` startup smoke captured client loading evidence on 2026-06-14; see `plans/client-smoke-resource-license-closeout-checklist.md`.
 - [x] Guide/menu automated integrity coverage was added on 2026-06-14:
   - `GuideMenuGameTests.guide_data_integrity` verifies guide translation keys, inline action markers, link targets, recipe targets, structure targets, and structure block icons.
   - `GuideMenuGameTests.menu_type_registration` verifies all migrated machine menu type ids resolve through the runtime registry.
-- [x] `git diff --check` passed on 2026-06-14.
-- [x] `git diff --cached --check` passed on 2026-06-14.
+- [x] Combustion automation regression coverage was added and passed on 2026-06-14:
+  - `MachineRuntimeGameTests.combustionControllerUsesFilterPriority` verifies Smart Combustion Controller left-to-right filter priority when multiple chamber recipes are possible.
+  - `MachineRuntimeGameTests.combustionCollectorDropsOverflow` verifies Combustion Collector partial insertion and chamber drop fallback when output capacity is blocked.
+- [x] `git diff --check` passed on 2026-06-14 during the refreshed final validation run.
+- [x] `git diff --cached --check` passed on 2026-06-14 during the refreshed final validation run.
 - [x] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"` passed on 2026-06-14; Serena resolved the project as Java with LSP configuration.
-- [x] Legacy network/resource scan passed on 2026-06-14:
+- [x] Legacy network/resource scan passed again on 2026-06-14:
   - No `SimpleNetworkWrapper`, `IMessage`, old `DumpMessage`, `NetworkRegistry`, `PacketBuffer`, `com.bartz24.skyresources`, or `voidislandcontrol` references were found under runtime Java/resources.
   - No non-`skyresources3` `skyresources` namespace references were found in runtime/generated JSON/TOML/MCMeta resources.
 
@@ -41,9 +44,10 @@
   - JEI recipe action degrades safely when JEI is absent or opens recipes when JEI is present.
   - Representative machine menus open without client-only classloading or layout errors.
   - Island/team command flows are manually sanity-checked in a local world.
+  - Headless Gradle gates and GameTests must not be treated as proof for this visual/click-through item.
 
 ## Remaining Non-Blocking TODOs
 
 - Optional integrations listed in `plans/integration-availability.md` may continue once compatible target artifacts and APIs are verified.
 - Dynamic modded ore/tag recipe output remains deferred until a target integration policy exists.
-- Richer team role matrix, shared death-home behavior, old-save migration tooling, and extra GameTests are enhancements rather than blockers for the main migration body.
+- Richer team role matrix, shared death-home behavior, old-save migration tooling, and additional targeted GameTests beyond current guide/menu/combustion coverage are enhancements rather than blockers for the main migration body.
