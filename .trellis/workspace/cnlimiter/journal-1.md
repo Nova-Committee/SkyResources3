@@ -422,3 +422,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 13: 最终迁移缺口审计
+
+**Date**: 2026-06-14
+**Task**: 最终迁移缺口审计
+**Branch**: `master`
+
+### Summary
+
+新增最终迁移缺口审计文档，按 ask.md 范围区分主体完成阻塞、允许暂缓项和增强项，并同步过期 checklist 与迁移计划。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ea60c0e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
