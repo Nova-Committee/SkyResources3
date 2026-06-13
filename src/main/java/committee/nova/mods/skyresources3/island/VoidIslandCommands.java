@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public final class VoidIslandCommands {
@@ -24,6 +25,11 @@ public final class VoidIslandCommands {
     private static final int ISLAND_SPACING = 512;
     private static final int ISLAND_Y = 192;
     private static final int ISLANDS_PER_ROW = 256;
+    private static final int STARTER_ISLAND_RADIUS = 2;
+    private static final int STARTER_RESET_RADIUS = 3;
+    private static final int STARTER_RESET_MIN_Y_OFFSET = -1;
+    private static final int STARTER_RESET_MAX_Y_OFFSET = 4;
+    private static final BlockPos TEMPORARY_SPAWN_COLUMN = new BlockPos(0, 0, 0);
     private static final Set<Relative> NO_RELATIVE_MOVEMENT = Set.of();
 
     public static void register(final RegisterCommandsEvent event) {
@@ -35,6 +41,16 @@ public final class VoidIslandCommands {
         return Commands.literal("island")
                 .then(Commands.literal("create").executes(context -> createIsland(context.getSource())))
                 .then(Commands.literal("home").executes(context -> teleportHome(context.getSource())))
+                .then(Commands.literal("spawn").executes(context -> teleportSpawn(context.getSource())))
+                .then(Commands.literal("visit")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .executes(context -> visitIsland(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("reset")
+                        .executes(context -> requestReset(context.getSource()))
+                        .then(Commands.literal("confirm").executes(context -> resetIsland(context.getSource()))))
                 .then(Commands.literal("info").executes(context -> showInfo(context.getSource())))
                 .then(Commands.literal("invite")
                         .then(Commands.argument("player", StringArgumentType.word())
@@ -123,6 +139,131 @@ public final class VoidIslandCommands {
         teleport(player, targetLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable("message.skyresources3.island.home", formatPosition(island.home())),
+                false
+        );
+        return 1;
+    }
+
+    private static int teleportSpawn(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel spawnLevel = source.getServer().overworld();
+        final BlockPos spawn = spawnLevel.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, TEMPORARY_SPAWN_COLUMN);
+
+        teleport(player, spawnLevel, spawn);
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.island.spawn", formatPosition(spawn)),
+                false
+        );
+        return 1;
+    }
+
+    private static int visitIsland(final CommandSourceStack source, final String targetName)
+            throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerPlayer target = source.getServer().getPlayerList().getPlayerByName(targetName);
+        if (target == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.visit.target_missing", targetName));
+            return 0;
+        }
+        if (player.getUUID().equals(target.getUUID())) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.visit.self"));
+            return 0;
+        }
+
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        final IslandSavedData.IslandRecord island = getAccessibleIsland(target.getUUID(), islands, teams).orElse(null);
+        if (island == null) {
+            source.sendFailure(Component.translatable(
+                    "message.skyresources3.island.visit.target_no_island",
+                    target.getName().getString()
+            ));
+            return 0;
+        }
+
+        final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
+        if (targetLevel == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            return 0;
+        }
+
+        teleport(player, targetLevel, island.home());
+        source.sendSuccess(
+                () -> Component.translatable(
+                        "message.skyresources3.island.visit.success",
+                        target.getName().getString(),
+                        formatPosition(island.home())
+                ),
+                false
+        );
+        return 1;
+    }
+
+    private static int requestReset(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        if (islands.getIsland(player.getUUID()).isEmpty()) {
+            if (teams.getTeamFor(player.getUUID()).isPresent()) {
+                source.sendFailure(Component.translatable("message.skyresources3.island.reset.not_owner"));
+                return 0;
+            }
+            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+            return 0;
+        }
+
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.island.reset.confirm"),
+                false
+        );
+        return 1;
+    }
+
+    private static int resetIsland(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        final ServerPlayer player = source.getPlayerOrException();
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
+        final IslandSavedData.IslandRecord island = islands.getIsland(player.getUUID()).orElse(null);
+        if (island == null) {
+            if (teams.getTeamFor(player.getUUID()).isPresent()) {
+                source.sendFailure(Component.translatable("message.skyresources3.island.reset.not_owner"));
+                return 0;
+            }
+            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+            return 0;
+        }
+
+        final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
+        if (targetLevel == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            return 0;
+        }
+
+        final BlockPos center = island.home().below();
+        clearStarterIslandArea(targetLevel, center);
+        buildStarterIsland(targetLevel, center);
+        teleport(player, targetLevel, island.home());
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.island.reset.done", formatPosition(island.home())),
                 false
         );
         return 1;
@@ -404,8 +545,8 @@ public final class VoidIslandCommands {
     }
 
     private static void buildStarterIsland(final ServerLevel level, final BlockPos center) {
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
+        for (int x = -STARTER_ISLAND_RADIUS; x <= STARTER_ISLAND_RADIUS; x++) {
+            for (int z = -STARTER_ISLAND_RADIUS; z <= STARTER_ISLAND_RADIUS; z++) {
                 level.setBlock(
                         center.offset(x, 0, z),
                         Blocks.GRASS_BLOCK.defaultBlockState(),
@@ -414,6 +555,16 @@ public final class VoidIslandCommands {
             }
         }
         level.setBlock(center.offset(2, 1, 2), Blocks.OAK_SAPLING.defaultBlockState(), Block.UPDATE_ALL);
+    }
+
+    private static void clearStarterIslandArea(final ServerLevel level, final BlockPos center) {
+        for (int x = -STARTER_RESET_RADIUS; x <= STARTER_RESET_RADIUS; x++) {
+            for (int y = STARTER_RESET_MIN_Y_OFFSET; y <= STARTER_RESET_MAX_Y_OFFSET; y++) {
+                for (int z = -STARTER_RESET_RADIUS; z <= STARTER_RESET_RADIUS; z++) {
+                    level.setBlock(center.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                }
+            }
+        }
     }
 
     private static void teleport(final ServerPlayer player, final ServerLevel level, final BlockPos home) {
