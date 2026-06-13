@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "保持 Java 包、测试文件和资源路径符合项目结构"}
+{"file": ".trellis/spec/backend/recipe-guidelines.md", "reason": "遵循 INFUSION 运行时通过 InfusionRecipes 查表的配方契约"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "遵循 GameTest 注册约定和 Java/NeoForge 质量要求"}
+{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "同步 JEI/向导状态时避免引入新的可选集成范围"}
