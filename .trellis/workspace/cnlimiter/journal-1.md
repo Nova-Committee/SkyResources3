@@ -137,3 +137,43 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: 迁移生命机器物品自动化能力
+
+**Date**: 2026-06-14
+**Task**: 迁移生命机器物品自动化能力
+**Branch**: `master`
+
+### Summary
+
+为 Life Injector 和 Life Infuser 迁移 NeoForge item transfer capability，补充自动化插入/抽出 GameTest，更新阶段清单和 item transfer code-spec。验证 compileJava、build、runGameTestServer、diff check 与 Serena Java 检查均通过。
+
+### Main Changes
+
+- 将 `LifeInjectorBlockEntity` 和 `LifeInfuserBlockEntity` 的内部槽位迁移到 `ItemStacksResourceHandler`，并保留旧 `gem` / `input` NBT 读取兜底。
+- 在 `ModCapabilities` 注册 `LIFE_INJECTOR` / `LIFE_INFUSER` 的 `Capabilities.Item.BLOCK`。
+- 新增 GameTest 覆盖自动化插入、抽出和错误槽位拒绝规则，并同步阶段 16/17 checklist 与 item transfer code-spec。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6a4f717` | (see git log) |
+
+### Testing
+
+- [OK] `./gradlew.bat compileJava`
+- [OK] `./gradlew.bat build`
+- [OK] `./gradlew.bat runGameTestServer`
+- [OK] `git diff --check`
+- [OK] `git diff --cached --check`
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
