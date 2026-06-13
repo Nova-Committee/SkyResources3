@@ -22,6 +22,7 @@ public final class SkyResources3BlockLootProvider extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.PETRIFIED_PLANKS.get());
         this.dropSelf(ModBlocks.MAGMAFIED_STONE.get());
         this.dropSelf(ModBlocks.HEAVY_SNOW.get());
+        this.dropSelf(ModBlocks.BLAZE_POWDER_BLOCK.get());
         this.dropSelf(ModBlocks.DARK_MATTER_BLOCK.get());
         this.dropSelf(ModBlocks.LIGHT_MATTER_BLOCK.get());
         this.dropSelf(ModBlocks.ALCHEMICAL_GLASS.get());

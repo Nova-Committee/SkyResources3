@@ -29,6 +29,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.PETRIFIED_PLANKS.get());
                         output.accept(ModItems.MAGMAFIED_STONE.get());
                         output.accept(ModItems.HEAVY_SNOW.get());
+                        output.accept(ModItems.BLAZE_POWDER_BLOCK.get());
                         output.accept(ModItems.DARK_MATTER_BLOCK.get());
                         output.accept(ModItems.LIGHT_MATTER_BLOCK.get());
                         output.accept(ModItems.ALCHEMICAL_GLASS.get());

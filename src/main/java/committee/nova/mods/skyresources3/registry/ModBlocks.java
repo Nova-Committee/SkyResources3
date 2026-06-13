@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.block.BlazePowderBlock;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.CrucibleBlock;
 import committee.nova.mods.skyresources3.block.DirtFurnaceBlock;
@@ -51,6 +52,14 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> HEAVY_SNOW = BLOCKS.registerSimpleBlock(
             "heavy_snow",
             () -> properties(0.3F, 0.3F, SoundType.SNOW)
+    );
+    public static final DeferredBlock<BlazePowderBlock> BLAZE_POWDER_BLOCK = BLOCKS.registerBlock(
+            "blaze_powder_block",
+            BlazePowderBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .strength(0.5F, 0.5F)
+                    .sound(SoundType.GRAVEL)
     );
     public static final DeferredBlock<Block> DARK_MATTER_BLOCK = BLOCKS.registerSimpleBlock(
             "dark_matter_block",

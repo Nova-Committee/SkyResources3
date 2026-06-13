@@ -28,6 +28,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -140,6 +141,13 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("XX")
                 .pattern("XX")
                 .unlockedBy("has_heavy_snowball", has(ModItems.HEAVY_SNOWBALL.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.BLAZE_POWDER_BLOCK.get())
+                .define('X', Items.BLAZE_POWDER)
+                .pattern("XX")
+                .pattern("XX")
+                .unlockedBy("has_blaze_powder", has(Items.BLAZE_POWDER))
                 .save(this.output);
 
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MINI_FREEZER.get())
@@ -383,6 +391,11 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 "crystal_fluid",
                 new FluidStack(ModFluids.CRYSTAL_FLUID.get(), FluidType.BUCKET_VOLUME),
                 input(ModItems.CRYSTAL_SHARD.get())
+        );
+        this.crucibleRecipe(
+                "lava",
+                new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME),
+                input(ModBlocks.BLAZE_POWDER_BLOCK.get())
         );
     }
 

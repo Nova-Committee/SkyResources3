@@ -1,0 +1,10 @@
+{
+  "type": "skyresources3:crucible",
+  "input": {
+    "ingredient": "skyresources3:blaze_powder_block"
+  },
+  "output": {
+    "amount": 1000,
+    "id": "minecraft:lava"
+  }
+}
