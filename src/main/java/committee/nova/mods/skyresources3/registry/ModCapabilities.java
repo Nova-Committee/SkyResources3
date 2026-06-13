@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.registry;
 
+import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.level.material.Fluids;
@@ -12,6 +13,11 @@ import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
 
 public final class ModCapabilities {
     public static void register(final RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.FUSION_TABLE.get(),
+                (fusionTable, direction) -> fusionTable.getItemHandler()
+        );
         event.registerItem(
                 Capabilities.Fluid.ITEM,
                 (stack, context) -> context == null
