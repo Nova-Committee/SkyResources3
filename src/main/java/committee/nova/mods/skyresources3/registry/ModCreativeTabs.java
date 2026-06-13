@@ -33,6 +33,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.LIGHT_MATTER_BLOCK.get());
                         output.accept(ModItems.ALCHEMICAL_GLASS.get());
                         output.accept(ModItems.FUSION_TABLE.get());
+                        output.accept(ModItems.DIRT_FURNACE.get());
                         output.accept(ModItems.MINI_FREEZER.get());
                         output.accept(ModItems.IRON_FREEZER.get());
                         output.accept(ModItems.LIGHT_FREEZER.get());
@@ -49,6 +50,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.TERTIUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.QUARTUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.ALCHEMICAL_COAL.get());
+                        output.accept(ModItems.WOODEN_HEAT_COMPONENT.get());
                         output.accept(ModItems.ALCHEMICAL_GOLD_INGOT.get());
                         output.accept(ModItems.ALCHEMICAL_IRON_INGOT.get());
                         output.accept(ModItems.ALCHEMICAL_GOLD_NEEDLE.get());

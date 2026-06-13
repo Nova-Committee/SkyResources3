@@ -19,6 +19,11 @@ public final class ModCapabilities {
         );
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.DIRT_FURNACE.get(),
+                (dirtFurnace, direction) -> dirtFurnace.getItemHandler(direction)
+        );
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
                 ModBlockEntityTypes.FREEZER.get(),
                 (freezer, direction) -> freezer.getItemHandler()
         );

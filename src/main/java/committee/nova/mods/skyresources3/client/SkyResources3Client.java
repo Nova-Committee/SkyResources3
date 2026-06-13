@@ -31,6 +31,7 @@ public final class SkyResources3Client {
     @SubscribeEvent
     public static void registerMenuScreens(final RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.FUSION_TABLE.get(), FusionTableScreen::new);
+        event.register(ModMenuTypes.DIRT_FURNACE.get(), DirtFurnaceScreen::new);
         event.register(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
     }
 

@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
+import committee.nova.mods.skyresources3.block.DirtFurnaceBlock;
 import committee.nova.mods.skyresources3.block.DryCactusBlock;
 import committee.nova.mods.skyresources3.block.FusionTableBlock;
 import committee.nova.mods.skyresources3.block.FreezerBlock;
@@ -62,6 +63,14 @@ public final class ModBlocks {
             "fusion_table",
             FusionTableBlock::new,
             () -> machineWood(3.0F, 10.0F)
+    );
+    public static final DeferredBlock<DirtFurnaceBlock> DIRT_FURNACE = BLOCKS.registerBlock(
+            "dirt_furnace",
+            DirtFurnaceBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DIRT)
+                    .strength(0.5F, 0.5F)
+                    .sound(SoundType.GRAVEL)
     );
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
             "mini_freezer",

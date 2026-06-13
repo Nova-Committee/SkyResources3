@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.block.entity.DirtFurnaceBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FreezerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
@@ -31,6 +32,11 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "fusion_table",
                     () -> new BlockEntityType<>(FusionTableBlockEntity::new, ModBlocks.FUSION_TABLE.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DirtFurnaceBlockEntity>> DIRT_FURNACE =
+            BLOCK_ENTITY_TYPES.register(
+                    "dirt_furnace",
+                    () -> new BlockEntityType<>(DirtFurnaceBlockEntity::new, ModBlocks.DIRT_FURNACE.get())
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =
             BLOCK_ENTITY_TYPES.register(

@@ -88,6 +88,23 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_planks", has(ItemTags.PLANKS))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.MISC, ModItems.WOODEN_HEAT_COMPONENT.get())
+                .define('X', ItemTags.PLANKS)
+                .define('Y', ModItems.SAWDUST.get())
+                .pattern("XXX")
+                .pattern("XYX")
+                .pattern("XXX")
+                .unlockedBy("has_sawdust", has(ModItems.SAWDUST.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.DIRT_FURNACE.get())
+                .define('X', ItemTags.DIRT)
+                .define('Y', ModItems.WOODEN_HEAT_COMPONENT.get())
+                .pattern("X")
+                .pattern("Y")
+                .unlockedBy("has_wooden_heat_component", has(ModItems.WOODEN_HEAT_COMPONENT.get()))
+                .save(this.output);
+
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
                 .define('X', ModItems.HEAVY_SNOWBALL.get())
                 .pattern("XX")
