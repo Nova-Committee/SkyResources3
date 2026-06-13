@@ -15,4 +15,4 @@ Complete the practical guide-screen browsing polish deferred from stages 57 and 
 - [x] Reset/clamp scroll offsets when search/category/page/view changes.
 - [x] Update migration notes/checklists. No new English translation key was required.
 - [x] Run compileJava, runData, build, runGameTestServer.
-- [ ] Chinese commit and archive Trellis task.
+- [x] Chinese commit and archive Trellis task.
