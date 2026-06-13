@@ -15,12 +15,13 @@
 - `src/main/resources/data/skyresources3/dimension/void_island.json` uses an empty `minecraft:flat` generator with no structures.
 - `src/main/resources/data/skyresources3/worldgen/world_preset/void_island.json` exposes an empty-world preset for new worlds.
 - `ModGameTests` registers function-based GameTests and `IslandCommandGameTests` covers `/island create`, `/island info`, and `/island reset sand confirm`.
+- `Config.voidIslandSpawnPlatformRadius` and `Config.voidIslandSpawnPlatformBlock` drive the `/island spawn` platform while preserving the original radius `2` and `minecraft:grass_block` defaults.
+- `IslandCommandGameTests` covers `/island spawn` teleport behavior; when the GameTest server does not expose the void dimension, it still verifies fallback command behavior and configured platform generation through `VoidIslandWorld.ensureSpawnPlatform`.
 - Command-level GameTests caught and fixed the `/island info` dimension translation argument by converting the dimension identifier to a string.
 
 ## TODO
 
 - Decide whether existing overworld islands should be migrated to the void dimension or left in place.
-- Replace the simple spawn grass platform with configurable VoidIslandControl-style spawn settings if needed.
 
 ## Verification
 

@@ -4,10 +4,15 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.island.IslandSavedData;
 import committee.nova.mods.skyresources3.island.IslandTemplate;
+import committee.nova.mods.skyresources3.island.VoidIslandWorld;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public final class IslandCommandGameTests {
     private static final String SAND_TEMPLATE_ID = "sand";
@@ -37,6 +42,54 @@ public final class IslandCommandGameTests {
             helper.succeed();
         } finally {
             Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+        }
+    }
+
+    @SuppressWarnings("removal")
+    public static void spawnGeneratesConfiguredPlatform(final GameTestHelper helper) {
+        final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
+        final int originalSpawnPlatformRadius = Config.voidIslandSpawnPlatformRadius;
+        final Block originalSpawnPlatformBlock = Config.voidIslandSpawnPlatformBlock;
+        Config.enableVoidIslandFeatures = true;
+        Config.voidIslandSpawnPlatformRadius = 1;
+        Config.voidIslandSpawnPlatformBlock = Blocks.COBBLESTONE;
+
+        try {
+            final ServerLevel spawnLevel = VoidIslandWorld.get(helper.getLevel().getServer()).orElse(null);
+            final ServerPlayer player = helper.makeMockServerPlayerInLevel();
+            assertCommandSucceeds(helper, player, "island spawn");
+
+            final BlockPos spawnHome = VoidIslandWorld.spawnHome();
+            if (spawnLevel == null) {
+                helper.assertValueEqual(
+                        helper.getLevel().dimension(),
+                        player.level().dimension(),
+                        "Player should stay in the fallback level when the void island level is unavailable"
+                );
+            } else {
+                helper.assertValueEqual(
+                        spawnHome,
+                        player.blockPosition(),
+                        "Player should be teleported to void spawn home"
+                );
+            }
+
+            final ServerLevel platformLevel = spawnLevel == null ? helper.getLevel() : spawnLevel;
+            VoidIslandWorld.ensureSpawnPlatform(platformLevel);
+            helper.assertTrue(
+                    platformLevel.getBlockState(VoidIslandWorld.spawnPlatformCenter()).is(Blocks.COBBLESTONE),
+                    "Spawn platform should use the configured block"
+            );
+            helper.assertTrue(
+                    platformLevel.getBlockState(VoidIslandWorld.spawnPlatformCenter().offset(1, 0, 1))
+                            .is(Blocks.COBBLESTONE),
+                    "Spawn platform should use the configured radius"
+            );
+            helper.succeed();
+        } finally {
+            Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+            Config.voidIslandSpawnPlatformRadius = originalSpawnPlatformRadius;
+            Config.voidIslandSpawnPlatformBlock = originalSpawnPlatformBlock;
         }
     }
 

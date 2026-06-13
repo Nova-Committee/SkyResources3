@@ -27,6 +27,11 @@ public final class ModGameTests {
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_CREATE_RESET =
             TEST_FUNCTIONS.register("island_create_reset", () -> IslandCommandGameTests::createInfoAndReset);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_SPAWN_PLATFORM =
+            TEST_FUNCTIONS.register(
+                    "island_spawn_platform",
+                    () -> IslandCommandGameTests::spawnGeneratesConfiguredPlatform
+            );
 
     public static void register(final IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
@@ -39,6 +44,7 @@ public final class ModGameTests {
                 new TestEnvironmentDefinition.AllOf(List.of())
         );
         registerFunctionTest(event, "island_create_reset", ISLAND_CREATE_RESET, environment);
+        registerFunctionTest(event, "island_spawn_platform", ISLAND_SPAWN_PLATFORM, environment);
     }
 
     private static void registerFunctionTest(

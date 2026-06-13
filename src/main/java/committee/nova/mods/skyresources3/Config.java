@@ -2,6 +2,10 @@ package committee.nova.mods.skyresources3;
 
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -9,6 +13,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 @EventBusSubscriber(modid = Skyresources3.MODID)
 public final class Config {
+    private static final String DEFAULT_VOID_ISLAND_SPAWN_PLATFORM_BLOCK = "minecraft:grass_block";
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     private static final ModConfigSpec.BooleanValue ENABLE_MIGRATION_DEBUG_LOGGING = BUILDER
@@ -20,6 +25,16 @@ public final class Config {
     private static final ModConfigSpec.IntValue ISLAND_PROTECTION_RADIUS = BUILDER
             .comment("Horizontal radius around an island center protected from unrelated player interaction.")
             .defineInRange("islandProtectionRadius", 128, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue VOID_ISLAND_SPAWN_PLATFORM_RADIUS = BUILDER
+            .comment("Horizontal radius of the generated shared void island spawn platform.")
+            .defineInRange("voidIslandSpawnPlatformRadius", 2, 0, 64);
+    private static final ModConfigSpec.ConfigValue<String> VOID_ISLAND_SPAWN_PLATFORM_BLOCK = BUILDER
+            .comment("Block id used to generate the shared void island spawn platform.")
+            .define(
+                    "voidIslandSpawnPlatformBlock",
+                    DEFAULT_VOID_ISLAND_SPAWN_PLATFORM_BLOCK,
+                    Config::validateBlockName
+            );
     private static final ModConfigSpec.BooleanValue ENABLE_MAGMA_ISLAND = BUILDER
             .comment("Enable the migrated magma island progression path when island generation is implemented.")
             .define("enableMagmaIsland", true);
@@ -135,6 +150,8 @@ public final class Config {
     public static boolean enableMigrationDebugLogging;
     public static boolean enableVoidIslandFeatures;
     public static int islandProtectionRadius;
+    public static int voidIslandSpawnPlatformRadius = 2;
+    public static Block voidIslandSpawnPlatformBlock = Blocks.GRASS_BLOCK;
     public static boolean enableMagmaIsland;
     public static int heavySnowballDamage;
     public static int explosiveHeavySnowballDamage;
@@ -176,6 +193,8 @@ public final class Config {
         enableMigrationDebugLogging = ENABLE_MIGRATION_DEBUG_LOGGING.get();
         enableVoidIslandFeatures = ENABLE_VOID_ISLAND_FEATURES.get();
         islandProtectionRadius = ISLAND_PROTECTION_RADIUS.get();
+        voidIslandSpawnPlatformRadius = VOID_ISLAND_SPAWN_PLATFORM_RADIUS.get();
+        voidIslandSpawnPlatformBlock = resolveBlock(VOID_ISLAND_SPAWN_PLATFORM_BLOCK.get());
         enableMagmaIsland = ENABLE_MAGMA_ISLAND.get();
         heavySnowballDamage = HEAVY_SNOWBALL_DAMAGE.get();
         explosiveHeavySnowballDamage = EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE.get();
@@ -218,6 +237,29 @@ public final class Config {
                 .map(String::trim)
                 .filter(id -> !id.isEmpty())
                 .toList();
+    }
+
+    private static boolean validateBlockName(final Object obj) {
+        if (!(obj instanceof String blockName)) {
+            return false;
+        }
+        try {
+            return BuiltInRegistries.BLOCK.containsKey(Identifier.parse(blockName));
+        } catch (final RuntimeException exception) {
+            return false;
+        }
+    }
+
+    private static Block resolveBlock(final String blockName) {
+        try {
+            final Identifier id = Identifier.parse(blockName);
+            if (BuiltInRegistries.BLOCK.containsKey(id)) {
+                return BuiltInRegistries.BLOCK.getValue(id);
+            }
+        } catch (final RuntimeException ignored) {
+            // Invalid values should be rejected by the config spec; keep runtime fallback defensive.
+        }
+        return Blocks.GRASS_BLOCK;
     }
 
     private Config() {

@@ -56,6 +56,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Island reset is restricted to personal island owners and currently rebuilds only the starter island footprint.
 - New islands are created in `skyresources3:void_island` when the data-pack dimension is available, with overworld fallback only for missing-dimension recovery.
 - `/island spawn` teleports to a generated spawn platform in `skyresources3:void_island` when available, with the old overworld origin-heightmap behavior as fallback.
+- `/island spawn` generates that shared spawn platform from `voidIslandSpawnPlatformRadius` and
+  `voidIslandSpawnPlatformBlock`; defaults must remain radius `2` and `minecraft:grass_block`.
 - Island protection uses the configured horizontal radius around each island center, derived from `IslandRecord.home().below()`.
 - Trusted visitors are stored on `IslandSavedData.IslandRecord` so solo island owners can grant access without creating a team.
 - Trust creation is online-only until a player-name history or profile-cache layer exists; untrust may remove a stored visitor by name.
@@ -104,6 +106,10 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 
 When command execution GameTests are added, cover create/invite/accept/home/reset/visit and rejection paths for existing islands, existing teams, members resetting team islands, and offline visit targets.
 Command GameTests should execute commands through the Brigadier dispatcher and assert saved-data side effects, not just positive command return values.
+Command GameTests for `/island spawn` should assert command execution and teleport behavior. If the
+GameTest server exposes `skyresources3:void_island`, assert generated platform block state through the
+command path; otherwise assert fallback command behavior and cover platform config through
+`VoidIslandWorld.ensureSpawnPlatform` directly.
 
 ### 7. Wrong vs Correct
 

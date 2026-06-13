@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.island;
 
+import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class VoidIslandWorld {
     public static final int ISLAND_Y = 192;
@@ -19,7 +21,6 @@ public final class VoidIslandWorld {
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "void_island")
     );
 
-    private static final int SPAWN_PLATFORM_RADIUS = 2;
     private static final BlockPos SPAWN_PLATFORM_CENTER = new BlockPos(0, ISLAND_Y, 0);
 
     public static Optional<ServerLevel> get(final MinecraftServer server) {
@@ -34,12 +35,18 @@ public final class VoidIslandWorld {
         return SPAWN_PLATFORM_CENTER.above();
     }
 
+    public static BlockPos spawnPlatformCenter() {
+        return SPAWN_PLATFORM_CENTER;
+    }
+
     public static void ensureSpawnPlatform(final ServerLevel level) {
-        for (int x = -SPAWN_PLATFORM_RADIUS; x <= SPAWN_PLATFORM_RADIUS; x++) {
-            for (int z = -SPAWN_PLATFORM_RADIUS; z <= SPAWN_PLATFORM_RADIUS; z++) {
+        final int radius = Math.max(0, Config.voidIslandSpawnPlatformRadius);
+        final BlockState platformBlock = Config.voidIslandSpawnPlatformBlock.defaultBlockState();
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
                 level.setBlock(
                         SPAWN_PLATFORM_CENTER.offset(x, 0, z),
-                        Blocks.GRASS_BLOCK.defaultBlockState(),
+                        platformBlock,
                         Block.UPDATE_ALL
                 );
             }
