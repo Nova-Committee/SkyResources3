@@ -47,6 +47,8 @@ Use this contract when adding or extending interactive guide page entries such a
 - `GuideAction.Type.IMAGE` targets a `GuideStructure.id`.
 - `GuideAction.Type.RECIPE` uses its icon stack as the recipe target until a recipe viewer integration exists.
 - `GuidePage.actions()` must be immutable to callers; use `List.copyOf` in record construction.
+- Guide body text may contain `{action:n}` inline markers, where `n` is the 1-based index of `GuidePage.actions()`.
+- `{action:n}` markers are a client rendering hint only; invalid or out-of-range markers should degrade to readable text instead of throwing.
 - Client screens may render and dispatch actions, but common guide data must not import client-only classes.
 - User-visible action labels, tooltips, feedback messages, and structure titles must use translation keys except item display names coming from `ItemStack#getHoverName()`.
 
@@ -59,11 +61,14 @@ Use this contract when adding or extending interactive guide page entries such a
 | Image action targets a missing structure | Show localized feedback instead of throwing |
 | Recipe viewer integration is absent | Show a localized "pending integration" message |
 | Search text hides a linked page | Clear search before jumping to the linked page |
-| Structure has more blocks than visible rows | Show the first visible rows; defer scrolling to a focused follow-up |
+| Structure has more blocks than visible rows | Allow client-side scrolling in the structure preview |
+| Inline marker references a missing action | Render the marker as readable text; do not fail the page |
+| Page body contains inline markers | Strip markers from search matching so users search visible prose |
 
 ### 5. Good/Base/Bad Cases
 
 - Good: `GuidePages` declares a page action with `GuideAction.link("crucible", stack(() -> ModItems.CRUCIBLE.get()))`, and `GuideScreen` handles the click by selecting the target page.
+- Good: Guide text uses `{action:1}` to place that first action inline near the relevant prose.
 - Base: A plain text-only page uses the five-argument `GuidePage` constructor and has `List.of()` actions.
 - Bad: A common guide class imports `net.minecraft.client.*` to open a screen or render a tooltip.
 

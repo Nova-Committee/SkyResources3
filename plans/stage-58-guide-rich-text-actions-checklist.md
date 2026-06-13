@@ -15,7 +15,7 @@
 
 ## Deferred
 
-- [ ] Inline placement matching old text markers.
+- [x] Inline placement matching old text markers through lightweight `{action:n}` markers.
 - [ ] JEI/EMI/REI recipe viewer integration.
 - [ ] Rotating 3D structure renderer.
 - [x] Scrollable action/structure lists.

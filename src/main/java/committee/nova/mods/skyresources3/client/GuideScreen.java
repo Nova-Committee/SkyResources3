@@ -5,6 +5,7 @@ import committee.nova.mods.skyresources3.guide.GuidePage;
 import committee.nova.mods.skyresources3.guide.GuidePages;
 import committee.nova.mods.skyresources3.guide.GuideStructure;
 import committee.nova.mods.skyresources3.guide.GuideStructures;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
@@ -32,6 +33,7 @@ public final class GuideScreen extends Screen {
     private static final int ACTION_MAX_ROWS = 4;
     private static final int ACTION_ROW_HEIGHT = 20;
     private static final int ACTION_GAP = 6;
+    private static final int INLINE_ACTION_GAP = 4;
     private static final int STRUCTURE_ROW_HEIGHT = 18;
     private static final int ICON_SIZE = 16;
     private static final int BACKGROUND_COLOR = 0xC0101010;
@@ -52,6 +54,7 @@ public final class GuideScreen extends Screen {
     private EditBox searchBox;
     private GuideStructure currentStructure;
     private Component feedbackMessage;
+    private final List<InlineActionRegion> inlineActionRegions = new ArrayList<>();
 
     public GuideScreen() {
         super(Component.translatable("screen.skyresources3.guide.title"));
@@ -150,7 +153,9 @@ public final class GuideScreen extends Screen {
         if (event.button() != 0) {
             return false;
         }
-        return this.selectActionAt(event.x(), event.y()) || this.selectResultAt(event.x(), event.y());
+        return this.selectInlineActionAt(event.x(), event.y())
+                || this.selectActionAt(event.x(), event.y())
+                || this.selectResultAt(event.x(), event.y());
     }
 
     @Override
@@ -195,6 +200,7 @@ public final class GuideScreen extends Screen {
             final int panelHeight
     ) {
         this.clampSelection();
+        this.inlineActionRegions.clear();
 
         final List<String> categories = GuidePages.categories();
         if (categories.isEmpty()) {
@@ -305,9 +311,7 @@ public final class GuideScreen extends Screen {
             guiGraphics.drawWordWrap(this.font, this.feedbackMessage, contentX, textBottom, contentWidth, MUTED_TEXT_COLOR);
         }
         if (textBottom > bodyY) {
-            guiGraphics.enableScissor(contentX, bodyY, contentX + contentWidth, textBottom);
-            guiGraphics.drawWordWrap(this.font, page.text(), contentX, bodyY, contentWidth, TEXT_COLOR);
-            guiGraphics.disableScissor();
+            this.renderGuideBody(guiGraphics, mouseX, mouseY, page, contentX, bodyY, contentWidth, textBottom);
         }
         if (actionRows > 0) {
             this.renderActions(guiGraphics, mouseX, mouseY, page.actions(), contentX, actionTop, contentWidth, actionRows);
@@ -440,6 +444,141 @@ public final class GuideScreen extends Screen {
                 contentWidth,
                 MUTED_TEXT_COLOR
         );
+    }
+
+    private void renderGuideBody(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final GuidePage page,
+            final int x,
+            final int y,
+            final int width,
+            final int bottom
+    ) {
+        final BodyCursor cursor = new BodyCursor(x, y, width, bottom);
+        final String text = page.text().getString();
+        int index = 0;
+        guiGraphics.enableScissor(x, y, x + width, bottom);
+        while (index < text.length() && cursor.canRender()) {
+            if (text.charAt(index) == '\n') {
+                cursor.newLine();
+                index++;
+            } else if (text.startsWith("{action:", index)) {
+                final int markerEnd = text.indexOf('}', index);
+                if (markerEnd > index) {
+                    final boolean rendered = this.renderInlineActionMarker(
+                            guiGraphics,
+                            mouseX,
+                            mouseY,
+                            page,
+                            text.substring(index + 8, markerEnd),
+                            cursor
+                    );
+                    if (!rendered) {
+                        this.renderInlineText(guiGraphics, text.substring(index, markerEnd + 1), cursor);
+                    }
+                    index = markerEnd + 1;
+                } else {
+                    this.renderInlineText(guiGraphics, String.valueOf(text.charAt(index)), cursor);
+                    index++;
+                }
+            } else if (Character.isWhitespace(text.charAt(index))) {
+                this.renderInlineText(guiGraphics, " ", cursor);
+                index++;
+            } else {
+                final int tokenEnd = this.nextInlineTokenEnd(text, index);
+                this.renderInlineText(guiGraphics, text.substring(index, tokenEnd), cursor);
+                index = tokenEnd;
+            }
+        }
+        guiGraphics.disableScissor();
+    }
+
+    private boolean renderInlineActionMarker(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final GuidePage page,
+            final String markerIndex,
+            final BodyCursor cursor
+    ) {
+        final int actionIndex;
+        try {
+            actionIndex = Integer.parseInt(markerIndex.trim()) - 1;
+        } catch (final NumberFormatException ignored) {
+            return false;
+        }
+        if (actionIndex < 0 || actionIndex >= page.actions().size()) {
+            return false;
+        }
+        this.renderInlineAction(guiGraphics, mouseX, mouseY, page.actions().get(actionIndex), cursor);
+        return true;
+    }
+
+    private void renderInlineText(final GuiGraphics guiGraphics, final String text, final BodyCursor cursor) {
+        if (text.isBlank() && cursor.x == cursor.startX) {
+            return;
+        }
+        final int textWidth = this.font.width(text);
+        if (cursor.x > cursor.startX && cursor.x + textWidth > cursor.rightX()) {
+            cursor.newLine();
+            if (text.isBlank()) {
+                return;
+            }
+        }
+        if (!cursor.canRender()) {
+            return;
+        }
+        guiGraphics.drawString(this.font, text, cursor.x, cursor.y + 5, TEXT_COLOR, false);
+        cursor.x += textWidth;
+    }
+
+    private void renderInlineAction(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final GuideAction action,
+            final BodyCursor cursor
+    ) {
+        final Component label = action.label();
+        final int maxLabelWidth = Math.max(16, cursor.width - ICON_SIZE - 14);
+        final int chipWidth = Math.min(
+                cursor.width,
+                ICON_SIZE + 10 + this.font.width(this.truncate(label.getString(), maxLabelWidth))
+        );
+        if (cursor.x > cursor.startX && cursor.x + chipWidth > cursor.rightX()) {
+            cursor.newLine();
+        }
+        if (!cursor.canRender()) {
+            return;
+        }
+
+        final boolean hovered = this.isInside(mouseX, mouseY, cursor.x, cursor.y, chipWidth, ACTION_ROW_HEIGHT - 1);
+        guiGraphics.fill(
+                cursor.x,
+                cursor.y,
+                cursor.x + chipWidth,
+                cursor.y + ACTION_ROW_HEIGHT - 1,
+                hovered ? HOVERED_ROW_COLOR : ACTION_ROW_COLOR
+        );
+        final ItemStack icon = action.icon();
+        if (!icon.isEmpty()) {
+            guiGraphics.renderFakeItem(icon, cursor.x + 1, cursor.y + 1);
+        }
+        guiGraphics.drawString(
+                this.font,
+                this.truncate(label.getString(), maxLabelWidth),
+                cursor.x + ICON_SIZE + 6,
+                cursor.y + 6,
+                TEXT_COLOR,
+                false
+        );
+        this.inlineActionRegions.add(new InlineActionRegion(cursor.x, cursor.y, chipWidth, ACTION_ROW_HEIGHT - 1, action));
+        if (hovered) {
+            guiGraphics.setTooltipForNextFrame(this.font, this.actionTooltip(action), mouseX, mouseY);
+        }
+        cursor.x += chipWidth + INLINE_ACTION_GAP;
     }
 
     private void renderActions(
@@ -622,9 +761,10 @@ public final class GuideScreen extends Screen {
     }
 
     private boolean matchesSearch(final GuidePage page, final String query) {
+        final String searchableText = this.stripInlineActionMarkers(page.text().getString()).toLowerCase(Locale.ROOT);
         return page.id().toLowerCase(Locale.ROOT).contains(query)
                 || page.title().getString().toLowerCase(Locale.ROOT).contains(query)
-                || page.text().getString().toLowerCase(Locale.ROOT).contains(query);
+                || searchableText.contains(query);
     }
 
     private void changeCategory(final int direction) {
@@ -700,6 +840,15 @@ public final class GuideScreen extends Screen {
 
     private int panelHeight() {
         return Math.min(PANEL_MAX_HEIGHT, Math.max(140, this.height - 36));
+    }
+
+    private boolean selectInlineActionAt(final double mouseX, final double mouseY) {
+        for (final InlineActionRegion region : this.inlineActionRegions) {
+            if (this.isInside((int) mouseX, (int) mouseY, region.x, region.y, region.width, region.height)) {
+                return this.handleAction(region.action);
+            }
+        }
+        return false;
     }
 
     private boolean selectResultAt(final double mouseX, final double mouseY) {
@@ -1029,6 +1178,34 @@ public final class GuideScreen extends Screen {
         return !this.normalizedSearch().isEmpty();
     }
 
+    private int nextInlineTokenEnd(final String text, final int start) {
+        int index = start;
+        while (index < text.length()
+                && text.charAt(index) != '\n'
+                && !Character.isWhitespace(text.charAt(index))
+                && !text.startsWith("{action:", index)) {
+            index++;
+        }
+        return index;
+    }
+
+    private String stripInlineActionMarkers(final String text) {
+        final StringBuilder stripped = new StringBuilder(text.length());
+        int index = 0;
+        while (index < text.length()) {
+            if (text.startsWith("{action:", index)) {
+                final int markerEnd = text.indexOf('}', index);
+                if (markerEnd > index) {
+                    index = markerEnd + 1;
+                    continue;
+                }
+            }
+            stripped.append(text.charAt(index));
+            index++;
+        }
+        return stripped.toString();
+    }
+
     private String truncate(final String text, final int width) {
         if (this.font.width(text) <= width) {
             return text;
@@ -1046,5 +1223,37 @@ public final class GuideScreen extends Screen {
             final int height
     ) {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    }
+
+    private static final class BodyCursor {
+        private final int startX;
+        private final int width;
+        private final int bottom;
+        private int x;
+        private int y;
+
+        private BodyCursor(final int x, final int y, final int width, final int bottom) {
+            this.startX = x;
+            this.width = width;
+            this.bottom = bottom;
+            this.x = x;
+            this.y = y;
+        }
+
+        private int rightX() {
+            return this.startX + this.width;
+        }
+
+        private boolean canRender() {
+            return this.y + ACTION_ROW_HEIGHT <= this.bottom;
+        }
+
+        private void newLine() {
+            this.x = this.startX;
+            this.y += ACTION_ROW_HEIGHT;
+        }
+    }
+
+    private record InlineActionRegion(int x, int y, int width, int height, GuideAction action) {
     }
 }

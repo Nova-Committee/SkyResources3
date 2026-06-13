@@ -18,7 +18,7 @@
 
 ## Deferred
 
-- [ ] Old rich-text recipe/link/image buttons.
+- [x] Old rich-text recipe/link/image buttons have a lightweight `{action:n}` inline action replacement for selected migrated pages.
 
 ## Verification
 
