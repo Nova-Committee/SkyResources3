@@ -739,3 +739,43 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 22: 客户端 GUI 聚焦烟测收口
+
+**Date**: 2026-06-14
+**Task**: 客户端 GUI 聚焦烟测收口
+**Branch**: `master`
+
+### Summary
+
+隐藏启动 runClient 重试已执行并清理进程；客户端加载到 SkyResources3/Jade/JEI，但截图持续白窗，未关闭手动 GUI 点击项；同步修正无 JEI runbook 键位为默认 Y。
+
+### Main Changes
+
+- Launched a focused hidden-wrapper `runClient` attempt and captured the final window/log state under the task evidence directory.
+- Stopped the launched PowerShell/cmd/Java process tree and verified no Minecraft client window remained.
+- Updated the manual smoke runbook to use configured `key.skyresources3.guide` / default `Y` in the no-JEI fallback path.
+- Updated migration closeout evidence/checklists to record that the focused retry loaded SkyResources3/Jade/JEI but still produced white-window captures, so visual click-through remains manual.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5ee55ed` | 记录聚焦GUI烟测阻塞证据 |
+
+### Testing
+
+- [OK] `git diff --check`
+- [OK] `git diff --cached --check`
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
+- [OK] Stale no-JEI `Open the guide with G` instruction scan returned no matches.
+- [OK] Minecraft NeoForge client process/window cleanup verified.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Complete the remaining manual GUI click-through from `plans/client-manual-smoke-runbook.md` in a human-observed focused client session before a release tag.

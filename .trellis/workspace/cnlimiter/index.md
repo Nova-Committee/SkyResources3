@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 21
+- **Total Sessions**: 22
 - **Last Active**: 2026-06-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~741 | Active |
+| `journal-1.md` | ~774 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 22 | 2026-06-14 | 客户端 GUI 聚焦烟测收口 | `5ee55ed` | `master` |
 | 21 | 2026-06-14 | 客户端 GUI 烟测实测 | `d2905fa`, `edce842` | `master` |
 | 20 | 2026-06-14 | 迁移清单 TODO 收口同步 | `bd79236` | `master` |
 | 19 | 2026-06-14 | 客户端手工烟测执行包 | `0a3410e` | `master` |
