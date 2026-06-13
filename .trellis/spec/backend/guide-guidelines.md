@@ -52,6 +52,7 @@ Use this contract when adding or extending interactive guide page entries such a
 - Structure detail rendering should use `GuideStructure.BlockEntry` coordinates for both the scrollable block list and a client-only layout preview; keep any 3D or 2D rendering code out of common guide data.
 - Client screens may render and dispatch actions, but common guide data must not import client-only classes.
 - User-visible action labels, tooltips, feedback messages, and structure titles must use translation keys except item display names coming from `ItemStack#getHoverName()`.
+- Server-side guide integrity tests should validate the common data contract without loading client-only screen classes.
 
 ### 4. Validation & Error Matrix
 
@@ -65,20 +66,28 @@ Use this contract when adding or extending interactive guide page entries such a
 | Structure has more blocks than visible rows | Allow client-side scrolling in the structure preview |
 | Inline marker references a missing action | Render the marker as readable text; do not fail the page |
 | Page body contains inline markers | Strip markers from search matching so users search visible prose |
+| Common guide data contains a broken link, missing structure, bad recipe target, or missing translation key | `GuideMenuGameTests.guideDataIntegrity` should fail during `./gradlew.bat runGameTestServer` |
 
 ### 5. Good/Base/Bad Cases
 
 - Good: `GuidePages` declares a page action with `GuideAction.link("crucible", stack(() -> ModItems.CRUCIBLE.get()))`, and `GuideScreen` handles the click by selecting the target page.
 - Good: Guide text uses `{action:1}` to place that first action inline near the relevant prose.
+- Good: A server-side GameTest reads `assets/skyresources3/lang/en_us.json` from the classpath and checks guide links, image structures, recipe targets, and inline markers without importing `net.minecraft.client.*`.
 - Base: A plain text-only page uses the five-argument `GuidePage` constructor and has `List.of()` actions.
 - Bad: A common guide class imports `net.minecraft.client.*` to open a screen or render a tooltip.
+- Bad: A headless GameTest claims to verify screen layout or click behavior; those remain client `runClient` checks.
 
 ### 6. Tests Required
 
 - `./gradlew.bat compileJava` must pass for guide data/model changes.
 - `./gradlew.bat build` must pass for resources and packaging.
 - `./gradlew.bat runData` should pass when guide text or generated resources changed.
-- `./gradlew.bat runGameTestServer` should pass to catch common/server load regressions after adding common guide data.
+- `./gradlew.bat runGameTestServer` must pass after guide page/action/structure changes and should include assertions that:
+  - every guide category, page title, page text, image-action label, and referenced structure title has an `en_us.json` entry;
+  - every `LINK` action target resolves through `GuidePages.find`;
+  - every non-empty `RECIPE` action target belongs to `GuideRecipeTargets`;
+  - every `IMAGE` action target resolves through `GuideStructures.find`;
+  - every `{action:n}` marker in translated page text references an existing 1-based action index.
 - Manual `runClient` verification is recommended for visual layout changes that cannot be covered by current tests.
 
 ### 7. Wrong vs Correct
