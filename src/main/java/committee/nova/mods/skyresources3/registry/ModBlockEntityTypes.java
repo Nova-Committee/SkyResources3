@@ -9,9 +9,11 @@ import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.FreezerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
+import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.QuickDropperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.RockCleanerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.RockCrusherBlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -74,6 +76,16 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "rock_cleaner",
                     () -> new BlockEntityType<>(RockCleanerBlockEntity::new, ModBlocks.ROCK_CLEANER.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MachineCasingBlockEntity>> MACHINE_CASING =
+            BLOCK_ENTITY_TYPES.register(
+                    "machine_casing",
+                    () -> new BlockEntityType<>(
+                            MachineCasingBlockEntity::new,
+                            ModBlocks.MACHINE_CASINGS.values().stream()
+                                    .map(holder -> (Block) holder.get())
+                                    .toArray(Block[]::new)
+                    )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =
             BLOCK_ENTITY_TYPES.register(

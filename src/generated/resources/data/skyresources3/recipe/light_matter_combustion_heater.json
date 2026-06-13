@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "skyresources3:light_matter",
+    "Y": "skyresources3:quartz_amplification_component"
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XYX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:light_matter_combustion_heater"
+  }
+}

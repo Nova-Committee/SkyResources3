@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.entity.HeavySnowball;
+import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CuttingKnifeItem;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
@@ -12,6 +13,10 @@ import committee.nova.mods.skyresources3.item.InfusionStoneItem;
 import committee.nova.mods.skyresources3.item.RockGrinderItem;
 import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
+import committee.nova.mods.skyresources3.machine.MachineVariant;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
@@ -47,6 +52,7 @@ public final class ModItems {
             blockItem("crucible_inserter", ModBlocks.CRUCIBLE_INSERTER);
     public static final DeferredItem<BlockItem> ROCK_CRUSHER = blockItem("rock_crusher", ModBlocks.ROCK_CRUSHER);
     public static final DeferredItem<BlockItem> ROCK_CLEANER = blockItem("rock_cleaner", ModBlocks.ROCK_CLEANER);
+    public static final Map<MachineVariant, DeferredItem<BlockItem>> MACHINE_CASINGS = registerMachineCasingItems();
     public static final DeferredItem<BlockItem> MINI_FREEZER = blockItem("mini_freezer", ModBlocks.MINI_FREEZER);
     public static final DeferredItem<BlockItem> IRON_FREEZER = blockItem("iron_freezer", ModBlocks.IRON_FREEZER);
     public static final DeferredItem<BlockItem> LIGHT_FREEZER = blockItem("light_freezer", ModBlocks.LIGHT_FREEZER);
@@ -139,6 +145,8 @@ public final class ModItems {
                     properties.craftRemainder(Items.BUCKET).stacksTo(1)
             )
     );
+    public static final Map<MachineVariant, DeferredItem<CombustionHeaterItem>> COMBUSTION_HEATERS =
+            registerCombustionHeaters();
 
     public static void register(final IEventBus modEventBus) {
         ITEMS.register(modEventBus);
@@ -146,6 +154,25 @@ public final class ModItems {
 
     private static DeferredItem<BlockItem> blockItem(final String name, final DeferredBlock<? extends Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
+    }
+
+    private static Map<MachineVariant, DeferredItem<BlockItem>> registerMachineCasingItems() {
+        final EnumMap<MachineVariant, DeferredItem<BlockItem>> items = new EnumMap<>(MachineVariant.class);
+        for (final MachineVariant variant : MachineVariant.values()) {
+            items.put(variant, blockItem(variant.registryName("machine_casing"), ModBlocks.MACHINE_CASINGS.get(variant)));
+        }
+        return Collections.unmodifiableMap(items);
+    }
+
+    private static Map<MachineVariant, DeferredItem<CombustionHeaterItem>> registerCombustionHeaters() {
+        final EnumMap<MachineVariant, DeferredItem<CombustionHeaterItem>> heaters = new EnumMap<>(MachineVariant.class);
+        for (final MachineVariant variant : MachineVariant.values()) {
+            heaters.put(variant, ITEMS.registerItem(
+                    variant.registryName("combustion_heater"),
+                    properties -> new CombustionHeaterItem(properties, variant)
+            ));
+        }
+        return Collections.unmodifiableMap(heaters);
     }
 
     private static DeferredItem<CuttingKnifeItem> cuttingKnife(

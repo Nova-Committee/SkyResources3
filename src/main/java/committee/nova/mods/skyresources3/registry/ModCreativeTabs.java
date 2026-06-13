@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.machine.MachineVariant;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -41,6 +42,9 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.CRUCIBLE_INSERTER.get());
                         output.accept(ModItems.ROCK_CRUSHER.get());
                         output.accept(ModItems.ROCK_CLEANER.get());
+                        for (final MachineVariant variant : MachineVariant.values()) {
+                            output.accept(ModItems.MACHINE_CASINGS.get(variant).get());
+                        }
                         output.accept(ModItems.MINI_FREEZER.get());
                         output.accept(ModItems.IRON_FREEZER.get());
                         output.accept(ModItems.LIGHT_FREEZER.get());
@@ -90,6 +94,9 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.ALCHEMICAL_INFUSION_STONE.get());
                         output.accept(ModItems.HEALTH_GEM.get());
                         output.accept(ModItems.CRYSTAL_FLUID_BUCKET.get());
+                        for (final MachineVariant variant : MachineVariant.values()) {
+                            output.accept(ModItems.COMBUSTION_HEATERS.get(variant).get());
+                        }
                     })
                     .build()
     );

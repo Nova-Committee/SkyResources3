@@ -48,6 +48,11 @@ public final class ModCapabilities {
                 (rockCleaner, direction) -> rockCleaner.getItemHandler()
         );
         event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                ModBlockEntityTypes.MACHINE_CASING.get(),
+                (machineCasing, direction) -> machineCasing.getItemHandler()
+        );
+        event.registerBlockEntity(
                 Capabilities.Energy.BLOCK,
                 ModBlockEntityTypes.ROCK_CRUSHER.get(),
                 (rockCrusher, direction) -> rockCrusher.getEnergyHandler()

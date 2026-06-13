@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.data;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.recipe.ProcessIngredient;
 import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
@@ -164,6 +165,8 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("XZX")
                 .unlockedBy("has_advanced_power_component", has(ModItems.ADVANCED_POWER_COMPONENT.get()))
                 .save(this.output);
+
+        this.buildCombustionMachineRecipes();
 
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
                 .define('X', ModItems.HEAVY_SNOWBALL.get())
@@ -403,6 +406,82 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern(" # ")
                 .pattern("  X")
                 .unlockedBy(unlockName, has(material))
+                .save(this.output);
+    }
+
+    private void buildCombustionMachineRecipes() {
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.WOODEN).get())
+                .define('X', this.tag(ItemTags.PLANKS))
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_planks", has(ItemTags.PLANKS))
+                .save(this.output);
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.STONE).get())
+                .define('X', Blocks.COBBLESTONE)
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_cobblestone", has(Blocks.COBBLESTONE))
+                .save(this.output);
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.IRON).get())
+                .define('X', Items.IRON_INGOT)
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(this.output);
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.NETHER_BRICK).get())
+                .define('X', Blocks.NETHER_BRICKS)
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_nether_bricks", has(Blocks.NETHER_BRICKS))
+                .save(this.output);
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.END_STONE).get())
+                .define('X', Blocks.END_STONE)
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_end_stone", has(Blocks.END_STONE))
+                .save(this.output);
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.DARK_MATTER).get())
+                .define('X', ModItems.DARK_MATTER.get())
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_dark_matter", has(ModItems.DARK_MATTER.get()))
+                .save(this.output);
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.LIGHT_MATTER).get())
+                .define('X', ModItems.LIGHT_MATTER.get())
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy("has_light_matter", has(ModItems.LIGHT_MATTER.get()))
+                .save(this.output);
+
+        this.combustionHeaterRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.combustionHeaterRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
+        this.combustionHeaterRecipe(MachineVariant.IRON, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
+        this.combustionHeaterRecipe(MachineVariant.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
+        this.combustionHeaterRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
+        this.combustionHeaterRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
+        this.combustionHeaterRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
+    }
+
+    private void combustionHeaterRecipe(
+            final MachineVariant variant,
+            final Ingredient material,
+            final ItemLike component,
+            final String unlockName
+    ) {
+        this.shaped(RecipeCategory.MISC, ModItems.COMBUSTION_HEATERS.get(variant).get())
+                .define('X', material)
+                .define('Y', component)
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XYX")
+                .unlockedBy(unlockName, has(component))
                 .save(this.output);
     }
 

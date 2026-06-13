@@ -12,9 +12,14 @@ import committee.nova.mods.skyresources3.block.FusionTableBlock;
 import committee.nova.mods.skyresources3.block.FreezerBlock;
 import committee.nova.mods.skyresources3.block.LifeInfuserBlock;
 import committee.nova.mods.skyresources3.block.LifeInjectorBlock;
+import committee.nova.mods.skyresources3.block.MachineCasingBlock;
 import committee.nova.mods.skyresources3.block.QuickDropperBlock;
 import committee.nova.mods.skyresources3.block.RockCleanerBlock;
 import committee.nova.mods.skyresources3.block.RockCrusherBlock;
+import committee.nova.mods.skyresources3.machine.MachineVariant;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -130,6 +135,8 @@ public final class ModBlocks {
             RockCleanerBlock::new,
             () -> properties(6.0F, 12.0F, SoundType.METAL)
     );
+    public static final Map<MachineVariant, DeferredBlock<MachineCasingBlock>> MACHINE_CASINGS =
+            registerMachineCasings();
     public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
             "mini_freezer",
             properties -> new FreezerBlock(FreezerBlock.Tier.MINI, properties),
@@ -203,6 +210,26 @@ public final class ModBlocks {
                 .strength(destroyTime, explosionResistance)
                 .sound(SoundType.WOOD)
                 .noOcclusion();
+    }
+
+    private static Map<MachineVariant, DeferredBlock<MachineCasingBlock>> registerMachineCasings() {
+        final EnumMap<MachineVariant, DeferredBlock<MachineCasingBlock>> casings = new EnumMap<>(MachineVariant.class);
+        for (final MachineVariant variant : MachineVariant.values()) {
+            casings.put(variant, BLOCKS.registerBlock(
+                    variant.registryName("machine_casing"),
+                    properties -> new MachineCasingBlock(variant, properties),
+                    () -> casingProperties(variant)
+            ));
+        }
+        return Collections.unmodifiableMap(casings);
+    }
+
+    private static BlockBehaviour.Properties casingProperties(final MachineVariant variant) {
+        final SoundType sound = variant == MachineVariant.WOODEN ? SoundType.WOOD : SoundType.METAL;
+        return BlockBehaviour.Properties.of()
+                .mapColor(variant == MachineVariant.WOODEN ? MapColor.WOOD : MapColor.STONE)
+                .strength(2.0F, 12.0F)
+                .sound(sound);
     }
 
     private ModBlocks() {

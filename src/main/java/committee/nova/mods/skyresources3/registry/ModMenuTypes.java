@@ -5,6 +5,7 @@ import committee.nova.mods.skyresources3.menu.CrucibleInserterMenu;
 import committee.nova.mods.skyresources3.menu.DirtFurnaceMenu;
 import committee.nova.mods.skyresources3.menu.FreezerMenu;
 import committee.nova.mods.skyresources3.menu.FusionTableMenu;
+import committee.nova.mods.skyresources3.menu.MachineCasingMenu;
 import committee.nova.mods.skyresources3.menu.QuickDropperMenu;
 import committee.nova.mods.skyresources3.menu.RockCleanerMenu;
 import committee.nova.mods.skyresources3.menu.RockCrusherMenu;
@@ -33,6 +34,8 @@ public final class ModMenuTypes {
             MENU_TYPES.register("rock_crusher", () -> IMenuTypeExtension.create(RockCrusherMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<RockCleanerMenu>> ROCK_CLEANER =
             MENU_TYPES.register("rock_cleaner", () -> IMenuTypeExtension.create(RockCleanerMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<MachineCasingMenu>> MACHINE_CASING =
+            MENU_TYPES.register("machine_casing", () -> IMenuTypeExtension.create(MachineCasingMenu::new));
 
     public static void register(final IEventBus modEventBus) {
         MENU_TYPES.register(modEventBus);

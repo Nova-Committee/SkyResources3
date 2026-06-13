@@ -45,6 +45,7 @@ public final class SkyResources3Client {
         event.register(ModMenuTypes.CRUCIBLE_INSERTER.get(), CrucibleInserterScreen::new);
         event.register(ModMenuTypes.ROCK_CRUSHER.get(), RockCrusherScreen::new);
         event.register(ModMenuTypes.ROCK_CLEANER.get(), RockCleanerScreen::new);
+        event.register(ModMenuTypes.MACHINE_CASING.get(), MachineCasingScreen::new);
     }
 
     @SubscribeEvent

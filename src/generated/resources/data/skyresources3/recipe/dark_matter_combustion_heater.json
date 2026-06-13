@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "skyresources3:dark_matter",
+    "Y": "skyresources3:advanced_power_component"
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XYX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources3:dark_matter_combustion_heater"
+  }
+}
