@@ -1,6 +1,8 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.block.AqueousConcentratorBlock;
+import committee.nova.mods.skyresources3.block.AqueousDeconcentratorBlock;
 import committee.nova.mods.skyresources3.block.BlazePowderBlock;
 import committee.nova.mods.skyresources3.block.CactusFruitNeedleBlock;
 import committee.nova.mods.skyresources3.block.CombustionCollectorBlock;
@@ -136,6 +138,16 @@ public final class ModBlocks {
             "rock_cleaner",
             RockCleanerBlock::new,
             () -> properties(6.0F, 12.0F, SoundType.METAL)
+    );
+    public static final DeferredBlock<AqueousConcentratorBlock> AQUEOUS_CONCENTRATOR = BLOCKS.registerBlock(
+            "aqueous_concentrator",
+            AqueousConcentratorBlock::new,
+            () -> properties(2.0F, 12.0F, SoundType.METAL)
+    );
+    public static final DeferredBlock<AqueousDeconcentratorBlock> AQUEOUS_DECONCENTRATOR = BLOCKS.registerBlock(
+            "aqueous_deconcentrator",
+            AqueousDeconcentratorBlock::new,
+            () -> properties(2.0F, 12.0F, SoundType.METAL)
     );
     public static final Map<MachineVariant, DeferredBlock<MachineCasingBlock>> MACHINE_CASINGS =
             registerMachineCasings();

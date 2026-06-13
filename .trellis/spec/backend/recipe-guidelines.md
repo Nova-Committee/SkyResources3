@@ -171,6 +171,45 @@ for (int slot = 0; slot < SLOT_COUNT; slot++) {
 }
 ```
 
+## Water Extractor / Aqueous Machine Contract
+
+### 1. Scope / Trigger
+
+Use this contract when changing the hand-held Water Extractor, the Aqueous Concentrator, the Aqueous
+Deconcentrator, or the legacy water extraction/insertion rules shared by those systems.
+
+### 2. Contracts
+
+- Water extraction/insertion rules live in `WaterExtractorRecipes`; do not duplicate those tables in the item, block
+  entity, screen, or data provider.
+- The hand-held Water Extractor applies block-state recipes directly in the world.
+- The Aqueous machines apply item-stack recipes in a two-slot inventory:
+  - Concentrator consumes water and produces item outputs.
+  - Deconcentrator produces water and may have an empty item output.
+- Aqueous machines keep the old 4000 mB tank, 100000 FE buffer, 100 progress operation, and mode-specific speed/power
+  config defaults.
+- Do not encode these recipes in `SkyResourcesProcessRecipe` until the project has a first-class fluid process recipe
+  JSON contract. The current process recipe codec requires non-empty item outputs and has no fluid input/output field.
+
+### 3. Validation Matrix
+
+| Condition | Expected behavior |
+|---|---|
+| Concentrator receives a non-water fluid | Reject through fluid capability |
+| Concentrator output slot is full | Do not consume energy, input, or water |
+| Deconcentrator tank is full | Do not consume energy or input |
+| Deconcentrator recipe has no item output | Consume one input and add water when the tank has space |
+| Hand-held extractor targets Dirt or Dehydrated Cactus | Consume stored water and replace the block |
+| Hand-held extractor targets Snow, Cactus, or leaves | Add stored water and clear/replace the block |
+
+### 4. Tests Required
+
+- `./gradlew.bat compileJava`
+- `./gradlew.bat runData` when recipes, tags, or loot tables change
+- `./gradlew.bat build`
+- `./gradlew.bat runGameTestServer` for machine or capability changes
+- `git diff --check`
+
 ---
 
 ## Data Generation

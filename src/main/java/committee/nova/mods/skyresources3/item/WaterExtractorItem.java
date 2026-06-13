@@ -1,7 +1,7 @@
 package committee.nova.mods.skyresources3.item;
 
 import committee.nova.mods.skyresources3.Config;
-import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.recipe.WaterExtractorRecipes;
 import committee.nova.mods.skyresources3.registry.ModDataComponents;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -43,11 +42,6 @@ public final class WaterExtractorItem extends Item {
     public static final int DEFAULT_CAPACITY = 4000;
     private static final int USE_DURATION_TICKS = 70_000;
     private static final int MIN_EXTRACTION_USE_TICKS = 25;
-    private static final int SNOW_WATER = 50;
-    private static final int LEAVES_WATER = 20;
-    private static final int DIRT_TO_CLAY_WATER = 200;
-    private static final int CACTUS_TO_DRY_CACTUS_WATER = 50;
-    private static final int DRY_CACTUS_TO_CACTUS_WATER = 1200;
 
     public WaterExtractorItem(final Properties properties) {
         super(properties
@@ -172,8 +166,9 @@ public final class WaterExtractorItem extends Item {
     private static boolean shouldConsumeClientUseOn(final UseOnContext context, final Player player) {
         final ItemStack stack = context.getItemInHand();
         final BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        return (state.is(Blocks.DIRT) && canDrainWater(stack, DIRT_TO_CLAY_WATER))
-                || (state.is(ModBlocks.DRY_CACTUS.get()) && canDrainWater(stack, DRY_CACTUS_TO_CACTUS_WATER))
+        return WaterExtractorRecipes.findBlockInsertion(state)
+                .map(recipe -> canDrainWater(stack, recipe.waterAmount()))
+                .orElse(false)
                 || (player.isShiftKeyDown() && canDrainWater(stack, FluidType.BUCKET_VOLUME));
     }
 
@@ -182,29 +177,17 @@ public final class WaterExtractorItem extends Item {
         final BlockPos pos = context.getClickedPos();
         final ItemStack stack = context.getItemInHand();
         final BlockState state = level.getBlockState(pos);
-        if (state.is(Blocks.DIRT)) {
-            return insertWaterAndReplaceBlock(
-                    stack,
-                    level,
-                    player,
-                    pos,
-                    context,
-                    Blocks.CLAY.defaultBlockState(),
-                    DIRT_TO_CLAY_WATER
-            );
-        }
-        if (state.is(ModBlocks.DRY_CACTUS.get())) {
-            return insertWaterAndReplaceBlock(
-                    stack,
-                    level,
-                    player,
-                    pos,
-                    context,
-                    Blocks.CACTUS.defaultBlockState(),
-                    DRY_CACTUS_TO_CACTUS_WATER
-            );
-        }
-        return false;
+        return WaterExtractorRecipes.findBlockInsertion(state)
+                .map(recipe -> insertWaterAndReplaceBlock(
+                        stack,
+                        level,
+                        player,
+                        pos,
+                        context,
+                        recipe.outputState(),
+                        recipe.waterAmount()
+                ))
+                .orElse(false);
     }
 
     private static boolean insertWaterAndReplaceBlock(
@@ -275,23 +258,21 @@ public final class WaterExtractorItem extends Item {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hit.getDirection(), stack)) {
             return false;
         }
-        if (state.is(Blocks.SNOW)) {
-            return extractWaterAndClearBlock(stack, level, player, pos, SNOW_WATER);
-        }
-        if (state.is(Blocks.CACTUS)) {
-            return extractWaterAndReplaceBlock(
-                    stack,
-                    level,
-                    player,
-                    pos,
-                    ModBlocks.DRY_CACTUS.get().defaultBlockState(),
-                    CACTUS_TO_DRY_CACTUS_WATER
-            );
-        }
-        if (state.is(BlockTags.LEAVES)) {
-            return extractWaterAndClearBlock(stack, level, player, pos, LEAVES_WATER);
-        }
-        return false;
+        return WaterExtractorRecipes.findBlockExtraction(state)
+                .map(recipe -> extractWaterForBlockRecipe(stack, level, player, pos, recipe))
+                .orElse(false);
+    }
+
+    private static boolean extractWaterForBlockRecipe(
+            final ItemStack stack,
+            final Level level,
+            final Player player,
+            final BlockPos pos,
+            final WaterExtractorRecipes.BlockExtraction recipe
+    ) {
+        return recipe.replacementState()
+                .map(replacement -> extractWaterAndReplaceBlock(stack, level, player, pos, replacement, recipe.waterAmount()))
+                .orElseGet(() -> extractWaterAndClearBlock(stack, level, player, pos, recipe.waterAmount()));
     }
 
     private static boolean extractWaterAndClearBlock(

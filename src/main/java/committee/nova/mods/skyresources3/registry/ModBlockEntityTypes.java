@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.block.entity.AqueousMachineBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CrucibleBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CrucibleInserterBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CombustionCollectorBlockEntity;
@@ -78,6 +79,16 @@ public final class ModBlockEntityTypes {
             BLOCK_ENTITY_TYPES.register(
                     "rock_cleaner",
                     () -> new BlockEntityType<>(RockCleanerBlockEntity::new, ModBlocks.ROCK_CLEANER.get())
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AqueousMachineBlockEntity>>
+            AQUEOUS_MACHINE =
+            BLOCK_ENTITY_TYPES.register(
+                    "aqueous_machine",
+                    () -> new BlockEntityType<>(
+                            AqueousMachineBlockEntity::new,
+                            ModBlocks.AQUEOUS_CONCENTRATOR.get(),
+                            ModBlocks.AQUEOUS_DECONCENTRATOR.get()
+                    )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MachineCasingBlockEntity>> MACHINE_CASING =
             BLOCK_ENTITY_TYPES.register(

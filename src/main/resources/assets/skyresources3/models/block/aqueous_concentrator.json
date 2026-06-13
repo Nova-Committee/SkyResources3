@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "skyresources3:block/steel_machine",
+    "front": "skyresources3:block/aqueous_concentrator",
+    "side": "skyresources3:block/steel_machine"
+  }
+}

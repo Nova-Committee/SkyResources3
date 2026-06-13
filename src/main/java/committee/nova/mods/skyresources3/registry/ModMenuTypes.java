@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.menu.AqueousMachineMenu;
 import committee.nova.mods.skyresources3.menu.CombustionCollectorMenu;
 import committee.nova.mods.skyresources3.menu.CombustionControllerMenu;
 import committee.nova.mods.skyresources3.menu.CrucibleInserterMenu;
@@ -36,6 +37,8 @@ public final class ModMenuTypes {
             MENU_TYPES.register("rock_crusher", () -> IMenuTypeExtension.create(RockCrusherMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<RockCleanerMenu>> ROCK_CLEANER =
             MENU_TYPES.register("rock_cleaner", () -> IMenuTypeExtension.create(RockCleanerMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<AqueousMachineMenu>> AQUEOUS_MACHINE =
+            MENU_TYPES.register("aqueous_machine", () -> IMenuTypeExtension.create(AqueousMachineMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<MachineCasingMenu>> MACHINE_CASING =
             MENU_TYPES.register("machine_casing", () -> IMenuTypeExtension.create(MachineCasingMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<CombustionCollectorMenu>> COMBUSTION_COLLECTOR =

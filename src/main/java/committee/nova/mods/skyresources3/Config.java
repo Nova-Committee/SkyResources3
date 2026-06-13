@@ -60,6 +60,18 @@ public final class Config {
     private static final ModConfigSpec.IntValue ROCK_CLEANER_SPEED = BUILDER
             .comment("Rock cleaner progress added per tick.")
             .defineInRange("rockCleanerSpeed", 5, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue AQUEOUS_CONCENTRATOR_POWER_USAGE = BUILDER
+            .comment("Energy consumed by the aqueous concentrator per processing tick.")
+            .defineInRange("aqueousConcentratorPowerUsage", 80, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue AQUEOUS_CONCENTRATOR_SPEED = BUILDER
+            .comment("Aqueous concentrator progress added per tick.")
+            .defineInRange("aqueousConcentratorSpeed", 5, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue AQUEOUS_DECONCENTRATOR_POWER_USAGE = BUILDER
+            .comment("Energy consumed by the aqueous deconcentrator per processing tick.")
+            .defineInRange("aqueousDeconcentratorPowerUsage", 80, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue AQUEOUS_DECONCENTRATOR_SPEED = BUILDER
+            .comment("Aqueous deconcentrator progress added per tick.")
+            .defineInRange("aqueousDeconcentratorSpeed", 10, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue COMBUSTION_CONTROLLER_TICKS = BUILDER
             .comment("Cooldown in ticks between smart combustion controller crafts.")
             .defineInRange("combustionControllerTicks", 20, 0, Integer.MAX_VALUE);
@@ -101,6 +113,10 @@ public final class Config {
     public static int rockCrusherSpeed;
     public static int rockCleanerPowerUsage;
     public static int rockCleanerSpeed;
+    public static int aqueousConcentratorPowerUsage;
+    public static int aqueousConcentratorSpeed;
+    public static int aqueousDeconcentratorPowerUsage;
+    public static int aqueousDeconcentratorSpeed;
     public static int combustionControllerTicks;
     public static boolean addBeetrootSeedDrop;
     public static boolean addMelonSeedDrop;
@@ -128,6 +144,10 @@ public final class Config {
         rockCrusherSpeed = ROCK_CRUSHER_SPEED.get();
         rockCleanerPowerUsage = ROCK_CLEANER_POWER_USAGE.get();
         rockCleanerSpeed = ROCK_CLEANER_SPEED.get();
+        aqueousConcentratorPowerUsage = AQUEOUS_CONCENTRATOR_POWER_USAGE.get();
+        aqueousConcentratorSpeed = AQUEOUS_CONCENTRATOR_SPEED.get();
+        aqueousDeconcentratorPowerUsage = AQUEOUS_DECONCENTRATOR_POWER_USAGE.get();
+        aqueousDeconcentratorSpeed = AQUEOUS_DECONCENTRATOR_SPEED.get();
         combustionControllerTicks = COMBUSTION_CONTROLLER_TICKS.get();
         addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
         addMelonSeedDrop = ADD_MELON_SEED_DROP.get();

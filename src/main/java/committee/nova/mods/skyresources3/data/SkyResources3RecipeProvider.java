@@ -166,6 +166,28 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_advanced_power_component", has(ModItems.ADVANCED_POWER_COMPONENT.get()))
                 .save(this.output);
 
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.AQUEOUS_CONCENTRATOR.get())
+                .define('X', Items.IRON_INGOT)
+                .define('A', Blocks.SNOW)
+                .define('Y', ModItems.ADVANCED_POWER_COMPONENT.get())
+                .define('Z', ModItems.WATER_EXTRACTOR.get())
+                .pattern("XAX")
+                .pattern("XZX")
+                .pattern("XYX")
+                .unlockedBy("has_water_extractor", has(ModItems.WATER_EXTRACTOR.get()))
+                .save(this.output);
+
+        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.AQUEOUS_DECONCENTRATOR.get())
+                .define('X', Items.IRON_INGOT)
+                .define('A', Blocks.SAND)
+                .define('Y', ModItems.ADVANCED_POWER_COMPONENT.get())
+                .define('Z', ModItems.WATER_EXTRACTOR.get())
+                .pattern("XAX")
+                .pattern("XZX")
+                .pattern("XYX")
+                .unlockedBy("has_water_extractor", has(ModItems.WATER_EXTRACTOR.get()))
+                .save(this.output);
+
         this.buildCombustionMachineRecipes();
 
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())

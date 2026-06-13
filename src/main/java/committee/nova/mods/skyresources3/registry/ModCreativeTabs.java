@@ -42,6 +42,8 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.CRUCIBLE_INSERTER.get());
                         output.accept(ModItems.ROCK_CRUSHER.get());
                         output.accept(ModItems.ROCK_CLEANER.get());
+                        output.accept(ModItems.AQUEOUS_CONCENTRATOR.get());
+                        output.accept(ModItems.AQUEOUS_DECONCENTRATOR.get());
                         for (final MachineVariant variant : MachineVariant.values()) {
                             output.accept(ModItems.MACHINE_CASINGS.get(variant).get());
                         }

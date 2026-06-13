@@ -52,6 +52,10 @@ public final class ModItems {
             blockItem("crucible_inserter", ModBlocks.CRUCIBLE_INSERTER);
     public static final DeferredItem<BlockItem> ROCK_CRUSHER = blockItem("rock_crusher", ModBlocks.ROCK_CRUSHER);
     public static final DeferredItem<BlockItem> ROCK_CLEANER = blockItem("rock_cleaner", ModBlocks.ROCK_CLEANER);
+    public static final DeferredItem<BlockItem> AQUEOUS_CONCENTRATOR =
+            blockItem("aqueous_concentrator", ModBlocks.AQUEOUS_CONCENTRATOR);
+    public static final DeferredItem<BlockItem> AQUEOUS_DECONCENTRATOR =
+            blockItem("aqueous_deconcentrator", ModBlocks.AQUEOUS_DECONCENTRATOR);
     public static final Map<MachineVariant, DeferredItem<BlockItem>> MACHINE_CASINGS = registerMachineCasingItems();
     public static final DeferredItem<BlockItem> COMBUSTION_COLLECTOR =
             blockItem("combustion_collector", ModBlocks.COMBUSTION_COLLECTOR);

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "skyresources3:block/aqueous_deconcentrator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "skyresources3:block/aqueous_deconcentrator"
+    },
+    "facing=south": {
+      "model": "skyresources3:block/aqueous_deconcentrator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "skyresources3:block/aqueous_deconcentrator",
+      "y": 270
+    }
+  }
+}
