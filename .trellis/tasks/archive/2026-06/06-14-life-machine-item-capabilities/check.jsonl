@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "检查 capability、测试覆盖和验证命令"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "检查修改文件位置和注册入口"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "检查自动化插入/抽出的失败语义"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "检查自动化、菜单和运行时物品状态一致性"}
