@@ -100,7 +100,9 @@
 
 ### Main Changes
 
-(Add details)
+- 修复指南 JEI 配方动作的成功判定：调用 `showTypes` / `show` 后只有 JEI Recipes GUI 实际打开才视为成功。
+- 为 JEI present profile 补齐发布前 GUI 烟测证据：指南 `Y` 打开、搜索、页面动作、Life Infusion 配方动作、Fusion Table 菜单和岛屿/团队命令。
+- 更新迁移审计、runbook、closeout checklist 和集成规范，明确 no-JEI profile 仅在打包无 JEI 版本时条件验证。
 
 ### Git Commits
 
@@ -110,7 +112,13 @@
 
 ### Testing
 
-- [OK] (Add test results)
+- [OK] `./gradlew.bat compileJava`
+- [OK] `./gradlew.bat build`
+- [OK] `git diff --check`
+- [OK] `git diff --cached --check`
+- [OK] `powershell -ExecutionPolicy Bypass -File "scripts/check-serena-java.ps1"`
+- [OK] `runClient --no-daemon` JEI-present GUI smoke reached a local world and captured guide, JEI, Fusion Table, and island/team evidence.
+- [OK] Minecraft client/cmd process cleanup verified.
 
 ### Status
 
@@ -118,7 +126,7 @@
 
 ### Next Steps
 
-- None - task complete
+- Run the no-JEI fallback smoke only if preparing a distribution profile without JEI.
 
 
 ## Session 4: 迁移生命机器菜单界面
@@ -779,3 +787,36 @@
 ### Next Steps
 
 - Complete the remaining manual GUI click-through from `plans/client-manual-smoke-runbook.md` in a human-observed focused client session before a release tag.
+
+
+## Session 23: 客户端 GUI 发布烟测验证
+
+**Date**: 2026-06-14
+**Task**: 客户端 GUI 发布烟测验证
+**Branch**: `master`
+
+### Summary
+
+完成 JEI-present 客户端发布前 GUI 烟测：验证指南打开、搜索、页面动作、JEI 配方动作、Fusion Table 菜单和岛屿团队命令，并修复指南 JEI 配方动作静默成功问题。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `067ec54` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
