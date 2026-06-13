@@ -4,10 +4,14 @@ import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -25,7 +29,6 @@ public final class VoidIslandCommands {
     private static final int ISLAND_SPACING = 512;
     private static final int ISLAND_Y = 192;
     private static final int ISLANDS_PER_ROW = 256;
-    private static final int STARTER_ISLAND_RADIUS = 2;
     private static final int STARTER_RESET_RADIUS = 3;
     private static final int STARTER_RESET_MIN_Y_OFFSET = -1;
     private static final int STARTER_RESET_MAX_Y_OFFSET = 4;
@@ -39,7 +42,14 @@ public final class VoidIslandCommands {
 
     private static LiteralArgumentBuilder<CommandSourceStack> islandNode() {
         return Commands.literal("island")
-                .then(Commands.literal("create").executes(context -> createIsland(context.getSource())))
+                .then(Commands.literal("create")
+                        .executes(context -> createIsland(context.getSource(), IslandTemplate.DEFAULT_ID))
+                        .then(Commands.argument("type", StringArgumentType.word())
+                                .suggests(VoidIslandCommands::suggestIslandTemplates)
+                                .executes(context -> createIsland(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "type")
+                                ))))
                 .then(Commands.literal("home").executes(context -> teleportHome(context.getSource())))
                 .then(Commands.literal("spawn").executes(context -> teleportSpawn(context.getSource())))
                 .then(Commands.literal("visit")
@@ -49,8 +59,18 @@ public final class VoidIslandCommands {
                                         StringArgumentType.getString(context, "player")
                                 ))))
                 .then(Commands.literal("reset")
-                        .executes(context -> requestReset(context.getSource()))
-                        .then(Commands.literal("confirm").executes(context -> resetIsland(context.getSource()))))
+                        .executes(context -> requestReset(context.getSource(), null))
+                        .then(Commands.literal("confirm").executes(context -> resetIsland(context.getSource(), null)))
+                        .then(Commands.argument("type", StringArgumentType.word())
+                                .suggests(VoidIslandCommands::suggestIslandTemplates)
+                                .executes(context -> requestReset(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "type")
+                                ))
+                                .then(Commands.literal("confirm").executes(context -> resetIsland(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "type")
+                                )))))
                 .then(Commands.literal("info").executes(context -> showInfo(context.getSource())))
                 .then(Commands.literal("invite")
                         .then(Commands.argument("player", StringArgumentType.word())
@@ -78,7 +98,7 @@ public final class VoidIslandCommands {
                 .then(Commands.literal("info").executes(context -> showTeamInfo(context.getSource())));
     }
 
-    private static int createIsland(final CommandSourceStack source) throws CommandSyntaxException {
+    private static int createIsland(final CommandSourceStack source, final String typeName) throws CommandSyntaxException {
         if (!Config.enableVoidIslandFeatures) {
             return disabled(source);
         }
@@ -97,18 +117,25 @@ public final class VoidIslandCommands {
             return 0;
         }
 
+        final IslandTemplate template = parseTemplate(source, typeName).orElse(null);
+        if (template == null) {
+            return 0;
+        }
+
         final BlockPos center = nextIslandCenter(islands.islandCount());
-        buildStarterIsland(islandLevel, center);
+        template.build(islandLevel, center);
         final IslandSavedData.IslandRecord island = islands.createIsland(
                 player.getUUID(),
                 player.getName().getString(),
                 islandLevel.dimension(),
-                center.above()
+                template.home(center),
+                template.id()
         );
         teleport(player, islandLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable(
                         "message.skyresources3.island.created",
+                        template.id(),
                         formatPosition(island.home())
                 ),
                 false
@@ -208,7 +235,7 @@ public final class VoidIslandCommands {
         return 1;
     }
 
-    private static int requestReset(final CommandSourceStack source) throws CommandSyntaxException {
+    private static int requestReset(final CommandSourceStack source, final String typeName) throws CommandSyntaxException {
         if (!Config.enableVoidIslandFeatures) {
             return disabled(source);
         }
@@ -226,14 +253,27 @@ public final class VoidIslandCommands {
             return 0;
         }
 
+        final IslandSavedData.IslandRecord island = islands.getIsland(player.getUUID()).orElseThrow();
+        final IslandTemplate template = getResetTemplate(source, island, typeName).orElse(null);
+        if (template == null) {
+            return 0;
+        }
+
+        final String confirmCommand = typeName == null
+                ? "/island reset confirm"
+                : "/island reset " + template.id() + " confirm";
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.reset.confirm"),
+                () -> Component.translatable(
+                        "message.skyresources3.island.reset.confirm",
+                        template.id(),
+                        confirmCommand
+                ),
                 false
         );
         return 1;
     }
 
-    private static int resetIsland(final CommandSourceStack source) throws CommandSyntaxException {
+    private static int resetIsland(final CommandSourceStack source, final String typeName) throws CommandSyntaxException {
         if (!Config.enableVoidIslandFeatures) {
             return disabled(source);
         }
@@ -252,6 +292,11 @@ public final class VoidIslandCommands {
             return 0;
         }
 
+        final IslandTemplate template = getResetTemplate(source, island, typeName).orElse(null);
+        if (template == null) {
+            return 0;
+        }
+
         final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
         if (targetLevel == null) {
             source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
@@ -260,10 +305,15 @@ public final class VoidIslandCommands {
 
         final BlockPos center = island.home().below();
         clearStarterIslandArea(targetLevel, center);
-        buildStarterIsland(targetLevel, center);
+        template.build(targetLevel, center);
+        islands.updateIslandType(player.getUUID(), template.id());
         teleport(player, targetLevel, island.home());
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.reset.done", formatPosition(island.home())),
+                () -> Component.translatable(
+                        "message.skyresources3.island.reset.done",
+                        template.id(),
+                        formatPosition(island.home())
+                ),
                 false
         );
         return 1;
@@ -287,6 +337,7 @@ public final class VoidIslandCommands {
                 () -> Component.translatable(
                         "message.skyresources3.island.info",
                         island.ownerName(),
+                        island.type(),
                         island.dimension().identifier(),
                         formatPosition(island.home())
                 ),
@@ -544,19 +595,6 @@ public final class VoidIslandCommands {
         return new BlockPos(x, ISLAND_Y, z);
     }
 
-    private static void buildStarterIsland(final ServerLevel level, final BlockPos center) {
-        for (int x = -STARTER_ISLAND_RADIUS; x <= STARTER_ISLAND_RADIUS; x++) {
-            for (int z = -STARTER_ISLAND_RADIUS; z <= STARTER_ISLAND_RADIUS; z++) {
-                level.setBlock(
-                        center.offset(x, 0, z),
-                        Blocks.GRASS_BLOCK.defaultBlockState(),
-                        Block.UPDATE_ALL
-                );
-            }
-        }
-        level.setBlock(center.offset(2, 1, 2), Blocks.OAK_SAPLING.defaultBlockState(), Block.UPDATE_ALL);
-    }
-
     private static void clearStarterIslandArea(final ServerLevel level, final BlockPos center) {
         for (int x = -STARTER_RESET_RADIUS; x <= STARTER_RESET_RADIUS; x++) {
             for (int y = STARTER_RESET_MIN_Y_OFFSET; y <= STARTER_RESET_MAX_Y_OFFSET; y++) {
@@ -582,6 +620,37 @@ public final class VoidIslandCommands {
 
     private static String formatPosition(final BlockPos pos) {
         return pos.getX() + " " + pos.getY() + " " + pos.getZ();
+    }
+
+    private static CompletableFuture<Suggestions> suggestIslandTemplates(
+            final CommandContext<CommandSourceStack> context,
+            final SuggestionsBuilder builder
+    ) {
+        IslandTemplate.ids().forEach(builder::suggest);
+        return builder.buildFuture();
+    }
+
+    private static Optional<IslandTemplate> getResetTemplate(
+            final CommandSourceStack source,
+            final IslandSavedData.IslandRecord island,
+            final String typeName
+    ) {
+        if (typeName == null) {
+            return Optional.of(IslandTemplate.byId(island.type()).orElse(IslandTemplate.defaultTemplate()));
+        }
+        return parseTemplate(source, typeName);
+    }
+
+    private static Optional<IslandTemplate> parseTemplate(final CommandSourceStack source, final String typeName) {
+        final Optional<IslandTemplate> template = IslandTemplate.byId(typeName);
+        if (template.isEmpty()) {
+            source.sendFailure(Component.translatable(
+                    "message.skyresources3.island.type.invalid",
+                    typeName,
+                    String.join(", ", IslandTemplate.ids())
+            ));
+        }
+        return template;
     }
 
     private VoidIslandCommands() {

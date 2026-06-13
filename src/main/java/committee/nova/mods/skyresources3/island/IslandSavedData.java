@@ -57,25 +57,46 @@ public final class IslandSavedData extends SavedData {
             final UUID owner,
             final String ownerName,
             final ResourceKey<Level> dimension,
-            final BlockPos home
+            final BlockPos home,
+            final String type
     ) {
-        final IslandRecord island = new IslandRecord(owner, ownerName, dimension, home);
+        final IslandRecord island = new IslandRecord(owner, ownerName, dimension, home, type);
         this.islands.put(owner, island);
         this.setDirty();
         return island;
+    }
+
+    public Optional<IslandRecord> updateIslandType(final UUID owner, final String type) {
+        final IslandRecord island = this.islands.get(owner);
+        if (island == null) {
+            return Optional.empty();
+        }
+
+        final IslandRecord updated = new IslandRecord(
+                island.owner(),
+                island.ownerName(),
+                island.dimension(),
+                island.home(),
+                type
+        );
+        this.islands.put(owner, updated);
+        this.setDirty();
+        return Optional.of(updated);
     }
 
     public record IslandRecord(
             UUID owner,
             String ownerName,
             ResourceKey<Level> dimension,
-            BlockPos home
+            BlockPos home,
+            String type
     ) {
         private static final Codec<IslandRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 UUIDUtil.STRING_CODEC.fieldOf("owner").forGetter(IslandRecord::owner),
                 Codec.STRING.fieldOf("owner_name").forGetter(IslandRecord::ownerName),
                 ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(IslandRecord::dimension),
-                BlockPos.CODEC.fieldOf("home").forGetter(IslandRecord::home)
+                BlockPos.CODEC.fieldOf("home").forGetter(IslandRecord::home),
+                Codec.STRING.optionalFieldOf("type", IslandTemplate.DEFAULT_ID).forGetter(IslandRecord::type)
         ).apply(instance, IslandRecord::new));
     }
 }
