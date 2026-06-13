@@ -1,7 +1,7 @@
 package committee.nova.mods.skyresources3.block.entity;
 
 import committee.nova.mods.skyresources3.item.HealthGemItem;
-import committee.nova.mods.skyresources3.item.InfusionStoneItem;
+import committee.nova.mods.skyresources3.recipe.InfusionRecipes;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import java.util.Optional;
@@ -135,7 +135,8 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
         }
 
         final BlockPos targetPos = this.worldPosition.below();
-        final Optional<InfusionStoneItem.InfusionRecipe> recipe = InfusionStoneItem.findRecipe(
+        final Optional<InfusionRecipes.Match> recipe = InfusionRecipes.find(
+                level,
                 level.getBlockState(targetPos),
                 this.input
         );

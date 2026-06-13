@@ -82,6 +82,8 @@ Use `ProcessRecipes.find(level, process, items)` or `ProcessRecipes.findAll(leve
 
 Runtime systems that produce processing outputs must query `ProcessRecipes` from a `ServerLevel`. Do not duplicate output tables in event handlers, items, block entities, or screens. Client/item methods that do not receive a `Level`, such as `Item#getDestroySpeed`, may keep a narrow built-in candidate hint for interaction speed only; those hints must not spawn outputs or replace server recipe matching.
 
+For `ProcessRecipes.INFUSION`, recipe inputs have a positional convention on top of unordered matching: input `0` is the consumed ingredient stack, input `1` is the target block represented by `BlockState#getBlock().asItem()` or an item tag. The `parameter` is the health cost. Runtime code should use `InfusionRecipes` instead of reading those fields directly.
+
 ---
 
 ## Data Generation

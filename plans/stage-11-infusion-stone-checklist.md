@@ -8,6 +8,7 @@
 - [x] Add config and language entries for infusion stone behavior and failure messages.
 - [x] Run build and GameTest server; datagen only if generated data changes.
 - [x] Commit this migration slice with a Chinese message.
+- [x] Follow-up: hand infusion and Life Infuser runtime recipes now come from `skyresources3:process` data.
 
 Deferred:
 - [x] Acacia sapling infusion from cactus fruit needle waits for the old cactus fruit needle block migration.

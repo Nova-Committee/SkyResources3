@@ -13,6 +13,7 @@
 - [x] Generated initial old process recipe data for freezer, rock grinder, knife, and the low-risk primus alchemical dust combustion recipe.
 - [x] Recorded the new recipe contract in `.trellis/spec/backend/recipe-guidelines.md`.
 - [x] Follow-up: cutting knife and rock grinder runtime logic now consumes process recipe data.
+- [x] Follow-up: infusion stone and Life Infuser runtime logic now consumes process recipe data.
 
 ## Generated Process Recipes
 
@@ -41,7 +42,6 @@
 
 ## Deferred
 
-- [ ] Switch current hardcoded infusion behavior to consume process recipes in a focused follow-up slice.
 - [ ] Migrate fusion recipes after verifying old `alchemyComponent`, `baseComponent`, and `techComponent` metadata mappings per recipe.
 - [ ] Add fluid-capable process recipe data after fluid storage/capability design is in place.
 - [ ] Add JEI/EMI display categories after menu/screen and integration dependencies are selected.

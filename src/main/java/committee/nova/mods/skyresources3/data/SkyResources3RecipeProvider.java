@@ -300,6 +300,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.buildFreezerRecipes();
         this.buildRockGrinderRecipes();
         this.buildKnifeRecipes();
+        this.buildInfusionRecipes();
         this.buildCombustionRecipes();
     }
 
@@ -436,6 +437,134 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 6,
                 input(ModBlocks.PETRIFIED_PLANKS.get())
         );
+    }
+
+    private void buildInfusionRecipes() {
+        this.infusionRecipe(
+                "acacia_sapling",
+                10,
+                Blocks.ACACIA_SAPLING,
+                1,
+                input(ModItems.PRIMUS_ALCHEMICAL_DUST.get(), 10),
+                input(ModBlocks.CACTUS_FRUIT_NEEDLE.get())
+        );
+        this.infusionRecipe("oak_sapling", 10, Blocks.OAK_SAPLING, 1, input(Items.APPLE, 4), input(ItemTags.SAPLINGS));
+        this.infusionRecipe(
+                "coarse_dirt",
+                15,
+                Blocks.COARSE_DIRT,
+                1,
+                input(ModItems.CACTUS_FRUIT.get(), 4),
+                input(Blocks.RED_SAND)
+        );
+        this.infusionRecipe(
+                "cactus",
+                8,
+                Blocks.CACTUS,
+                3,
+                input(ModItems.PRIMUS_ALCHEMICAL_DUST.get(), 6),
+                input(Blocks.CACTUS)
+        );
+        this.infusionRecipe(
+                "dead_bush",
+                10,
+                Blocks.DEAD_BUSH,
+                1,
+                input(Items.ROTTEN_FLESH, 4),
+                input(ItemTags.SAPLINGS)
+        );
+        this.infusionRecipe(
+                "grass_block",
+                14,
+                Blocks.GRASS_BLOCK,
+                1,
+                input(Items.WHEAT_SEEDS, 4),
+                input(Blocks.DIRT)
+        );
+        this.infusionRecipe(
+                "mycelium",
+                16,
+                Blocks.MYCELIUM,
+                1,
+                input(Blocks.BROWN_MUSHROOM, 4),
+                input(Blocks.DIRT)
+        );
+        this.infusionRecipe("apple", 10, Items.APPLE, 1, input(Items.SUGAR, 3), input(Blocks.HAY_BLOCK));
+        this.infusionRecipe(
+                "jungle_sapling",
+                19,
+                Blocks.JUNGLE_SAPLING,
+                1,
+                input(Items.COCOA_BEANS, 10),
+                input(ItemTags.SAPLINGS)
+        );
+        this.infusionRecipe(
+                "birch_sapling",
+                19,
+                Blocks.BIRCH_SAPLING,
+                1,
+                input(Items.BONE_MEAL, 10),
+                input(ItemTags.SAPLINGS)
+        );
+        this.infusionRecipe(
+                "sugar_cane",
+                17,
+                Items.SUGAR_CANE,
+                1,
+                input(Items.GLISTERING_MELON_SLICE, 3),
+                input(Blocks.PUMPKIN)
+        );
+        this.infusionRecipe(
+                "chorus_flower",
+                19,
+                Blocks.CHORUS_FLOWER,
+                1,
+                input(Items.POPPED_CHORUS_FRUIT, 3),
+                input(Blocks.RED_MUSHROOM)
+        );
+        this.infusionRecipe(
+                "chorus_fruit",
+                12,
+                Items.CHORUS_FRUIT,
+                1,
+                input(Items.ENDER_EYE, 4),
+                input(Blocks.MELON)
+        );
+        this.grassTargetInfusionRecipes("nether_wart", 12, Items.NETHER_WART, 1, input(Items.SPIDER_EYE, 4));
+        this.grassTargetInfusionRecipes("red_mushroom", 12, Blocks.RED_MUSHROOM, 1, input(Items.RED_DYE, 8));
+        this.grassTargetInfusionRecipes("brown_mushroom", 12, Blocks.BROWN_MUSHROOM, 1, input(Items.COCOA_BEANS, 8));
+        this.infusionRecipe(
+                "health_gem",
+                15,
+                ModItems.HEALTH_GEM.get(),
+                1,
+                input(ModItems.ALCHEMICAL_DIAMOND.get()),
+                input(Blocks.CHORUS_FLOWER)
+        );
+    }
+
+    private void grassTargetInfusionRecipes(
+            final String name,
+            final int healthCost,
+            final ItemLike output,
+            final int outputCount,
+            final ProcessIngredient ingredient
+    ) {
+        this.infusionRecipe(name + "_from_short_grass", healthCost, output, outputCount, ingredient, input(Blocks.SHORT_GRASS));
+        this.infusionRecipe(name + "_from_fern", healthCost, output, outputCount, ingredient, input(Blocks.FERN));
+        this.infusionRecipe(name + "_from_tall_grass", healthCost, output, outputCount, ingredient, input(Blocks.TALL_GRASS));
+        this.infusionRecipe(name + "_from_large_fern", healthCost, output, outputCount, ingredient, input(Blocks.LARGE_FERN));
+    }
+
+    private void infusionRecipe(
+            final String name,
+            final int healthCost,
+            final ItemLike output,
+            final int outputCount,
+            final ProcessIngredient ingredient,
+            final ProcessIngredient target
+    ) {
+        this.processRecipe(ProcessRecipes.INFUSION, name, (float) healthCost, output, outputCount, ingredient, target);
     }
 
     private void buildCombustionRecipes() {
