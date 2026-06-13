@@ -16,4 +16,4 @@ Restore the practical part of the old guide rich text marker behavior by renderi
 - [x] Add representative inline markers to migrated guide text.
 - [x] Update guide spec and migration/checklist notes.
 - [x] Run compileJava, runData, build, runGameTestServer.
-- [ ] Chinese commit and archive Trellis task.
+- [x] Chinese commit and archive Trellis task.
