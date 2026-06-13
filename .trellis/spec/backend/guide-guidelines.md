@@ -51,6 +51,8 @@ Use this contract when adding or extending interactive guide page entries such a
 - `{action:n}` markers are a client rendering hint only; invalid or out-of-range markers should degrade to readable text instead of throwing.
 - Structure detail rendering should use `GuideStructure.BlockEntry` coordinates for both the scrollable block list and a client-only layout preview; keep any 3D or 2D rendering code out of common guide data.
 - Client screens may render and dispatch actions, but common guide data must not import client-only classes.
+- The default guide key must avoid current vanilla key mappings. Minecraft `1.21.11` uses `G` for `key.quickActions`,
+  so SkyResources3 uses `Y` for `key.skyresources3.guide` by default.
 - User-visible action labels, tooltips, feedback messages, and structure titles must use translation keys except item display names coming from `ItemStack#getHoverName()`.
 - Server-side guide integrity tests should validate the common data contract without loading client-only screen classes.
 
