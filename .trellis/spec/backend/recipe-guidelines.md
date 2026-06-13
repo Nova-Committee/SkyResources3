@@ -162,8 +162,8 @@ Controller, or the machine-casing multiblock validation used by combustion.
 - `./gradlew.bat runData` when recipes, tags, or loot tables change
 - `./gradlew.bat build`
 - `./gradlew.bat runGameTestServer` for combustion block-entity or multiblock changes
-- Add focused GameTests when reusable machine test helpers exist for asserting controller priority, redstone disable,
-  and collector overflow behavior.
+- Keep focused GameTests for controller priority/filter selection and collector overflow/drop fallback registered in
+  `ModGameTests`; add similarly narrow tests when redstone-disable or structure validation behavior changes.
 
 ### 7. Wrong vs Correct
 

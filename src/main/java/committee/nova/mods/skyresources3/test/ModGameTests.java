@@ -107,6 +107,16 @@ public final class ModGameTests {
                     "condenser_blocked_output",
                     () -> MachineRuntimeGameTests::condenserKeepsSourceWhenOutputIsBlocked
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_PRIORITY =
+            TEST_FUNCTIONS.register(
+                    "combustion_priority",
+                    () -> MachineRuntimeGameTests::combustionControllerUsesFilterPriority
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_COLLECTOR_OVERFLOW =
+            TEST_FUNCTIONS.register(
+                    "combustion_collector_overflow",
+                    () -> MachineRuntimeGameTests::combustionCollectorDropsOverflow
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SURVIVALIST_FISHING_LOOT =
             TEST_FUNCTIONS.register(
                     "survivalist_fishing_loot",
@@ -150,6 +160,8 @@ public final class ModGameTests {
         registerFunctionTest(event, "life_infuser_item_capability", LIFE_INFUSER_ITEM_CAPABILITY, environment);
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
+        registerFunctionTest(event, "combustion_priority", COMBUSTION_PRIORITY, environment);
+        registerFunctionTest(event, "combustion_collector_overflow", COMBUSTION_COLLECTOR_OVERFLOW, environment);
         registerFunctionTest(event, "survivalist_fishing_loot", SURVIVALIST_FISHING_LOOT, environment);
         registerFunctionTest(event, "guide_data_integrity", GUIDE_DATA_INTEGRITY, environment);
         registerFunctionTest(event, "menu_type_registration", MENU_TYPE_REGISTRATION, environment);

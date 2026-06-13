@@ -15,9 +15,11 @@
 - [x] Advanced combustion structures accept collector/controller as metal-tier side/top blocks.
 - [x] Wood and stone combustion structures do not accept collector/controller blocks.
 - [x] Manual combustion routes outputs into an adjacent collector when one is present.
+- [x] Focused GameTests cover controller filter priority and collector overflow/drop fallback.
 - [x] Recipes, block loot, block tags, language keys, item definitions, models, blockstates, and textures are present.
 - [x] `compileJava`, `runData`, `build`, `runGameTestServer`, and `git diff --check` pass.
 
-## Deferred
+## Automation Closeout
 
-- Add focused GameTests for exact controller priority and collector overflow behavior when the project has reusable machine test helpers.
+- `MachineRuntimeGameTests.combustionControllerUsesFilterPriority` verifies left-to-right Smart Combustion Controller filter selection when multiple chamber recipes are possible.
+- `MachineRuntimeGameTests.combustionCollectorDropsOverflow` verifies partial collector insertion and chamber drop fallback when collector capacity is blocked.
