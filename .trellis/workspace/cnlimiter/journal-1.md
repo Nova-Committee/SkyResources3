@@ -389,3 +389,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 12: 离线身份团队命令
+
+**Date**: 2026-06-14
+**Task**: 离线身份团队命令
+**Branch**: `master`
+
+### Summary
+
+新增本地玩家身份缓存，支持离线缓存玩家的团队邀请和岛屿信任命令，并补充 GameTest、迁移计划与 island command spec。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5ccc3f7` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
