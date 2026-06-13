@@ -323,3 +323,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 10: 空岛离线访问查找
+
+**Date**: 2026-06-14
+**Task**: 空岛离线访问查找
+**Branch**: `master`
+
+### Summary
+
+支持 /island visit 通过保存名访问离线岛屿：IslandSavedData 按 ownerName 查找，TeamSavedData 按 owner/member name 查找，visit 保持在线 UUID 语义并增加离线 fallback；新增 GameTest 覆盖离线 owner 和 team member 大小写不敏感访问；同步 Stage 20、68、69、总迁移计划和 island command spec。验证通过 compileJava、runGameTestServer、build、git diff --check、git diff --cached --check。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `920eca5` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
