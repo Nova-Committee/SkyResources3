@@ -29,6 +29,7 @@ public final class VoidIslandCommands {
     private static final int ISLAND_SPACING = 512;
     private static final int ISLANDS_PER_ROW = 256;
     private static final int STARTER_RESET_RADIUS = 3;
+    private static final int MAX_ISLAND_RESET_RADIUS = ISLAND_SPACING / 2 - 1;
     private static final int STARTER_RESET_MIN_Y_OFFSET = -1;
     private static final int STARTER_RESET_MAX_Y_OFFSET = 4;
     private static final BlockPos TEMPORARY_SPAWN_COLUMN = new BlockPos(0, 0, 0);
@@ -445,7 +446,7 @@ public final class VoidIslandCommands {
         }
 
         final BlockPos center = island.home().below();
-        clearStarterIslandArea(targetLevel, center);
+        clearIslandResetArea(targetLevel, center);
         template.build(targetLevel, center);
         islands.updateIslandType(player.getUUID(), template.id());
         teleport(player, targetLevel, island.home());
@@ -754,14 +755,19 @@ public final class VoidIslandCommands {
         return new BlockPos(x, VoidIslandWorld.ISLAND_Y, z);
     }
 
-    private static void clearStarterIslandArea(final ServerLevel level, final BlockPos center) {
-        for (int x = -STARTER_RESET_RADIUS; x <= STARTER_RESET_RADIUS; x++) {
+    private static void clearIslandResetArea(final ServerLevel level, final BlockPos center) {
+        final int resetRadius = resetClearRadius();
+        for (int x = -resetRadius; x <= resetRadius; x++) {
             for (int y = STARTER_RESET_MIN_Y_OFFSET; y <= STARTER_RESET_MAX_Y_OFFSET; y++) {
-                for (int z = -STARTER_RESET_RADIUS; z <= STARTER_RESET_RADIUS; z++) {
+                for (int z = -resetRadius; z <= resetRadius; z++) {
                     level.setBlock(center.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                 }
             }
         }
+    }
+
+    private static int resetClearRadius() {
+        return Math.max(STARTER_RESET_RADIUS, Math.min(Config.islandProtectionRadius, MAX_ISLAND_RESET_RADIUS));
     }
 
     private static void teleport(final ServerPlayer player, final ServerLevel level, final BlockPos home) {

@@ -11,9 +11,9 @@
 ## Migrated Behavior
 
 - Added `/island reset` and `/skyresources3 island reset` as non-destructive prompts.
-- Added `/island reset confirm` and `/skyresources3 island reset confirm` to rebuild the starter platform area.
+- Added `/island reset confirm` and `/skyresources3 island reset confirm` to clear the island reset area and rebuild the starter platform.
 - Reset is restricted to personal island owners; team members cannot reset the team owner's island.
-- Reset clears only the starter island footprint before rebuilding the 5x5 grass platform and sapling.
+- Reset clears the configured island protection radius, capped by island spacing so neighboring islands are not wiped, before rebuilding the selected starter template.
 - Added `/island visit <player>` and `/skyresources3 island visit <player>` for online player islands.
 - Visit resolves a target player's own island first, then the target's team owner island.
 - Added `/island spawn` and `/skyresources3 island spawn` to teleport to the temporary overworld origin-heightmap spawn placeholder.
@@ -21,7 +21,6 @@
 
 ## Deferred Migration
 
-- Full island wipe remains deferred; Stage 67 keeps the island protection boundary configurable for break/place/right-click events.
 - Offline player visit lookup is deferred until player-name history or profile cache support exists.
 - Custom void-world spawn, vanilla shared-spawn resolution, island type templates, and world presets are deferred to the world generation phase.
 - Visit permissions and visitor interaction limits are handled by Stage 67 configurable island protection and trusted visitors.

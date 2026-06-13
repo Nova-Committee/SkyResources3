@@ -28,7 +28,9 @@ public final class IslandCommandGameTests {
     @SuppressWarnings("removal")
     public static void createInfoAndReset(final GameTestHelper helper) {
         final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
+        final int originalIslandProtectionRadius = Config.islandProtectionRadius;
         Config.enableVoidIslandFeatures = true;
+        Config.islandProtectionRadius = 4;
 
         try {
             final ServerPlayer player = helper.makeMockServerPlayerInLevel();
@@ -42,14 +44,33 @@ public final class IslandCommandGameTests {
                     "Created island should use the default type"
             );
 
+            final ServerLevel targetLevel = helper.getLevel().getServer().getLevel(created.dimension());
+            if (targetLevel == null) {
+                helper.fail("Expected target level for created island");
+            }
+            final BlockPos center = created.home().below();
+            final BlockPos protectedResidue = center.offset(Config.islandProtectionRadius, 2, 0);
+            final BlockPos outsideResidue = center.offset(Config.islandProtectionRadius + 1, 2, 0);
+            targetLevel.setBlock(protectedResidue, Blocks.DIAMOND_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
+            targetLevel.setBlock(outsideResidue, Blocks.GOLD_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
+
             assertCommandSucceeds(helper, player, "island info");
             assertCommandSucceeds(helper, player, "island reset " + SAND_TEMPLATE_ID + " confirm");
 
             final IslandSavedData.IslandRecord reset = getIslandOrFail(helper, islands, player);
             helper.assertValueEqual(SAND_TEMPLATE_ID, reset.type(), "Reset should persist the requested island type");
+            helper.assertTrue(
+                    targetLevel.getBlockState(protectedResidue).isAir(),
+                    "Reset should clear residue inside the island protection radius"
+            );
+            helper.assertTrue(
+                    targetLevel.getBlockState(outsideResidue).is(Blocks.GOLD_BLOCK),
+                    "Reset should not clear blocks outside the island protection radius"
+            );
             helper.succeed();
         } finally {
             Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+            Config.islandProtectionRadius = originalIslandProtectionRadius;
         }
     }
 

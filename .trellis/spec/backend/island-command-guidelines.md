@@ -52,8 +52,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - A team member without a personal island resolves `/island home` and `/island info` through the team owner's island.
 - `/island visit <player>` resolves the target player's own island first, then the target's team owner island.
 - `/island reset` is only a confirmation prompt; `/island reset confirm` performs the reset with the stored type.
-- `/island reset <type>` prompts for a type switch; `/island reset <type> confirm` rebuilds the starter footprint and persists the new type.
-- Island reset is restricted to personal island owners and currently rebuilds only the starter island footprint.
+- `/island reset <type>` prompts for a type switch; `/island reset <type> confirm` clears the island reset area, rebuilds the selected starter template, and persists the new type.
+- Island reset is restricted to personal island owners. Reset clearing uses the configured island protection radius and caps the clear radius by island spacing so one reset cannot wipe a neighboring island.
 - New islands are created in `skyresources3:void_island` when the data-pack dimension is available, with overworld fallback only for missing-dimension recovery.
 - `/island spawn` teleports to a generated spawn platform in `skyresources3:void_island` when available, with the old overworld origin-heightmap behavior as fallback.
 - `/island spawn` generates that shared spawn platform from `voidIslandSpawnPlatformRadius` and
@@ -83,6 +83,8 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Visit target is offline -> reject visit.
 - Visit target has no own or team island -> reject visit.
 - Team member runs `/island reset confirm` without owning a personal island -> reject reset.
+- Island owner runs `/island reset confirm` with placed blocks inside the protected reset area -> clear those blocks before rebuilding the starter template.
+- Island owner runs `/island reset confirm` with placed blocks outside the protected reset area -> leave those blocks untouched.
 - Non-member modifies another island's protected range -> cancel the event and show localized denial feedback.
 - Owner or team member modifies the protected range -> allow the event to continue.
 - Trusted visitor modifies the protected range -> allow the event to continue.
