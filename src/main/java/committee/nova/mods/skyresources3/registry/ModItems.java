@@ -72,6 +72,10 @@ public final class ModItems {
             "machine_casing",
             properties -> new MachineCasingItem(ModBlocks.MACHINE_CASING.get(), properties)
     );
+    public static final DeferredItem<CombustionHeaterItem> COMBUSTION_HEATER = ITEMS.registerItem(
+            "combustion_heater",
+            properties -> new CombustionHeaterItem(ModBlocks.COMBUSTION_HEATER.get(), properties)
+    );
     public static final DeferredItem<BlockItem> COMBUSTION_COLLECTOR =
             blockItem("combustion_collector", ModBlocks.COMBUSTION_COLLECTOR);
     public static final DeferredItem<BlockItem> COMBUSTION_CONTROLLER =
@@ -172,8 +176,6 @@ public final class ModItems {
                     properties.craftRemainder(Items.BUCKET).stacksTo(1)
             )
     );
-    public static final Map<MachineVariant, DeferredItem<CombustionHeaterItem>> COMBUSTION_HEATERS =
-            registerCombustionHeaters();
     public static final Map<MachineVariant, DeferredItem<HeatProviderItem>> HEAT_PROVIDERS =
             registerHeatProviders();
     public static final Map<MachineVariant, DeferredItem<CondenserItem>> CONDENSERS =
@@ -185,17 +187,6 @@ public final class ModItems {
 
     private static DeferredItem<BlockItem> blockItem(final String name, final DeferredBlock<? extends Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
-    }
-
-    private static Map<MachineVariant, DeferredItem<CombustionHeaterItem>> registerCombustionHeaters() {
-        final EnumMap<MachineVariant, DeferredItem<CombustionHeaterItem>> heaters = new EnumMap<>(MachineVariant.class);
-        for (final MachineVariant variant : MachineVariant.values()) {
-            heaters.put(variant, ITEMS.registerItem(
-                    variant.registryName("combustion_heater"),
-                    properties -> new CombustionHeaterItem(properties, variant)
-            ));
-        }
-        return Collections.unmodifiableMap(heaters);
     }
 
     private static Map<MachineVariant, DeferredItem<HeatProviderItem>> registerHeatProviders() {

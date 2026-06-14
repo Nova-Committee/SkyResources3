@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.machine.CasingType;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -55,6 +56,19 @@ public final class MachineCasingBlockEntityRenderer
         state.sprite = this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, casingType.texture()));
 
         state.machine.clear();
+        state.combustionElements = List.of();
+        state.combustionBodySprite = null;
+        state.combustionTopSprite = null;
+        if (blockEntity.combustionHeaterTypeId() != null) {
+            final CombustionHeaterType heaterType = blockEntity.combustionHeaterType();
+            state.combustionElements = heaterType.elements();
+            state.combustionBodySprite =
+                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, heaterType.bodyTexture()));
+            state.combustionTopSprite =
+                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, heaterType.topTexture()));
+            return;
+        }
+
         final ItemStack machine = blockEntity.heater();
         if (!machine.isEmpty()) {
             this.itemModelResolver.updateForTopItem(
@@ -90,6 +104,28 @@ public final class MachineCasingBlockEntityRenderer
             );
         }
 
+        if (!state.combustionElements.isEmpty()) {
+            final List<CombustionHeaterType.Element> elements = state.combustionElements;
+            final TextureAtlasSprite bodySprite = state.combustionBodySprite;
+            final TextureAtlasSprite topSprite = state.combustionTopSprite;
+            if (bodySprite != null && topSprite != null) {
+                final int lightCoords = state.lightCoords;
+                submitter.submitCustomGeometry(
+                        poseStack,
+                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
+                        (pose, buffer) -> {
+                            for (final CombustionHeaterType.Element element : elements) {
+                                final TextureAtlasSprite elementSprite = switch (element.texture()) {
+                                    case BODY -> bodySprite;
+                                    case TOP -> topSprite;
+                                };
+                                renderElement(element, pose, buffer, elementSprite, lightCoords, OverlayTexture.NO_OVERLAY);
+                            }
+                        }
+                );
+            }
+        }
+
         if (state.machine.isEmpty()) {
             return;
         }
@@ -108,8 +144,29 @@ public final class MachineCasingBlockEntityRenderer
             final int packedLight,
             final int packedOverlay
     ) {
-        final Vector3f from = element.from();
-        final Vector3f to = element.to();
+        renderElement(element.from(), element.to(), pose, buffer, sprite, packedLight, packedOverlay);
+    }
+
+    private static void renderElement(
+            final CombustionHeaterType.Element element,
+            final PoseStack.Pose pose,
+            final VertexConsumer buffer,
+            final TextureAtlasSprite sprite,
+            final int packedLight,
+            final int packedOverlay
+    ) {
+        renderElement(element.from(), element.to(), pose, buffer, sprite, packedLight, packedOverlay);
+    }
+
+    private static void renderElement(
+            final Vector3f from,
+            final Vector3f to,
+            final PoseStack.Pose pose,
+            final VertexConsumer buffer,
+            final TextureAtlasSprite sprite,
+            final int packedLight,
+            final int packedOverlay
+    ) {
         final float x1 = Math.min(from.x(), to.x()) * MODEL_SCALE;
         final float y1 = Math.min(from.y(), to.y()) * MODEL_SCALE;
         final float z1 = Math.min(from.z(), to.z()) * MODEL_SCALE;
@@ -173,7 +230,7 @@ public final class MachineCasingBlockEntityRenderer
     ) {
         buffer.addVertex(pose, x, y, z)
                 .setColor(-1)
-                .setUv(sprite.getU(u), sprite.getV(v))
+                .setUv(sprite.getU(u / 16.0F), sprite.getV(v / 16.0F))
                 .setOverlay(packedOverlay)
                 .setLight(packedLight)
                 .setNormal(pose, normalX, normalY, normalZ);
@@ -181,8 +238,13 @@ public final class MachineCasingBlockEntityRenderer
 
     public static final class State extends BlockEntityRenderState {
         private List<CasingType.Element> elements = List.of();
+        private List<CombustionHeaterType.Element> combustionElements = List.of();
         @Nullable
         private TextureAtlasSprite sprite;
+        @Nullable
+        private TextureAtlasSprite combustionBodySprite;
+        @Nullable
+        private TextureAtlasSprite combustionTopSprite;
         private final ItemStackRenderState machine = new ItemStackRenderState();
     }
 }

@@ -1,9 +1,11 @@
 package committee.nova.mods.skyresources3.data;
 
-import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.item.DirtyGem;
+import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.machine.CasingType;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
@@ -511,13 +513,13 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.casingRecipe(ModDataPackRegistries.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), "has_dark_matter", has(ModItems.DARK_MATTER.get()));
         this.casingRecipe(ModDataPackRegistries.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), "has_light_matter", has(ModItems.LIGHT_MATTER.get()));
 
-        this.combustionHeaterRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
-        this.combustionHeaterRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
-        this.combustionHeaterRecipe(MachineVariant.IRON, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
-        this.combustionHeaterRecipe(MachineVariant.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
-        this.combustionHeaterRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
-        this.combustionHeaterRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
-        this.combustionHeaterRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
+        this.combustionHeaterRecipe(ModDataPackRegistries.WOODEN_COMBUSTION_HEATER, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.combustionHeaterRecipe(ModDataPackRegistries.STONE_COMBUSTION_HEATER, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
+        this.combustionHeaterRecipe(ModDataPackRegistries.IRON_COMBUSTION_HEATER, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
+        this.combustionHeaterRecipe(ModDataPackRegistries.NETHER_BRICK_COMBUSTION_HEATER, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
+        this.combustionHeaterRecipe(ModDataPackRegistries.END_STONE_COMBUSTION_HEATER, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
+        this.combustionHeaterRecipe(ModDataPackRegistries.DARK_MATTER_COMBUSTION_HEATER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
+        this.combustionHeaterRecipe(ModDataPackRegistries.LIGHT_MATTER_COMBUSTION_HEATER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
         this.heatProviderRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
         this.heatProviderRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
         this.heatProviderRecipe(MachineVariant.IRON, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
@@ -567,19 +569,20 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void combustionHeaterRecipe(
-            final MachineVariant variant,
+            final ResourceKey<CombustionHeaterType> heaterType,
             final Ingredient material,
             final ItemLike component,
             final String unlockName
     ) {
-        this.shaped(RecipeCategory.MISC, ModItems.COMBUSTION_HEATERS.get(variant).get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, CombustionHeaterItem.forType(heaterType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XXX")
                 .pattern("X X")
                 .pattern("XYX")
                 .unlockedBy(unlockName, has(component))
-                .save(this.output);
+                .save(this.output, id(ModDataPackRegistries.combustionHeaterTypeId(heaterType).getPath()
+                        + "_combustion_heater"));
     }
 
     private void heatProviderRecipe(

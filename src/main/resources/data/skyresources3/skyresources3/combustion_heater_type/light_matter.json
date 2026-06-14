@@ -1,0 +1,12 @@
+{
+  "translation_key": "block.skyresources3.combustion_heater.light_matter",
+  "body_texture": "skyresources3:block/light_matter_block",
+  "top_texture": "skyresources3:block/combustion",
+  "speed": 1.0,
+  "efficiency": 100.0,
+  "fuel": {
+    "kind": "item",
+    "item": "skyresources3:light_matter",
+    "rate": 27183
+  }
+}

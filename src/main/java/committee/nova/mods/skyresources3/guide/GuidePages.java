@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.guide;
 
 import committee.nova.mods.skyresources3.item.DirtyGem;
+import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
@@ -78,18 +79,18 @@ public final class GuidePages {
                     "casing",
                     STAGE_2,
                     () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN),
-                    link("combustionHeater", stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get())),
+                    link("combustionHeater", GuidePages::woodenCombustionHeater),
                     link("heatProvider", stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get())),
                     link("condenser", stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get()))
             ),
             page(
                     "combustionHeater",
                     STAGE_2,
-                    stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get()),
+                    GuidePages::woodenCombustionHeater,
                     link("casing", () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN)),
-                    recipe(stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get())),
+                    recipe(GuidePages::woodenCombustionHeater),
                     recipe(GuideRecipeTargets.PROCESS_COMBUSTION, stack(() -> ModItems.ALCHEMICAL_COAL.get())),
-                    image("combustion", stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get()))
+                    image("combustion", GuidePages::woodenCombustionHeater)
             ),
             page("waterExtractor", STAGE_2, stack(() -> ModItems.WATER_EXTRACTOR.get())),
             page("dirtFurnace", STAGE_2, stack(() -> ModItems.DIRT_FURNACE.get())),
@@ -234,6 +235,10 @@ public final class GuidePages {
 
     public static List<GuidePage> pages() {
         return PAGES;
+    }
+
+    private static ItemStack woodenCombustionHeater() {
+        return CombustionHeaterItem.forType(ModDataPackRegistries.WOODEN_COMBUSTION_HEATER);
     }
 
     public static Optional<GuidePage> find(final String id) {

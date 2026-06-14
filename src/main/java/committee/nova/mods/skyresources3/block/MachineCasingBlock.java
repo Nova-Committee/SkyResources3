@@ -6,7 +6,6 @@ import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -73,6 +72,9 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
         if (!(level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing)) {
             return InteractionResult.PASS;
         }
+        if (player.isShiftKeyDown() && casing.hasHeater()) {
+            return MachineCasingInteractions.removeHeater(level, player, casing);
+        }
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
@@ -100,11 +102,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
         if (player.isShiftKeyDown() && casing.hasHeater()) {
-            final ItemStack removed = casing.removeHeater();
-            if (!player.addItem(removed)) {
-                Containers.dropItemStack(level, player.getX(), player.getY(), player.getZ(), removed);
-            }
-            return InteractionResult.SUCCESS_SERVER;
+            return MachineCasingInteractions.removeHeater(level, player, casing);
         }
         return this.openMenu(pos, player, casing);
     }

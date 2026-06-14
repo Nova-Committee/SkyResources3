@@ -1,10 +1,11 @@
 package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.machine.MachineVariant;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -112,8 +113,8 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.ALCHEMICAL_INFUSION_STONE.get());
                         output.accept(ModItems.HEALTH_GEM.get());
                         output.accept(ModItems.CRYSTAL_FLUID_BUCKET.get());
-                        for (final MachineVariant variant : MachineVariant.values()) {
-                            output.accept(ModItems.COMBUSTION_HEATERS.get(variant).get());
+                        for (final var heaterType : ModDataPackRegistries.BUILTIN_COMBUSTION_HEATER_TYPES) {
+                            output.accept(CombustionHeaterItem.forType(heaterType));
                         }
                         for (final MachineVariant variant : MachineVariant.values()) {
                             output.accept(ModItems.HEAT_PROVIDERS.get(variant).get());

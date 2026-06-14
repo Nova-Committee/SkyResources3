@@ -97,6 +97,18 @@ public final class ModGameTests {
                     "life_infuser_item_capability",
                     () -> LifeInfusionGameTests::lifeInfuserItemCapabilityTransfers
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID =
+            TEST_FUNCTIONS.register(
+                    "combustion_heater_embeds_as_type_id",
+                    () -> MachineRuntimeGameTests::combustionHeaterEmbedsAsTypeId
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_HEATER_SHIFT_RIGHT_CLICK_REMOVES =
+            TEST_FUNCTIONS.register(
+                    "combustion_heater_shift_right_click_removes",
+                    () -> MachineRuntimeGameTests::shiftRightClickRemovesEmbeddedCombustionHeaterWithHeldItem
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_drops_output",
@@ -158,6 +170,13 @@ public final class ModGameTests {
         registerFunctionTest(event, "life_infuser_process", LIFE_INFUSER_PROCESS, environment);
         registerFunctionTest(event, "life_injector_item_capability", LIFE_INJECTOR_ITEM_CAPABILITY, environment);
         registerFunctionTest(event, "life_infuser_item_capability", LIFE_INFUSER_ITEM_CAPABILITY, environment);
+        registerFunctionTest(event, "combustion_heater_embeds_as_type_id", COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID, environment);
+        registerFunctionTest(
+                event,
+                "combustion_heater_shift_right_click_removes",
+                COMBUSTION_HEATER_SHIFT_RIGHT_CLICK_REMOVES,
+                environment
+        );
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
         registerFunctionTest(event, "combustion_priority", COMBUSTION_PRIORITY, environment);

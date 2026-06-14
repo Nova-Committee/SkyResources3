@@ -121,6 +121,10 @@ public final class SkyResources3Client {
                 Identifier.fromNamespaceAndPath(Skyresources3.MODID, "casing_type"),
                 CasingTypeItemModelProperty.TYPE
         );
+        event.register(
+                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "combustion_heater_type"),
+                CombustionHeaterTypeItemModelProperty.TYPE
+        );
     }
 
     @SubscribeEvent

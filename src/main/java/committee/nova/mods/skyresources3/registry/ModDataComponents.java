@@ -27,6 +27,13 @@ public final class ModDataComponents {
                             .persistent(Identifier.CODEC)
                             .networkSynchronized(Identifier.STREAM_CODEC)
             );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+            COMBUSTION_HEATER_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
+                    "combustion_heater_type",
+                    builder -> builder
+                            .persistent(Identifier.CODEC)
+                            .networkSynchronized(Identifier.STREAM_CODEC)
+            );
 
     public static void register(final IEventBus modEventBus) {
         DATA_COMPONENT_TYPES.register(modEventBus);

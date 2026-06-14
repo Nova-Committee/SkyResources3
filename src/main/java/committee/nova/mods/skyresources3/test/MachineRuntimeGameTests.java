@@ -4,6 +4,8 @@ import committee.nova.mods.skyresources3.block.CombustionControllerBlock;
 import committee.nova.mods.skyresources3.block.entity.CombustionCollectorBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CombustionControllerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.event.MachineCasingEvents;
+import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
@@ -14,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -22,7 +25,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public final class MachineRuntimeGameTests {
     private static final BlockPos CASING_POS = new BlockPos(2, 1, 2);
@@ -35,6 +40,61 @@ public final class MachineRuntimeGameTests {
     private static final int EXPECTED_OUTPUT_COUNT = 1;
     private static final int DIRT_RECIPE_HEAT = 100;
     private static final int RED_SAND_RECIPE_HEAT = 200;
+
+    public static void combustionHeaterEmbedsAsTypeId(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
+        final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
+        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final ItemStack heater = CombustionHeaterItem.forType(ModDataPackRegistries.IRON_COMBUSTION_HEATER);
+
+        helper.assertTrue(casing.installHeater(heater, player), "Combustion heater should install");
+        helper.assertTrue(casing.heater().isEmpty(), "Embedded combustion heater should not be stored as an item");
+        helper.assertTrue(
+                ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.IRON_COMBUSTION_HEATER)
+                        .equals(casing.combustionHeaterTypeId()),
+                "Embedded combustion heater type should be persisted on the casing"
+        );
+
+        final ItemStack removed = casing.removeHeater();
+        helper.assertTrue(removed.is(ModItems.COMBUSTION_HEATER.get()), "Removed heater should be the single heater block");
+        helper.assertTrue(
+                ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.IRON_COMBUSTION_HEATER)
+                        .equals(CombustionHeaterItem.combustionHeaterTypeId(removed)),
+                "Removed heater should keep its type component"
+        );
+        helper.succeed();
+    }
+
+    public static void shiftRightClickRemovesEmbeddedCombustionHeaterWithHeldItem(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
+        final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
+        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final ItemStack installed = CombustionHeaterItem.forType(ModDataPackRegistries.IRON_COMBUSTION_HEATER);
+
+        helper.assertTrue(casing.installHeater(installed, player), "Combustion heater should install");
+        player.setShiftKeyDown(true);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIRT));
+
+        final PlayerInteractEvent.RightClickBlock event = new PlayerInteractEvent.RightClickBlock(
+                player,
+                InteractionHand.MAIN_HAND,
+                helper.absolutePos(CASING_POS),
+                hitResult(helper, CASING_POS)
+        );
+        MachineCasingEvents.onRightClickBlock(event);
+
+        helper.assertTrue(event.isCanceled(), "Shift right click should be handled before held item use");
+        helper.assertTrue(!casing.hasHeater(), "Machine casing should no longer have an embedded heater");
+        helper.assertTrue(
+                player.getInventory().contains(stack -> stack.is(ModItems.COMBUSTION_HEATER.get())
+                        && ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.IRON_COMBUSTION_HEATER)
+                                .equals(CombustionHeaterItem.combustionHeaterTypeId(stack))),
+                "Removed heater should be returned to the player with its type component"
+        );
+        helper.succeed();
+    }
 
     public static void condenserDropsOutputWhenNoHandlerExists(final GameTestHelper helper) {
         helper.killAllEntities();
@@ -153,7 +213,7 @@ public final class MachineRuntimeGameTests {
         casing.setCasingType(ModDataPackRegistries.IRON);
         final Player player = helper.makeMockPlayer(GameType.CREATIVE);
         final boolean installed = casing.installHeater(
-                new ItemStack(ModItems.COMBUSTION_HEATERS.get(MachineVariant.IRON).get()),
+                CombustionHeaterItem.forType(ModDataPackRegistries.IRON_COMBUSTION_HEATER),
                 player
         );
         helper.assertTrue(installed, "Combustion heater should install into the machine casing");
@@ -233,6 +293,11 @@ public final class MachineRuntimeGameTests {
                 "Expected a machine casing block entity"
         );
         return (MachineCasingBlockEntity) blockEntity;
+    }
+
+    private static BlockHitResult hitResult(final GameTestHelper helper, final BlockPos relativePos) {
+        final BlockPos absolutePos = helper.absolutePos(relativePos);
+        return new BlockHitResult(Vec3.atCenterOf(absolutePos), Direction.UP, absolutePos, false);
     }
 
     private static void fillContainer(

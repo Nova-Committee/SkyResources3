@@ -11,7 +11,10 @@
     "XYX"
   ],
   "result": {
+    "components": {
+      "skyresources3:combustion_heater_type": "skyresources3:end_stone"
+    },
     "count": 1,
-    "id": "skyresources3:end_stone_combustion_heater"
+    "id": "skyresources3:combustion_heater"
   }
 }

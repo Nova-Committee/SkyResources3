@@ -183,6 +183,10 @@ public final class ModBlocks {
             MachineCasingBlock::new,
             () -> properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
+    public static final DeferredBlock<Block> COMBUSTION_HEATER = BLOCKS.registerSimpleBlock(
+            "combustion_heater",
+            () -> properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
+    );
     public static final DeferredBlock<CombustionCollectorBlock> COMBUSTION_COLLECTOR = BLOCKS.registerBlock(
             "combustion_collector",
             CombustionCollectorBlock::new,

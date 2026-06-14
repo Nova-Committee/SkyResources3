@@ -1,9 +1,11 @@
 package committee.nova.mods.skyresources3.integration.jei;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import committee.nova.mods.skyresources3.registry.ModRecipeTypes;
 import java.util.List;
@@ -46,7 +48,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         guiHelper,
                         SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION,
                         "combustion",
-                        new ItemStack(ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get()),
+                        CombustionHeaterItem.forType(ModDataPackRegistries.WOODEN_COMBUSTION_HEATER),
                         "jei.skyresources3.process.heat",
                         ProcessRecipeJeiCategory.ParameterMode.INTEGER
                 ),
@@ -129,7 +131,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(final IRecipeCatalystRegistration registration) {
         registration.addCraftingStation(
                 SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION,
-                variants(ModItems.COMBUSTION_HEATERS)
+                combustionHeaters()
         );
         registration.addCraftingStation(SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION, ModItems.COMBUSTION_CONTROLLER.get());
         registration.addCraftingStation(
@@ -249,5 +251,11 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         return items.values().stream()
                 .map(Supplier::get)
                 .toArray(ItemLike[]::new);
+    }
+
+    private static ItemStack[] combustionHeaters() {
+        return ModDataPackRegistries.BUILTIN_COMBUSTION_HEATER_TYPES.stream()
+                .map(CombustionHeaterItem::forType)
+                .toArray(ItemStack[]::new);
     }
 }

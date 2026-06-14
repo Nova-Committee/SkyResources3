@@ -5,6 +5,7 @@ import committee.nova.mods.skyresources3.event.CuttingKnifeEvents;
 import committee.nova.mods.skyresources3.event.EarlyHandHarvestEvents;
 import committee.nova.mods.skyresources3.event.GrassSeedDropEvents;
 import committee.nova.mods.skyresources3.event.HealthGemEvents;
+import committee.nova.mods.skyresources3.event.MachineCasingEvents;
 import committee.nova.mods.skyresources3.event.RockGrinderEvents;
 import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
 import committee.nova.mods.skyresources3.island.IslandProtectionEvents;
@@ -65,6 +66,7 @@ public final class Skyresources3 {
         NeoForge.EVENT_BUS.addListener(VoidIslandPlayerEvents::onPlayerLoggedIn);
         NeoForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);
         NeoForge.EVENT_BUS.addListener(EarlyHandHarvestEvents::onRightClickBlock);
+        NeoForge.EVENT_BUS.addListener(MachineCasingEvents::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(CuttingKnifeEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(CauldronCleanEvents::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(RockGrinderEvents::onBlockBreak);
