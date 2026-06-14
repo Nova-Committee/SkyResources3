@@ -28,8 +28,7 @@ public final class VoidIslandPlayerEvents {
 
         final ServerLevel storageLevel = currentLevel.getServer().overworld();
         final IslandSavedData islands = IslandSavedData.get(storageLevel);
-        final TeamSavedData teams = TeamSavedData.get(storageLevel);
-        if (islands.getIsland(player.getUUID()).isPresent() || teams.getTeamFor(player.getUUID()).isPresent()) {
+        if (islands.getIslandFor(player.getUUID()).isPresent()) {
             return;
         }
 

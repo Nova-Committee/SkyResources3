@@ -53,10 +53,9 @@ public final class IslandProtectionEvents {
 
         final ServerLevel storageLevel = level.getServer().overworld();
         final IslandSavedData islands = IslandSavedData.get(storageLevel);
-        final TeamSavedData teams = TeamSavedData.get(storageLevel);
         final Optional<IslandSavedData.IslandRecord> island =
                 islands.findIslandAt(level.dimension(), pos, Config.islandProtectionRadius);
-        if (island.isEmpty() || canModify(player.getUUID(), island.get(), teams)) {
+        if (island.isEmpty() || canModify(player.getUUID(), island.get())) {
             return false;
         }
 
@@ -69,18 +68,12 @@ public final class IslandProtectionEvents {
 
     private static boolean canModify(
             final UUID player,
-            final IslandSavedData.IslandRecord island,
-            final TeamSavedData teams
+            final IslandSavedData.IslandRecord island
     ) {
-        if (island.owner().equals(player)) {
+        if (island.includes(player)) {
             return true;
         }
-        if (island.isTrustedVisitor(player)) {
-            return true;
-        }
-        return teams.getOwnedTeam(island.owner())
-                .map(team -> team.includes(player))
-                .orElse(false);
+        return island.isTrustedVisitor(player);
     }
 
     private IslandProtectionEvents() {

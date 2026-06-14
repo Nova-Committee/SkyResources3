@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
@@ -50,10 +51,35 @@ public final class IslandSavedData extends SavedData {
         return Optional.ofNullable(this.islands.get(owner));
     }
 
+    public Optional<IslandRecord> getIslandFor(final UUID player) {
+        final Optional<IslandRecord> ownedIsland = this.getIsland(player);
+        if (ownedIsland.isPresent()) {
+            return ownedIsland;
+        }
+        return this.islands.values()
+                .stream()
+                .filter(island -> island.isMember(player))
+                .findFirst();
+    }
+
     public Optional<IslandRecord> findIslandByOwnerName(final String ownerName) {
         return this.islands.values()
                 .stream()
                 .filter(island -> island.ownerName().equalsIgnoreCase(ownerName))
+                .findFirst();
+    }
+
+    public Optional<IslandRecord> findIslandByPlayerName(final String playerName) {
+        return this.islands.values()
+                .stream()
+                .filter(island -> island.includesName(playerName))
+                .findFirst();
+    }
+
+    public Optional<IslandRecord> getPendingInvitation(final UUID player) {
+        return this.islands.values()
+                .stream()
+                .filter(island -> island.hasInvite(player))
                 .findFirst();
     }
 
@@ -88,7 +114,7 @@ public final class IslandSavedData extends SavedData {
             final BlockPos home,
             final String type
     ) {
-        final IslandRecord island = new IslandRecord(owner, ownerName, dimension, home, type, Map.of());
+        final IslandRecord island = new IslandRecord(owner, ownerName, dimension, home, type, Map.of(), Map.of(), Map.of());
         this.islands.put(owner, island);
         this.setDirty();
         return island;
@@ -106,6 +132,8 @@ public final class IslandSavedData extends SavedData {
                 island.dimension(),
                 island.home(),
                 type,
+                island.members(),
+                island.invites(),
                 island.trustedVisitors()
         );
         this.islands.put(owner, updated);
@@ -157,12 +185,56 @@ public final class IslandSavedData extends SavedData {
         return true;
     }
 
+    public Optional<IslandRecord> invite(
+            final UUID owner,
+            final UUID target,
+            final String targetName
+    ) {
+        final IslandRecord island = this.islands.get(owner);
+        if (island == null) {
+            return Optional.empty();
+        }
+
+        final IslandRecord updated = island.withInvite(target, targetName);
+        this.islands.put(owner, updated);
+        this.setDirty();
+        return Optional.of(updated);
+    }
+
+    public Optional<IslandRecord> acceptInvitation(final UUID player, final String playerName) {
+        for (final Map.Entry<UUID, IslandRecord> entry : this.islands.entrySet()) {
+            final IslandRecord island = entry.getValue();
+            if (island.hasInvite(player)) {
+                final IslandRecord updated = island.acceptInvite(player, playerName);
+                this.islands.put(entry.getKey(), updated);
+                this.setDirty();
+                return Optional.of(updated);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<IslandRecord> leaveIsland(final UUID player) {
+        for (final Map.Entry<UUID, IslandRecord> entry : this.islands.entrySet()) {
+            final IslandRecord island = entry.getValue();
+            if (island.isMember(player)) {
+                final IslandRecord updated = island.withoutMember(player);
+                this.islands.put(entry.getKey(), updated);
+                this.setDirty();
+                return Optional.of(updated);
+            }
+        }
+        return Optional.empty();
+    }
+
     public record IslandRecord(
             UUID owner,
             String ownerName,
             ResourceKey<Level> dimension,
             BlockPos home,
             String type,
+            Map<UUID, String> members,
+            Map<UUID, String> invites,
             Map<UUID, String> trustedVisitors
     ) {
         private static final Codec<IslandRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -172,12 +244,50 @@ public final class IslandSavedData extends SavedData {
                 BlockPos.CODEC.fieldOf("home").forGetter(IslandRecord::home),
                 Codec.STRING.optionalFieldOf("type", IslandTemplate.DEFAULT_ID).forGetter(IslandRecord::type),
                 Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING)
+                        .optionalFieldOf("members", Map.of())
+                        .forGetter(IslandRecord::members),
+                Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING)
+                        .optionalFieldOf("invites", Map.of())
+                        .forGetter(IslandRecord::invites),
+                Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING)
                         .optionalFieldOf("trusted_visitors", Map.of())
                         .forGetter(IslandRecord::trustedVisitors)
         ).apply(instance, IslandRecord::new));
 
         public IslandRecord {
+            members = Map.copyOf(members);
+            invites = Map.copyOf(invites);
             trustedVisitors = Map.copyOf(trustedVisitors);
+        }
+
+        public boolean isOwner(final UUID player) {
+            return this.owner.equals(player);
+        }
+
+        public boolean isMember(final UUID player) {
+            return this.members.containsKey(player);
+        }
+
+        public boolean includes(final UUID player) {
+            return this.isOwner(player) || this.isMember(player);
+        }
+
+        public boolean includesName(final String playerName) {
+            return this.ownerName.equalsIgnoreCase(playerName)
+                    || this.members.values().stream().anyMatch(name -> name.equalsIgnoreCase(playerName));
+        }
+
+        public boolean hasInvite(final UUID player) {
+            return this.invites.containsKey(player);
+        }
+
+        public int playerCount() {
+            return this.members.size() + 1;
+        }
+
+        public String playerNames() {
+            return Stream.concat(Stream.of(this.ownerName), this.members.values().stream())
+                    .collect(Collectors.joining(", "));
         }
 
         public boolean isWithinHorizontalRange(final BlockPos pos, final int horizontalRadius) {
@@ -212,13 +322,78 @@ public final class IslandSavedData extends SavedData {
         private IslandRecord withTrustedVisitor(final UUID visitor, final String visitorName) {
             final Map<UUID, String> updatedVisitors = new HashMap<>(this.trustedVisitors);
             updatedVisitors.put(visitor, visitorName);
-            return new IslandRecord(this.owner, this.ownerName, this.dimension, this.home, this.type, updatedVisitors);
+            return new IslandRecord(
+                    this.owner,
+                    this.ownerName,
+                    this.dimension,
+                    this.home,
+                    this.type,
+                    this.members,
+                    this.invites,
+                    updatedVisitors
+            );
         }
 
         private IslandRecord withoutTrustedVisitor(final UUID visitor) {
             final Map<UUID, String> updatedVisitors = new HashMap<>(this.trustedVisitors);
             updatedVisitors.remove(visitor);
-            return new IslandRecord(this.owner, this.ownerName, this.dimension, this.home, this.type, updatedVisitors);
+            return new IslandRecord(
+                    this.owner,
+                    this.ownerName,
+                    this.dimension,
+                    this.home,
+                    this.type,
+                    this.members,
+                    this.invites,
+                    updatedVisitors
+            );
+        }
+
+        private IslandRecord withInvite(final UUID target, final String targetName) {
+            final Map<UUID, String> updatedInvites = new HashMap<>(this.invites);
+            updatedInvites.put(target, targetName);
+            return new IslandRecord(
+                    this.owner,
+                    this.ownerName,
+                    this.dimension,
+                    this.home,
+                    this.type,
+                    this.members,
+                    updatedInvites,
+                    this.trustedVisitors
+            );
+        }
+
+        private IslandRecord acceptInvite(final UUID player, final String playerName) {
+            final Map<UUID, String> updatedInvites = new HashMap<>(this.invites);
+            updatedInvites.remove(player);
+            final Map<UUID, String> updatedMembers = new HashMap<>(this.members);
+            updatedMembers.put(player, playerName);
+            return new IslandRecord(
+                    this.owner,
+                    this.ownerName,
+                    this.dimension,
+                    this.home,
+                    this.type,
+                    updatedMembers,
+                    updatedInvites,
+                    this.trustedVisitors
+            );
+        }
+
+        private IslandRecord withoutMember(final UUID player) {
+            final Map<UUID, String> updatedMembers = new HashMap<>(this.members);
+            updatedMembers.remove(player);
+            return new IslandRecord(
+                    this.owner,
+                    this.ownerName,
+                    this.dimension,
+                    this.home,
+                    this.type,
+                    updatedMembers,
+                    this.invites,
+                    this.trustedVisitors
+            );
         }
     }
 }

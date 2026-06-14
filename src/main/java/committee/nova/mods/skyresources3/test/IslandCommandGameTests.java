@@ -6,7 +6,6 @@ import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.island.IslandSavedData;
 import committee.nova.mods.skyresources3.island.IslandTemplate;
 import committee.nova.mods.skyresources3.island.PlayerIdentitySavedData;
-import committee.nova.mods.skyresources3.island.TeamSavedData;
 import committee.nova.mods.skyresources3.island.VoidIslandWorld;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -39,14 +38,14 @@ public final class IslandCommandGameTests {
             assertCommandSucceeds(helper, player, "island create");
 
             final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
-            final TeamSavedData teams = TeamSavedData.get(helper.getLevel().getServer().overworld());
             final IslandSavedData.IslandRecord created = getIslandOrFail(helper, islands, player);
-            getTeamOrFail(helper, teams, player);
             helper.assertValueEqual(
                     IslandTemplate.DEFAULT_ID,
                     created.type(),
                     "Created island should use the default type"
             );
+            helper.assertTrue(created.includes(player.getUUID()), "Created island should include its owner");
+            helper.assertValueEqual(1, created.playerCount(), "Solo island should start with one player");
 
             final ServerLevel targetLevel = helper.getLevel().getServer().getLevel(created.dimension());
             if (targetLevel == null) {
@@ -188,10 +187,9 @@ public final class IslandCommandGameTests {
             final UUID member = UUID.randomUUID();
             final BlockPos home = new BlockPos(12288, VoidIslandWorld.ISLAND_Y + 1, 12288);
             final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
-            final TeamSavedData teams = TeamSavedData.get(helper.getLevel().getServer().overworld());
             islands.createIsland(owner, ownerName, helper.getLevel().dimension(), home, IslandTemplate.DEFAULT_ID);
-            teams.invite(owner, ownerName, member, memberName);
-            teams.acceptInvitation(member, memberName);
+            islands.invite(owner, member, memberName);
+            islands.acceptInvitation(member, memberName);
 
             final ServerPlayer ownerVisitor = makeNamedMockServerPlayerInLevel(helper, "offline_visit_guest");
             assertCommandSucceeds(helper, ownerVisitor, "island visit OFFLINE_OWNER");
@@ -201,12 +199,12 @@ public final class IslandCommandGameTests {
                     "Offline owner name lookup should teleport to the saved island"
             );
 
-            final ServerPlayer teamVisitor = makeNamedMockServerPlayerInLevel(helper, "offline_team_guest");
-            assertCommandSucceeds(helper, teamVisitor, "island visit OFFLINE_MEMBER");
+            final ServerPlayer memberVisitor = makeNamedMockServerPlayerInLevel(helper, "offline_member_guest");
+            assertCommandSucceeds(helper, memberVisitor, "island visit OFFLINE_MEMBER");
             helper.assertValueEqual(
                     home,
-                    teamVisitor.blockPosition(),
-                    "Offline team member name lookup should teleport to the team owner island"
+                    memberVisitor.blockPosition(),
+                    "Offline island member name lookup should teleport to that island"
             );
             helper.succeed();
         } finally {
@@ -242,14 +240,14 @@ public final class IslandCommandGameTests {
     }
 
     @SuppressWarnings("removal")
-    public static void teamInviteHomeLeaveAndDisband(final GameTestHelper helper) {
+    public static void islandInviteHomeLeaveAndDisband(final GameTestHelper helper) {
         final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
         Config.enableVoidIslandFeatures = true;
 
         try {
-            final ServerPlayer owner = makeNamedMockServerPlayerInLevel(helper, "team_owner");
-            final ServerPlayer member = makeNamedMockServerPlayerInLevel(helper, "team_member");
-            final ServerPlayer stayingMember = makeNamedMockServerPlayerInLevel(helper, "team_stayer");
+            final ServerPlayer owner = makeNamedMockServerPlayerInLevel(helper, "island_owner");
+            final ServerPlayer member = makeNamedMockServerPlayerInLevel(helper, "island_member");
+            final ServerPlayer stayingMember = makeNamedMockServerPlayerInLevel(helper, "island_stayer");
             assertCommandFails(helper, owner, "skyresources3 team create");
             assertCommandSucceeds(helper, owner, "island create");
             assertCommandSucceeds(helper, owner, "skyresources3 team trust " + member.getName().getString());
@@ -259,11 +257,12 @@ public final class IslandCommandGameTests {
             assertCommandSucceeds(helper, stayingMember, "island accept");
 
             final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
-            final TeamSavedData teams = TeamSavedData.get(helper.getLevel().getServer().overworld());
             IslandSavedData.IslandRecord island = getIslandOrFail(helper, islands, owner);
-            final TeamSavedData.TeamRecord team = getTeamOrFail(helper, teams, owner);
-            helper.assertTrue(team.includes(member.getUUID()), "Accepted player should be a team member");
-            helper.assertTrue(team.includes(stayingMember.getUUID()), "Accepted player should stay on the team");
+            helper.assertTrue(island.includes(member.getUUID()), "Accepted player should be an island member");
+            helper.assertTrue(
+                    island.includes(stayingMember.getUUID()),
+                    "Accepted player should stay on the island"
+            );
             helper.assertTrue(
                     !island.isTrustedVisitor(member.getUUID()),
                     "Accepting an island invite should remove redundant trusted access"
@@ -273,19 +272,19 @@ public final class IslandCommandGameTests {
             helper.assertValueEqual(
                     island.home(),
                     member.blockPosition(),
-                    "Team member /island home should use the owner's island"
+                    "Island member /island home should use the owner's island"
             );
             assertCommandSucceeds(helper, member, "skyresources3 team home");
             helper.assertValueEqual(
                     island.home(),
                     member.blockPosition(),
-                    "Team member /skyresources3 team home should use the owner's island"
+                    "Island member /skyresources3 team home should use the owner's island"
             );
 
             assertCommandSucceeds(helper, member, "island leave");
             helper.assertTrue(
-                    teams.getTeamFor(member.getUUID()).isEmpty(),
-                    "Island leave should remove the player from the team"
+                    islands.getIslandFor(member.getUUID()).isEmpty(),
+                    "Island leave should remove the player from the island"
             );
             island = getIslandOrFail(helper, islands, owner);
             helper.assertTrue(
@@ -295,36 +294,32 @@ public final class IslandCommandGameTests {
             assertCommandSucceeds(helper, owner, "island invite " + member.getName().getString());
             assertCommandSucceeds(helper, member, "island accept");
             helper.assertTrue(
-                    getTeamOrFail(helper, teams, owner).includes(member.getUUID()),
-                    "A player who left through /island leave should be able to rejoin the island team"
+                    getIslandOrFail(helper, islands, owner).includes(member.getUUID()),
+                    "A player who left through /island leave should be able to rejoin the island"
             );
             assertCommandSucceeds(helper, member, "skyresources3 team leave");
             helper.assertTrue(
-                    teams.getTeamFor(member.getUUID()).isEmpty(),
-                    "Team leave should remove the player from the team"
+                    islands.getIslandFor(member.getUUID()).isEmpty(),
+                    "Compatibility team leave should remove the player from the island"
             );
             assertCommandSucceeds(helper, owner, "skyresources3 team invite " + member.getName().getString());
             assertCommandSucceeds(helper, member, "island accept");
             helper.assertTrue(
-                    getTeamOrFail(helper, teams, owner).includes(member.getUUID()),
-                    "A player who left through /skyresources3 team leave should be able to rejoin the island team"
+                    getIslandOrFail(helper, islands, owner).includes(member.getUUID()),
+                    "A player who left through /skyresources3 team leave should be able to rejoin the island"
             );
             assertCommandSucceeds(helper, owner, "island disband");
             helper.assertTrue(
-                    teams.getOwnedTeam(owner.getUUID()).isEmpty(),
-                    "Disbanding should remove the owner's team"
-            );
-            helper.assertTrue(
-                    teams.getTeamFor(stayingMember.getUUID()).isEmpty(),
-                    "Disbanding should remove online members from the team"
-            );
-            helper.assertTrue(
-                    teams.getTeamFor(member.getUUID()).isEmpty(),
-                    "Disbanding should remove rejoined online members from the team"
-            );
-            helper.assertTrue(
                     islands.getIsland(owner.getUUID()).isEmpty(),
                     "Disbanding should abandon the owner's island record"
+            );
+            helper.assertTrue(
+                    islands.getIslandFor(stayingMember.getUUID()).isEmpty(),
+                    "Disbanding should remove online members from the island"
+            );
+            helper.assertTrue(
+                    islands.getIslandFor(member.getUUID()).isEmpty(),
+                    "Disbanding should remove rejoined online members from the island"
             );
             helper.succeed();
         } finally {
@@ -382,22 +377,20 @@ public final class IslandCommandGameTests {
             assertCommandSucceeds(helper, owner, "island create");
             assertCommandSucceeds(helper, owner, "skyresources3 team invite " + memberName.toUpperCase());
 
-            final TeamSavedData teams = TeamSavedData.get(storageLevel);
+            final IslandSavedData islands = IslandSavedData.get(storageLevel);
             helper.assertTrue(
-                    teams.getPendingInvitation(memberId).isPresent(),
-                    "Offline cached team invite should persist against the cached UUID"
+                    islands.getPendingInvitation(memberId).isPresent(),
+                    "Offline cached island invite should persist against the cached UUID"
             );
 
             final ServerPlayer member = makeNamedMockServerPlayerInLevel(helper, memberId, memberName);
             assertCommandSucceeds(helper, member, "island accept");
-            final TeamSavedData.TeamRecord team = getTeamOrFail(helper, teams, owner);
             helper.assertTrue(
-                    team.includes(memberId),
+                    getIslandOrFail(helper, islands, owner).includes(memberId),
                     "Cached offline invite should be accepted by the later online player"
             );
 
             assertCommandSucceeds(helper, owner, "island trust " + trustedName.toUpperCase());
-            final IslandSavedData islands = IslandSavedData.get(storageLevel);
             final IslandSavedData.IslandRecord island = getIslandOrFail(helper, islands, owner);
             helper.assertTrue(
                     island.isTrustedVisitor(trustedId),
@@ -419,18 +412,6 @@ public final class IslandCommandGameTests {
             helper.fail("Expected island record for mock player");
         }
         return island;
-    }
-
-    private static TeamSavedData.TeamRecord getTeamOrFail(
-            final GameTestHelper helper,
-            final TeamSavedData teams,
-            final ServerPlayer owner
-    ) {
-        final TeamSavedData.TeamRecord team = teams.getOwnedTeam(owner.getUUID()).orElse(null);
-        if (team == null) {
-            helper.fail("Expected team record for mock player");
-        }
-        return team;
     }
 
     private static void assertCommandSucceeds(
