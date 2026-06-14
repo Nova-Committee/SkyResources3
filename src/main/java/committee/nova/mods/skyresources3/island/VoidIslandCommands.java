@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.island;
 
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.network.IslandGuiStatePayload;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -638,23 +639,8 @@ public final class VoidIslandCommands {
             return disabled(source);
         }
 
-        source.getPlayerOrException();
-        sendGuide(source);
+        IslandGuiStatePayload.sendTo(source.getPlayerOrException());
         return 1;
-    }
-
-    private static void sendGuide(final CommandSourceStack source) {
-        source.sendSuccess(
-                () -> Component.translatable(
-                        "message.skyresources3.island.guide.create",
-                        String.join(", ", IslandTemplate.ids())
-                ),
-                false
-        );
-        source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.guide.join"),
-                false
-        );
     }
 
     private static int disabled(final CommandSourceStack source) {

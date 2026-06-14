@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.client;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.entity.HeavySnowball;
+import committee.nova.mods.skyresources3.network.IslandGuiStatePayload;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModFluidTypes;
 import committee.nova.mods.skyresources3.registry.ModMenuTypes;
@@ -34,6 +35,12 @@ public final class SkyResources3Client {
             "key.skyresources3.guide",
             InputConstants.Type.KEYSYM,
             InputConstants.KEY_Y,
+            KEY_CATEGORY
+    );
+    private static final KeyMapping OPEN_ISLAND = new KeyMapping(
+            "key.skyresources3.island",
+            InputConstants.Type.KEYSYM,
+            InputConstants.KEY_I,
             KEY_CATEGORY
     );
 
@@ -71,8 +78,10 @@ public final class SkyResources3Client {
 
     @SubscribeEvent
     public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
+        IslandGuiStatePayload.setClientHandler(IslandGuiScreen::open);
         event.registerCategory(KEY_CATEGORY);
         event.register(OPEN_GUIDE);
+        event.register(OPEN_ISLAND);
     }
 
     @SubscribeEvent
@@ -81,6 +90,11 @@ public final class SkyResources3Client {
         while (OPEN_GUIDE.consumeClick()) {
             if (minecraft.player != null && minecraft.screen == null) {
                 minecraft.setScreen(new GuideScreen());
+            }
+        }
+        while (OPEN_ISLAND.consumeClick()) {
+            if (minecraft.player != null && minecraft.screen == null) {
+                IslandGuiScreen.requestOpen();
             }
         }
     }

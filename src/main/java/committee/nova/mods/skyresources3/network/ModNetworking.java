@@ -11,6 +11,21 @@ public final class ModNetworking {
                         FusionTableDumpPayload.TYPE,
                         FusionTableDumpPayload.STREAM_CODEC,
                         FusionTableDumpPayload::handle
+                )
+                .playToServer(
+                        IslandGuiRequestPayload.TYPE,
+                        IslandGuiRequestPayload.STREAM_CODEC,
+                        IslandGuiRequestPayload::handle
+                )
+                .playToServer(
+                        IslandGuiActionPayload.TYPE,
+                        IslandGuiActionPayload.STREAM_CODEC,
+                        IslandGuiActionPayload::handle
+                )
+                .playToClient(
+                        IslandGuiStatePayload.TYPE,
+                        IslandGuiStatePayload.STREAM_CODEC,
+                        IslandGuiStatePayload::handle
                 );
     }
 

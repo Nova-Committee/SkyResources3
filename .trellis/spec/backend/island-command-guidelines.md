@@ -75,8 +75,12 @@ Do not register relationship commands outside the island command tree. The only 
   shared bedrock spawn platform, set the world spawn to it, and no-island players logging in there must be placed on
   that platform. This initial overworld spawn platform must use `minecraft:bedrock` even if an older local config file
   still contains a different `voidIslandSpawnPlatformBlock` value.
-- `/island` without subcommands must show localized guidance for creating a new island or joining another player's
-  island invitation.
+- `/island` without subcommands opens the localized island manager GUI for the executing player. The GUI is the easy
+  entry point for creation, invitations, trusted visitors, teleporting, reset, leave, and disband.
+- Island manager GUI actions must dispatch through the same Brigadier command surface as chat commands. Do not duplicate
+  island relationship validation or mutate `IslandSavedData` directly from GUI payload handlers.
+- Island manager GUI state may be serialized to the client for display, but ownership, membership, invitations, and
+  trusted visitors remain server-authoritative in `IslandSavedData.IslandRecord`.
 - Island protection uses the configured horizontal radius around each island center, derived from
   `IslandRecord.home().below()`.
 - Island owners, island members, and trusted visitors may break, place, and right-click blocks inside that protected
@@ -147,6 +151,8 @@ Do not register relationship commands outside the island command tree. The only 
 - `./gradlew.bat runData` proves resources still load during data generation.
 - `./gradlew.bat build` proves packaged resources and classes assemble.
 - `./gradlew.bat runGameTestServer` proves dedicated-server startup accepts command registration and saved data codecs.
+- Client GUI changes must also be checked through a real `./gradlew.bat runClient` session with a screenshot or visual
+  inspection of the island manager opened in-game.
 
 Command GameTests should execute commands through the Brigadier dispatcher and assert saved-data side effects, not just
 positive command return values.
