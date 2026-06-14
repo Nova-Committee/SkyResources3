@@ -23,6 +23,8 @@
     "skyresources3:combustion_collector",
     "skyresources3:combustion_controller",
     "skyresources3:combustion_heater",
+    "skyresources3:heat_provider",
+    "skyresources3:condenser",
     "skyresources3:machine_casing",
     "skyresources3:iron_freezer",
     "skyresources3:light_freezer"

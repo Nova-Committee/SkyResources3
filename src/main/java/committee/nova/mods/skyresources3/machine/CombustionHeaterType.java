@@ -4,14 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import committee.nova.mods.skyresources3.Skyresources3;
 import java.util.List;
-import java.util.Optional;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 
@@ -21,7 +17,7 @@ public record CombustionHeaterType(
         Identifier topTexture,
         float speed,
         float efficiency,
-        Fuel fuel,
+        MachineFuel fuel,
         List<Element> elements
 ) {
     public static final List<Element> DEFAULT_ELEMENTS = List.of(
@@ -34,7 +30,7 @@ public record CombustionHeaterType(
             Identifier.CODEC.fieldOf("top_texture").forGetter(CombustionHeaterType::topTexture),
             Codec.FLOAT.fieldOf("speed").forGetter(CombustionHeaterType::speed),
             Codec.FLOAT.fieldOf("efficiency").forGetter(CombustionHeaterType::efficiency),
-            Fuel.CODEC.fieldOf("fuel").forGetter(CombustionHeaterType::fuel),
+            MachineFuel.CODEC.fieldOf("fuel").forGetter(CombustionHeaterType::fuel),
             Element.CODEC.listOf().optionalFieldOf("elements", DEFAULT_ELEMENTS).forGetter(CombustionHeaterType::elements)
     ).apply(instance, CombustionHeaterType::new));
     private static final CombustionHeaterType FALLBACK = new CombustionHeaterType(
@@ -43,7 +39,7 @@ public record CombustionHeaterType(
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/combustion"),
             1.0F,
             1.2F,
-            Fuel.furnace(),
+            MachineFuel.furnace(),
             DEFAULT_ELEMENTS
     );
 
@@ -92,38 +88,6 @@ public record CombustionHeaterType(
         }
     }
 
-    public record Fuel(FuelKind kind, Optional<Identifier> item, int rate) {
-        public static final Codec<Fuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                FuelKind.CODEC.fieldOf("kind").forGetter(Fuel::kind),
-                Identifier.CODEC.optionalFieldOf("item").forGetter(Fuel::item),
-                Codec.INT.optionalFieldOf("rate", 1).forGetter(Fuel::rate)
-        ).apply(instance, Fuel::new));
-
-        public static Fuel furnace() {
-            return new Fuel(FuelKind.FURNACE, Optional.empty(), 1);
-        }
-
-        private boolean isValid(final ItemStack stack, final Level level) {
-            if (stack.isEmpty()) {
-                return false;
-            }
-            if (this.kind == FuelKind.FURNACE) {
-                return stack.getBurnTime(RecipeType.SMELTING, level.fuelValues()) > 0;
-            }
-            return this.item.map(id -> stack.is(BuiltInRegistries.ITEM.getValue(id))).orElse(false);
-        }
-
-        private float heat(final ItemStack stack, final Level level, final float combinedEfficiency) {
-            if (!this.isValid(stack, level)) {
-                return 0.0F;
-            }
-            if (this.kind == FuelKind.FURNACE) {
-                return stack.getBurnTime(RecipeType.SMELTING, level.fuelValues()) * combinedEfficiency;
-            }
-            return this.rate * combinedEfficiency;
-        }
-    }
-
     public enum TextureSlot implements StringRepresentable {
         BODY("body"),
         TOP("top");
@@ -141,20 +105,4 @@ public record CombustionHeaterType(
         }
     }
 
-    public enum FuelKind implements StringRepresentable {
-        FURNACE("furnace"),
-        ITEM("item");
-
-        public static final Codec<FuelKind> CODEC = StringRepresentable.fromEnum(FuelKind::values);
-        private final String serializedName;
-
-        FuelKind(final String serializedName) {
-            this.serializedName = serializedName;
-        }
-
-        @Override
-        public String getSerializedName() {
-            return this.serializedName;
-        }
-    }
 }

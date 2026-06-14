@@ -4,7 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
 import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
+import committee.nova.mods.skyresources3.machine.CondenserType;
 import committee.nova.mods.skyresources3.machine.CasingType;
+import committee.nova.mods.skyresources3.machine.HeatProviderType;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -59,6 +61,8 @@ public final class MachineCasingBlockEntityRenderer
         state.combustionElements = List.of();
         state.combustionBodySprite = null;
         state.combustionTopSprite = null;
+        state.installedElements = List.of();
+        state.installedSprite = null;
         if (blockEntity.combustionHeaterTypeId() != null) {
             final CombustionHeaterType heaterType = blockEntity.combustionHeaterType();
             state.combustionElements = heaterType.elements();
@@ -66,6 +70,18 @@ public final class MachineCasingBlockEntityRenderer
                     this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, heaterType.bodyTexture()));
             state.combustionTopSprite =
                     this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, heaterType.topTexture()));
+            return;
+        }
+        if (blockEntity.heatProviderTypeId() != null) {
+            final HeatProviderType providerType = blockEntity.heatProviderType();
+            state.installedElements = providerType.elements();
+            state.installedSprite = this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, providerType.texture()));
+            return;
+        }
+        if (blockEntity.condenserTypeId() != null) {
+            final CondenserType condenserType = blockEntity.condenserType();
+            state.installedElements = condenserType.elements();
+            state.installedSprite = this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, condenserType.texture()));
             return;
         }
 
@@ -120,6 +136,23 @@ public final class MachineCasingBlockEntityRenderer
                                     case TOP -> topSprite;
                                 };
                                 renderElement(element, pose, buffer, elementSprite, lightCoords, OverlayTexture.NO_OVERLAY);
+                            }
+                        }
+                );
+            }
+        }
+
+        if (!state.installedElements.isEmpty()) {
+            final List<CasingType.Element> elements = state.installedElements;
+            final TextureAtlasSprite installedSprite = state.installedSprite;
+            if (installedSprite != null) {
+                final int lightCoords = state.lightCoords;
+                submitter.submitCustomGeometry(
+                        poseStack,
+                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
+                        (pose, buffer) -> {
+                            for (final CasingType.Element element : elements) {
+                                renderElement(element, pose, buffer, installedSprite, lightCoords, OverlayTexture.NO_OVERLAY);
                             }
                         }
                 );
@@ -239,12 +272,15 @@ public final class MachineCasingBlockEntityRenderer
     public static final class State extends BlockEntityRenderState {
         private List<CasingType.Element> elements = List.of();
         private List<CombustionHeaterType.Element> combustionElements = List.of();
+        private List<CasingType.Element> installedElements = List.of();
         @Nullable
         private TextureAtlasSprite sprite;
         @Nullable
         private TextureAtlasSprite combustionBodySprite;
         @Nullable
         private TextureAtlasSprite combustionTopSprite;
+        @Nullable
+        private TextureAtlasSprite installedSprite;
         private final ItemStackRenderState machine = new ItemStackRenderState();
     }
 }

@@ -125,6 +125,14 @@ public final class SkyResources3Client {
                 Identifier.fromNamespaceAndPath(Skyresources3.MODID, "combustion_heater_type"),
                 CombustionHeaterTypeItemModelProperty.TYPE
         );
+        event.register(
+                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "heat_provider_type"),
+                HeatProviderTypeItemModelProperty.TYPE
+        );
+        event.register(
+                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "condenser_type"),
+                CondenserTypeItemModelProperty.TYPE
+        );
     }
 
     @SubscribeEvent

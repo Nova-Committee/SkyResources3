@@ -42,6 +42,8 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.COMBUSTION_COLLECTOR.get(),
                 ModBlocks.COMBUSTION_CONTROLLER.get(),
                 ModBlocks.COMBUSTION_HEATER.get(),
+                ModBlocks.HEAT_PROVIDER.get(),
+                ModBlocks.CONDENSER.get(),
                 ModBlocks.MACHINE_CASING.get(),
                 ModBlocks.IRON_FREEZER.get(),
                 ModBlocks.LIGHT_FREEZER.get()
@@ -66,6 +68,8 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.END_PORTAL_CORE.get(),
                 ModBlocks.MACHINE_CASING.get(),
                 ModBlocks.COMBUSTION_HEATER.get(),
+                ModBlocks.HEAT_PROVIDER.get(),
+                ModBlocks.CONDENSER.get(),
                 ModBlocks.COMBUSTION_COLLECTOR.get(),
                 ModBlocks.COMBUSTION_CONTROLLER.get()
         );

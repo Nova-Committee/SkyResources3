@@ -6,8 +6,9 @@ import committee.nova.mods.skyresources3.block.entity.CombustionControllerBlockE
 import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
 import committee.nova.mods.skyresources3.event.MachineCasingEvents;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.item.CondenserItem;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
@@ -92,6 +93,36 @@ public final class MachineRuntimeGameTests {
                         && ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.IRON_COMBUSTION_HEATER)
                                 .equals(CombustionHeaterItem.combustionHeaterTypeId(stack))),
                 "Removed heater should be returned to the player with its type component"
+        );
+        helper.succeed();
+    }
+
+    public static void heatProviderEmbedsAsTypeIdAndProvidesHeat(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
+        final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
+        casing.setCasingType(ModDataPackRegistries.IRON);
+        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final ItemStack provider = HeatProviderItem.forType(ModDataPackRegistries.IRON_HEAT_PROVIDER);
+
+        helper.assertTrue(casing.installHeater(provider, player), "Heat provider should install");
+        helper.assertTrue(casing.heater().isEmpty(), "Embedded heat provider should not be stored as an item");
+        helper.assertTrue(
+                ModDataPackRegistries.heatProviderTypeId(ModDataPackRegistries.IRON_HEAT_PROVIDER)
+                        .equals(casing.heatProviderTypeId()),
+                "Embedded heat provider type should be persisted on the casing"
+        );
+
+        casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, new ItemStack(Items.COAL));
+        casing.serverTick(helper.getLevel());
+
+        helper.assertValueEqual(10, casing.heatSourceValue(), "Iron heat provider heat source value");
+        final ItemStack removed = casing.removeHeater();
+        helper.assertTrue(removed.is(ModItems.HEAT_PROVIDER.get()), "Removed provider should be the single provider block");
+        helper.assertTrue(
+                ModDataPackRegistries.heatProviderTypeId(ModDataPackRegistries.IRON_HEAT_PROVIDER)
+                        .equals(HeatProviderItem.heatProviderTypeId(removed)),
+                "Removed provider should keep its type component"
         );
         helper.succeed();
     }
@@ -188,10 +219,15 @@ public final class MachineRuntimeGameTests {
         casing.setCasingType(ModDataPackRegistries.DARK_MATTER);
         final Player player = helper.makeMockPlayer(GameType.CREATIVE);
         final boolean installed = casing.installHeater(
-                new ItemStack(ModItems.CONDENSERS.get(MachineVariant.DARK_MATTER).get()),
+                CondenserItem.forType(ModDataPackRegistries.DARK_MATTER_CONDENSER),
                 player
         );
         helper.assertTrue(installed, "Condenser should install into the machine casing");
+        helper.assertTrue(
+                ModDataPackRegistries.condenserTypeId(ModDataPackRegistries.DARK_MATTER_CONDENSER)
+                        .equals(casing.condenserTypeId()),
+                "Embedded condenser type should be persisted on the casing"
+        );
         casing.setStackInSlot(
                 MachineCasingBlockEntity.FUEL_SLOT,
                 new ItemStack(ModItems.ORE_ALCHEMICAL_DUSTS.get(OreAlchemyDust.COPPER).get())

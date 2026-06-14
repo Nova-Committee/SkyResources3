@@ -11,7 +11,10 @@
     "X X"
   ],
   "result": {
+    "components": {
+      "skyresources3:condenser_type": "skyresources3:stone"
+    },
     "count": 1,
-    "id": "skyresources3:stone_condenser"
+    "id": "skyresources3:condenser"
   }
 }

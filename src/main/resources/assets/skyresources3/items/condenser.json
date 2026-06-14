@@ -1,0 +1,40 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "skyresources3:condenser_type",
+    "cases": [
+      {
+        "when": ["skyresources3:wooden"],
+        "model": { "type": "minecraft:model", "model": "skyresources3:block/wooden_condenser" }
+      },
+      {
+        "when": ["skyresources3:stone"],
+        "model": { "type": "minecraft:model", "model": "skyresources3:block/stone_condenser" }
+      },
+      {
+        "when": ["skyresources3:iron"],
+        "model": { "type": "minecraft:model", "model": "skyresources3:block/iron_condenser" }
+      },
+      {
+        "when": ["skyresources3:nether_brick"],
+        "model": { "type": "minecraft:model", "model": "skyresources3:block/nether_brick_condenser" }
+      },
+      {
+        "when": ["skyresources3:end_stone"],
+        "model": { "type": "minecraft:model", "model": "skyresources3:block/end_stone_condenser" }
+      },
+      {
+        "when": ["skyresources3:dark_matter"],
+        "model": { "type": "minecraft:model", "model": "skyresources3:block/dark_matter_condenser" }
+      },
+      {
+        "when": ["skyresources3:light_matter"],
+        "model": { "type": "minecraft:model", "model": "skyresources3:block/light_matter_condenser" }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "skyresources3:block/iron_condenser"
+    }
+  }
+}

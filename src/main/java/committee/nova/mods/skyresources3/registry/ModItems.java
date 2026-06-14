@@ -18,7 +18,6 @@ import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.item.RockGrinderItem;
 import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -75,6 +74,14 @@ public final class ModItems {
     public static final DeferredItem<CombustionHeaterItem> COMBUSTION_HEATER = ITEMS.registerItem(
             "combustion_heater",
             properties -> new CombustionHeaterItem(ModBlocks.COMBUSTION_HEATER.get(), properties)
+    );
+    public static final DeferredItem<HeatProviderItem> HEAT_PROVIDER = ITEMS.registerItem(
+            "heat_provider",
+            properties -> new HeatProviderItem(ModBlocks.HEAT_PROVIDER.get(), properties)
+    );
+    public static final DeferredItem<CondenserItem> CONDENSER = ITEMS.registerItem(
+            "condenser",
+            properties -> new CondenserItem(ModBlocks.CONDENSER.get(), properties)
     );
     public static final DeferredItem<BlockItem> COMBUSTION_COLLECTOR =
             blockItem("combustion_collector", ModBlocks.COMBUSTION_COLLECTOR);
@@ -176,39 +183,12 @@ public final class ModItems {
                     properties.craftRemainder(Items.BUCKET).stacksTo(1)
             )
     );
-    public static final Map<MachineVariant, DeferredItem<HeatProviderItem>> HEAT_PROVIDERS =
-            registerHeatProviders();
-    public static final Map<MachineVariant, DeferredItem<CondenserItem>> CONDENSERS =
-            registerCondensers();
-
     public static void register(final IEventBus modEventBus) {
         ITEMS.register(modEventBus);
     }
 
     private static DeferredItem<BlockItem> blockItem(final String name, final DeferredBlock<? extends Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
-    }
-
-    private static Map<MachineVariant, DeferredItem<HeatProviderItem>> registerHeatProviders() {
-        final EnumMap<MachineVariant, DeferredItem<HeatProviderItem>> providers = new EnumMap<>(MachineVariant.class);
-        for (final MachineVariant variant : MachineVariant.values()) {
-            providers.put(variant, ITEMS.registerItem(
-                    variant.registryName("heat_provider"),
-                    properties -> new HeatProviderItem(properties, variant)
-            ));
-        }
-        return Collections.unmodifiableMap(providers);
-    }
-
-    private static Map<MachineVariant, DeferredItem<CondenserItem>> registerCondensers() {
-        final EnumMap<MachineVariant, DeferredItem<CondenserItem>> condensers = new EnumMap<>(MachineVariant.class);
-        for (final MachineVariant variant : MachineVariant.values()) {
-            condensers.put(variant, ITEMS.registerItem(
-                    variant.registryName("condenser"),
-                    properties -> new CondenserItem(properties, variant)
-            ));
-        }
-        return Collections.unmodifiableMap(condensers);
     }
 
     private static Map<OreAlchemyDust, DeferredItem<Item>> registerOreAlchemyDusts() {

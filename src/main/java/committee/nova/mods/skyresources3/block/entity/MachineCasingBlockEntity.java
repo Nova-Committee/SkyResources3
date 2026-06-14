@@ -7,8 +7,9 @@ import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.machine.CombustionRecipeLogic;
 import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
+import committee.nova.mods.skyresources3.machine.CondenserType;
 import committee.nova.mods.skyresources3.machine.CasingType;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
+import committee.nova.mods.skyresources3.machine.HeatProviderType;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
@@ -69,6 +70,8 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     private static final Codec<ItemStack> HEATER_CODEC = ItemStack.OPTIONAL_CODEC;
     private static final String CASING_TYPE_KEY = "casing_type";
     private static final String COMBUSTION_HEATER_TYPE_KEY = "combustion_heater_type";
+    private static final String HEAT_PROVIDER_TYPE_KEY = "heat_provider_type";
+    private static final String CONDENSER_TYPE_KEY = "condenser_type";
     private static final String FUEL_KEY = "fuel";
     private static final String HEATER_KEY = "heater";
     private static final String CURRENT_HEAT_KEY = "current_heat";
@@ -86,6 +89,10 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     private Identifier casingTypeId = DEFAULT_CASING_TYPE;
     @Nullable
     private Identifier combustionHeaterTypeId;
+    @Nullable
+    private Identifier heatProviderTypeId;
+    @Nullable
+    private Identifier condenserTypeId;
     private ItemStack heater = ItemStack.EMPTY;
     private float currentHeat;
     private float itemHeat;
@@ -107,8 +114,11 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         super.loadAdditional(input);
         this.casingTypeId = input.read(CASING_TYPE_KEY, Identifier.CODEC).orElse(DEFAULT_CASING_TYPE);
         this.combustionHeaterTypeId = input.read(COMBUSTION_HEATER_TYPE_KEY, Identifier.CODEC).orElse(null);
+        this.heatProviderTypeId = input.read(HEAT_PROVIDER_TYPE_KEY, Identifier.CODEC).orElse(null);
+        this.condenserTypeId = input.read(CONDENSER_TYPE_KEY, Identifier.CODEC).orElse(null);
         input.readChild(FUEL_KEY, this.fuelItems);
         this.heater = input.read(HEATER_KEY, HEATER_CODEC).orElse(ItemStack.EMPTY);
+        this.migrateInstalledMachineStack();
         this.currentHeat = input.getFloatOr(CURRENT_HEAT_KEY, 0.0F);
         this.itemHeat = input.getFloatOr(ITEM_HEAT_KEY, 0.0F);
         this.itemHeatMax = input.getFloatOr(ITEM_HEAT_MAX_KEY, 0.0F);
@@ -127,6 +137,12 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         output.store(CASING_TYPE_KEY, Identifier.CODEC, this.casingTypeId);
         if (this.combustionHeaterTypeId != null) {
             output.store(COMBUSTION_HEATER_TYPE_KEY, Identifier.CODEC, this.combustionHeaterTypeId);
+        }
+        if (this.heatProviderTypeId != null) {
+            output.store(HEAT_PROVIDER_TYPE_KEY, Identifier.CODEC, this.heatProviderTypeId);
+        }
+        if (this.condenserTypeId != null) {
+            output.store(CONDENSER_TYPE_KEY, Identifier.CODEC, this.condenserTypeId);
         }
         output.putChild(FUEL_KEY, this.fuelItems);
         output.store(HEATER_KEY, HEATER_CODEC, this.heater);
@@ -177,10 +193,10 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             if (!this.hasValidMultiblock(level) && this.currentHeat > 0.0F) {
                 this.currentHeat = Math.max(0.0F, this.currentHeat - 1.0F);
             }
-        } else if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
-            this.provideHeat(level, heatProvider.variant());
-        } else if (this.heater.getItem() instanceof CondenserItem condenser) {
-            this.condense(level, condenser.variant());
+        } else if (this.heatProviderTypeId != null) {
+            this.provideHeat(level, this.heatProviderType());
+        } else if (this.condenserTypeId != null) {
+            this.condense(level, this.condenserType());
         } else {
             this.currentHeat = 0.0F;
             this.itemHeat = 0.0F;
@@ -231,6 +247,16 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return this.combustionHeaterTypeId;
     }
 
+    @Nullable
+    public Identifier heatProviderTypeId() {
+        return this.heatProviderTypeId;
+    }
+
+    @Nullable
+    public Identifier condenserTypeId() {
+        return this.condenserTypeId;
+    }
+
     public CombustionHeaterType combustionHeaterType() {
         if (this.level == null || this.combustionHeaterTypeId == null) {
             return CombustionHeaterType.fallback();
@@ -242,12 +268,37 @@ public final class MachineCasingBlockEntity extends BlockEntity {
                 .orElse(CombustionHeaterType.fallback());
     }
 
+    public HeatProviderType heatProviderType() {
+        if (this.level == null || this.heatProviderTypeId == null) {
+            return HeatProviderType.fallback();
+        }
+        return this.level.registryAccess()
+                .lookup(ModDataPackRegistries.HEAT_PROVIDER_TYPES)
+                .flatMap(registry -> registry.get(ModDataPackRegistries.heatProviderTypeKey(this.heatProviderTypeId)))
+                .map(reference -> reference.value())
+                .orElse(HeatProviderType.fallback());
+    }
+
+    public CondenserType condenserType() {
+        if (this.level == null || this.condenserTypeId == null) {
+            return CondenserType.fallback();
+        }
+        return this.level.registryAccess()
+                .lookup(ModDataPackRegistries.CONDENSER_TYPES)
+                .flatMap(registry -> registry.get(ModDataPackRegistries.condenserTypeKey(this.condenserTypeId)))
+                .map(reference -> reference.value())
+                .orElse(CondenserType.fallback());
+    }
+
     public ItemStack heater() {
         return this.heater.copy();
     }
 
     public boolean hasHeater() {
-        return this.hasCombustionHeater() || !this.heater.isEmpty();
+        return this.hasCombustionHeater()
+                || this.heatProviderTypeId != null
+                || this.condenserTypeId != null
+                || !this.heater.isEmpty();
     }
 
     private boolean hasCombustionHeater() {
@@ -266,6 +317,18 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         }
         if (stack.getItem() instanceof CombustionHeaterItem) {
             this.combustionHeaterTypeId = CombustionHeaterItem.combustionHeaterTypeId(stack);
+            this.heatProviderTypeId = null;
+            this.condenserTypeId = null;
+            this.heater = ItemStack.EMPTY;
+        } else if (stack.getItem() instanceof HeatProviderItem) {
+            this.combustionHeaterTypeId = null;
+            this.heatProviderTypeId = HeatProviderItem.heatProviderTypeId(stack);
+            this.condenserTypeId = null;
+            this.heater = ItemStack.EMPTY;
+        } else if (stack.getItem() instanceof CondenserItem) {
+            this.combustionHeaterTypeId = null;
+            this.heatProviderTypeId = null;
+            this.condenserTypeId = CondenserItem.condenserTypeId(stack);
             this.heater = ItemStack.EMPTY;
         } else {
             this.heater = stack.copyWithCount(1);
@@ -282,6 +345,12 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         if (this.combustionHeaterTypeId != null) {
             removed = CombustionHeaterItem.forType(this.combustionHeaterTypeId);
             this.combustionHeaterTypeId = null;
+        } else if (this.heatProviderTypeId != null) {
+            removed = HeatProviderItem.forType(this.heatProviderTypeId);
+            this.heatProviderTypeId = null;
+        } else if (this.condenserTypeId != null) {
+            removed = CondenserItem.forType(this.condenserTypeId);
+            this.condenserTypeId = null;
         } else {
             removed = this.heater;
             this.heater = ItemStack.EMPTY;
@@ -336,15 +405,15 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     public int currentHeat() {
-        if (this.heater.getItem() instanceof HeatProviderItem) {
+        if (this.heatProviderTypeId != null) {
             return this.heatSourceValue();
         }
         return Math.round(this.currentHeat);
     }
 
     public int maxHeat() {
-        if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
-            return Math.round(heatProvider.variant().heatPerTick());
+        if (this.heatProviderTypeId != null) {
+            return Math.round(this.heatProviderType().heatPerTick());
         }
         return this.casingType().maxHeat();
     }
@@ -379,20 +448,20 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         if (this.hasCombustionHeater()) {
             return MACHINE_MODE_COMBUSTION_HEATER;
         }
-        if (this.heater.getItem() instanceof HeatProviderItem) {
+        if (this.heatProviderTypeId != null) {
             return MACHINE_MODE_HEAT_PROVIDER;
         }
-        if (this.heater.getItem() instanceof CondenserItem) {
+        if (this.condenserTypeId != null) {
             return MACHINE_MODE_CONDENSER;
         }
         return MACHINE_MODE_NONE;
     }
 
     public int heatSourceValue() {
-        if (!(this.heater.getItem() instanceof HeatProviderItem heatProvider) || this.powered || this.itemHeat <= 0.0F) {
+        if (this.heatProviderTypeId == null || this.powered || this.itemHeat <= 0.0F) {
             return 0;
         }
-        return Math.round(heatProvider.variant().heatPerTick());
+        return Math.round(this.heatProviderType().heatPerTick());
     }
 
     public boolean isChamber(final BlockPos chamber) {
@@ -420,7 +489,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         Containers.dropContents(this.level, this.worldPosition, container);
     }
 
-    private void condense(final ServerLevel level, final MachineVariant condenserVariant) {
+    private void condense(final ServerLevel level, final CondenserType condenserType) {
         this.currentHeat = 0.0F;
         this.itemHeat = 0.0F;
         this.itemHeatMax = 0.0F;
@@ -450,7 +519,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             this.condenserTime = 0;
             this.condenserRecipeHash = recipeHash;
         }
-        this.condenserMaxTime = this.condenserMaxTime(recipe, condenserVariant);
+        this.condenserMaxTime = this.condenserMaxTime(recipe, condenserType);
 
         if (this.condenserCatalystLeft <= 0.0F && !this.consumeCondenserCatalyst(recipe)) {
             this.resetCondenserProgress();
@@ -461,7 +530,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             this.condenserTime++;
             this.condenserCatalystLeft = Math.max(
                     0.0F,
-                    this.condenserCatalystLeft - this.condenserCatalystDrainPerTick(recipe, condenserVariant)
+                    this.condenserCatalystLeft - this.condenserCatalystDrainPerTick(recipe, condenserType)
             );
             this.playCondenserEffects(level);
             if (this.condenserTime < this.condenserMaxTime) {
@@ -520,16 +589,16 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return true;
     }
 
-    private int condenserMaxTime(final CondenserRecipe recipe, final MachineVariant condenserVariant) {
-        return Math.max(1, Math.round(recipe.parameter() / Math.max(0.001F, condenserVariant.speed())));
+    private int condenserMaxTime(final CondenserRecipe recipe, final CondenserType condenserType) {
+        return Math.max(1, Math.round(recipe.parameter() / Math.max(0.001F, condenserType.speed())));
     }
 
     private float condenserCatalystDrainPerTick(
             final CondenserRecipe recipe,
-            final MachineVariant condenserVariant
+            final CondenserType condenserType
     ) {
         final double parameter = Math.max(1.0D, recipe.parameter());
-        final double efficiency = Math.max(0.001D, this.combinedEfficiency(condenserVariant));
+        final double efficiency = Math.max(0.001D, this.combinedEfficiency(condenserType));
         return (float) (Math.pow(parameter, 1.3D) / 50.0D / (2400.0D * parameter / 50.0D * efficiency));
     }
 
@@ -620,17 +689,17 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         }
     }
 
-    private void consumeFuel(final ServerLevel level, final MachineVariant heaterVariant) {
+    private void consumeFuel(final ServerLevel level, final HeatProviderType providerType) {
         final ItemStack fuel = this.fuelItems.stack(FUEL_SLOT);
-        if (!heaterVariant.isValidFuel(fuel, level)) {
+        if (!providerType.isValidFuel(fuel, level)) {
             this.itemHeat = 0.0F;
             this.itemHeatMax = 0.0F;
             this.heatPerTick = 0.0F;
             return;
         }
 
-        this.heatPerTick = heaterVariant.heatPerTick();
-        this.itemHeat = heaterVariant.fuelHeat(fuel, level, this.combinedEfficiency(heaterVariant));
+        this.heatPerTick = providerType.heatPerTick();
+        this.itemHeat = providerType.fuelHeat(fuel, level, this.combinedEfficiency(providerType));
         this.itemHeatMax = this.itemHeat;
         final Item fuelItem = fuel.getItem();
         fuel.shrink(1);
@@ -639,7 +708,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         }
     }
 
-    private void provideHeat(final ServerLevel level, final MachineVariant providerVariant) {
+    private void provideHeat(final ServerLevel level, final HeatProviderType providerType) {
         this.powered = level.hasNeighborSignal(this.worldPosition);
         if (this.powered) {
             this.currentHeat = 0.0F;
@@ -648,7 +717,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         }
 
         if (this.itemHeat <= 0.0F) {
-            this.consumeFuel(level, providerVariant);
+            this.consumeFuel(level, providerType);
         }
         if (this.itemHeat <= 0.0F) {
             this.currentHeat = 0.0F;
@@ -657,7 +726,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             return;
         }
 
-        this.heatPerTick = providerVariant.heatPerTick();
+        this.heatPerTick = providerType.heatPerTick();
         this.currentHeat = this.heatPerTick;
         this.itemHeat = Math.max(0.0F, this.itemHeat - 1.0F);
     }
@@ -750,8 +819,12 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return heaterType.efficiency() * this.casingType().efficiency();
     }
 
-    private float combinedEfficiency(final MachineVariant heaterVariant) {
-        return heaterVariant.efficiency() * this.casingType().efficiency();
+    private float combinedEfficiency(final HeatProviderType providerType) {
+        return providerType.efficiency() * this.casingType().efficiency();
+    }
+
+    private float combinedEfficiency(final CondenserType condenserType) {
+        return condenserType.efficiency() * this.casingType().efficiency();
     }
 
     private void routeOutput(final ServerLevel level, final BlockPos chamber, final ItemStack output) {
@@ -788,31 +861,48 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     private boolean isValidFuel(final ItemStack stack) {
-        if (this.heater.getItem() instanceof CondenserItem) {
+        if (this.condenserTypeId != null) {
             return this.level instanceof ServerLevel serverLevel && CondenserRecipes.hasCatalyst(serverLevel, stack);
         }
         if (this.hasCombustionHeater()) {
             return this.level != null && this.combustionHeaterType().isValidFuel(stack, this.level);
         }
-        final MachineVariant variant = this.installedFuelVariant();
-        if (variant == null || this.level == null) {
+        if (this.heatProviderTypeId == null || this.level == null) {
             return false;
         }
-        return variant.isValidFuel(stack, this.level);
-    }
-
-    private MachineVariant installedFuelVariant() {
-        if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
-            return heatProvider.variant();
-        }
-        return null;
+        return this.heatProviderType().isValidFuel(stack, this.level);
     }
 
     private ItemStack installedMachineStack() {
         if (this.combustionHeaterTypeId != null) {
             return CombustionHeaterItem.forType(this.combustionHeaterTypeId);
         }
+        if (this.heatProviderTypeId != null) {
+            return HeatProviderItem.forType(this.heatProviderTypeId);
+        }
+        if (this.condenserTypeId != null) {
+            return CondenserItem.forType(this.condenserTypeId);
+        }
         return this.heater.copy();
+    }
+
+    private void migrateInstalledMachineStack() {
+        if (this.heater.isEmpty()
+                || this.combustionHeaterTypeId != null
+                || this.heatProviderTypeId != null
+                || this.condenserTypeId != null) {
+            return;
+        }
+        if (this.heater.getItem() instanceof CombustionHeaterItem) {
+            this.combustionHeaterTypeId = CombustionHeaterItem.combustionHeaterTypeId(this.heater);
+            this.heater = ItemStack.EMPTY;
+        } else if (this.heater.getItem() instanceof HeatProviderItem) {
+            this.heatProviderTypeId = HeatProviderItem.heatProviderTypeId(this.heater);
+            this.heater = ItemStack.EMPTY;
+        } else if (this.heater.getItem() instanceof CondenserItem) {
+            this.condenserTypeId = CondenserItem.condenserTypeId(this.heater);
+            this.heater = ItemStack.EMPTY;
+        }
     }
 
     private void setChangedAndUpdate() {

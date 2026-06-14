@@ -2,10 +2,11 @@ package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.DirtyGem;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -116,11 +117,11 @@ public final class ModCreativeTabs {
                         for (final var heaterType : ModDataPackRegistries.BUILTIN_COMBUSTION_HEATER_TYPES) {
                             output.accept(CombustionHeaterItem.forType(heaterType));
                         }
-                        for (final MachineVariant variant : MachineVariant.values()) {
-                            output.accept(ModItems.HEAT_PROVIDERS.get(variant).get());
+                        for (final var providerType : ModDataPackRegistries.BUILTIN_HEAT_PROVIDER_TYPES) {
+                            output.accept(HeatProviderItem.forType(providerType));
                         }
-                        for (final MachineVariant variant : MachineVariant.values()) {
-                            output.accept(ModItems.CONDENSERS.get(variant).get());
+                        for (final var condenserType : ModDataPackRegistries.BUILTIN_CONDENSER_TYPES) {
+                            output.accept(CondenserItem.forType(condenserType));
                         }
                     })
                     .build()

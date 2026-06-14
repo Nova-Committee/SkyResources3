@@ -11,7 +11,10 @@
     "X X"
   ],
   "result": {
+    "components": {
+      "skyresources3:heat_provider_type": "skyresources3:end_stone"
+    },
     "count": 1,
-    "id": "skyresources3:end_stone_heat_provider"
+    "id": "skyresources3:heat_provider"
   }
 }

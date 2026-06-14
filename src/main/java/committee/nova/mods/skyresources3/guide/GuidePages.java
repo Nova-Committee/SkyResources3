@@ -2,9 +2,10 @@ package committee.nova.mods.skyresources3.guide;
 
 import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.item.CondenserItem;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.Collections;
@@ -80,8 +81,8 @@ public final class GuidePages {
                     STAGE_2,
                     () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN),
                     link("combustionHeater", GuidePages::woodenCombustionHeater),
-                    link("heatProvider", stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get())),
-                    link("condenser", stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get()))
+                    link("heatProvider", GuidePages::woodenHeatProvider),
+                    link("condenser", GuidePages::woodenCondenser)
             ),
             page(
                     "combustionHeater",
@@ -111,8 +112,8 @@ public final class GuidePages {
             page(
                     "heatProvider",
                     STAGE_2,
-                    stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get()),
-                    recipe(GuideRecipeTargets.HEAT_SOURCES, stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get()))
+                    GuidePages::woodenHeatProvider,
+                    recipe(GuideRecipeTargets.HEAT_SOURCES, GuidePages::woodenHeatProvider)
             ),
             page(
                     "rockGrinder",
@@ -127,7 +128,7 @@ public final class GuidePages {
                     link("fusionTable", stack(() -> ModItems.FUSION_TABLE.get())),
                     link("crucible", stack(() -> ModItems.CRUCIBLE.get())),
                     link("fluidDropper", stack(() -> ModItems.FLUID_DROPPER.get())),
-                    link("condenser", stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get())),
+                    link("condenser", GuidePages::woodenCondenser),
                     image("crystalSetup", stack(() -> ModItems.CRUCIBLE.get()))
             ),
             page(
@@ -146,8 +147,8 @@ public final class GuidePages {
             page(
                     "condenser",
                     STAGE_2,
-                    stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get()),
-                    recipe(GuideRecipeTargets.CONDENSER, stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get()))
+                    GuidePages::woodenCondenser,
+                    recipe(GuideRecipeTargets.CONDENSER, GuidePages::woodenCondenser)
             ),
             page("crucibleInserter", STAGE_2, stack(() -> ModItems.CRUCIBLE_INSERTER.get())),
             page("combustionCollector", STAGE_2, stack(() -> ModItems.COMBUSTION_COLLECTOR.get())),
@@ -239,6 +240,14 @@ public final class GuidePages {
 
     private static ItemStack woodenCombustionHeater() {
         return CombustionHeaterItem.forType(ModDataPackRegistries.WOODEN_COMBUSTION_HEATER);
+    }
+
+    private static ItemStack woodenHeatProvider() {
+        return HeatProviderItem.forType(ModDataPackRegistries.WOODEN_HEAT_PROVIDER);
+    }
+
+    private static ItemStack woodenCondenser() {
+        return CondenserItem.forType(ModDataPackRegistries.WOODEN_CONDENSER);
     }
 
     public static Optional<GuidePage> find(final String id) {

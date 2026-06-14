@@ -1,12 +1,19 @@
 package committee.nova.mods.skyresources3.integration.jei;
 
-import committee.nova.mods.skyresources3.machine.MachineVariant;
-import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
+import committee.nova.mods.skyresources3.machine.HeatProviderType;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.util.HeatSources;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 
 record HeatSourceJeiRecipe(ItemStack source, int heat) {
     HeatSourceJeiRecipe {
@@ -27,14 +34,28 @@ record HeatSourceJeiRecipe(ItemStack source, int heat) {
         for (final HeatSources.BlockHeatSource source : HeatSources.blockHeatSources()) {
             add(recipes, new ItemStack(source.block()), source.heat());
         }
-        for (final MachineVariant variant : MachineVariant.values()) {
-            add(
-                    recipes,
-                    new ItemStack(ModItems.HEAT_PROVIDERS.get(variant).get()),
-                    Math.round(variant.heatPerTick())
-            );
-        }
+        heatProviderTypes().ifPresent(registry -> ModDataPackRegistries.BUILTIN_HEAT_PROVIDER_TYPES.forEach(key -> add(
+                recipes,
+                HeatProviderItem.forType(key),
+                Math.round(registry.getValueOrThrow(key).heatPerTick())
+        )));
         return List.copyOf(recipes);
+    }
+
+    private static Optional<Registry<HeatProviderType>> heatProviderTypes() {
+        final Minecraft minecraft = Minecraft.getInstance();
+        final Level level = minecraft.level;
+        final RegistryAccess registryAccess;
+        if (level != null) {
+            registryAccess = level.registryAccess();
+        } else {
+            final ClientPacketListener connection = minecraft.getConnection();
+            if (connection == null) {
+                return Optional.empty();
+            }
+            registryAccess = connection.registryAccess();
+        }
+        return registryAccess.lookup(ModDataPackRegistries.HEAT_PROVIDER_TYPES);
     }
 
     private static void add(final List<HeatSourceJeiRecipe> recipes, final ItemStack stack, final int heat) {

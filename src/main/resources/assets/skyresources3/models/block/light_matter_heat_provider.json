@@ -1,0 +1,6 @@
+{
+  "parent": "skyresources3:block/heat_provider_body",
+  "textures": {
+    "all": "skyresources3:block/light_matter_block"
+  }
+}

@@ -109,6 +109,12 @@ public final class ModGameTests {
                     "combustion_heater_shift_right_click_removes",
                     () -> MachineRuntimeGameTests::shiftRightClickRemovesEmbeddedCombustionHeaterWithHeldItem
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            HEAT_PROVIDER_EMBEDS_AS_TYPE_ID =
+            TEST_FUNCTIONS.register(
+                    "heat_provider_embeds_as_type_id",
+                    () -> MachineRuntimeGameTests::heatProviderEmbedsAsTypeIdAndProvidesHeat
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_drops_output",
@@ -177,6 +183,7 @@ public final class ModGameTests {
                 COMBUSTION_HEATER_SHIFT_RIGHT_CLICK_REMOVES,
                 environment
         );
+        registerFunctionTest(event, "heat_provider_embeds_as_type_id", HEAT_PROVIDER_EMBEDS_AS_TYPE_ID, environment);
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
         registerFunctionTest(event, "combustion_priority", COMBUSTION_PRIORITY, environment);

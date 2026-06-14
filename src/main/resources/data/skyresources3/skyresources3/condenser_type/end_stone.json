@@ -1,0 +1,6 @@
+{
+  "translation_key": "block.skyresources3.condenser.end_stone",
+  "texture": "minecraft:block/end_stone",
+  "speed": 6.6,
+  "efficiency": 6.6
+}

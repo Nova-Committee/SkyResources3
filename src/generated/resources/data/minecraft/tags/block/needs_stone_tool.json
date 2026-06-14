@@ -8,6 +8,8 @@
     "skyresources3:end_portal_core",
     "skyresources3:machine_casing",
     "skyresources3:combustion_heater",
+    "skyresources3:heat_provider",
+    "skyresources3:condenser",
     "skyresources3:combustion_collector",
     "skyresources3:combustion_controller"
   ]

@@ -1,0 +1,11 @@
+{
+  "translation_key": "block.skyresources3.heat_provider.dark_matter",
+  "texture": "skyresources3:block/dark_matter_block",
+  "speed": 100.0,
+  "efficiency": 1.0,
+  "fuel": {
+    "kind": "item",
+    "item": "skyresources3:dark_matter",
+    "rate": 31415
+  }
+}

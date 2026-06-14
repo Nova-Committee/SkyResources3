@@ -2,15 +2,14 @@ package committee.nova.mods.skyresources3.integration.jei;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
+import committee.nova.mods.skyresources3.item.CondenserItem;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import committee.nova.mods.skyresources3.registry.ModRecipeTypes;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -28,7 +27,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeMap;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
 @JeiPlugin
@@ -168,14 +166,14 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                 ModItems.ROCK_CLEANER.get()
         );
         registration.addCraftingStation(SkyResourcesJeiRecipeTypes.CRUCIBLE, ModItems.CRUCIBLE.get());
-        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.CONDENSER, variants(ModItems.CONDENSERS));
+        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.CONDENSER, condensers());
         registration.addCraftingStation(
                 SkyResourcesJeiRecipeTypes.HEAT_SOURCES,
                 Items.LAVA_BUCKET,
                 Blocks.TORCH,
                 Blocks.MAGMA_BLOCK
         );
-        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.HEAT_SOURCES, variants(ModItems.HEAT_PROVIDERS));
+        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.HEAT_SOURCES, heatProviders());
     }
 
     @Override
@@ -247,15 +245,21 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         return recipesGui.getParentScreen().isPresent();
     }
 
-    private static ItemLike[] variants(final Map<MachineVariant, ? extends Supplier<? extends ItemLike>> items) {
-        return items.values().stream()
-                .map(Supplier::get)
-                .toArray(ItemLike[]::new);
-    }
-
     private static ItemStack[] combustionHeaters() {
         return ModDataPackRegistries.BUILTIN_COMBUSTION_HEATER_TYPES.stream()
                 .map(CombustionHeaterItem::forType)
+                .toArray(ItemStack[]::new);
+    }
+
+    private static ItemStack[] heatProviders() {
+        return ModDataPackRegistries.BUILTIN_HEAT_PROVIDER_TYPES.stream()
+                .map(HeatProviderItem::forType)
+                .toArray(ItemStack[]::new);
+    }
+
+    private static ItemStack[] condensers() {
+        return ModDataPackRegistries.BUILTIN_CONDENSER_TYPES.stream()
+                .map(CondenserItem::forType)
                 .toArray(ItemStack[]::new);
     }
 }

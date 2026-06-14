@@ -3,11 +3,14 @@ package committee.nova.mods.skyresources3.data;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.item.CondenserItem;
+import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
+import committee.nova.mods.skyresources3.machine.CondenserType;
 import committee.nova.mods.skyresources3.machine.CasingType;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
+import committee.nova.mods.skyresources3.machine.HeatProviderType;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.recipe.ProcessIngredient;
@@ -520,20 +523,20 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.combustionHeaterRecipe(ModDataPackRegistries.END_STONE_COMBUSTION_HEATER, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
         this.combustionHeaterRecipe(ModDataPackRegistries.DARK_MATTER_COMBUSTION_HEATER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
         this.combustionHeaterRecipe(ModDataPackRegistries.LIGHT_MATTER_COMBUSTION_HEATER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
-        this.heatProviderRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
-        this.heatProviderRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
-        this.heatProviderRecipe(MachineVariant.IRON, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
-        this.heatProviderRecipe(MachineVariant.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
-        this.heatProviderRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
-        this.heatProviderRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
-        this.heatProviderRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
-        this.condenserRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
-        this.condenserRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
-        this.condenserRecipe(MachineVariant.IRON, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
-        this.condenserRecipe(MachineVariant.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
-        this.condenserRecipe(MachineVariant.END_STONE, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
-        this.condenserRecipe(MachineVariant.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
-        this.condenserRecipe(MachineVariant.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
+        this.heatProviderRecipe(ModDataPackRegistries.WOODEN_HEAT_PROVIDER, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.heatProviderRecipe(ModDataPackRegistries.STONE_HEAT_PROVIDER, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
+        this.heatProviderRecipe(ModDataPackRegistries.IRON_HEAT_PROVIDER, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
+        this.heatProviderRecipe(ModDataPackRegistries.NETHER_BRICK_HEAT_PROVIDER, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
+        this.heatProviderRecipe(ModDataPackRegistries.END_STONE_HEAT_PROVIDER, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
+        this.heatProviderRecipe(ModDataPackRegistries.DARK_MATTER_HEAT_PROVIDER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
+        this.heatProviderRecipe(ModDataPackRegistries.LIGHT_MATTER_HEAT_PROVIDER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
+        this.condenserRecipe(ModDataPackRegistries.WOODEN_CONDENSER, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.condenserRecipe(ModDataPackRegistries.STONE_CONDENSER, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
+        this.condenserRecipe(ModDataPackRegistries.IRON_CONDENSER, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
+        this.condenserRecipe(ModDataPackRegistries.NETHER_BRICK_CONDENSER, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
+        this.condenserRecipe(ModDataPackRegistries.END_STONE_CONDENSER, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
+        this.condenserRecipe(ModDataPackRegistries.DARK_MATTER_CONDENSER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
+        this.condenserRecipe(ModDataPackRegistries.LIGHT_MATTER_CONDENSER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
 
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_COLLECTOR.get())
                 .define('X', Items.IRON_INGOT)
@@ -586,35 +589,37 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void heatProviderRecipe(
-            final MachineVariant variant,
+            final ResourceKey<HeatProviderType> providerType,
             final Ingredient material,
             final ItemLike component,
             final String unlockName
     ) {
-        this.shaped(RecipeCategory.MISC, ModItems.HEAT_PROVIDERS.get(variant).get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, HeatProviderItem.forType(providerType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XYX")
                 .pattern("XYX")
                 .pattern("X X")
                 .unlockedBy(unlockName, has(component))
-                .save(this.output);
+                .save(this.output, id(ModDataPackRegistries.heatProviderTypeId(providerType).getPath()
+                        + "_heat_provider"));
     }
 
     private void condenserRecipe(
-            final MachineVariant variant,
+            final ResourceKey<CondenserType> condenserType,
             final Ingredient material,
             final ItemLike component,
             final String unlockName
     ) {
-        this.shaped(RecipeCategory.MISC, ModItems.CONDENSERS.get(variant).get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, CondenserItem.forType(condenserType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XYX")
                 .pattern("X X")
                 .pattern("X X")
                 .unlockedBy(unlockName, has(component))
-                .save(this.output);
+                .save(this.output, id(ModDataPackRegistries.condenserTypeId(condenserType).getPath()
+                        + "_condenser"));
     }
 
     private void buildProcessRecipes() {

@@ -1,0 +1,9 @@
+{
+  "translation_key": "block.skyresources3.heat_provider.iron",
+  "texture": "skyresources3:block/iron_machine",
+  "speed": 1.0,
+  "efficiency": 1.2,
+  "fuel": {
+    "kind": "furnace"
+  }
+}

@@ -1,7 +1,8 @@
 package committee.nova.mods.skyresources3.integration.jei;
 
+import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
-import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -28,7 +29,9 @@ final class CondenserRecipeJeiCategory implements IRecipeCategory<CondenserRecip
     private final IDrawable arrow;
 
     CondenserRecipeJeiCategory(final IGuiHelper guiHelper) {
-        this.icon = guiHelper.createDrawableItemStack(new ItemStack(ModItems.CONDENSERS.values().iterator().next().get()));
+        this.icon = guiHelper.createDrawableItemStack(
+                CondenserItem.forType(ModDataPackRegistries.WOODEN_CONDENSER)
+        );
         this.arrow = guiHelper.getRecipeArrow();
     }
 
