@@ -248,9 +248,8 @@ public final class IslandCommandGameTests {
             final ServerPlayer owner = makeNamedMockServerPlayerInLevel(helper, "island_owner");
             final ServerPlayer member = makeNamedMockServerPlayerInLevel(helper, "island_member");
             final ServerPlayer stayingMember = makeNamedMockServerPlayerInLevel(helper, "island_stayer");
-            assertCommandFails(helper, owner, "skyresources3 team create");
             assertCommandSucceeds(helper, owner, "island create");
-            assertCommandSucceeds(helper, owner, "skyresources3 team trust " + member.getName().getString());
+            assertCommandSucceeds(helper, owner, "island trust " + member.getName().getString());
             assertCommandSucceeds(helper, owner, "island invite " + member.getName().getString());
             assertCommandSucceeds(helper, member, "island accept");
             assertCommandSucceeds(helper, owner, "island invite " + stayingMember.getName().getString());
@@ -274,12 +273,6 @@ public final class IslandCommandGameTests {
                     member.blockPosition(),
                     "Island member /island home should use the owner's island"
             );
-            assertCommandSucceeds(helper, member, "skyresources3 team home");
-            helper.assertValueEqual(
-                    island.home(),
-                    member.blockPosition(),
-                    "Island member /skyresources3 team home should use the owner's island"
-            );
 
             assertCommandSucceeds(helper, member, "island leave");
             helper.assertTrue(
@@ -297,16 +290,16 @@ public final class IslandCommandGameTests {
                     getIslandOrFail(helper, islands, owner).includes(member.getUUID()),
                     "A player who left through /island leave should be able to rejoin the island"
             );
-            assertCommandSucceeds(helper, member, "skyresources3 team leave");
+            assertCommandSucceeds(helper, member, "island leave");
             helper.assertTrue(
                     islands.getIslandFor(member.getUUID()).isEmpty(),
-                    "Compatibility team leave should remove the player from the island"
+                    "Repeated island leave should remove the player from the island"
             );
-            assertCommandSucceeds(helper, owner, "skyresources3 team invite " + member.getName().getString());
+            assertCommandSucceeds(helper, owner, "island invite " + member.getName().getString());
             assertCommandSucceeds(helper, member, "island accept");
             helper.assertTrue(
                     getIslandOrFail(helper, islands, owner).includes(member.getUUID()),
-                    "A player who left through /skyresources3 team leave should be able to rejoin the island"
+                    "A player who left again should be able to rejoin the island"
             );
             assertCommandSucceeds(helper, owner, "island disband");
             helper.assertTrue(
@@ -375,7 +368,7 @@ public final class IslandCommandGameTests {
 
             final ServerPlayer owner = makeNamedMockServerPlayerInLevel(helper, "cached_owner");
             assertCommandSucceeds(helper, owner, "island create");
-            assertCommandSucceeds(helper, owner, "skyresources3 team invite " + memberName.toUpperCase());
+            assertCommandSucceeds(helper, owner, "island invite " + memberName.toUpperCase());
 
             final IslandSavedData islands = IslandSavedData.get(storageLevel);
             helper.assertTrue(
@@ -421,15 +414,6 @@ public final class IslandCommandGameTests {
     ) {
         final int result = runCommand(helper, player, command);
         helper.assertTrue(result > 0, "/" + command + " should return a positive result");
-    }
-
-    private static void assertCommandFails(
-            final GameTestHelper helper,
-            final ServerPlayer player,
-            final String command
-    ) {
-        final int result = runCommand(helper, player, command);
-        helper.assertTrue(result == 0, "/" + command + " should return zero");
     }
 
     private static int runCommand(final GameTestHelper helper, final ServerPlayer player, final String command) {

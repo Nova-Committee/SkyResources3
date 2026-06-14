@@ -446,7 +446,6 @@
   "message.skyresources3.island.reset.not_owner": "Only an island owner can reset an island.",
   "message.skyresources3.island.reset.confirm": "This resets only the starter platform area as %s. Run %s to continue.",
   "message.skyresources3.island.reset.done": "Reset %s starter island platform and teleported to %s.",
-  "message.skyresources3.island.team_alias.create_disabled": "Island membership is managed by islands. Use /island create, or /island invite to add players.",
   "message.skyresources3.island.invite.target_missing": "Player %s is not online and has no saved identity.",
   "message.skyresources3.island.invite.self": "You cannot invite yourself.",
   "message.skyresources3.island.invite.not_owner": "Only the island owner can invite players.",

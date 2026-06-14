@@ -36,7 +36,7 @@ public final class VoidIslandCommands {
     private static final Set<Relative> NO_RELATIVE_MOVEMENT = Set.of();
 
     public static void register(final RegisterCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(islandNode()).then(teamNode()));
+        event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(islandNode()));
         event.getDispatcher().register(islandNode());
     }
 
@@ -96,36 +96,6 @@ public final class VoidIslandCommands {
                 .then(Commands.literal("accept").executes(context -> acceptInvite(context.getSource())))
                 .then(Commands.literal("leave").executes(context -> leaveIsland(context.getSource())))
                 .then(Commands.literal("disband").executes(context -> disbandIsland(context.getSource())));
-    }
-
-    private static LiteralArgumentBuilder<CommandSourceStack> teamNode() {
-        return Commands.literal("team")
-                .then(Commands.literal("create").executes(context -> rejectManualTeamCreate(context.getSource())))
-                .then(Commands.literal("invite")
-                        .then(Commands.argument("player", StringArgumentType.word())
-                                .executes(context -> invitePlayer(
-                                        context.getSource(),
-                                        StringArgumentType.getString(context, "player")
-                                ))))
-                .then(Commands.literal("accept").executes(context -> acceptInvite(context.getSource())))
-                .then(Commands.literal("leave").executes(context -> leaveIsland(context.getSource())))
-                .then(Commands.literal("disband").executes(context -> disbandIsland(context.getSource())))
-                .then(Commands.literal("trust")
-                        .then(Commands.argument("player", StringArgumentType.word())
-                                .executes(context -> trustVisitor(
-                                        context.getSource(),
-                                        StringArgumentType.getString(context, "player")
-                                ))))
-                .then(Commands.literal("untrust")
-                        .then(Commands.argument("player", StringArgumentType.word())
-                                .suggests(VoidIslandCommands::suggestTrustedVisitors)
-                                .executes(context -> untrustVisitor(
-                                        context.getSource(),
-                                        StringArgumentType.getString(context, "player")
-                                ))))
-                .then(Commands.literal("trusted").executes(context -> listTrustedVisitors(context.getSource())))
-                .then(Commands.literal("home").executes(context -> teleportHome(context.getSource())))
-                .then(Commands.literal("info").executes(context -> showInfo(context.getSource())));
     }
 
     private static int createIsland(final CommandSourceStack source, final String typeName) throws CommandSyntaxException {
@@ -495,16 +465,6 @@ public final class VoidIslandCommands {
                 false
         );
         return 1;
-    }
-
-    private static int rejectManualTeamCreate(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
-            return disabled(source);
-        }
-
-        source.getPlayerOrException();
-        source.sendFailure(Component.translatable("message.skyresources3.island.team_alias.create_disabled"));
-        return 0;
     }
 
     private static int invitePlayer(final CommandSourceStack source, final String targetName)

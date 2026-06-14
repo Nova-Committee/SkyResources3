@@ -32,25 +32,14 @@
 - `/island leave`
 - `/island disband`
 - `/skyresources3 island ...`
-- `/skyresources3 team create`
-- `/skyresources3 team invite <player>`
-- `/skyresources3 team trust <player>`
-- `/skyresources3 team untrust <player>`
-- `/skyresources3 team trusted`
-- `/skyresources3 team accept`
-- `/skyresources3 team leave`
-- `/skyresources3 team disband`
-- `/skyresources3 team home`
-- `/skyresources3 team info`
 
-Do not register a top-level `/team` command because vanilla Minecraft already owns that namespace for scoreboard teams.
-The `/skyresources3 team ...` signatures above are compatibility aliases only; they must not create or persist an
-independent team model.
+Do not register relationship commands outside the island command tree. The only namespaced relationship command under
+`/skyresources3` is `/skyresources3 island ...`.
 
 ### 3. Contracts
 
 - Island ownership, membership, invitations, and trusted visitors are stored only in `IslandSavedData.IslandRecord`.
-- Do not introduce or write a separate `TeamSavedData` model for island relationships.
+- Do not introduce or write a separate saved-data model for island relationships.
 - Island saved data stores a starter template `type`; old island records without `type`, `members`, or `invites` default
   to `grass` and empty maps.
 - Supported island starter template ids are `grass`, `sand`, `snow`, `wood`, `gog`, and `magma`.
@@ -63,13 +52,8 @@ independent team model.
   create a permanent deny list.
 - When a trusted visitor accepts an island invitation, their trusted-visitor entry must be removed because membership
   becomes the source of access. Leaving that island must also remove any stale trusted-visitor access.
-- `/skyresources3 team create` is retained only as a rejected compatibility command. Players must use `/island create`
-  or `/island invite` instead.
-- `/skyresources3 team invite`, `accept`, `leave`, `disband`, `home`, `info`, `trust`, `untrust`, and `trusted` are
-  compatibility aliases for the island commands and must read/write only `IslandSavedData`.
-- Island disband by the island owner through `/island disband` or `/skyresources3 team disband` deletes the island
-  record and teleports the owner and online members back to the initial spawn platform. It does not clear placed blocks
-  from the world.
+- Island disband by the island owner through `/island disband` deletes the island record and teleports the owner and
+  online members back to the initial spawn platform. It does not clear placed blocks from the world.
 - Player identity lookup is stored in `PlayerIdentitySavedData` as a local `UUID -> last known name` cache for players
   this mod has already observed. Do not use it as an external profile service or full rename-history index.
 - An island member without a personal island resolves `/island home` and `/island info` through their joined island.
@@ -115,24 +99,19 @@ independent team model.
 
 ### 4. Validation & Error Matrix
 
-- Void island config disabled -> reject every island command and compatibility alias.
+- Void island config disabled -> reject every island command.
 - Player already owns an island -> reject island invitation acceptance.
 - Player is already an island member -> reject personal island creation.
-- Player runs `/skyresources3 team create` -> reject; island relationships are created by `/island create` and
-  `/island invite`.
 - Inviter is an island member but not the island owner -> reject invite.
 - Invite target is offline but has no cached local identity -> reject invite.
 - Invite target already owns an island -> reject invite.
 - Invite target is already an island member -> reject invite.
 - Invite target already has a pending island invitation -> reject invite to keep accept semantics unambiguous.
 - Invite target is offline but has a cached local identity -> persist a pending invitation against the cached UUID.
-- Island owner tries `/island leave` or `/skyresources3 team leave` -> reject and require disband.
+- Island owner tries `/island leave` -> reject and require disband.
 - Island member leaves through `/island leave` -> remove the member and keep that player eligible for a later invitation.
-- Island member leaves through `/skyresources3 team leave` -> same behavior as `/island leave`.
 - Island member leaves after previously being trusted -> remove the trusted access too.
 - Player leaves through `/island leave`, gets invited again by the same owner, and accepts -> rejoin succeeds.
-- Player leaves through `/skyresources3 team leave`, gets invited again by the same owner, and accepts -> rejoin
-  succeeds.
 - Island owner disbands -> delete the island record and clear all membership by removing that record.
 - Visit target is offline but matches a saved island owner name -> teleport to that island.
 - Visit target is offline but matches a saved island member name -> teleport to that member's island.
@@ -157,10 +136,10 @@ independent team model.
 ### 5. Good/Base/Bad Cases
 
 - Good: owner creates island, invites an online player, player accepts, player uses `/island home`.
-- Base: solo player creates island and uses `/island home`; no separate team data is required.
-- Bad: storing island membership in `TeamSavedData` while protection checks `IslandSavedData`, because access rules can
-  drift.
-- Bad: registering top-level `/team` merges with or shadows vanilla scoreboard commands.
+- Base: solo player creates island and uses `/island home`; no separate relationship data is required.
+- Bad: storing island membership in separate saved data while protection checks `IslandSavedData`, because access rules
+  can drift.
+- Bad: registering island relationship commands outside the island command tree.
 
 ### 6. Tests Required
 
@@ -171,8 +150,7 @@ independent team model.
 
 Command GameTests should execute commands through the Brigadier dispatcher and assert saved-data side effects, not just
 positive command return values.
-Command GameTests for island relationships should cover create/invite/accept/home/leave/rejoin/disband and the
-compatibility `/skyresources3 team ...` aliases.
+Command GameTests for island relationships should cover create/invite/accept/home/leave/rejoin/disband.
 Command GameTests for cached offline identities should assert that invite/trust writes the cached UUID, and that a later
 player with the same UUID can accept the stored invitation.
 Command GameTests for `/island spawn` should assert command execution and teleport behavior. If the GameTest server
@@ -184,13 +162,13 @@ fallback command behavior and cover platform config through `VoidIslandWorld.ens
 #### Wrong
 
 ```java
-event.getDispatcher().register(Commands.literal("team").then(teamNode()));
+event.getDispatcher().register(Commands.literal("members").then(memberNode()));
 ```
 
 #### Correct
 
 ```java
-event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(teamNode()));
+event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(islandNode()));
 event.getDispatcher().register(islandNode());
 ```
 

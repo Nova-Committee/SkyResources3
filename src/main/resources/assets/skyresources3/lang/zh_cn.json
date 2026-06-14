@@ -446,7 +446,6 @@
   "message.skyresources3.island.reset.not_owner": "只有岛主可以重置岛屿。",
   "message.skyresources3.island.reset.confirm": "这只会以 %s 重置初始平台区域。运行 %s 继续。",
   "message.skyresources3.island.reset.done": "已重置 %s 初始岛屿平台并传送到 %s。",
-  "message.skyresources3.island.team_alias.create_disabled": "岛屿关系由岛屿本身管理。使用 /island create 创建岛屿，或使用 /island invite 邀请玩家。",
   "message.skyresources3.island.invite.target_missing": "玩家 %s 不在线，且没有已保存身份。",
   "message.skyresources3.island.invite.self": "你不能邀请自己。",
   "message.skyresources3.island.invite.not_owner": "只有岛主可以邀请玩家。",

@@ -27,7 +27,7 @@ Before editing backend code, read the relevant files below:
 - Read [Error Handling](./error-handling.md) before changing config validation, event handlers, startup logic, or registry code.
 - Read [Logging Guidelines](./logging-guidelines.md) before adding or changing logs.
 - Read [Recipe Guidelines](./recipe-guidelines.md) before adding or consuming custom processing recipes.
-- Read [Island Command Guidelines](./island-command-guidelines.md) before changing VoidIslandControl, island, or team commands.
+- Read [Island Command Guidelines](./island-command-guidelines.md) before changing VoidIslandControl or island commands.
 - Read [Guide Guidelines](./guide-guidelines.md) before changing guide page metadata, guide actions, or guide screen rendering contracts.
 - Read [Optional Integration Guidelines](./integration-guidelines.md) before adding optional mod dependencies or porting old JEI/plugin integrations.
 - Always read [Quality Guidelines](./quality-guidelines.md) before implementation and review.
@@ -47,7 +47,7 @@ Also read the shared thinking guides when a change spans multiple files or start
 | [Database Guidelines](./database-guidelines.md) | Current no-database stance, config persistence, generated data, and dependency rules | Baseline filled |
 | [Error Handling](./error-handling.md) | Config validation, event handling, startup failures, and API response stance | Baseline filled |
 | [Recipe Guidelines](./recipe-guidelines.md) | Custom NeoForge process recipe type, JSON contract, matching, and datagen rules | Active |
-| [Island Command Guidelines](./island-command-guidelines.md) | VoidIslandControl/team command signatures, saved data contracts, and validation matrix | Active |
+| [Island Command Guidelines](./island-command-guidelines.md) | VoidIslandControl island command signatures, saved data contracts, and validation matrix | Active |
 | [Guide Guidelines](./guide-guidelines.md) | In-game guide page metadata, action contracts, and client rendering boundary | Active |
 | [Optional Integration Guidelines](./integration-guidelines.md) | Optional mod dependency audit, Maven, runtime gating, and validation contract | Active |
 | [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns, tests, and review checks | Baseline filled |
