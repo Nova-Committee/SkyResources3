@@ -130,6 +130,29 @@ public final class ModGameTests {
                     "combustion_priority",
                     () -> MachineRuntimeGameTests::combustionControllerUsesFilterPriority
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_COOLDOWN =
+            TEST_FUNCTIONS.register(
+                    "combustion_cooldown",
+                    () -> MachineRuntimeGameTests::combustionControllerWaitsForCooldown
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_POWERED_CONTROLLER =
+            TEST_FUNCTIONS.register(
+                    "combustion_powered_controller",
+                    () -> MachineRuntimeGameTests::combustionControllerStopsWhenPowered
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_CONTROLLER_DIRECTION =
+            TEST_FUNCTIONS.register(
+                    "combustion_controller_direction",
+                    () -> MachineRuntimeGameTests::combustionControllerRequiresBackFacingChamber
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_CONTROLLER_WOOD_STONE_REJECT =
+            TEST_FUNCTIONS.register(
+                    "combustion_controller_wood_stone_reject",
+                    () -> MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectSmartController
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_COLLECTOR_OVERFLOW =
             TEST_FUNCTIONS.register(
                     "combustion_collector_overflow",
@@ -211,6 +234,15 @@ public final class ModGameTests {
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
         registerFunctionTest(event, "combustion_priority", COMBUSTION_PRIORITY, environment);
+        registerFunctionTest(event, "combustion_cooldown", COMBUSTION_COOLDOWN, environment);
+        registerFunctionTest(event, "combustion_powered_controller", COMBUSTION_POWERED_CONTROLLER, environment);
+        registerFunctionTest(event, "combustion_controller_direction", COMBUSTION_CONTROLLER_DIRECTION, environment);
+        registerFunctionTest(
+                event,
+                "combustion_controller_wood_stone_reject",
+                COMBUSTION_CONTROLLER_WOOD_STONE_REJECT,
+                environment
+        );
         registerFunctionTest(event, "combustion_collector_overflow", COMBUSTION_COLLECTOR_OVERFLOW, environment);
         registerFunctionTest(event, "wooden_combustion_structure", WOODEN_COMBUSTION_STRUCTURE, environment);
         registerFunctionTest(event, "stone_combustion_structure", STONE_COMBUSTION_STRUCTURE, environment);

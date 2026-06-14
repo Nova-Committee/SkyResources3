@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.test;
 
+import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.block.CombustionControllerBlock;
 import committee.nova.mods.skyresources3.block.entity.CombustionCollectorBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.CombustionControllerBlockEntity;
@@ -191,6 +192,101 @@ public final class MachineRuntimeGameTests {
         helper.succeed();
     }
 
+    public static void combustionControllerWaitsForCooldown(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final CombustionRig rig = setupIronCombustionRig(helper, RED_SAND_RECIPE_HEAT);
+        rig.controller().setStackInSlot(0, new ItemStack(Items.DIRT));
+        spawnItem(helper, CHAMBER_POS, new ItemStack(ModItems.PLANT_MATTER.get(), 8));
+
+        rig.controller().serverTick(helper.getLevel());
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 1);
+
+        rig.controller().serverTick(helper.getLevel());
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 1);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                ModItems.PLANT_MATTER.get(),
+                4,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Controller should leave the second craft input until the cooldown expires"
+        );
+
+        for (int tick = 0; tick < Config.combustionControllerTicks; tick++) {
+            rig.controller().serverTick(helper.getLevel());
+        }
+
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 2);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                ModItems.PLANT_MATTER.get(),
+                0,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Controller should consume the remaining input after the default cooldown"
+        );
+        helper.succeed();
+    }
+
+    public static void combustionControllerStopsWhenPowered(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final CombustionRig rig = setupIronCombustionRig(helper, DIRT_RECIPE_HEAT);
+        rig.controller().setStackInSlot(0, new ItemStack(Items.DIRT));
+        spawnItem(helper, CHAMBER_POS, new ItemStack(ModItems.PLANT_MATTER.get(), 4));
+        helper.setBlock(CONTROLLER_POS.west(), Blocks.REDSTONE_BLOCK);
+
+        rig.controller().serverTick(helper.getLevel());
+
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 0);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                ModItems.PLANT_MATTER.get(),
+                4,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Powered controller should leave chamber inputs untouched"
+        );
+
+        helper.setBlock(CONTROLLER_POS.west(), Blocks.AIR);
+        rig.controller().serverTick(helper.getLevel());
+
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 1);
+        helper.succeed();
+    }
+
+    public static void combustionControllerRequiresBackFacingChamber(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final CombustionRig rig = setupIronCombustionRig(helper, DIRT_RECIPE_HEAT);
+        helper.setBlock(CONTROLLER_POS, ModBlocks.COMBUSTION_CONTROLLER.get()
+                .defaultBlockState()
+                .setValue(CombustionControllerBlock.FACING, Direction.SOUTH));
+        final CombustionControllerBlockEntity controller = combustionControllerAt(helper, CONTROLLER_POS);
+        controller.setStackInSlot(0, new ItemStack(Items.DIRT));
+        spawnItem(helper, CHAMBER_POS, new ItemStack(ModItems.PLANT_MATTER.get(), 4));
+
+        controller.serverTick(helper.getLevel());
+
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 0);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                ModItems.PLANT_MATTER.get(),
+                4,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Controller should not craft when its back is not facing the chamber"
+        );
+
+        helper.setBlock(CONTROLLER_POS, ModBlocks.COMBUSTION_CONTROLLER.get()
+                .defaultBlockState()
+                .setValue(CombustionControllerBlock.FACING, Direction.NORTH));
+        final CombustionControllerBlockEntity corrected = combustionControllerAt(helper, CONTROLLER_POS);
+        corrected.setStackInSlot(0, new ItemStack(Items.DIRT));
+        corrected.serverTick(helper.getLevel());
+
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 1);
+        helper.succeed();
+    }
+
     public static void combustionCollectorDropsOverflow(final GameTestHelper helper) {
         helper.killAllEntities();
         final CombustionRig rig = setupIronCombustionRig(helper, RED_SAND_RECIPE_HEAT);
@@ -212,6 +308,41 @@ public final class MachineRuntimeGameTests {
                 CHAMBER_POS,
                 ITEM_ASSERT_RADIUS,
                 "Overflowed combustion output should drop in the chamber"
+        );
+        helper.succeed();
+    }
+
+    public static void woodAndStoneCombustionHeatersRejectSmartController(final GameTestHelper helper) {
+        helper.killAllEntities();
+        MachineCasingBlockEntity casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.IRON,
+                ModDataPackRegistries.WOODEN_COMBUSTION_HEATER
+        );
+        setWoodCombustionShell(helper, Blocks.OAK_PLANKS.defaultBlockState());
+        helper.setBlock(CHAMBER_POS.west(), ModBlocks.COMBUSTION_CONTROLLER.get()
+                .defaultBlockState()
+                .setValue(CombustionControllerBlock.FACING, Direction.WEST));
+
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Wooden combustion heater should reject smart combustion controllers"
+        );
+
+        casing.removeHeater();
+        casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.IRON,
+                ModDataPackRegistries.STONE_COMBUSTION_HEATER
+        );
+        setStoneCombustionShell(helper, Blocks.STONE.defaultBlockState());
+        helper.setBlock(CHAMBER_POS.west(), ModBlocks.COMBUSTION_CONTROLLER.get()
+                .defaultBlockState()
+                .setValue(CombustionControllerBlock.FACING, Direction.WEST));
+
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Stone combustion heater should reject smart combustion controllers"
         );
         helper.succeed();
     }
