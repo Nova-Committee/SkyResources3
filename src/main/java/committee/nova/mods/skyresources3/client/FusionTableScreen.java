@@ -160,7 +160,7 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
         guiGraphics.fill(135, 74, 136, 90, 0xFFB8B8B8);
         final int height = Math.round(this.menu.getCatalystLeftRatio() * 16.0F);
         if (height > 0) {
-            guiGraphics.fill(135, 90 - height, 136, 90, 0xFF5F85C4);
+            guiGraphics.fill(135, 90 - height, 136, 90, 0xFF40B83E);
         }
         guiGraphics.drawString(
                 this.font,

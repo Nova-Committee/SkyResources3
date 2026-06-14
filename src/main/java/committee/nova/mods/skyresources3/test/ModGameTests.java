@@ -98,6 +98,18 @@ public final class ModGameTests {
                     () -> LifeInfusionGameTests::lifeInfuserItemCapabilityTransfers
             );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            FUSION_TABLE_CATALYST_YIELD =
+            TEST_FUNCTIONS.register(
+                    "fusion_table_catalyst_yield",
+                    () -> FusionTableGameTests::fusionTableCachesFractionalCatalystYield
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            FUSION_TABLE_SPLIT_DUPLICATE_INPUTS =
+            TEST_FUNCTIONS.register(
+                    "fusion_table_split_duplicate_inputs",
+                    () -> FusionTableGameTests::fusionTableSplitDuplicateStacksDoNotMatchRecipe
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
             COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID =
             TEST_FUNCTIONS.register(
                     "combustion_heater_embeds_as_type_id",
@@ -253,6 +265,13 @@ public final class ModGameTests {
         registerFunctionTest(event, "life_infuser_process", LIFE_INFUSER_PROCESS, environment);
         registerFunctionTest(event, "life_injector_item_capability", LIFE_INJECTOR_ITEM_CAPABILITY, environment);
         registerFunctionTest(event, "life_infuser_item_capability", LIFE_INFUSER_ITEM_CAPABILITY, environment);
+        registerFunctionTest(event, "fusion_table_catalyst_yield", FUSION_TABLE_CATALYST_YIELD, environment);
+        registerFunctionTest(
+                event,
+                "fusion_table_split_duplicate_inputs",
+                FUSION_TABLE_SPLIT_DUPLICATE_INPUTS,
+                environment
+        );
         registerFunctionTest(event, "combustion_heater_embeds_as_type_id", COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID, environment);
         registerFunctionTest(
                 event,
