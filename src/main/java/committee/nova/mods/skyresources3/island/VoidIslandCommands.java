@@ -100,7 +100,7 @@ public final class VoidIslandCommands {
     }
 
     private static int createIsland(final CommandSourceStack source, final String typeName) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -145,7 +145,7 @@ public final class VoidIslandCommands {
     }
 
     private static int teleportHome(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -172,7 +172,7 @@ public final class VoidIslandCommands {
     }
 
     private static int teleportSpawn(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -198,7 +198,7 @@ public final class VoidIslandCommands {
 
     private static int visitIsland(final CommandSourceStack source, final String targetName)
             throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -244,7 +244,7 @@ public final class VoidIslandCommands {
 
     private static int trustVisitor(final CommandSourceStack source, final String targetName)
             throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -301,7 +301,7 @@ public final class VoidIslandCommands {
 
     private static int untrustVisitor(final CommandSourceStack source, final String targetName)
             throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -328,7 +328,7 @@ public final class VoidIslandCommands {
     }
 
     private static int listTrustedVisitors(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -359,7 +359,7 @@ public final class VoidIslandCommands {
     }
 
     private static int requestReset(final CommandSourceStack source, final String typeName) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -396,7 +396,7 @@ public final class VoidIslandCommands {
     }
 
     private static int resetIsland(final CommandSourceStack source, final String typeName) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -441,7 +441,7 @@ public final class VoidIslandCommands {
     }
 
     private static int showInfo(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -470,7 +470,7 @@ public final class VoidIslandCommands {
 
     private static int invitePlayer(final CommandSourceStack source, final String targetName)
             throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -528,7 +528,7 @@ public final class VoidIslandCommands {
     }
 
     private static int acceptInvite(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -579,7 +579,7 @@ public final class VoidIslandCommands {
     }
 
     private static int leaveIsland(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -607,7 +607,7 @@ public final class VoidIslandCommands {
     }
 
     private static int disbandIsland(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 
@@ -635,7 +635,7 @@ public final class VoidIslandCommands {
     }
 
     private static int showGuide(final CommandSourceStack source) throws CommandSyntaxException {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(source.getServer())) {
             return disabled(source);
         }
 

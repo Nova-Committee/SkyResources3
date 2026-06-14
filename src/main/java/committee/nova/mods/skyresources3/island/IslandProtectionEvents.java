@@ -47,7 +47,7 @@ public final class IslandProtectionEvents {
             final ServerLevel level,
             final BlockPos pos
     ) {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(level.getServer())) {
             return false;
         }
 

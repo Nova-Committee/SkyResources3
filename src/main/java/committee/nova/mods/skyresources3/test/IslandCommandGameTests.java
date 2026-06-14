@@ -103,6 +103,30 @@ public final class IslandCommandGameTests {
     }
 
     @SuppressWarnings("removal")
+    public static void voidIslandFeatureDefaultFollowsEmptyFlatWorld(final GameTestHelper helper) {
+        final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
+
+        try {
+            final MinecraftServer server = helper.getLevel().getServer();
+            Config.enableVoidIslandFeatures = false;
+            helper.assertValueEqual(
+                    VoidIslandWorld.getInitialSpawnLevel(server).isPresent(),
+                    VoidIslandWorld.areFeaturesEnabled(server),
+                    "Void island preset worlds should enable island features even when the config is disabled"
+            );
+
+            Config.enableVoidIslandFeatures = true;
+            helper.assertTrue(
+                    VoidIslandWorld.areFeaturesEnabled(server),
+                    "Config-enabled void island features should remain enabled"
+            );
+            helper.succeed();
+        } finally {
+            Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+        }
+    }
+
+    @SuppressWarnings("removal")
     public static void spawnGeneratesConfiguredPlatform(final GameTestHelper helper) {
         final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
         final int originalSpawnPlatformRadius = Config.voidIslandSpawnPlatformRadius;

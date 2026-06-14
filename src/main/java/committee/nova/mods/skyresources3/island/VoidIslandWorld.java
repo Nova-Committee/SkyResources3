@@ -49,6 +49,10 @@ public final class VoidIslandWorld {
         return Optional.empty();
     }
 
+    public static boolean areFeaturesEnabled(final MinecraftServer server) {
+        return Config.enableVoidIslandFeatures || getInitialSpawnLevel(server).isPresent();
+    }
+
     public static boolean isEmptyFlatLevel(final ServerLevel level) {
         return level.getChunkSource().getGenerator() instanceof FlatLevelSource flatLevelSource
                 && flatLevelSource.settings().getLayers().isEmpty();

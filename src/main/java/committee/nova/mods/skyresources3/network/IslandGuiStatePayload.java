@@ -5,6 +5,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.island.IslandSavedData;
 import committee.nova.mods.skyresources3.island.IslandTemplate;
 import committee.nova.mods.skyresources3.island.PlayerIdentitySavedData;
+import committee.nova.mods.skyresources3.island.VoidIslandWorld;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -75,12 +76,11 @@ public record IslandGuiStatePayload(
 
     public static IslandGuiStatePayload from(final ServerPlayer player) {
         final List<String> templates = IslandTemplate.ids();
-        if (!Config.enableVoidIslandFeatures) {
-            return empty(false, templates);
-        }
-
         if (!(player.level() instanceof ServerLevel currentLevel)) {
-            return empty(true, templates);
+            return empty(Config.enableVoidIslandFeatures, templates);
+        }
+        if (!VoidIslandWorld.areFeaturesEnabled(currentLevel.getServer())) {
+            return empty(false, templates);
         }
         final ServerLevel level = currentLevel.getServer().overworld();
         PlayerIdentitySavedData.get(level).remember(player);

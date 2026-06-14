@@ -1,6 +1,5 @@
 package committee.nova.mods.skyresources3.island;
 
-import committee.nova.mods.skyresources3.Config;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,7 +8,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 public final class VoidIslandPlayerEvents {
     public static void onServerStarted(final ServerStartedEvent event) {
-        if (!Config.enableVoidIslandFeatures) {
+        if (!VoidIslandWorld.areFeaturesEnabled(event.getServer())) {
             return;
         }
 
@@ -18,11 +17,15 @@ public final class VoidIslandPlayerEvents {
     }
 
     public static void onPlayerLoggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
-        if (!Config.enableVoidIslandFeatures || !(event.getEntity() instanceof ServerPlayer player)) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
 
         if (!(player.level() instanceof ServerLevel currentLevel)) {
+            return;
+        }
+
+        if (!VoidIslandWorld.areFeaturesEnabled(currentLevel.getServer())) {
             return;
         }
 

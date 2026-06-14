@@ -32,6 +32,11 @@ public final class ModGameTests {
                     "island_spawn_platform",
                     () -> IslandCommandGameTests::spawnGeneratesConfiguredPlatform
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_FEATURE_DEFAULTS =
+            TEST_FUNCTIONS.register(
+                    "island_feature_defaults",
+                    () -> IslandCommandGameTests::voidIslandFeatureDefaultFollowsEmptyFlatWorld
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_VISIT =
             TEST_FUNCTIONS.register(
                     "island_visit",
@@ -276,6 +281,7 @@ public final class ModGameTests {
         );
         registerFunctionTest(event, "island_create_reset", ISLAND_CREATE_RESET, environment);
         registerFunctionTest(event, "island_spawn_platform", ISLAND_SPAWN_PLATFORM, environment);
+        registerFunctionTest(event, "island_feature_defaults", ISLAND_FEATURE_DEFAULTS, environment);
         registerFunctionTest(event, "island_visit", ISLAND_VISIT, environment);
         registerFunctionTest(event, "island_offline_visit", ISLAND_OFFLINE_VISIT, environment);
         registerFunctionTest(event, "island_magma_template", ISLAND_MAGMA_TEMPLATE, environment);
