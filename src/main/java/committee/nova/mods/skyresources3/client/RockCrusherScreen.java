@@ -2,11 +2,8 @@ package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.menu.RockCrusherMenu;
-import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,6 +42,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderEnergyTooltip(guiGraphics, mouseX, mouseY);
+        this.renderProgressTooltip(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -55,7 +53,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos,
                 this.topPos,
@@ -77,7 +75,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -85,7 +83,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
                 false
         );
     }
@@ -95,7 +93,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
         if (height <= 0) {
             return;
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + ENERGY_X,
                 this.topPos + ENERGY_Y + ENERGY_HEIGHT - height,
@@ -113,7 +111,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
         if (width <= 0) {
             return;
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + PROGRESS_X,
                 this.topPos + PROGRESS_Y,
@@ -130,18 +128,20 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
         if (!this.isHovering(ENERGY_X, ENERGY_Y, ENERGY_WIDTH, ENERGY_HEIGHT + 1, mouseX, mouseY)) {
             return;
         }
-        final Component text = Component.translatable(
+        GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
                 "screen.skyresources3.rock_crusher.energy",
                 this.menu.getEnergyStored(),
                 this.menu.getMaxEnergyStored()
-        );
-        guiGraphics.renderTooltip(
-                this.font,
-                List.of(ClientTooltipComponent.create(text.getVisualOrderText())),
-                mouseX,
-                mouseY,
-                DefaultTooltipPositioner.INSTANCE,
-                null
-        );
+        ));
+    }
+
+    private void renderProgressTooltip(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (!this.isHovering(PROGRESS_X, PROGRESS_Y, PROGRESS_WIDTH + 1, 16, mouseX, mouseY)) {
+            return;
+        }
+        GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                "screen.skyresources3.rock_crusher.progress",
+                GuiTooltips.percent(this.menu.getProgressRatio())
+        ));
     }
 }

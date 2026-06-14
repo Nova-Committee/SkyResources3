@@ -1,4 +1,0 @@
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "检查菜单、屏幕、验证命令和测试覆盖"}
-{"file": ".trellis/spec/backend/directory-structure.md", "reason": "检查新增 Java 文件和资源引用路径"}
-{"file": ".trellis/spec/backend/error-handling.md", "reason": "检查交互入口和菜单打开失败路径"}
-{"file": ".agents/skills/trellis-check/SKILL.md", "reason": "按 Trellis 收尾检查流程确认变更范围、规范和验证命令"}

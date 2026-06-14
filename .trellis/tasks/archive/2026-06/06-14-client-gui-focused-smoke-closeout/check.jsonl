@@ -1,4 +1,0 @@
-{"file": ".trellis/spec/backend/index.md", "reason": "Check docs-only changes against the backend spec routing."}
-{"file": ".trellis/spec/backend/guide-guidelines.md", "reason": "Verify guide key/runClient claims do not overstate visual coverage."}
-{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "Verify JEI-present/absent wording remains consistent with optional integration policy."}
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Verify docs-only edits, whitespace, and required validation commands."}

@@ -1,22 +1,29 @@
 package committee.nova.mods.skyresources3.client;
 
+import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.menu.FreezerMenu;
 import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
-    private static final int BACKGROUND_COLOR = 0xFFC6C6C6;
-    private static final int BORDER_DARK = 0xFF555555;
-    private static final int BORDER_LIGHT = 0xFFFFFFFF;
-    private static final int SLOT_BACKGROUND = 0xFF8B8B8B;
+    private static final Identifier BACKGROUND =
+            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "textures/gui/blank_inventory.png");
+    private static final Identifier ICONS =
+            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "textures/gui/gui_icons.png");
+    private static final int TEXTURE_WIDTH = 256;
+    private static final int TEXTURE_HEIGHT = 256;
     private static final int PROGRESS_COLOR = 0xAA8EC7FF;
-    private static final int VALID_COLOR = 0xFF3AA655;
-    private static final int INVALID_COLOR = 0xFFB33A3A;
-    private static final int STATUS_X = 35;
-    private static final int STATUS_Y = 20;
+    private static final int SPEED_LABEL_X = 100;
+    private static final int SPEED_LABEL_Y = 60;
+    private static final int SPEED_LABEL_WIDTH = 68;
+    private static final int STATUS_X = 3;
+    private static final int STATUS_Y = 12;
+    private static final int STATUS_WIDTH = 48;
+    private static final int STATUS_HEIGHT = 28;
 
     public FreezerScreen(
             final FreezerMenu menu,
@@ -32,6 +39,7 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderComponentTooltips(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -42,11 +50,18 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.fill(this.leftPos, this.topPos, this.leftPos + this.imageWidth, this.topPos + this.imageHeight, BACKGROUND_COLOR);
-        guiGraphics.fill(this.leftPos, this.topPos, this.leftPos + this.imageWidth, this.topPos + 1, BORDER_LIGHT);
-        guiGraphics.fill(this.leftPos, this.topPos, this.leftPos + 1, this.topPos + this.imageHeight, BORDER_LIGHT);
-        guiGraphics.fill(this.leftPos, this.topPos + this.imageHeight - 1, this.leftPos + this.imageWidth, this.topPos + this.imageHeight, BORDER_DARK);
-        guiGraphics.fill(this.leftPos + this.imageWidth - 1, this.topPos, this.leftPos + this.imageWidth, this.topPos + this.imageHeight, BORDER_DARK);
+        GuiBlit.blit(
+                guiGraphics,
+                BACKGROUND,
+                this.leftPos,
+                this.topPos,
+                0,
+                0,
+                this.imageWidth,
+                this.imageHeight,
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
+        );
 
         for (int inputSlot = 0; inputSlot < this.menu.getInputCount(); inputSlot++) {
             this.renderSlotBackground(guiGraphics, inputSlot, FreezerMenu.INPUT_SLOT_Y);
@@ -61,15 +76,15 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
                 this.font,
                 Component.translatable("screen.skyresources3.freezer.speed", formatSpeed(this.menu.getSpeed())),
-                100,
-                60,
-                4210752,
+                SPEED_LABEL_X,
+                SPEED_LABEL_Y,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -77,7 +92,7 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
                 false
         );
         this.renderProgress(guiGraphics);
@@ -87,10 +102,7 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
     private void renderSlotBackground(final GuiGraphics guiGraphics, final int inputSlot, final int y) {
         final int x = this.leftPos + FreezerMenu.SLOT_START_X + inputSlot * FreezerMenu.SLOT_SPACING;
         final int top = this.topPos + y;
-        guiGraphics.fill(x - 1, top - 1, x + 17, top + 17, BORDER_DARK);
-        guiGraphics.fill(x, top, x + 16, top + 16, SLOT_BACKGROUND);
-        guiGraphics.fill(x, top, x + 16, top + 1, BORDER_LIGHT);
-        guiGraphics.fill(x, top, x + 1, top + 16, BORDER_LIGHT);
+        GuiBlit.blit(guiGraphics, BACKGROUND, x - 1, top - 1, 7, 83, 18, 18, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     private void renderProgress(final GuiGraphics guiGraphics) {
@@ -109,9 +121,46 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
         if (!this.menu.requiresMultiblock()) {
             return;
         }
-        final int color = this.menu.hasValidMultiblock() ? VALID_COLOR : INVALID_COLOR;
-        guiGraphics.fill(STATUS_X, STATUS_Y, STATUS_X + 16, STATUS_Y + 16, BORDER_DARK);
-        guiGraphics.fill(STATUS_X + 2, STATUS_Y + 2, STATUS_X + 14, STATUS_Y + 14, color);
+        GuiBlit.blit(guiGraphics, ICONS, STATUS_X, STATUS_Y, 0, 16, 32, 28, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiBlit.blit(
+                guiGraphics,
+                ICONS,
+                35,
+                20,
+                this.menu.hasValidMultiblock() ? 0 : 16,
+                0,
+                16,
+                16,
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
+        );
+    }
+
+    private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (this.isHovering(SPEED_LABEL_X, SPEED_LABEL_Y - 1, SPEED_LABEL_WIDTH, this.font.lineHeight + 2, mouseX, mouseY)) {
+            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                    "screen.skyresources3.freezer.speed.tooltip",
+                    formatSpeed(this.menu.getSpeed())
+            ));
+            return;
+        }
+        if (this.menu.requiresMultiblock()
+                && this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
+            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(this.menu.hasValidMultiblock()
+                    ? "screen.skyresources3.freezer.multiblock.formed"
+                    : "screen.skyresources3.freezer.multiblock.missing"));
+            return;
+        }
+        for (int inputSlot = 0; inputSlot < this.menu.getInputCount(); inputSlot++) {
+            final int x = FreezerMenu.SLOT_START_X + inputSlot * FreezerMenu.SLOT_SPACING;
+            if (this.isHovering(x, FreezerMenu.INPUT_SLOT_Y, 16, 16, mouseX, mouseY)) {
+                GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                        "screen.skyresources3.freezer.progress",
+                        GuiTooltips.percent(this.menu.getProgressRatio(inputSlot))
+                ));
+                return;
+            }
+        }
     }
 
     private static String formatSpeed(final float speed) {

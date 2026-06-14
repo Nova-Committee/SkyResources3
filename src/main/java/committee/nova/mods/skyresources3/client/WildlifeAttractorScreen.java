@@ -2,11 +2,8 @@ package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.menu.WildlifeAttractorMenu;
-import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -55,6 +52,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
         this.renderEnergyTooltip(guiGraphics, mouseX, mouseY);
         this.renderWaterTooltip(guiGraphics, mouseX, mouseY);
         this.renderMatterTooltip(guiGraphics, mouseX, mouseY);
+        this.renderMatterSlotTooltip(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -65,7 +63,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos,
                 this.topPos,
@@ -88,7 +86,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -96,7 +94,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
                 false
         );
     }
@@ -106,7 +104,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
         if (height <= 0) {
             return;
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + ENERGY_X,
                 this.topPos + ENERGY_Y + ENERGY_HEIGHT - height,
@@ -130,7 +128,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
                     WATER_COLOR
             );
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + WATER_X,
                 this.topPos + WATER_Y,
@@ -144,7 +142,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
     }
 
     private void renderMatter(final GuiGraphics guiGraphics) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + MATTER_X,
                 this.topPos + MATTER_Y,
@@ -160,7 +158,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
         if (height <= 0) {
             return;
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + MATTER_X,
                 this.topPos + MATTER_Y + MATTER_HEIGHT - height,
@@ -209,19 +207,24 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
         this.renderTextTooltip(guiGraphics, text, mouseX, mouseY);
     }
 
+    private void renderMatterSlotTooltip(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (!this.isHovering(WildlifeAttractorMenu.SLOT_X, WildlifeAttractorMenu.SLOT_Y, 16, 16, mouseX, mouseY)) {
+            return;
+        }
+        this.renderTextTooltip(
+                guiGraphics,
+                Component.translatable("screen.skyresources3.wildlife_attractor.matter_slot"),
+                mouseX,
+                mouseY
+        );
+    }
+
     private void renderTextTooltip(
             final GuiGraphics guiGraphics,
             final Component text,
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.renderTooltip(
-                this.font,
-                List.of(ClientTooltipComponent.create(text.getVisualOrderText())),
-                mouseX,
-                mouseY,
-                DefaultTooltipPositioner.INSTANCE,
-                null
-        );
+        GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, text);
     }
 }

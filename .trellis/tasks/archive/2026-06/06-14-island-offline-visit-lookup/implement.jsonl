@@ -1,8 +1,0 @@
-{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec entry point and required checklist for command/runtime changes."}
-{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Package and naming conventions for island Java code."}
-{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Command contracts for visit resolution, team ownership, offline limitations, and saved-data behavior."}
-{"file": ".trellis/spec/backend/error-handling.md", "reason": "Player-facing command failure conventions."}
-{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "SavedData persistence boundaries and no external storage rule."}
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "GameTest and build verification expectations."}
-{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse existing SavedData names instead of adding duplicate caches."}
-{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Trace visit resolution across command, SavedData, tests, and plan docs."}

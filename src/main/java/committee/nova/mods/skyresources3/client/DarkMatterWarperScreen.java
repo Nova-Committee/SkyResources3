@@ -2,11 +2,8 @@ package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.menu.DarkMatterWarperMenu;
-import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,20 +38,25 @@ public final class DarkMatterWarperScreen extends AbstractContainerScreen<DarkMa
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderComponentTooltips(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         if (this.isHovering(FUEL_X, FUEL_Y, FUEL_WIDTH, FUEL_HEIGHT, mouseX, mouseY)) {
-            final Component text = Component.translatable(
+            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
                     "screen.skyresources3.dark_matter_warper.fuel",
                     this.menu.getBurnTime(),
                     this.menu.getMaxBurnTime()
-            );
-            guiGraphics.renderTooltip(
+            ));
+        }
+        if (this.isHovering(DarkMatterWarperMenu.SLOT_X, DarkMatterWarperMenu.SLOT_Y, 16, 16, mouseX, mouseY)) {
+            GuiTooltips.render(
+                    guiGraphics,
                     this.font,
-                    List.of(ClientTooltipComponent.create(text.getVisualOrderText())),
                     mouseX,
                     mouseY,
-                    DefaultTooltipPositioner.INSTANCE,
-                    null
+                    Component.translatable("screen.skyresources3.dark_matter_warper.fuel_slot")
             );
         }
     }
@@ -66,7 +68,7 @@ public final class DarkMatterWarperScreen extends AbstractContainerScreen<DarkMa
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos,
                 this.topPos,
@@ -77,7 +79,7 @@ public final class DarkMatterWarperScreen extends AbstractContainerScreen<DarkMa
                 TEXTURE_WIDTH,
                 TEXTURE_HEIGHT
         );
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos + DarkMatterWarperMenu.SLOT_X - 1,
                 this.topPos + DarkMatterWarperMenu.SLOT_Y - 1,
@@ -97,7 +99,7 @@ public final class DarkMatterWarperScreen extends AbstractContainerScreen<DarkMa
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -105,7 +107,7 @@ public final class DarkMatterWarperScreen extends AbstractContainerScreen<DarkMa
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
                 false
         );
         this.renderFuelBar(guiGraphics);

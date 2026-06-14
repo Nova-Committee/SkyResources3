@@ -1,4 +1,0 @@
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Used for validation boundaries: document-only closeout, no gameplay scope expansion, keep checks factual."}
-{"file": ".trellis/spec/backend/guide-guidelines.md", "reason": "Used to define manual guide search, action-link, recipe, and structure smoke coverage."}
-{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "Used to keep JEI present/fallback behavior explicit without adding optional integration dependencies."}
-{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Used to include representative island/team command sanity checks in the manual runbook."}

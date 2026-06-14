@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,6 +27,7 @@ public final class LifeInjectorMenu extends AbstractContainerMenu {
 
     private final BlockPos blockPos;
     private final ContainerLevelAccess access;
+    private final DataSlot storedHealth;
 
     public LifeInjectorMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
@@ -63,6 +65,7 @@ public final class LifeInjectorMenu extends AbstractContainerMenu {
                 GEM_SLOT_Y
         ));
         this.addStandardInventorySlots(playerInventory, 8, PLAYER_INVENTORY_Y);
+        this.storedHealth = this.addDataSlot(storedHealthSlot(data.blockEntity()));
     }
 
     public static void writeClientSideData(final RegistryFriendlyByteBuf buffer, final BlockPos pos) {
@@ -71,6 +74,10 @@ public final class LifeInjectorMenu extends AbstractContainerMenu {
 
     public BlockPos getBlockPos() {
         return this.blockPos;
+    }
+
+    public int storedHealth() {
+        return this.storedHealth.get();
     }
 
     @Override
@@ -118,6 +125,22 @@ public final class LifeInjectorMenu extends AbstractContainerMenu {
                 null,
                 ContainerLevelAccess.create(playerInventory.player.level(), pos)
         );
+    }
+
+    private static DataSlot storedHealthSlot(@Nullable final LifeInjectorBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return HealthGemItem.getHealthInjected(blockEntity.getStackInSlot(LifeInjectorBlockEntity.GEM_SLOT));
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
     }
 
     private record LifeInjectorClientData(

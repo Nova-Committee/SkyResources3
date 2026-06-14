@@ -1,7 +1,0 @@
-{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec index and quality-check routing."}
-{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Validate command, persistence, and protection behavior against the island contract."}
-{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Check SavedData and config compatibility."}
-{"file": ".trellis/spec/backend/error-handling.md", "reason": "Check validation failures and event cancellation style."}
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Check NeoForge code quality and required verification gates."}
-{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Check for unnecessary duplication."}
-{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Check data flow across command, storage, event, and resource layers."}

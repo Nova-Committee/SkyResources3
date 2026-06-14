@@ -142,7 +142,7 @@ public final class GuideScreen extends Screen {
         final int panelHeight = this.panelHeight();
         guiGraphics.fill(panelX, panelY, panelX + panelWidth, panelY + panelHeight, PANEL_COLOR);
         guiGraphics.renderOutline(panelX, panelY, panelWidth, panelHeight, BORDER_COLOR);
-        guiGraphics.drawCenteredString(this.font, this.title, panelX + panelWidth / 2, panelY + 8, TEXT_COLOR);
+        this.drawCenteredString(guiGraphics, this.title, panelX + panelWidth / 2, panelY + 8, TEXT_COLOR);
 
         this.renderPage(guiGraphics, mouseX, mouseY, panelX, panelY, panelWidth, panelHeight);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -207,8 +207,8 @@ public final class GuideScreen extends Screen {
 
         final List<String> categories = GuidePages.categories();
         if (categories.isEmpty()) {
-            guiGraphics.drawCenteredString(
-                    this.font,
+            this.drawCenteredString(
+                    guiGraphics,
                     Component.translatable("screen.skyresources3.guide.no_pages"),
                     panelX + panelWidth / 2,
                     panelY + panelHeight / 2 - this.font.lineHeight,
@@ -224,8 +224,8 @@ public final class GuideScreen extends Screen {
 
         final List<GuidePage> categoryPages = this.currentCategoryPages();
         if (categoryPages.isEmpty()) {
-            guiGraphics.drawCenteredString(
-                    this.font,
+            this.drawCenteredString(
+                    guiGraphics,
                     Component.translatable("screen.skyresources3.guide.no_pages"),
                     panelX + panelWidth / 2,
                     panelY + panelHeight / 2 - this.font.lineHeight,
@@ -298,7 +298,8 @@ public final class GuideScreen extends Screen {
                 contentX + ICON_SIZE + 8,
                 iconY + 3,
                 contentWidth - ICON_SIZE - 8,
-                TEXT_COLOR
+                TEXT_COLOR,
+                false
         );
 
         final int bodyY = iconY + 30;
@@ -311,7 +312,15 @@ public final class GuideScreen extends Screen {
         int textBottom = actionRows == 0 ? bodyBottom : actionTop - ACTION_GAP;
         if (this.feedbackMessage != null && textBottom - bodyY > this.font.lineHeight + 2) {
             textBottom -= this.font.lineHeight + 2;
-            guiGraphics.drawWordWrap(this.font, this.feedbackMessage, contentX, textBottom, contentWidth, MUTED_TEXT_COLOR);
+            guiGraphics.drawWordWrap(
+                    this.font,
+                    this.feedbackMessage,
+                    contentX,
+                    textBottom,
+                    contentWidth,
+                    MUTED_TEXT_COLOR,
+                    false
+            );
         }
         if (textBottom > bodyY) {
             this.renderGuideBody(guiGraphics, mouseX, mouseY, page, contentX, bodyY, contentWidth, textBottom);
@@ -445,7 +454,8 @@ public final class GuideScreen extends Screen {
                 contentX,
                 panelY + Math.max(72, panelHeight / 2 - this.font.lineHeight),
                 contentWidth,
-                MUTED_TEXT_COLOR
+                MUTED_TEXT_COLOR,
+                false
         );
     }
 
@@ -496,6 +506,16 @@ public final class GuideScreen extends Screen {
             }
         }
         guiGraphics.disableScissor();
+    }
+
+    private void drawCenteredString(
+            final GuiGraphics guiGraphics,
+            final Component text,
+            final int centerX,
+            final int y,
+            final int color
+    ) {
+        guiGraphics.drawString(this.font, text, centerX - this.font.width(text) / 2, y, color, false);
     }
 
     private boolean renderInlineActionMarker(

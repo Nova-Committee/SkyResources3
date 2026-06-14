@@ -1,8 +1,0 @@
-{"file": ".trellis/spec/backend/index.md", "reason": "Backend spec entry point and required checklist for command/runtime changes."}
-{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Package/resource layout and naming conventions for Java mod code."}
-{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Executable contracts for island reset, protection radius, team ownership, and command feedback."}
-{"file": ".trellis/spec/backend/error-handling.md", "reason": "Player-facing failure and guard-clause conventions for command behavior."}
-{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "SavedData persistence boundaries and no external storage rule."}
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Code quality and GameTest requirements for backend/mod changes."}
-{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse existing protection-radius configuration and avoid duplicate constants."}
-{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Trace reset command flow across config, SavedData, world mutation, docs, and tests."}

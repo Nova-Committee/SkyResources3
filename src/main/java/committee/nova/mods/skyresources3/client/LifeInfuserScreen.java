@@ -11,10 +11,23 @@ import net.minecraft.world.entity.player.Inventory;
 public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuserMenu> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
             Skyresources3.MODID,
-            "textures/gui/blank_inventory.png"
+            "textures/gui/infuser.png"
     );
+    private static final Identifier ICONS = Identifier.fromNamespaceAndPath(
+            Skyresources3.MODID,
+            "textures/gui/gui_icons.png"
+    );
+    private static final Identifier HEART = Identifier.withDefaultNamespace("hud/heart/full");
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
+    private static final int STATUS_X = 100;
+    private static final int STATUS_Y = 50;
+    private static final int STATUS_WIDTH = 48;
+    private static final int STATUS_HEIGHT = 28;
+    private static final int HEALTH_X = 120;
+    private static final int HEALTH_Y = 29;
+    private static final int HEALTH_WIDTH = 50;
+    private static final int HEALTH_HEIGHT = 10;
 
     public LifeInfuserScreen(
             final LifeInfuserMenu menu,
@@ -30,6 +43,7 @@ public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuser
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderComponentTooltips(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -40,7 +54,8 @@ public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuser
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(
+                guiGraphics,
                 TEXTURE,
                 this.leftPos,
                 this.topPos,
@@ -51,8 +66,6 @@ public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuser
                 TEXTURE_WIDTH,
                 TEXTURE_HEIGHT
         );
-        this.renderSlot(guiGraphics, LifeInfuserMenu.GEM_SLOT_X, LifeInfuserMenu.GEM_SLOT_Y);
-        this.renderSlot(guiGraphics, LifeInfuserMenu.INPUT_SLOT_X, LifeInfuserMenu.INPUT_SLOT_Y);
     }
 
     @Override
@@ -62,7 +75,7 @@ public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuser
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -70,22 +83,45 @@ public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuser
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
+                false
+        );
+        GuiBlit.blit(guiGraphics, ICONS, STATUS_X, STATUS_Y, 0, 16, 32, 28, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiBlit.blit(
+                guiGraphics,
+                ICONS,
+                132,
+                58,
+                this.menu.hasValidMultiblock() ? 0 : 16,
+                0,
+                16,
+                16,
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
+        );
+        GuiBlit.sprite(guiGraphics, HEART, HEALTH_X, HEALTH_Y, 9, 9);
+        guiGraphics.drawString(
+                this.font,
+                "x" + this.menu.storedHealth() / 2.0F,
+                HEALTH_X + 10,
+                HEALTH_Y,
+                0xFF404040,
                 false
         );
     }
 
-    private void renderSlot(final GuiGraphics guiGraphics, final int x, final int y) {
-        guiGraphics.blit(
-                TEXTURE,
-                this.leftPos + x - 1,
-                this.topPos + y - 1,
-                7,
-                83,
-                18,
-                18,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
-        );
+    private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (this.isHovering(HEALTH_X, HEALTH_Y, HEALTH_WIDTH, HEALTH_HEIGHT, mouseX, mouseY)) {
+            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                    "screen.skyresources3.life.stored_health",
+                    this.menu.storedHealth() / 2.0F
+            ));
+            return;
+        }
+        if (this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
+            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(this.menu.hasValidMultiblock()
+                    ? "screen.skyresources3.life_infuser.multiblock.formed"
+                    : "screen.skyresources3.life_infuser.multiblock.missing"));
+        }
     }
 }

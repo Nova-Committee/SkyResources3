@@ -1,4 +1,0 @@
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Used to keep this as docs-only cleanup and verify edited Markdown references current facts."}
-{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "Used to keep unavailable optional integrations as TODOs instead of adding dependencies."}
-{"file": ".trellis/spec/backend/recipe-guidelines.md", "reason": "Used to distinguish stable cauldronclean/process recipe completion from dynamic tagged recipe deferrals."}
-{"file": ".trellis/spec/backend/guide-guidelines.md", "reason": "Used to keep guide recipe action automation separate from manual visual click-through."}

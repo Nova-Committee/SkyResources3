@@ -13,7 +13,16 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "textures/gui/blank_inventory.png");
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
-    private static final int TEXT_COLOR = 0x404040;
+    private static final int TEXT_COLOR = 0xFF404040;
+    private static final int VALID_TEXT_COLOR = 0xFF207020;
+    private static final int INVALID_TEXT_COLOR = 0xFF902020;
+    private static final int SLOT_X = 79;
+    private static final int SLOT_Y = 52;
+    private static final int SLOT_SIZE = 18;
+    private static final int STATUS_X = 19;
+    private static final int STATUS_Y = 24;
+    private static final int STATUS_WIDTH = 140;
+    private static final int STATUS_HEIGHT = 31;
 
     public MachineCasingScreen(
             final MachineCasingMenu menu,
@@ -33,7 +42,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 BACKGROUND,
                 this.leftPos,
                 this.topPos,
@@ -44,14 +53,14 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                 TEXTURE_WIDTH,
                 TEXTURE_HEIGHT
         );
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 BACKGROUND,
-                this.leftPos + 79,
-                this.topPos + 52,
+                this.leftPos + SLOT_X,
+                this.topPos + SLOT_Y,
                 7,
                 83,
-                18,
-                18,
+                SLOT_SIZE,
+                SLOT_SIZE,
                 TEXTURE_WIDTH,
                 TEXTURE_HEIGHT
         );
@@ -90,7 +99,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                             : "screen.skyresources3.machine_casing.multiblock.missing"),
                     19,
                     44,
-                    this.menu.hasValidMultiblock() ? 0x207020 : 0x902020,
+                    this.menu.hasValidMultiblock() ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
                     false
             );
         } else if (this.menu.hasCondenser()) {
@@ -107,7 +116,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                     this.condenserProgressText(),
                     19,
                     34,
-                    this.menu.condenserMaxProgress() > 0 ? 0x207020 : 0x902020,
+                    this.menu.condenserMaxProgress() > 0 ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
                     false
             );
         } else if (this.menu.hasHeater()) {
@@ -118,7 +127,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                             : "screen.skyresources3.machine_casing.heat_provider.idle"),
                     19,
                     44,
-                    this.menu.currentHeat() > 0 ? 0x207020 : 0x902020,
+                    this.menu.currentHeat() > 0 ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
                     false
             );
         }
@@ -127,7 +136,22 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderComponentTooltips(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (this.isHovering(SLOT_X, SLOT_Y, SLOT_SIZE, SLOT_SIZE, mouseX, mouseY)) {
+            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                    "screen.skyresources3.machine_casing.slot"
+            ));
+            return;
+        }
+        if (this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
+            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                    "screen.skyresources3.machine_casing.status"
+            ));
+        }
     }
 
     private Component condenserProgressText() {

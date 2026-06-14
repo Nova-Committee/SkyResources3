@@ -31,7 +31,11 @@ public abstract class AbstractCombustionInventoryScreen<T extends AbstractCombus
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderComponentTooltips(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    protected void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
     }
 
     @Override
@@ -41,7 +45,7 @@ public abstract class AbstractCombustionInventoryScreen<T extends AbstractCombus
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos,
                 this.topPos,
@@ -53,7 +57,7 @@ public abstract class AbstractCombustionInventoryScreen<T extends AbstractCombus
                 TEXTURE_HEIGHT
         );
         for (final int slotX : AbstractCombustionInventoryMenu.SLOT_X) {
-            guiGraphics.blit(
+            GuiBlit.blit(guiGraphics,
                     TEXTURE,
                     this.leftPos + slotX - 1,
                     this.topPos + AbstractCombustionInventoryMenu.SLOT_Y - 1,
@@ -74,7 +78,7 @@ public abstract class AbstractCombustionInventoryScreen<T extends AbstractCombus
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -82,7 +86,7 @@ public abstract class AbstractCombustionInventoryScreen<T extends AbstractCombus
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
                 false
         );
     }

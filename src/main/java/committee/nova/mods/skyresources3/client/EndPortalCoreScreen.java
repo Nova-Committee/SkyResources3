@@ -11,10 +11,14 @@ import net.minecraft.world.entity.player.Inventory;
 public final class EndPortalCoreScreen extends AbstractContainerScreen<EndPortalCoreMenu> {
     private static final Identifier BACKGROUND =
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "textures/gui/blank_inventory.png");
+    private static final Identifier ICONS =
+            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "textures/gui/gui_icons.png");
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
-    private static final int STATUS_X = 24;
-    private static final int STATUS_Y = 28;
+    private static final int STATUS_X = 3;
+    private static final int STATUS_Y = 12;
+    private static final int STATUS_WIDTH = 55;
+    private static final int STATUS_HEIGHT = 28;
 
     public EndPortalCoreScreen(
             final EndPortalCoreMenu menu,
@@ -34,7 +38,8 @@ public final class EndPortalCoreScreen extends AbstractContainerScreen<EndPortal
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(
+                guiGraphics,
                 BACKGROUND,
                 this.leftPos,
                 this.topPos,
@@ -45,7 +50,8 @@ public final class EndPortalCoreScreen extends AbstractContainerScreen<EndPortal
                 TEXTURE_WIDTH,
                 TEXTURE_HEIGHT
         );
-        guiGraphics.blit(
+        GuiBlit.blit(
+                guiGraphics,
                 BACKGROUND,
                 this.leftPos + EndPortalCoreMenu.SLOT_X - 1,
                 this.topPos + EndPortalCoreMenu.SLOT_Y - 1,
@@ -61,29 +67,43 @@ public final class EndPortalCoreScreen extends AbstractContainerScreen<EndPortal
     @Override
     protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
-        guiGraphics.drawString(
-                this.font,
-                this.statusText(),
-                STATUS_X,
-                STATUS_Y,
-                this.menu.hasValidMultiblock() ? 0x207020 : 0x902020,
-                false
+        GuiBlit.blit(guiGraphics, ICONS, STATUS_X, STATUS_Y, 0, 16, 32, 28, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        if (this.menu.hasValidTier2()) {
+            GuiBlit.blit(guiGraphics, ICONS, 42, 20, 0, 0, 16, 16, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        }
+        GuiBlit.blit(
+                guiGraphics,
+                ICONS,
+                35,
+                20,
+                this.menu.hasValidMultiblock() ? 0 : 16,
+                0,
+                16,
+                16,
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
         );
     }
 
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderStructureTooltip(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    private Component statusText() {
+    private void renderStructureTooltip(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (!this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
+            return;
+        }
+        final String key;
         if (this.menu.hasValidTier2()) {
-            return Component.translatable("screen.skyresources3.end_portal_core.structure.improved");
+            key = "screen.skyresources3.end_portal_core.structure.improved";
+        } else if (this.menu.hasValidMultiblock()) {
+            key = "screen.skyresources3.end_portal_core.structure.basic";
+        } else {
+            key = "screen.skyresources3.end_portal_core.structure.missing";
         }
-        if (this.menu.hasValidMultiblock()) {
-            return Component.translatable("screen.skyresources3.end_portal_core.structure.basic");
-        }
-        return Component.translatable("screen.skyresources3.end_portal_core.structure.missing");
+        GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(key));
     }
 }

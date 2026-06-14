@@ -2,11 +2,8 @@ package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.menu.RockCleanerMenu;
-import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -53,6 +50,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderEnergyTooltip(guiGraphics, mouseX, mouseY);
         this.renderWaterTooltip(guiGraphics, mouseX, mouseY);
+        this.renderProgressTooltip(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -63,7 +61,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos,
                 this.topPos,
@@ -86,7 +84,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -94,7 +92,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
                 false
         );
     }
@@ -104,7 +102,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
         if (height <= 0) {
             return;
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + ENERGY_X,
                 this.topPos + ENERGY_Y + ENERGY_HEIGHT - height,
@@ -128,7 +126,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
                     WATER_COLOR
             );
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + WATER_X,
                 this.topPos + WATER_Y,
@@ -146,7 +144,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
         if (width <= 0) {
             return;
         }
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 ICONS,
                 this.leftPos + PROGRESS_X,
                 this.topPos + PROGRESS_Y,
@@ -163,37 +161,31 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
         if (!this.isHovering(ENERGY_X, ENERGY_Y, ENERGY_WIDTH, ENERGY_HEIGHT + 1, mouseX, mouseY)) {
             return;
         }
-        final Component text = Component.translatable(
+        GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
                 "screen.skyresources3.rock_cleaner.energy",
                 this.menu.getEnergyStored(),
                 this.menu.getMaxEnergyStored()
-        );
-        guiGraphics.renderTooltip(
-                this.font,
-                List.of(ClientTooltipComponent.create(text.getVisualOrderText())),
-                mouseX,
-                mouseY,
-                DefaultTooltipPositioner.INSTANCE,
-                null
-        );
+        ));
     }
 
     private void renderWaterTooltip(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         if (!this.isHovering(WATER_X, WATER_Y, WATER_WIDTH, WATER_HEIGHT + 1, mouseX, mouseY)) {
             return;
         }
-        final Component text = Component.translatable(
+        GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
                 "screen.skyresources3.rock_cleaner.water",
                 this.menu.getWaterStored(),
                 this.menu.getMaxWaterStored()
-        );
-        guiGraphics.renderTooltip(
-                this.font,
-                List.of(ClientTooltipComponent.create(text.getVisualOrderText())),
-                mouseX,
-                mouseY,
-                DefaultTooltipPositioner.INSTANCE,
-                null
-        );
+        ));
+    }
+
+    private void renderProgressTooltip(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (!this.isHovering(PROGRESS_X, PROGRESS_Y, PROGRESS_WIDTH + 1, 16, mouseX, mouseY)) {
+            return;
+        }
+        GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                "screen.skyresources3.rock_cleaner.progress",
+                GuiTooltips.percent(this.menu.getProgressRatio())
+        ));
     }
 }

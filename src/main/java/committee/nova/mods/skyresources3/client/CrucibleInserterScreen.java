@@ -30,6 +30,7 @@ public final class CrucibleInserterScreen extends AbstractContainerScreen<Crucib
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderSlotTooltip(guiGraphics, mouseX, mouseY);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -40,7 +41,7 @@ public final class CrucibleInserterScreen extends AbstractContainerScreen<Crucib
             final int mouseX,
             final int mouseY
     ) {
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos,
                 this.topPos,
@@ -51,7 +52,7 @@ public final class CrucibleInserterScreen extends AbstractContainerScreen<Crucib
                 TEXTURE_WIDTH,
                 TEXTURE_HEIGHT
         );
-        guiGraphics.blit(
+        GuiBlit.blit(guiGraphics,
                 TEXTURE,
                 this.leftPos + CrucibleInserterMenu.SLOT_X - 1,
                 this.topPos + CrucibleInserterMenu.SLOT_Y - 1,
@@ -71,7 +72,7 @@ public final class CrucibleInserterScreen extends AbstractContainerScreen<Crucib
                 this.title,
                 (this.imageWidth - this.font.width(this.title)) / 2,
                 6,
-                4210752,
+                0xFF404040,
                 false
         );
         guiGraphics.drawString(
@@ -79,8 +80,21 @@ public final class CrucibleInserterScreen extends AbstractContainerScreen<Crucib
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
                 this.inventoryLabelY,
-                4210752,
+                0xFF404040,
                 false
+        );
+    }
+
+    private void renderSlotTooltip(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (!this.isHovering(CrucibleInserterMenu.SLOT_X, CrucibleInserterMenu.SLOT_Y, 16, 16, mouseX, mouseY)) {
+            return;
+        }
+        GuiTooltips.render(
+                guiGraphics,
+                this.font,
+                mouseX,
+                mouseY,
+                Component.translatable("screen.skyresources3.crucible_inserter.slot")
         );
     }
 }

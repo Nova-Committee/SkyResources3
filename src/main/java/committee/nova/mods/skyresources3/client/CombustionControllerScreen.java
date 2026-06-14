@@ -6,6 +6,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class CombustionControllerScreen extends AbstractCombustionInventoryScreen<CombustionControllerMenu> {
+    private static final int FILTER_TEXT_Y = 40;
+
     public CombustionControllerScreen(
             final CombustionControllerMenu menu,
             final Inventory playerInventory,
@@ -22,9 +24,23 @@ public final class CombustionControllerScreen extends AbstractCombustionInventor
                 this.font,
                 filterText,
                 (this.imageWidth - this.font.width(filterText)) / 2,
-                40,
-                4210752,
+                FILTER_TEXT_Y,
+                0xFF404040,
                 false
+        );
+    }
+
+    @Override
+    protected void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        if (!this.isHovering(0, FILTER_TEXT_Y - 1, this.imageWidth, this.font.lineHeight + 2, mouseX, mouseY)) {
+            return;
+        }
+        GuiTooltips.render(
+                guiGraphics,
+                this.font,
+                mouseX,
+                mouseY,
+                Component.translatable("screen.skyresources3.combustion_controller.filter.tooltip")
         );
     }
 }

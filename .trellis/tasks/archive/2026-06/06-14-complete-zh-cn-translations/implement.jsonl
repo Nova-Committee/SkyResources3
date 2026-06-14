@@ -1,1 +1,0 @@
-{"type":"implementation","summary":"以 en_us.json 的 445 个键为基准，新建完整 zh_cn.json；保持键顺序、占位符与指南 action 标记一致。","files":["src/main/resources/assets/skyresources3/lang/zh_cn.json"]}

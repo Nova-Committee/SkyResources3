@@ -1,5 +1,0 @@
-{"file": ".trellis/spec/backend/index.md", "reason": "Backend quality gate entry point."}
-{"file": ".trellis/spec/backend/island-command-guidelines.md", "reason": "Verify magma template command behavior and docs."}
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Verify compile/build/GameTest expectations and conventions."}
-{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Check no duplicate fluid registration or speculative config was added."}
-{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Check consistency across template, command, tests, and docs."}

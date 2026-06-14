@@ -1,5 +1,0 @@
-{"file": ".trellis/spec/backend/index.md", "reason": "Confirm documentation sync follows project migration guidelines."}
-{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Check referenced paths and resource locations."}
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Check that verification claims point to existing tests or commands."}
-{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Check stale TODOs were resolved without duplicating future tasks."}
-{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Check cross-file plan state consistency."}

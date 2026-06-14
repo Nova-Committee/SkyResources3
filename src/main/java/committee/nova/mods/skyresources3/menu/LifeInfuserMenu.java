@@ -14,20 +14,24 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
 
 public final class LifeInfuserMenu extends AbstractContainerMenu {
-    public static final int GEM_SLOT_X = 62;
-    public static final int GEM_SLOT_Y = 53;
-    public static final int INPUT_SLOT_X = 98;
-    public static final int INPUT_SLOT_Y = 53;
+    public static final int GEM_SLOT_X = 100;
+    public static final int GEM_SLOT_Y = 25;
+    public static final int INPUT_SLOT_X = 59;
+    public static final int INPUT_SLOT_Y = 25;
     private static final int PLAYER_INVENTORY_Y = 84;
     private static final int PLAYER_SLOT_START = LifeInfuserBlockEntity.SLOT_COUNT;
     private static final int PLAYER_SLOT_END = PLAYER_SLOT_START + 36;
 
     private final BlockPos blockPos;
     private final ContainerLevelAccess access;
+    private final DataSlot storedHealth;
+    private final DataSlot validMultiblock;
 
     public LifeInfuserMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
@@ -72,6 +76,8 @@ public final class LifeInfuserMenu extends AbstractContainerMenu {
                 INPUT_SLOT_Y
         ));
         this.addStandardInventorySlots(playerInventory, 8, PLAYER_INVENTORY_Y);
+        this.storedHealth = this.addDataSlot(storedHealthSlot(data.blockEntity()));
+        this.validMultiblock = this.addDataSlot(validMultiblockSlot(data.blockEntity()));
     }
 
     public static void writeClientSideData(final RegistryFriendlyByteBuf buffer, final BlockPos pos) {
@@ -80,6 +86,14 @@ public final class LifeInfuserMenu extends AbstractContainerMenu {
 
     public BlockPos getBlockPos() {
         return this.blockPos;
+    }
+
+    public int storedHealth() {
+        return this.storedHealth.get();
+    }
+
+    public boolean hasValidMultiblock() {
+        return this.validMultiblock.get() > 0;
     }
 
     @Override
@@ -141,6 +155,39 @@ public final class LifeInfuserMenu extends AbstractContainerMenu {
                 null,
                 ContainerLevelAccess.create(playerInventory.player.level(), pos)
         );
+    }
+
+    private static DataSlot storedHealthSlot(@Nullable final LifeInfuserBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return HealthGemItem.getHealthInjected(blockEntity.getStackInSlot(LifeInfuserBlockEntity.GEM_SLOT));
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
+    private static DataSlot validMultiblockSlot(@Nullable final LifeInfuserBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return blockEntity.getLevel() instanceof ServerLevel serverLevel
+                        && blockEntity.hasValidMultiblock(serverLevel) ? 1 : 0;
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
     }
 
     private record LifeInfuserClientData(

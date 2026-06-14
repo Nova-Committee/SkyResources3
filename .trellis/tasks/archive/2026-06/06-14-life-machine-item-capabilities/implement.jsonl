@@ -1,7 +1,0 @@
-{"file": ".trellis/spec/backend/index.md", "reason": "入口规范，确认本任务涉及 backend 机器与 capability 边界"}
-{"file": ".trellis/spec/backend/directory-structure.md", "reason": "新增/修改 block entity、capability 注册和测试文件需符合包结构"}
-{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "遵循 NeoForge 1.21.11 capability、测试和回归质量要求"}
-{"file": ".trellis/spec/backend/error-handling.md", "reason": "capability 插入/抽出需要安全失败，不破坏手动运行时"}
-{"file": ".trellis/spec/backend/integration-guidelines.md", "reason": "避免误引入外部管道或联动依赖，只暴露标准 capability"}
-{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "复用现有 item handler 与槽位合同，避免重复验证逻辑"}
-{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "检查 BE/menu/capability/GameTest 跨层物品流"}
