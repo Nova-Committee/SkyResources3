@@ -165,6 +165,12 @@ public final class ModGameTests {
                     () -> MachineRuntimeGameTests::manualCombustionRoutesOutputsToCollector
             );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            MANUAL_COMBUSTION_MULTI_INPUT_PRIORITY =
+            TEST_FUNCTIONS.register(
+                    "manual_combustion_multi_input_priority",
+                    () -> MachineRuntimeGameTests::manualCombustionPrefersMultiInputRecipe
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
             COMBUSTION_COLLECTOR_WOOD_STONE_REJECT =
             TEST_FUNCTIONS.register(
                     "combustion_collector_wood_stone_reject",
@@ -260,6 +266,12 @@ public final class ModGameTests {
                 event,
                 "manual_combustion_collector_output",
                 MANUAL_COMBUSTION_COLLECTOR_OUTPUT,
+                environment
+        );
+        registerFunctionTest(
+                event,
+                "manual_combustion_multi_input_priority",
+                MANUAL_COMBUSTION_MULTI_INPUT_PRIORITY,
                 environment
         );
         registerFunctionTest(

@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.recipe.ProcessIngredient;
 import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.registry.ModRecipeTypes;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -41,7 +42,9 @@ public final class CombustionRecipeLogic {
                 .filter(holder -> holder.value().parameter() <= heat)
                 .filter(holder -> holder.value().outputs().stream().findFirst().filter(outputFilter).isPresent())
                 .filter(holder -> canCraft(holder.value(), stacks))
-                .findFirst();
+                .max(Comparator.<RecipeHolder<SkyResourcesProcessRecipe>>comparingInt(
+                                holder -> inputEntryCount(holder.value()))
+                        .thenComparingInt(holder -> inputItemCount(holder.value())));
     }
 
     public static boolean canCraft(final SkyResourcesProcessRecipe recipe, final List<ItemStack> stacks) {
@@ -82,6 +85,14 @@ public final class CombustionRecipeLogic {
             }
         }
         return false;
+    }
+
+    private static int inputEntryCount(final SkyResourcesProcessRecipe recipe) {
+        return recipe.inputs().size();
+    }
+
+    private static int inputItemCount(final SkyResourcesProcessRecipe recipe) {
+        return recipe.inputs().stream().mapToInt(ProcessIngredient::count).sum();
     }
 
     private CombustionRecipeLogic() {

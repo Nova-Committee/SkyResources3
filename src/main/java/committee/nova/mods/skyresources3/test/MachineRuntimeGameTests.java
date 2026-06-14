@@ -47,6 +47,8 @@ public final class MachineRuntimeGameTests {
     private static final int EXPECTED_OUTPUT_COUNT = 1;
     private static final int DIRT_RECIPE_HEAT = 100;
     private static final int RED_SAND_RECIPE_HEAT = 200;
+    private static final int PRIMUS_ALCHEMICAL_DUST_RECIPE_HEAT = 335;
+    private static final int PRIMUS_ALCHEMICAL_DUST_OUTPUT_COUNT = 5;
 
     public static void combustionHeaterEmbedsAsTypeId(final GameTestHelper helper) {
         helper.killAllEntities();
@@ -336,6 +338,34 @@ public final class MachineRuntimeGameTests {
                 CHAMBER_POS,
                 ITEM_ASSERT_RADIUS,
                 "Manual combustion should consume inputs when collector receives the output"
+        );
+        helper.succeed();
+    }
+
+    public static void manualCombustionPrefersMultiInputRecipe(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final CombustionRig rig = setupIronCombustionRig(helper, PRIMUS_ALCHEMICAL_DUST_RECIPE_HEAT);
+        spawnItem(helper, CHAMBER_POS, new ItemStack(Items.GUNPOWDER, 3));
+        spawnItem(helper, CHAMBER_POS, new ItemStack(Items.BLAZE_POWDER, 2));
+        spawnItem(helper, CHAMBER_POS, new ItemStack(Items.CHARCOAL));
+
+        helper.setBlock(REDSTONE_POS, Blocks.REDSTONE_BLOCK);
+        rig.casing().serverTick(helper.getLevel());
+
+        assertCollectorItemCount(
+                helper,
+                rig.collector(),
+                ModItems.PRIMUS_ALCHEMICAL_DUST.get(),
+                PRIMUS_ALCHEMICAL_DUST_OUTPUT_COUNT
+        );
+        assertCollectorItemCount(helper, rig.collector(), Items.BLAZE_POWDER, 0);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                Items.GUNPOWDER,
+                0,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Specific multi-input combustion recipe should consume all gunpowder"
         );
         helper.succeed();
     }
