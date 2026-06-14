@@ -148,6 +148,18 @@ public final class ModGameTests {
                     () -> MachineRuntimeGameTests::combustionControllerRequiresBackFacingChamber
             );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_CONTROLLER_ALL_SIDES_DIRECTION =
+            TEST_FUNCTIONS.register(
+                    "combustion_controller_all_sides_direction",
+                    () -> MachineRuntimeGameTests::combustionControllerBackFacesChamberFromEverySide
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_CONTROLLER_GHOST_FILTERS =
+            TEST_FUNCTIONS.register(
+                    "combustion_controller_ghost_filters",
+                    () -> MachineRuntimeGameTests::combustionControllerFilterSlotsAreGhosts
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
             COMBUSTION_CONTROLLER_WOOD_STONE_REJECT =
             TEST_FUNCTIONS.register(
                     "combustion_controller_wood_stone_reject",
@@ -255,6 +267,18 @@ public final class ModGameTests {
         registerFunctionTest(event, "combustion_cooldown", COMBUSTION_COOLDOWN, environment);
         registerFunctionTest(event, "combustion_powered_controller", COMBUSTION_POWERED_CONTROLLER, environment);
         registerFunctionTest(event, "combustion_controller_direction", COMBUSTION_CONTROLLER_DIRECTION, environment);
+        registerFunctionTest(
+                event,
+                "combustion_controller_all_sides_direction",
+                COMBUSTION_CONTROLLER_ALL_SIDES_DIRECTION,
+                environment
+        );
+        registerFunctionTest(
+                event,
+                "combustion_controller_ghost_filters",
+                COMBUSTION_CONTROLLER_GHOST_FILTERS,
+                environment
+        );
         registerFunctionTest(
                 event,
                 "combustion_controller_wood_stone_reject",

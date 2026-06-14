@@ -320,7 +320,7 @@
   "container.skyresources3.combustion_collector": "Combustion Collector",
   "container.skyresources3.combustion_controller": "Smart Combustion Controller",
   "screen.skyresources3.combustion_controller.filter": "Set Priority Output Filter Here",
-  "screen.skyresources3.combustion_controller.filter.tooltip": "Items placed here become priority output filters.",
+  "screen.skyresources3.combustion_controller.filter.tooltip": "Click with an item or shift-click from inventory to copy a ghost filter. Items are not consumed.",
   "block.skyresources3.mini_freezer": "Mini Freezer",
   "block.skyresources3.iron_freezer": "Iron Freezer",
   "block.skyresources3.light_freezer": "Light Freezer",

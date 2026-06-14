@@ -320,7 +320,7 @@
   "container.skyresources3.combustion_collector": "燃烧收集器",
   "container.skyresources3.combustion_controller": "智能燃烧控制器",
   "screen.skyresources3.combustion_controller.filter": "在此设置优先输出过滤器",
-  "screen.skyresources3.combustion_controller.filter.tooltip": "放在这里的物品会成为优先输出过滤器。",
+  "screen.skyresources3.combustion_controller.filter.tooltip": "手持物品点击或从物品栏 Shift 点击可复制幽灵过滤器，不会消耗物品。",
   "block.skyresources3.mini_freezer": "迷你冷冻机",
   "block.skyresources3.iron_freezer": "铁制冷冻机",
   "block.skyresources3.light_freezer": "光明冷冻机",

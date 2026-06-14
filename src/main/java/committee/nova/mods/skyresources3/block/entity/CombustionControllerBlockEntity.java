@@ -9,10 +9,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public final class CombustionControllerBlockEntity extends AbstractCombustionInventoryBlockEntity {
     private static final String COOLDOWN_KEY = "cooldown";
+    private static final ResourceHandler<ItemResource> EMPTY_ITEM_HANDLER = EmptyResourceHandler.instance();
 
     private int cooldownTicks;
 
@@ -30,6 +33,16 @@ public final class CombustionControllerBlockEntity extends AbstractCombustionInv
     protected void saveAdditional(final ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(COOLDOWN_KEY, this.cooldownTicks);
+    }
+
+    @Override
+    public ResourceHandler<ItemResource> getItemHandler() {
+        return EMPTY_ITEM_HANDLER;
+    }
+
+    @Override
+    public void dropContents() {
+        // Controller filters are ghost entries and must not drop as real items.
     }
 
     public void serverTick(final ServerLevel level) {

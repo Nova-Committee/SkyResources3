@@ -12,6 +12,7 @@ import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
 import committee.nova.mods.skyresources3.machine.CasingType;
 import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
+import committee.nova.mods.skyresources3.menu.CombustionControllerMenu;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
@@ -24,6 +25,8 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -286,6 +289,78 @@ public final class MachineRuntimeGameTests {
         corrected.serverTick(helper.getLevel());
 
         assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 1);
+        helper.succeed();
+    }
+
+    public static void combustionControllerBackFacesChamberFromEverySide(final GameTestHelper helper) {
+        for (final Direction side : Direction.Plane.HORIZONTAL) {
+            helper.killAllEntities();
+            clearCombustionStructure(helper);
+            final MachineCasingBlockEntity casing = setupCombustionCasing(
+                    helper,
+                    ModDataPackRegistries.IRON,
+                    ModDataPackRegistries.IRON_COMBUSTION_HEATER
+            );
+            setCombustionShell(
+                    helper,
+                    Blocks.IRON_BLOCK.defaultBlockState(),
+                    Blocks.IRON_BLOCK.defaultBlockState(),
+                    Blocks.IRON_BLOCK.defaultBlockState(),
+                    Blocks.IRON_BLOCK.defaultBlockState(),
+                    Blocks.IRON_BLOCK.defaultBlockState()
+            );
+            casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, new ItemStack(Items.COAL));
+            warmCasing(helper, casing, DIRT_RECIPE_HEAT);
+
+            final BlockPos controllerPos = CHAMBER_POS.relative(side);
+            final Direction collectorSide = collectorSideFor(side);
+            final BlockPos collectorPos = CHAMBER_POS.relative(collectorSide);
+            helper.setBlock(collectorPos, ModBlocks.COMBUSTION_COLLECTOR.get());
+            final CombustionCollectorBlockEntity collector = combustionCollectorAt(helper, collectorPos);
+            helper.setBlock(controllerPos, ModBlocks.COMBUSTION_CONTROLLER.get()
+                    .defaultBlockState()
+                    .setValue(CombustionControllerBlock.FACING, side));
+            final CombustionControllerBlockEntity controller = combustionControllerAt(helper, controllerPos);
+            controller.setStackInSlot(0, new ItemStack(Items.DIRT));
+            spawnItem(helper, CHAMBER_POS, new ItemStack(ModItems.PLANT_MATTER.get(), 4));
+
+            controller.serverTick(helper.getLevel());
+
+            assertCollectorItemCount(helper, collector, Items.DIRT, 1);
+        }
+        helper.succeed();
+    }
+
+    public static void combustionControllerFilterSlotsAreGhosts(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(CONTROLLER_POS, ModBlocks.COMBUSTION_CONTROLLER.get());
+        final CombustionControllerBlockEntity controller = combustionControllerAt(helper, CONTROLLER_POS);
+        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final CombustionControllerMenu menu = new CombustionControllerMenu(
+                0,
+                player.getInventory(),
+                controller
+        );
+
+        menu.setCarried(new ItemStack(Items.DIRT, 7));
+        menu.clicked(0, 0, ClickType.PICKUP, player);
+
+        assertControllerFilter(helper, controller, 0, Items.DIRT, 1);
+        helper.assertValueEqual(7, menu.getCarried().getCount(), "Carried stack should not be consumed");
+
+        menu.setCarried(ItemStack.EMPTY);
+        menu.clicked(0, 0, ClickType.PICKUP, player);
+        helper.assertTrue(controller.getStackInSlot(0).isEmpty(), "Empty cursor click should clear a ghost filter");
+
+        player.getInventory().setItem(0, new ItemStack(Items.WHEAT_SEEDS, 4));
+        menu.quickMoveStack(player, menuSlotIndex(menu, player.getInventory(), 0));
+
+        assertControllerFilter(helper, controller, 0, Items.WHEAT_SEEDS, 1);
+        helper.assertValueEqual(
+                4,
+                player.getInventory().getItem(0).getCount(),
+                "Shift-clicking from inventory should not move the real stack"
+        );
         helper.succeed();
     }
 
@@ -611,6 +686,26 @@ public final class MachineRuntimeGameTests {
         return new CombustionRig(casing, controller, collector);
     }
 
+    private static void clearCombustionStructure(final GameTestHelper helper) {
+        helper.setBlock(CASING_POS, Blocks.AIR);
+        helper.setBlock(CHAMBER_POS, Blocks.AIR);
+        helper.setBlock(CHAMBER_POS.above(), Blocks.AIR);
+        helper.setBlock(REDSTONE_POS, Blocks.AIR);
+        for (final Direction side : Direction.Plane.HORIZONTAL) {
+            helper.setBlock(CHAMBER_POS.relative(side), Blocks.AIR);
+        }
+        helper.killAllEntities();
+    }
+
+    private static Direction collectorSideFor(final Direction controllerSide) {
+        for (final Direction side : Direction.Plane.HORIZONTAL) {
+            if (side != controllerSide) {
+                return side;
+            }
+        }
+        throw new IllegalArgumentException("Controller side must be horizontal");
+    }
+
     private static void setWoodCombustionShell(final GameTestHelper helper, final BlockState topState) {
         setCombustionShell(
                 helper,
@@ -720,6 +815,32 @@ public final class MachineRuntimeGameTests {
             }
         }
         helper.assertValueEqual(expectedCount, actualCount, "Collector stack count should match");
+    }
+
+    private static void assertControllerFilter(
+            final GameTestHelper helper,
+            final CombustionControllerBlockEntity controller,
+            final int slot,
+            final Item item,
+            final int expectedCount
+    ) {
+        final ItemStack stack = controller.getStackInSlot(slot);
+        helper.assertTrue(stack.is(item), "Controller filter item should match");
+        helper.assertValueEqual(expectedCount, stack.getCount(), "Controller filter count should match");
+    }
+
+    private static int menuSlotIndex(
+            final CombustionControllerMenu menu,
+            final Container container,
+            final int containerSlot
+    ) {
+        for (int index = 0; index < menu.slots.size(); index++) {
+            final Slot slot = menu.slots.get(index);
+            if (slot.container == container && slot.getContainerSlot() == containerSlot) {
+                return index;
+            }
+        }
+        throw new IllegalStateException("Menu slot not found");
     }
 
     private static MachineCasingBlockEntity machineCasingAt(final GameTestHelper helper, final BlockPos relativePos) {
