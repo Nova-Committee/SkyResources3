@@ -18,6 +18,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
@@ -132,6 +133,18 @@ public final class SkyResources3Client {
         event.register(
                 Identifier.fromNamespaceAndPath(Skyresources3.MODID, "condenser_type"),
                 CondenserTypeItemModelProperty.TYPE
+        );
+    }
+
+    @SubscribeEvent
+    public static void registerItemTintSources(final RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(
+                MaterialItemTintSources.ORE_ALCHEMY_DUST,
+                MaterialItemTintSources.OreAlchemyDustColor.MAP_CODEC
+        );
+        event.register(
+                MaterialItemTintSources.DIRTY_GEM,
+                MaterialItemTintSources.DirtyGemColor.MAP_CODEC
         );
     }
 
