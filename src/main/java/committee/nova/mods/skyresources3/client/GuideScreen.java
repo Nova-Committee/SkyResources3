@@ -543,16 +543,38 @@ public final class GuideScreen extends Screen {
         if (text.isBlank() && cursor.x == cursor.startX) {
             return;
         }
-        final int textWidth = this.font.width(text);
-        if (cursor.x > cursor.startX && cursor.x + textWidth > cursor.rightX()) {
-            cursor.newLine();
-            if (text.isBlank()) {
+        String remaining = text;
+        while (!remaining.isEmpty() && cursor.canRender()) {
+            final int textWidth = this.font.width(remaining);
+            if (cursor.x > cursor.startX && cursor.x + textWidth > cursor.rightX()) {
+                cursor.newLine();
+                if (remaining.isBlank()) {
+                    return;
+                }
+                continue;
+            }
+            final int availableWidth = cursor.rightX() - cursor.x;
+            if (textWidth <= availableWidth) {
+                this.drawInlineTextLine(guiGraphics, remaining, cursor, textWidth);
                 return;
             }
+
+            String line = this.font.plainSubstrByWidth(remaining, Math.max(1, availableWidth));
+            if (line.isEmpty()) {
+                line = remaining.substring(0, remaining.offsetByCodePoints(0, 1));
+            }
+            this.drawInlineTextLine(guiGraphics, line, cursor, this.font.width(line));
+            remaining = remaining.substring(line.length());
+            cursor.newLine();
         }
-        if (!cursor.canRender()) {
-            return;
-        }
+    }
+
+    private void drawInlineTextLine(
+            final GuiGraphics guiGraphics,
+            final String text,
+            final BodyCursor cursor,
+            final int textWidth
+    ) {
         guiGraphics.drawString(this.font, text, cursor.x, cursor.y + 5, TEXT_COLOR, false);
         cursor.x += textWidth;
     }
