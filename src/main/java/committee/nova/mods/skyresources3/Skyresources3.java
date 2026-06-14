@@ -17,6 +17,7 @@ import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModCapabilities;
 import committee.nova.mods.skyresources3.registry.ModCreativeTabs;
 import committee.nova.mods.skyresources3.registry.ModDataComponents;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModFluidTypes;
 import committee.nova.mods.skyresources3.registry.ModFluids;
@@ -42,6 +43,7 @@ public final class Skyresources3 {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(ModCapabilities::register);
         modEventBus.addListener(ModNetworking::register);
+        modEventBus.addListener(ModDataPackRegistries::register);
 
         ModFluidTypes.register(modEventBus);
         ModFluids.register(modEventBus);

@@ -10,7 +10,10 @@
     "XXX"
   ],
   "result": {
+    "components": {
+      "skyresources3:casing_type": "skyresources3:wooden"
+    },
     "count": 1,
-    "id": "skyresources3:wooden_machine_casing"
+    "id": "skyresources3:machine_casing"
   }
 }

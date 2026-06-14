@@ -1,7 +1,6 @@
 package committee.nova.mods.skyresources3.data;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -42,19 +41,14 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.WILDLIFE_ATTRACTOR.get(),
                 ModBlocks.COMBUSTION_COLLECTOR.get(),
                 ModBlocks.COMBUSTION_CONTROLLER.get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.STONE).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.IRON).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.NETHER_BRICK).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.END_STONE).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.DARK_MATTER).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.LIGHT_MATTER).get(),
+                ModBlocks.MACHINE_CASING.get(),
                 ModBlocks.IRON_FREEZER.get(),
                 ModBlocks.LIGHT_FREEZER.get()
         );
         this.tag(BlockTags.MINEABLE_WITH_AXE).add(
                 ModBlocks.PETRIFIED_PLANKS.get(),
                 ModBlocks.FUSION_TABLE.get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.WOODEN).get()
+                ModBlocks.MACHINE_CASING.get()
         );
         this.tag(BlockTags.MINEABLE_WITH_SHOVEL).add(
                 ModBlocks.HEAVY_SNOW.get(),
@@ -69,11 +63,7 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.LIGHT_MATTER_BLOCK.get(),
                 ModBlocks.DARK_MATTER_WARPER.get(),
                 ModBlocks.END_PORTAL_CORE.get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.IRON).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.NETHER_BRICK).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.END_STONE).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.DARK_MATTER).get(),
-                ModBlocks.MACHINE_CASINGS.get(MachineVariant.LIGHT_MATTER).get(),
+                ModBlocks.MACHINE_CASING.get(),
                 ModBlocks.COMBUSTION_COLLECTOR.get(),
                 ModBlocks.COMBUSTION_CONTROLLER.get()
         );

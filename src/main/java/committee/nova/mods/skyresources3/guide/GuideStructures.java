@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.guide;
 
-import committee.nova.mods.skyresources3.machine.MachineVariant;
+import committee.nova.mods.skyresources3.item.MachineCasingItem;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +40,7 @@ public final class GuideStructures {
 
     private static GuideStructure combustion() {
         return structure("combustion", List.of(
-                entry(0, -1, 0, () -> ModItems.MACHINE_CASINGS.get(MachineVariant.WOODEN).get()),
+                new GuideStructure.BlockEntry(0, -1, 0, () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN)),
                 entry(1, 0, 0, Items.OAK_PLANKS),
                 entry(-1, 0, 0, Items.OAK_PLANKS),
                 entry(0, 0, 1, Items.OAK_PLANKS),
@@ -58,7 +59,7 @@ public final class GuideStructures {
 
     private static GuideStructure crystalSetup() {
         return structure("crystalSetup", List.of(
-                entry(0, -1, 0, () -> ModItems.MACHINE_CASINGS.get(MachineVariant.WOODEN).get()),
+                new GuideStructure.BlockEntry(0, -1, 0, () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN)),
                 entry(-1, 0, 0, Items.GLASS),
                 entry(0, 0, 1, Items.GLASS),
                 entry(0, 0, -1, Items.GLASS),

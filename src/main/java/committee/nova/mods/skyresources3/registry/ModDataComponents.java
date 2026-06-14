@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -18,6 +19,13 @@ public final class ModDataComponents {
                     builder -> builder
                             .persistent(SimpleFluidContent.CODEC)
                             .networkSynchronized(SimpleFluidContent.STREAM_CODEC)
+            );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+            CASING_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
+                    "casing_type",
+                    builder -> builder
+                            .persistent(Identifier.CODEC)
+                            .networkSynchronized(Identifier.STREAM_CODEC)
             );
 
     public static void register(final IEventBus modEventBus) {

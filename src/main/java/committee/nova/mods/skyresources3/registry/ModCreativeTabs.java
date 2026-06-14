@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.item.DirtyGem;
+import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import net.minecraft.core.registries.Registries;
@@ -50,9 +51,9 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.AQUEOUS_CONCENTRATOR.get());
                         output.accept(ModItems.AQUEOUS_DECONCENTRATOR.get());
                         output.accept(ModItems.WILDLIFE_ATTRACTOR.get());
-                        for (final MachineVariant variant : MachineVariant.values()) {
-                            output.accept(ModItems.MACHINE_CASINGS.get(variant).get());
-                        }
+                        ModDataPackRegistries.BUILTIN_CASING_TYPES.forEach(
+                                typeKey -> output.accept(MachineCasingItem.forType(typeKey))
+                        );
                         output.accept(ModItems.COMBUSTION_COLLECTOR.get());
                         output.accept(ModItems.COMBUSTION_CONTROLLER.get());
                         output.accept(ModItems.MINI_FREEZER.get());

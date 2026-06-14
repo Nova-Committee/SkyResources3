@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.network.IslandGuiStatePayload;
+import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModFluidTypes;
 import committee.nova.mods.skyresources3.registry.ModMenuTypes;
@@ -20,6 +21,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
+import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
@@ -53,6 +55,10 @@ public final class SkyResources3Client {
         event.registerEntityRenderer(
                 ModEntityTypes.HEAVY_EXPLOSIVE_SNOWBALL.get(),
                 context -> new ThrownItemRenderer<HeavyExplosiveSnowball>(context)
+        );
+        event.registerBlockEntityRenderer(
+                ModBlockEntityTypes.MACHINE_CASING.get(),
+                MachineCasingBlockEntityRenderer::new
         );
     }
 
@@ -106,6 +112,14 @@ public final class SkyResources3Client {
         event.register(
                 Identifier.fromNamespaceAndPath(Skyresources3.MODID, "water_extractor_level"),
                 WaterExtractorLevelProperty.MAP_CODEC
+        );
+    }
+
+    @SubscribeEvent
+    public static void registerSelectItemModelProperties(final RegisterSelectItemModelPropertyEvent event) {
+        event.register(
+                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "casing_type"),
+                CasingTypeItemModelProperty.TYPE
         );
     }
 

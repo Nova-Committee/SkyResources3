@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "skyresources3:block/casing_frame",
   "textures": {
     "all": "skyresources3:block/dark_matter_block"
   }

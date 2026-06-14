@@ -1,0 +1,7 @@
+{
+  "translation_key": "block.skyresources3.machine_casing.dark_matter",
+  "texture": "skyresources3:block/dark_matter_block",
+  "max_heat": 4042,
+  "efficiency": 1.0,
+  "structure_rule": "metal"
+}

@@ -1,0 +1,7 @@
+{
+  "translation_key": "block.skyresources3.machine_casing.nether_brick",
+  "texture": "minecraft:block/nether_bricks",
+  "max_heat": 3072,
+  "efficiency": 0.4,
+  "structure_rule": "metal"
+}

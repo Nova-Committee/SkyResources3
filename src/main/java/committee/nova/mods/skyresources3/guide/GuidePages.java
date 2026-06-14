@@ -1,8 +1,10 @@
 package committee.nova.mods.skyresources3.guide;
 
 import committee.nova.mods.skyresources3.item.DirtyGem;
+import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -75,7 +77,7 @@ public final class GuidePages {
             page(
                     "casing",
                     STAGE_2,
-                    stack(() -> ModItems.MACHINE_CASINGS.get(MachineVariant.WOODEN).get()),
+                    () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN),
                     link("combustionHeater", stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get())),
                     link("heatProvider", stack(() -> ModItems.HEAT_PROVIDERS.get(MachineVariant.WOODEN).get())),
                     link("condenser", stack(() -> ModItems.CONDENSERS.get(MachineVariant.WOODEN).get()))
@@ -84,7 +86,7 @@ public final class GuidePages {
                     "combustionHeater",
                     STAGE_2,
                     stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get()),
-                    link("casing", stack(() -> ModItems.MACHINE_CASINGS.get(MachineVariant.WOODEN).get())),
+                    link("casing", () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN)),
                     recipe(stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get())),
                     recipe(GuideRecipeTargets.PROCESS_COMBUSTION, stack(() -> ModItems.ALCHEMICAL_COAL.get())),
                     image("combustion", stack(() -> ModItems.COMBUSTION_HEATERS.get(MachineVariant.WOODEN).get()))

@@ -1,7 +1,6 @@
 package committee.nova.mods.skyresources3.block;
 
 import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
-import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.menu.MachineCasingMenu;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -26,11 +25,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public final class MachineCasingBlock extends Block implements EntityBlock {
-    private final MachineVariant variant;
-
-    public MachineCasingBlock(final MachineVariant variant, final BlockBehaviour.Properties properties) {
+    public MachineCasingBlock(final BlockBehaviour.Properties properties) {
         super(properties);
-        this.variant = variant;
     }
 
     @Nullable
@@ -111,10 +107,6 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS_SERVER;
         }
         return this.openMenu(pos, player, casing);
-    }
-
-    public MachineVariant variant() {
-        return this.variant;
     }
 
     private InteractionResult openMenu(

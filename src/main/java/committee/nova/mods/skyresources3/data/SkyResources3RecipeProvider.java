@@ -1,8 +1,10 @@
 package committee.nova.mods.skyresources3.data;
 
+import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.machine.CasingType;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.recipe.CrucibleRecipe;
@@ -10,10 +12,12 @@ import committee.nova.mods.skyresources3.recipe.ProcessIngredient;
 import committee.nova.mods.skyresources3.recipe.ProcessRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModFluids;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -21,6 +25,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -498,55 +503,13 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void buildCombustionMachineRecipes() {
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.WOODEN).get())
-                .define('X', this.tag(ItemTags.PLANKS))
-                .pattern("XXX")
-                .pattern("X X")
-                .pattern("XXX")
-                .unlockedBy("has_planks", has(ItemTags.PLANKS))
-                .save(this.output);
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.STONE).get())
-                .define('X', Blocks.COBBLESTONE)
-                .pattern("XXX")
-                .pattern("X X")
-                .pattern("XXX")
-                .unlockedBy("has_cobblestone", has(Blocks.COBBLESTONE))
-                .save(this.output);
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.IRON).get())
-                .define('X', Items.IRON_INGOT)
-                .pattern("XXX")
-                .pattern("X X")
-                .pattern("XXX")
-                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
-                .save(this.output);
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.NETHER_BRICK).get())
-                .define('X', Blocks.NETHER_BRICKS)
-                .pattern("XXX")
-                .pattern("X X")
-                .pattern("XXX")
-                .unlockedBy("has_nether_bricks", has(Blocks.NETHER_BRICKS))
-                .save(this.output);
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.END_STONE).get())
-                .define('X', Blocks.END_STONE)
-                .pattern("XXX")
-                .pattern("X X")
-                .pattern("XXX")
-                .unlockedBy("has_end_stone", has(Blocks.END_STONE))
-                .save(this.output);
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.DARK_MATTER).get())
-                .define('X', ModItems.DARK_MATTER.get())
-                .pattern("XXX")
-                .pattern("X X")
-                .pattern("XXX")
-                .unlockedBy("has_dark_matter", has(ModItems.DARK_MATTER.get()))
-                .save(this.output);
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.LIGHT_MATTER).get())
-                .define('X', ModItems.LIGHT_MATTER.get())
-                .pattern("XXX")
-                .pattern("X X")
-                .pattern("XXX")
-                .unlockedBy("has_light_matter", has(ModItems.LIGHT_MATTER.get()))
-                .save(this.output);
+        this.casingRecipe(ModDataPackRegistries.WOODEN, this.tag(ItemTags.PLANKS), "has_planks", has(ItemTags.PLANKS));
+        this.casingRecipe(ModDataPackRegistries.STONE, Ingredient.of(Blocks.COBBLESTONE), "has_cobblestone", has(Blocks.COBBLESTONE));
+        this.casingRecipe(ModDataPackRegistries.IRON, Ingredient.of(Items.IRON_INGOT), "has_iron_ingot", has(Items.IRON_INGOT));
+        this.casingRecipe(ModDataPackRegistries.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), "has_nether_bricks", has(Blocks.NETHER_BRICKS));
+        this.casingRecipe(ModDataPackRegistries.END_STONE, Ingredient.of(Blocks.END_STONE), "has_end_stone", has(Blocks.END_STONE));
+        this.casingRecipe(ModDataPackRegistries.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), "has_dark_matter", has(ModItems.DARK_MATTER.get()));
+        this.casingRecipe(ModDataPackRegistries.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), "has_light_matter", has(ModItems.LIGHT_MATTER.get()));
 
         this.combustionHeaterRecipe(MachineVariant.WOODEN, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
         this.combustionHeaterRecipe(MachineVariant.STONE, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
@@ -586,6 +549,21 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("XYX")
                 .unlockedBy("has_redstone_block", has(Items.REDSTONE_BLOCK))
                 .save(this.output);
+    }
+
+    private void casingRecipe(
+            final ResourceKey<CasingType> casingType,
+            final Ingredient material,
+            final String unlockName,
+            final Criterion<?> criterion
+    ) {
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, MachineCasingItem.forType(casingType))
+                .define('X', material)
+                .pattern("XXX")
+                .pattern("X X")
+                .pattern("XXX")
+                .unlockedBy(unlockName, criterion)
+                .save(this.output, id(ModDataPackRegistries.casingTypeId(casingType).getPath() + "_machine_casing"));
     }
 
     private void combustionHeaterRecipe(

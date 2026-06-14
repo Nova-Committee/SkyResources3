@@ -31,7 +31,7 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
     private static final int YIELD_HEIGHT = 26;
     private static final int CATALYST_X = 134;
     private static final int CATALYST_Y = 73;
-    private static final int CATALYST_WIDTH = 39;
+    private static final int CATALYST_WIDTH = 18;
     private static final int CATALYST_HEIGHT = 18;
 
     public FusionTableScreen(
@@ -52,7 +52,7 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
                         Component.translatable("button.skyresources3.dump.short"),
                         button -> ClientPacketDistributor.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos()))
                 )
-                .bounds(this.leftPos + 115, this.topPos + 64, 18, 18)
+                .bounds(this.leftPos + 153, this.topPos + 73, 18, 18)
                 .tooltip(Tooltip.create(Component.translatable("button.skyresources3.dump")))
                 .build());
     }

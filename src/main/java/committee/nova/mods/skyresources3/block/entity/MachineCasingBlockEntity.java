@@ -1,26 +1,37 @@
 package committee.nova.mods.skyresources3.block.entity;
 
 import com.mojang.serialization.Codec;
-import committee.nova.mods.skyresources3.block.MachineCasingBlock;
+import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.machine.CombustionRecipeLogic;
+import committee.nova.mods.skyresources3.machine.CasingType;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.recipe.CondenserRecipes;
 import committee.nova.mods.skyresources3.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.registry.ModDataComponents;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -52,7 +63,9 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     public static final int MACHINE_MODE_COMBUSTION_HEATER = 1;
     public static final int MACHINE_MODE_HEAT_PROVIDER = 2;
     public static final int MACHINE_MODE_CONDENSER = 3;
+    public static final Identifier DEFAULT_CASING_TYPE = ModDataPackRegistries.casingTypeId(ModDataPackRegistries.IRON);
     private static final Codec<ItemStack> HEATER_CODEC = ItemStack.OPTIONAL_CODEC;
+    private static final String CASING_TYPE_KEY = "casing_type";
     private static final String FUEL_KEY = "fuel";
     private static final String HEATER_KEY = "heater";
     private static final String CURRENT_HEAT_KEY = "current_heat";
@@ -67,6 +80,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     private static final String CONDENSER_RECIPE_HASH_KEY = "condenser_recipe_hash";
 
     private final FuelItemHandler fuelItems = new FuelItemHandler(this);
+    private Identifier casingTypeId = DEFAULT_CASING_TYPE;
     private ItemStack heater = ItemStack.EMPTY;
     private float currentHeat;
     private float itemHeat;
@@ -86,6 +100,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(final ValueInput input) {
         super.loadAdditional(input);
+        this.casingTypeId = input.read(CASING_TYPE_KEY, Identifier.CODEC).orElse(DEFAULT_CASING_TYPE);
         input.readChild(FUEL_KEY, this.fuelItems);
         this.heater = input.read(HEATER_KEY, HEATER_CODEC).orElse(ItemStack.EMPTY);
         this.currentHeat = input.getFloatOr(CURRENT_HEAT_KEY, 0.0F);
@@ -103,6 +118,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(final ValueOutput output) {
         super.saveAdditional(output);
+        output.store(CASING_TYPE_KEY, Identifier.CODEC, this.casingTypeId);
         output.putChild(FUEL_KEY, this.fuelItems);
         output.store(HEATER_KEY, HEATER_CODEC, this.heater);
         output.putFloat(CURRENT_HEAT_KEY, this.currentHeat);
@@ -115,6 +131,28 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         output.putFloat(CONDENSER_CATALYST_LEFT_KEY, this.condenserCatalystLeft);
         output.store(CONDENSER_CATALYST_KEY, HEATER_CODEC, this.condenserCatalyst);
         output.putInt(CONDENSER_RECIPE_HASH_KEY, this.condenserRecipeHash);
+    }
+
+    @Override
+    protected void applyImplicitComponents(final DataComponentGetter componentInput) {
+        super.applyImplicitComponents(componentInput);
+        this.casingTypeId = componentInput.getOrDefault(ModDataComponents.CASING_TYPE.get(), DEFAULT_CASING_TYPE);
+    }
+
+    @Override
+    protected void collectImplicitComponents(final DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        components.set(ModDataComponents.CASING_TYPE.get(), this.casingTypeId);
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(final HolderLookup.Provider registries) {
+        return this.saveCustomOnly(registries);
     }
 
     @Override
@@ -148,11 +186,34 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return this.fuelItems;
     }
 
-    public MachineVariant casingVariant() {
-        if (this.getBlockState().getBlock() instanceof MachineCasingBlock casingBlock) {
-            return casingBlock.variant();
+    public Identifier casingTypeId() {
+        return this.casingTypeId;
+    }
+
+    public void setCasingType(final ResourceKey<CasingType> casingTypeKey) {
+        this.setCasingType(ModDataPackRegistries.casingTypeId(casingTypeKey));
+    }
+
+    public void setCasingType(final Identifier casingTypeId) {
+        if (this.casingTypeId.equals(casingTypeId)) {
+            return;
         }
-        return MachineVariant.IRON;
+        this.casingTypeId = casingTypeId;
+        this.setChanged();
+        if (this.level != null) {
+            this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+        }
+    }
+
+    public CasingType casingType() {
+        if (this.level == null) {
+            return CasingType.fallback();
+        }
+        return this.level.registryAccess()
+                .lookup(ModDataPackRegistries.CASING_TYPES)
+                .flatMap(registry -> registry.get(ModDataPackRegistries.casingTypeKey(this.casingTypeId)))
+                .map(reference -> reference.value())
+                .orElse(CasingType.fallback());
     }
 
     public ItemStack heater() {
@@ -244,7 +305,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         if (this.heater.getItem() instanceof HeatProviderItem heatProvider) {
             return Math.round(heatProvider.variant().heatPerTick());
         }
-        return this.casingVariant().maxHeat();
+        return this.casingType().maxHeat();
     }
 
     public int heatPerTick() {
@@ -308,12 +369,13 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     public void dropContents() {
-        if (this.level == null) {
+        if (this.level == null || this.level.isClientSide()) {
             return;
         }
-        final SimpleContainer container = new SimpleContainer(2);
-        container.setItem(0, this.fuelItems.stack(FUEL_SLOT).copy());
-        container.setItem(1, this.heater.copy());
+        final SimpleContainer container = new SimpleContainer(3);
+        container.setItem(0, MachineCasingItem.forType(this.casingTypeId));
+        container.setItem(1, this.fuelItems.stack(FUEL_SLOT).copy());
+        container.setItem(2, this.heater.copy());
         Containers.dropContents(this.level, this.worldPosition, container);
     }
 
@@ -483,8 +545,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     private void heatUp(final ServerLevel level, final MachineVariant heaterVariant) {
-        final MachineVariant casingVariant = this.casingVariant();
-        final float maxHeat = casingVariant.maxHeat();
+        final float maxHeat = this.casingType().maxHeat();
         if (this.currentHeat < maxHeat && this.itemHeat <= 0.0F) {
             this.consumeFuel(level, heaterVariant);
         }
@@ -626,7 +687,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     private float combinedEfficiency(final MachineVariant heaterVariant) {
-        return heaterVariant.efficiency() * this.casingVariant().efficiency();
+        return heaterVariant.efficiency() * this.casingType().efficiency();
     }
 
     private void routeOutput(final ServerLevel level, final BlockPos chamber, final ItemStack output) {
@@ -704,13 +765,11 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         if (face == null || !state.isFaceSturdy(level, pos, face)) {
             return false;
         }
-        if (this.casingVariant() == MachineVariant.WOODEN) {
-            return state.is(BlockTags.LOGS) || state.is(BlockTags.PLANKS) || isGlass(state);
-        }
-        if (this.casingVariant() == MachineVariant.STONE) {
-            return state.is(BlockTags.BASE_STONE_OVERWORLD) || state.is(Blocks.COBBLESTONE) || isGlass(state);
-        }
-        return isMetalStoneOrGlass(state);
+        return switch (this.casingType().structureRule()) {
+            case WOOD -> state.is(BlockTags.LOGS) || state.is(BlockTags.PLANKS) || isGlass(state);
+            case STONE -> state.is(BlockTags.BASE_STONE_OVERWORLD) || state.is(Blocks.COBBLESTONE) || isGlass(state);
+            case METAL -> isMetalStoneOrGlass(state);
+        };
     }
 
     private static boolean isMetalStoneOrGlass(final BlockState state) {

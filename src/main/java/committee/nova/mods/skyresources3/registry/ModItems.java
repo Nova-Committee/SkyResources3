@@ -13,6 +13,7 @@ import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
 import committee.nova.mods.skyresources3.item.InfusionStoneItem;
+import committee.nova.mods.skyresources3.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.item.RockGrinderItem;
 import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
@@ -67,7 +68,10 @@ public final class ModItems {
             blockItem("aqueous_deconcentrator", ModBlocks.AQUEOUS_DECONCENTRATOR);
     public static final DeferredItem<BlockItem> WILDLIFE_ATTRACTOR =
             blockItem("wildlife_attractor", ModBlocks.WILDLIFE_ATTRACTOR);
-    public static final Map<MachineVariant, DeferredItem<BlockItem>> MACHINE_CASINGS = registerMachineCasingItems();
+    public static final DeferredItem<MachineCasingItem> MACHINE_CASING = ITEMS.registerItem(
+            "machine_casing",
+            properties -> new MachineCasingItem(ModBlocks.MACHINE_CASING.get(), properties)
+    );
     public static final DeferredItem<BlockItem> COMBUSTION_COLLECTOR =
             blockItem("combustion_collector", ModBlocks.COMBUSTION_COLLECTOR);
     public static final DeferredItem<BlockItem> COMBUSTION_CONTROLLER =
@@ -181,14 +185,6 @@ public final class ModItems {
 
     private static DeferredItem<BlockItem> blockItem(final String name, final DeferredBlock<? extends Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
-    }
-
-    private static Map<MachineVariant, DeferredItem<BlockItem>> registerMachineCasingItems() {
-        final EnumMap<MachineVariant, DeferredItem<BlockItem>> items = new EnumMap<>(MachineVariant.class);
-        for (final MachineVariant variant : MachineVariant.values()) {
-            items.put(variant, blockItem(variant.registryName("machine_casing"), ModBlocks.MACHINE_CASINGS.get(variant)));
-        }
-        return Collections.unmodifiableMap(items);
     }
 
     private static Map<MachineVariant, DeferredItem<CombustionHeaterItem>> registerCombustionHeaters() {

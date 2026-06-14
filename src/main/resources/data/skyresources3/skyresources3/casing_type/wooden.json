@@ -1,0 +1,7 @@
+{
+  "translation_key": "block.skyresources3.machine_casing.wooden",
+  "texture": "minecraft:block/oak_log",
+  "max_heat": 100,
+  "efficiency": 0.5,
+  "structure_rule": "wood"
+}

@@ -41,7 +41,7 @@ public final class SkyResources3BlockLootProvider extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.AQUEOUS_CONCENTRATOR.get());
         this.dropSelf(ModBlocks.AQUEOUS_DECONCENTRATOR.get());
         this.dropSelf(ModBlocks.WILDLIFE_ATTRACTOR.get());
-        ModBlocks.MACHINE_CASINGS.values().forEach(casing -> this.dropSelf(casing.get()));
+        this.add(ModBlocks.MACHINE_CASING.get(), noDrop());
         this.dropSelf(ModBlocks.COMBUSTION_COLLECTOR.get());
         this.dropSelf(ModBlocks.COMBUSTION_CONTROLLER.get());
         this.dropSelf(ModBlocks.MINI_FREEZER.get());

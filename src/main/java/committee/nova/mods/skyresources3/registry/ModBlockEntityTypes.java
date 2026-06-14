@@ -19,7 +19,6 @@ import committee.nova.mods.skyresources3.block.entity.QuickDropperBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.RockCleanerBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.RockCrusherBlockEntity;
 import committee.nova.mods.skyresources3.block.entity.WildlifeAttractorBlockEntity;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -125,9 +124,7 @@ public final class ModBlockEntityTypes {
                     "machine_casing",
                     () -> new BlockEntityType<>(
                             MachineCasingBlockEntity::new,
-                            ModBlocks.MACHINE_CASINGS.values().stream()
-                                    .map(holder -> (Block) holder.get())
-                                    .toArray(Block[]::new)
+                            ModBlocks.MACHINE_CASING.get()
                     )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionCollectorBlockEntity>>

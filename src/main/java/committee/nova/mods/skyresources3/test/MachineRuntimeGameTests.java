@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
 import committee.nova.mods.skyresources3.item.OreAlchemyDust;
 import committee.nova.mods.skyresources3.machine.MachineVariant;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -120,10 +121,11 @@ public final class MachineRuntimeGameTests {
     }
 
     private static MachineCasingBlockEntity setupCopperCrystalFluidCondenser(final GameTestHelper helper) {
-        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.DARK_MATTER).get());
+        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
         helper.setBlock(SOURCE_POS, ModBlocks.CRYSTAL_FLUID.get());
 
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
+        casing.setCasingType(ModDataPackRegistries.DARK_MATTER);
         final Player player = helper.makeMockPlayer(GameType.CREATIVE);
         final boolean installed = casing.installHeater(
                 new ItemStack(ModItems.CONDENSERS.get(MachineVariant.DARK_MATTER).get()),
@@ -138,7 +140,7 @@ public final class MachineRuntimeGameTests {
     }
 
     private static CombustionRig setupIronCombustionRig(final GameTestHelper helper, final int targetHeat) {
-        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASINGS.get(MachineVariant.IRON).get());
+        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
         helper.setBlock(CONTROLLER_POS, ModBlocks.COMBUSTION_CONTROLLER.get()
                 .defaultBlockState()
                 .setValue(CombustionControllerBlock.FACING, Direction.NORTH));
@@ -148,6 +150,7 @@ public final class MachineRuntimeGameTests {
         helper.setBlock(CHAMBER_POS.above(), Blocks.IRON_BLOCK);
 
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
+        casing.setCasingType(ModDataPackRegistries.IRON);
         final Player player = helper.makeMockPlayer(GameType.CREATIVE);
         final boolean installed = casing.installHeater(
                 new ItemStack(ModItems.COMBUSTION_HEATERS.get(MachineVariant.IRON).get()),
