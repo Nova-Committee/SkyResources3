@@ -159,6 +159,18 @@ public final class ModGameTests {
                     () -> MachineRuntimeGameTests::combustionCollectorDropsOverflow
             );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            MANUAL_COMBUSTION_COLLECTOR_OUTPUT =
+            TEST_FUNCTIONS.register(
+                    "manual_combustion_collector_output",
+                    () -> MachineRuntimeGameTests::manualCombustionRoutesOutputsToCollector
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            COMBUSTION_COLLECTOR_WOOD_STONE_REJECT =
+            TEST_FUNCTIONS.register(
+                    "combustion_collector_wood_stone_reject",
+                    () -> MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectCollector
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
             WOODEN_COMBUSTION_STRUCTURE =
             TEST_FUNCTIONS.register(
                     "wooden_combustion_structure",
@@ -244,6 +256,18 @@ public final class ModGameTests {
                 environment
         );
         registerFunctionTest(event, "combustion_collector_overflow", COMBUSTION_COLLECTOR_OVERFLOW, environment);
+        registerFunctionTest(
+                event,
+                "manual_combustion_collector_output",
+                MANUAL_COMBUSTION_COLLECTOR_OUTPUT,
+                environment
+        );
+        registerFunctionTest(
+                event,
+                "combustion_collector_wood_stone_reject",
+                COMBUSTION_COLLECTOR_WOOD_STONE_REJECT,
+                environment
+        );
         registerFunctionTest(event, "wooden_combustion_structure", WOODEN_COMBUSTION_STRUCTURE, environment);
         registerFunctionTest(event, "stone_combustion_structure", STONE_COMBUSTION_STRUCTURE, environment);
         registerFunctionTest(

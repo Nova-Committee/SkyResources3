@@ -312,6 +312,65 @@ public final class MachineRuntimeGameTests {
         helper.succeed();
     }
 
+    public static void manualCombustionRoutesOutputsToCollector(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final CombustionRig rig = setupIronCombustionRig(helper, DIRT_RECIPE_HEAT);
+        spawnItem(helper, CHAMBER_POS, new ItemStack(ModItems.PLANT_MATTER.get(), 4));
+
+        helper.setBlock(REDSTONE_POS, Blocks.REDSTONE_BLOCK);
+        rig.casing().serverTick(helper.getLevel());
+
+        assertCollectorItemCount(helper, rig.collector(), Items.DIRT, 1);
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                Items.DIRT,
+                0,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Manual combustion output should route into the combustion collector"
+        );
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                ModItems.PLANT_MATTER.get(),
+                0,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Manual combustion should consume inputs when collector receives the output"
+        );
+        helper.succeed();
+    }
+
+    public static void woodAndStoneCombustionHeatersRejectCollector(final GameTestHelper helper) {
+        helper.killAllEntities();
+        MachineCasingBlockEntity casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.IRON,
+                ModDataPackRegistries.WOODEN_COMBUSTION_HEATER
+        );
+        setWoodCombustionShell(helper, Blocks.OAK_PLANKS.defaultBlockState());
+        helper.setBlock(CHAMBER_POS.west(), ModBlocks.COMBUSTION_COLLECTOR.get());
+
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Wooden combustion heater should reject combustion collectors"
+        );
+
+        casing.removeHeater();
+        casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.IRON,
+                ModDataPackRegistries.STONE_COMBUSTION_HEATER
+        );
+        setStoneCombustionShell(helper, Blocks.STONE.defaultBlockState());
+        helper.setBlock(CHAMBER_POS.west(), ModBlocks.COMBUSTION_COLLECTOR.get());
+
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Stone combustion heater should reject combustion collectors"
+        );
+        helper.succeed();
+    }
+
     public static void woodAndStoneCombustionHeatersRejectSmartController(final GameTestHelper helper) {
         helper.killAllEntities();
         MachineCasingBlockEntity casing = setupCombustionCasing(
