@@ -92,6 +92,12 @@ public final class ModGameTests {
                     "life_injector_item_capability",
                     () -> LifeInfusionGameTests::lifeInjectorItemCapabilityTransfers
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            LIFE_INJECTOR_SHIFT_RIGHT_CLICK =
+            TEST_FUNCTIONS.register(
+                    "life_injector_shift_right_click",
+                    () -> LifeInfusionGameTests::lifeInjectorShiftRightClickRemovesGemWithHeldItem
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LIFE_INFUSER_ITEM_CAPABILITY =
             TEST_FUNCTIONS.register(
                     "life_infuser_item_capability",
@@ -282,6 +288,7 @@ public final class ModGameTests {
         registerFunctionTest(event, "infusion_stone_process", INFUSION_STONE_PROCESS, environment);
         registerFunctionTest(event, "life_infuser_process", LIFE_INFUSER_PROCESS, environment);
         registerFunctionTest(event, "life_injector_item_capability", LIFE_INJECTOR_ITEM_CAPABILITY, environment);
+        registerFunctionTest(event, "life_injector_shift_right_click", LIFE_INJECTOR_SHIFT_RIGHT_CLICK, environment);
         registerFunctionTest(event, "life_infuser_item_capability", LIFE_INFUSER_ITEM_CAPABILITY, environment);
         registerFunctionTest(event, "fusion_table_catalyst_yield", FUSION_TABLE_CATALYST_YIELD, environment);
         registerFunctionTest(

@@ -64,10 +64,15 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
             return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
-            return stack.getItem() instanceof HealthGemItem ? InteractionResult.SUCCESS : InteractionResult.PASS;
+            return player.isShiftKeyDown() || stack.getItem() instanceof HealthGemItem
+                    ? InteractionResult.SUCCESS
+                    : InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof LifeInjectorBlockEntity lifeInjector)) {
             return InteractionResult.PASS;
+        }
+        if (player.isShiftKeyDown() && lifeInjector.hasGem()) {
+            return returnGemToPlayer(level, pos, player, lifeInjector);
         }
         if (!lifeInjector.canInsertGem(stack)) {
             return InteractionResult.PASS;
@@ -97,11 +102,7 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
         if (player.isShiftKeyDown() && lifeInjector.hasGem()) {
-            final ItemStack removed = lifeInjector.removeGem();
-            if (!player.addItem(removed)) {
-                Block.popResource(level, pos.above(), removed);
-            }
-            return InteractionResult.SUCCESS_SERVER;
+            return returnGemToPlayer(level, pos, player, lifeInjector);
         }
         return this.openMenu(pos, player, lifeInjector);
     }
@@ -119,6 +120,19 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
             Containers.dropContents(level, pos, new SimpleContainer(lifeInjector.removeGem()));
         }
         return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    private static InteractionResult returnGemToPlayer(
+            final Level level,
+            final BlockPos pos,
+            final Player player,
+            final LifeInjectorBlockEntity lifeInjector
+    ) {
+        final ItemStack removed = lifeInjector.removeGem();
+        if (!player.addItem(removed)) {
+            Block.popResource(level, pos.above(), removed);
+        }
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     private InteractionResult openMenu(

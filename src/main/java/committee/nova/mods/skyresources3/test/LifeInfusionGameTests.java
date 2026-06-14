@@ -134,6 +134,28 @@ public final class LifeInfusionGameTests {
         helper.succeed();
     }
 
+    public static void lifeInjectorShiftRightClickRemovesGemWithHeldItem(final GameTestHelper helper) {
+        helper.setBlock(TARGET_POS, ModBlocks.LIFE_INJECTOR.get());
+
+        final LifeInjectorBlockEntity lifeInjector = lifeInjectorAt(helper, TARGET_POS);
+        final ItemStack healthGem = new ItemStack(ModItems.HEALTH_GEM.get());
+        lifeInjector.insertGem(healthGem);
+
+        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setShiftKeyDown(true);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIRT));
+
+        helper.useBlock(TARGET_POS, player, hitResult(helper, TARGET_POS));
+
+        helper.assertTrue(!lifeInjector.hasGem(), "Life Injector should be empty after shift right click");
+        helper.assertValueEqual(1, player.getMainHandItem().getCount(), "Held item count should not change");
+        helper.assertTrue(
+                player.getInventory().contains(stack -> stack.is(ModItems.HEALTH_GEM.get())),
+                "Shift right click should return the health gem to the player"
+        );
+        helper.succeed();
+    }
+
     public static void lifeInfuserItemCapabilityTransfers(final GameTestHelper helper) {
         helper.setBlock(TARGET_POS, ModBlocks.LIFE_INFUSER.get());
 
