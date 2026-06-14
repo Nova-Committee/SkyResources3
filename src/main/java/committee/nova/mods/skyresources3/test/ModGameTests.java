@@ -116,6 +116,18 @@ public final class ModGameTests {
                     () -> FusionTableGameTests::fusionTableMenuWritesToBlockEntity
             );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            IRON_FREEZER_MENU_MULTIBLOCK =
+            TEST_FUNCTIONS.register(
+                    "iron_freezer_menu_multiblock",
+                    () -> FreezerGameTests::ironFreezerMenuReadsValidMultiblock
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            LIGHT_FREEZER_MENU_MULTIBLOCK =
+            TEST_FUNCTIONS.register(
+                    "light_freezer_menu_multiblock",
+                    () -> FreezerGameTests::lightFreezerMenuReadsValidMultiblock
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
             COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID =
             TEST_FUNCTIONS.register(
                     "combustion_heater_embeds_as_type_id",
@@ -284,6 +296,8 @@ public final class ModGameTests {
                 FUSION_TABLE_MENU_SLOT_PERSISTENCE,
                 environment
         );
+        registerFunctionTest(event, "iron_freezer_menu_multiblock", IRON_FREEZER_MENU_MULTIBLOCK, environment);
+        registerFunctionTest(event, "light_freezer_menu_multiblock", LIGHT_FREEZER_MENU_MULTIBLOCK, environment);
         registerFunctionTest(event, "combustion_heater_embeds_as_type_id", COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID, environment);
         registerFunctionTest(
                 event,

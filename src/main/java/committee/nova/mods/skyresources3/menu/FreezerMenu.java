@@ -45,7 +45,7 @@ public final class FreezerMenu extends AbstractContainerMenu {
                 playerInventory,
                 new FreezerClientData(
                         blockEntity.getBlockPos(),
-                        null,
+                        blockEntity,
                         ContainerLevelAccess.create(playerInventory.player.level(), blockEntity.getBlockPos()),
                         blockEntity.getSlotCount(),
                         blockEntity.getInputCount(),
