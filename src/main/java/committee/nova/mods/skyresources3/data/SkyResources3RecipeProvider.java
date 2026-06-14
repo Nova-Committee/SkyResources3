@@ -1,12 +1,14 @@
 package committee.nova.mods.skyresources3.data;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
+import committee.nova.mods.skyresources3.item.DirtyGemItem;
+import committee.nova.mods.skyresources3.item.DirtyGemType;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
-import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
+import committee.nova.mods.skyresources3.item.OreAlchemyDustType;
 import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.machine.CondenserType;
 import committee.nova.mods.skyresources3.machine.CasingType;
@@ -646,31 +648,33 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void buildCondenserRecipes() {
-        this.condenserFluidRecipe("iron_ingot", OreAlchemyDust.IRON, Items.IRON_INGOT);
-        this.condenserFluidRecipe("gold_ingot", OreAlchemyDust.GOLD, Items.GOLD_INGOT);
-        this.condenserFluidRecipe("copper_ingot", OreAlchemyDust.COPPER, Items.COPPER_INGOT);
-        this.condenserBlockRecipe("iron_ore", OreAlchemyDust.IRON, Blocks.STONE, Blocks.IRON_ORE);
-        this.condenserBlockRecipe("gold_ore", OreAlchemyDust.GOLD, Blocks.STONE, Blocks.GOLD_ORE);
-        this.condenserBlockRecipe("copper_ore", OreAlchemyDust.COPPER, Blocks.STONE, Blocks.COPPER_ORE);
+        this.condenserFluidRecipe("iron_ingot", ModDataPackRegistries.IRON_ORE_ALCHEMY_DUST, 3, Items.IRON_INGOT);
+        this.condenserFluidRecipe("gold_ingot", ModDataPackRegistries.GOLD_ORE_ALCHEMY_DUST, 5, Items.GOLD_INGOT);
+        this.condenserFluidRecipe("copper_ingot", ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST, 1, Items.COPPER_INGOT);
+        this.condenserBlockRecipe("iron_ore", ModDataPackRegistries.IRON_ORE_ALCHEMY_DUST, 3, Blocks.STONE, Blocks.IRON_ORE);
+        this.condenserBlockRecipe("gold_ore", ModDataPackRegistries.GOLD_ORE_ALCHEMY_DUST, 5, Blocks.STONE, Blocks.GOLD_ORE);
+        this.condenserBlockRecipe("copper_ore", ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST, 1, Blocks.STONE, Blocks.COPPER_ORE);
     }
 
     private void condenserFluidRecipe(
             final String name,
-            final OreAlchemyDust dust,
+            final ResourceKey<OreAlchemyDustType> dust,
+            final int rarity,
             final ItemLike output
     ) {
         this.condenserRecipe(
                 "crystal_fluid/" + name,
                 dust,
                 CondenserRecipe.Source.fluid(BuiltInRegistries.FLUID.getKey(ModFluids.CRYSTAL_FLUID.get())),
-                condenserFluidParameter(dust),
+                condenserFluidParameter(rarity),
                 output
         );
     }
 
     private void condenserBlockRecipe(
             final String name,
-            final OreAlchemyDust dust,
+            final ResourceKey<OreAlchemyDustType> dust,
+            final int rarity,
             final Block source,
             final ItemLike output
     ) {
@@ -678,7 +682,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 BuiltInRegistries.BLOCK.getKey(source).getPath() + "/" + name,
                 dust,
                 CondenserRecipe.Source.block(BuiltInRegistries.BLOCK.getKey(source)),
-                condenserBlockParameter(dust),
+                condenserBlockParameter(rarity),
                 output
         );
     }
@@ -753,38 +757,41 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 1,
                 input(ItemTags.LOGS)
         );
-        this.dirtyGemRockGrinderRecipe(DirtyGem.EMERALD, Blocks.STONE);
-        this.dirtyGemRockGrinderRecipe(DirtyGem.DIAMOND, Blocks.STONE);
-        this.dirtyGemRockGrinderRecipe(DirtyGem.QUARTZ, Blocks.NETHERRACK);
-        this.dirtyGemRockGrinderRecipe(DirtyGem.LAPIS, Blocks.STONE);
+        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.EMERALD_DIRTY_GEM, 0.015F, Blocks.STONE);
+        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.DIAMOND_DIRTY_GEM, 0.033F, Blocks.STONE);
+        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.QUARTZ_DIRTY_GEM, 0.42F, Blocks.NETHERRACK);
+        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.LAPIS_DIRTY_GEM, 0.54F, Blocks.STONE);
     }
 
-    private void dirtyGemRockGrinderRecipe(final DirtyGem gem, final ItemLike source) {
+    private void dirtyGemRockGrinderRecipe(
+            final ResourceKey<DirtyGemType> gem,
+            final float rarity,
+            final ItemLike source
+    ) {
         this.processRecipe(
                 ProcessRecipes.ROCK_GRINDER,
-                gem.itemId(),
-                gem.legacyRarity(),
-                ModItems.DIRTY_GEMS.get(gem).get(),
-                1,
+                dirtyGemRecipeName(gem),
+                rarity,
+                DirtyGemItem.forType(gem),
                 input(source)
         );
     }
 
     private void buildCauldronCleanRecipes() {
-        this.dirtyGemCleanRecipe(DirtyGem.EMERALD, Items.EMERALD);
-        this.dirtyGemCleanRecipe(DirtyGem.DIAMOND, Items.DIAMOND);
-        this.dirtyGemCleanRecipe(DirtyGem.QUARTZ, Items.QUARTZ);
-        this.dirtyGemCleanRecipe(DirtyGem.LAPIS, Items.LAPIS_LAZULI);
+        this.dirtyGemCleanRecipe(ModDataPackRegistries.EMERALD_DIRTY_GEM, Items.EMERALD);
+        this.dirtyGemCleanRecipe(ModDataPackRegistries.DIAMOND_DIRTY_GEM, Items.DIAMOND);
+        this.dirtyGemCleanRecipe(ModDataPackRegistries.QUARTZ_DIRTY_GEM, Items.QUARTZ);
+        this.dirtyGemCleanRecipe(ModDataPackRegistries.LAPIS_DIRTY_GEM, Items.LAPIS_LAZULI);
     }
 
-    private void dirtyGemCleanRecipe(final DirtyGem gem, final ItemLike output) {
+    private void dirtyGemCleanRecipe(final ResourceKey<DirtyGemType> gem, final ItemLike output) {
         this.processRecipe(
                 ProcessRecipes.CAULDRON_CLEAN,
-                gem.itemId(),
+                dirtyGemRecipeName(gem),
                 1.0F,
                 output,
                 1,
-                input(ModItems.DIRTY_GEMS.get(gem).get())
+                input(DirtyGemItem.forType(gem))
         );
     }
 
@@ -1277,19 +1284,22 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 input(ModItems.PLANT_MATTER.get(), 6)
         );
         this.oreAlchemyDustFusionRecipe(
-                OreAlchemyDust.IRON,
+                ModDataPackRegistries.IRON_ORE_ALCHEMY_DUST,
+                3,
                 Items.ROTTEN_FLESH,
                 Items.BLAZE_POWDER,
                 2
         );
         this.oreAlchemyDustFusionRecipe(
-                OreAlchemyDust.GOLD,
+                ModDataPackRegistries.GOLD_ORE_ALCHEMY_DUST,
+                5,
                 Items.WHEAT,
                 Items.GLOWSTONE_DUST,
                 2
         );
         this.oreAlchemyDustFusionRecipe(
-                OreAlchemyDust.COPPER,
+                ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST,
+                1,
                 Items.PUMPKIN_SEEDS,
                 Items.GUNPOWDER,
                 2
@@ -1306,17 +1316,26 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, outputCount, inputs);
     }
 
+    private void fusionRecipe(
+            final String name,
+            final float catalystUse,
+            final ItemStack output,
+            final ProcessIngredient... inputs
+    ) {
+        this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, inputs);
+    }
+
     private void oreAlchemyDustFusionRecipe(
-            final OreAlchemyDust dust,
+            final ResourceKey<OreAlchemyDustType> dust,
+            final int rarity,
             final ItemLike component,
             final ItemLike rarityDust,
             final int rarityDustCount
     ) {
         this.fusionRecipe(
-                dust.itemId(),
-                oreAlchemyFusionParameter(dust),
-                ModItems.ORE_ALCHEMICAL_DUSTS.get(dust).get(),
-                1,
+                oreAlchemyDustRecipeName(dust),
+                oreAlchemyFusionParameter(rarity),
+                OreAlchemyDustItem.forType(dust),
                 input(component),
                 input(rarityDust, rarityDustCount)
         );
@@ -1332,7 +1351,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
 
     private void condenserRecipe(
             final String name,
-            final OreAlchemyDust dust,
+            final ResourceKey<OreAlchemyDustType> dust,
             final CondenserRecipe.Source source,
             final float parameter,
             final ItemLike output
@@ -1341,7 +1360,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 id("condenser/" + name),
                 new CondenserRecipe(
                         "",
-                        Ingredient.of(ModItems.ORE_ALCHEMICAL_DUSTS.get(dust).get()),
+                        input(OreAlchemyDustItem.forType(dust)),
                         source,
                         new ItemStack(output),
                         parameter
@@ -1358,13 +1377,23 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final int outputCount,
             final ProcessIngredient... inputs
     ) {
+        this.processRecipe(process, name, parameter, new ItemStack(output, outputCount), inputs);
+    }
+
+    private void processRecipe(
+            final String process,
+            final String name,
+            final float parameter,
+            final ItemStack output,
+            final ProcessIngredient... inputs
+    ) {
         this.output.accept(
                 id("process/" + process + "/" + name),
                 new SkyResourcesProcessRecipe(
                         "",
                         process,
                         List.of(inputs),
-                        List.of(new ItemStack(output, outputCount)),
+                        List.of(output.copy()),
                         parameter
                 ),
                 null
@@ -1379,6 +1408,10 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         return new ProcessIngredient(Ingredient.of(item), count);
     }
 
+    private static ProcessIngredient input(final ItemStack stack) {
+        return ProcessIngredient.stack(stack);
+    }
+
     private ProcessIngredient input(final TagKey<Item> tag) {
         return input(tag, 1);
     }
@@ -1387,16 +1420,24 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         return new ProcessIngredient(this.tag(tag), count);
     }
 
-    private static float condenserFluidParameter(final OreAlchemyDust dust) {
-        return (float) (Math.pow(1.4D, dust.legacyRarity()) * 50.0D);
+    private static float condenserFluidParameter(final int rarity) {
+        return (float) (Math.pow(1.4D, rarity) * 50.0D);
     }
 
-    private static float condenserBlockParameter(final OreAlchemyDust dust) {
-        return (float) (Math.pow(1.72D, dust.legacyRarity()) * 62.0D);
+    private static float condenserBlockParameter(final int rarity) {
+        return (float) (Math.pow(1.72D, rarity) * 62.0D);
     }
 
-    private static float oreAlchemyFusionParameter(final OreAlchemyDust dust) {
-        return dust.legacyRarity() * 0.0008F;
+    private static float oreAlchemyFusionParameter(final int rarity) {
+        return rarity * 0.0008F;
+    }
+
+    private static String oreAlchemyDustRecipeName(final ResourceKey<OreAlchemyDustType> dust) {
+        return dust.identifier().getPath() + "_ore_alchemical_dust";
+    }
+
+    private static String dirtyGemRecipeName(final ResourceKey<DirtyGemType> gem) {
+        return gem.identifier().getPath() + "_dirty_gem";
     }
 
     private static ResourceKey<Recipe<?>> id(final String path) {

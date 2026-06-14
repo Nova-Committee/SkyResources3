@@ -48,6 +48,20 @@ public final class ModDataComponents {
                             .persistent(Identifier.CODEC)
                             .networkSynchronized(Identifier.STREAM_CODEC)
             );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+            ORE_ALCHEMY_DUST_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
+                    "ore_alchemy_dust_type",
+                    builder -> builder
+                            .persistent(Identifier.CODEC)
+                            .networkSynchronized(Identifier.STREAM_CODEC)
+            );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+            DIRTY_GEM_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
+                    "dirty_gem_type",
+                    builder -> builder
+                            .persistent(Identifier.CODEC)
+                            .networkSynchronized(Identifier.STREAM_CODEC)
+            );
 
     public static void register(final IEventBus modEventBus) {
         DATA_COMPONENT_TYPES.register(modEventBus);

@@ -2,7 +2,13 @@
   "type": "skyresources3:process",
   "inputs": [
     {
-      "ingredient": "skyresources3:quartz_dirty_gem"
+      "stack": {
+        "components": {
+          "skyresources3:dirty_gem_type": "skyresources3:quartz"
+        },
+        "count": 1,
+        "id": "skyresources3:dirty_gem"
+      }
     }
   ],
   "outputs": [

@@ -11,8 +11,11 @@
   ],
   "outputs": [
     {
+      "components": {
+        "skyresources3:ore_alchemy_dust_type": "skyresources3:iron"
+      },
       "count": 1,
-      "id": "skyresources3:iron_ore_alchemical_dust"
+      "id": "skyresources3:ore_alchemical_dust"
     }
   ],
   "parameter": 0.0023999999,

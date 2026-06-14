@@ -7,20 +7,17 @@ import committee.nova.mods.skyresources3.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.CuttingKnifeItem;
-import committee.nova.mods.skyresources3.item.DirtyGem;
+import committee.nova.mods.skyresources3.item.DirtyGemItem;
 import committee.nova.mods.skyresources3.item.HealthGemItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.HeavySnowballItem;
 import committee.nova.mods.skyresources3.item.InstantBonemealItem;
 import committee.nova.mods.skyresources3.item.InfusionStoneItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
-import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
 import committee.nova.mods.skyresources3.item.RockGrinderItem;
 import committee.nova.mods.skyresources3.item.SurvivalistFishingRodItem;
 import committee.nova.mods.skyresources3.item.WaterExtractorItem;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
@@ -110,9 +107,10 @@ public final class ModItems {
     public static final DeferredItem<Item> SECUNDUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("secundus_alchemical_dust");
     public static final DeferredItem<Item> TERTIUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("tertius_alchemical_dust");
     public static final DeferredItem<Item> QUARTUS_ALCHEMICAL_DUST = ITEMS.registerSimpleItem("quartus_alchemical_dust");
-    public static final Map<OreAlchemyDust, DeferredItem<Item>> ORE_ALCHEMICAL_DUSTS =
-            registerOreAlchemyDusts();
-    public static final Map<DirtyGem, DeferredItem<Item>> DIRTY_GEMS = registerDirtyGems();
+    public static final DeferredItem<OreAlchemyDustItem> ORE_ALCHEMICAL_DUST =
+            ITEMS.registerItem("ore_alchemical_dust", OreAlchemyDustItem::new);
+    public static final DeferredItem<DirtyGemItem> DIRTY_GEM =
+            ITEMS.registerItem("dirty_gem", DirtyGemItem::new);
     public static final DeferredItem<Item> ALCHEMICAL_COAL = ITEMS.registerSimpleItem("alchemical_coal");
     public static final DeferredItem<Item> WOODEN_HEAT_COMPONENT = ITEMS.registerSimpleItem("wooden_heat_component");
     public static final DeferredItem<Item> STONE_ALCHEMY_COMPONENT = ITEMS.registerSimpleItem("stone_alchemy_component");
@@ -189,22 +187,6 @@ public final class ModItems {
 
     private static DeferredItem<BlockItem> blockItem(final String name, final DeferredBlock<? extends Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
-    }
-
-    private static Map<OreAlchemyDust, DeferredItem<Item>> registerOreAlchemyDusts() {
-        final EnumMap<OreAlchemyDust, DeferredItem<Item>> dusts = new EnumMap<>(OreAlchemyDust.class);
-        for (final OreAlchemyDust dust : OreAlchemyDust.values()) {
-            dusts.put(dust, ITEMS.registerSimpleItem(dust.itemId()));
-        }
-        return Collections.unmodifiableMap(dusts);
-    }
-
-    private static Map<DirtyGem, DeferredItem<Item>> registerDirtyGems() {
-        final EnumMap<DirtyGem, DeferredItem<Item>> gems = new EnumMap<>(DirtyGem.class);
-        for (final DirtyGem gem : DirtyGem.values()) {
-            gems.put(gem, ITEMS.registerSimpleItem(gem.itemId()));
-        }
-        return Collections.unmodifiableMap(gems);
     }
 
     private static DeferredItem<CuttingKnifeItem> cuttingKnife(

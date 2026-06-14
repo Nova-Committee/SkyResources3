@@ -11,8 +11,11 @@
   ],
   "outputs": [
     {
+      "components": {
+        "skyresources3:ore_alchemy_dust_type": "skyresources3:copper"
+      },
       "count": 1,
-      "id": "skyresources3:copper_ore_alchemical_dust"
+      "id": "skyresources3:ore_alchemical_dust"
     }
   ],
   "parameter": 8.0E-4,

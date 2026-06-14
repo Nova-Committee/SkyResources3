@@ -5,6 +5,8 @@ import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.machine.CondenserType;
 import committee.nova.mods.skyresources3.machine.CasingType;
 import committee.nova.mods.skyresources3.machine.HeatProviderType;
+import committee.nova.mods.skyresources3.item.DirtyGemType;
+import committee.nova.mods.skyresources3.item.OreAlchemyDustType;
 import java.util.List;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -20,6 +22,10 @@ public final class ModDataPackRegistries {
             ResourceKey.createRegistryKey(id("heat_provider_type"));
     public static final ResourceKey<Registry<CondenserType>> CONDENSER_TYPES =
             ResourceKey.createRegistryKey(id("condenser_type"));
+    public static final ResourceKey<Registry<OreAlchemyDustType>> ORE_ALCHEMY_DUST_TYPES =
+            ResourceKey.createRegistryKey(id("ore_alchemy_dust_type"));
+    public static final ResourceKey<Registry<DirtyGemType>> DIRTY_GEM_TYPES =
+            ResourceKey.createRegistryKey(id("dirty_gem_type"));
     public static final ResourceKey<CasingType> WOODEN = casingTypeKey("wooden");
     public static final ResourceKey<CasingType> STONE = casingTypeKey("stone");
     public static final ResourceKey<CasingType> IRON = casingTypeKey("iron");
@@ -105,12 +111,24 @@ public final class ModDataPackRegistries {
             DARK_MATTER_CONDENSER,
             LIGHT_MATTER_CONDENSER
     );
+    public static final ResourceKey<OreAlchemyDustType> IRON_ORE_ALCHEMY_DUST =
+            oreAlchemyDustTypeKey("iron");
+    public static final ResourceKey<OreAlchemyDustType> GOLD_ORE_ALCHEMY_DUST =
+            oreAlchemyDustTypeKey("gold");
+    public static final ResourceKey<OreAlchemyDustType> COPPER_ORE_ALCHEMY_DUST =
+            oreAlchemyDustTypeKey("copper");
+    public static final ResourceKey<DirtyGemType> EMERALD_DIRTY_GEM = dirtyGemTypeKey("emerald");
+    public static final ResourceKey<DirtyGemType> DIAMOND_DIRTY_GEM = dirtyGemTypeKey("diamond");
+    public static final ResourceKey<DirtyGemType> QUARTZ_DIRTY_GEM = dirtyGemTypeKey("quartz");
+    public static final ResourceKey<DirtyGemType> LAPIS_DIRTY_GEM = dirtyGemTypeKey("lapis");
 
     public static void register(final DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(CASING_TYPES, CasingType.CODEC, CasingType.CODEC);
         event.dataPackRegistry(COMBUSTION_HEATER_TYPES, CombustionHeaterType.CODEC, CombustionHeaterType.CODEC);
         event.dataPackRegistry(HEAT_PROVIDER_TYPES, HeatProviderType.CODEC, HeatProviderType.CODEC);
         event.dataPackRegistry(CONDENSER_TYPES, CondenserType.CODEC, CondenserType.CODEC);
+        event.dataPackRegistry(ORE_ALCHEMY_DUST_TYPES, OreAlchemyDustType.CODEC, OreAlchemyDustType.CODEC);
+        event.dataPackRegistry(DIRTY_GEM_TYPES, DirtyGemType.CODEC, DirtyGemType.CODEC);
     }
 
     public static ResourceKey<CasingType> casingTypeKey(final String path) {
@@ -158,6 +176,30 @@ public final class ModDataPackRegistries {
     }
 
     public static Identifier condenserTypeId(final ResourceKey<CondenserType> key) {
+        return key.identifier();
+    }
+
+    public static ResourceKey<OreAlchemyDustType> oreAlchemyDustTypeKey(final String path) {
+        return oreAlchemyDustTypeKey(id(path));
+    }
+
+    public static ResourceKey<OreAlchemyDustType> oreAlchemyDustTypeKey(final Identifier id) {
+        return ResourceKey.create(ORE_ALCHEMY_DUST_TYPES, id);
+    }
+
+    public static Identifier oreAlchemyDustTypeId(final ResourceKey<OreAlchemyDustType> key) {
+        return key.identifier();
+    }
+
+    public static ResourceKey<DirtyGemType> dirtyGemTypeKey(final String path) {
+        return dirtyGemTypeKey(id(path));
+    }
+
+    public static ResourceKey<DirtyGemType> dirtyGemTypeKey(final Identifier id) {
+        return ResourceKey.create(DIRTY_GEM_TYPES, id);
+    }
+
+    public static Identifier dirtyGemTypeId(final ResourceKey<DirtyGemType> key) {
         return key.identifier();
     }
 

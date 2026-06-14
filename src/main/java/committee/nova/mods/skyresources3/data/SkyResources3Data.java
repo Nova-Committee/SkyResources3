@@ -14,6 +14,7 @@ public final class SkyResources3Data {
     @SubscribeEvent
     public static void gatherData(final GatherDataEvent.Client event) {
         event.createProvider(SkyResources3DataMapProvider::new);
+        event.createProvider(SkyResources3MaterialTypeProvider::new);
         event.createProvider(SkyResources3RecipeProvider.Runner::new);
         event.createProvider(SkyResources3IntegrationRecipeProvider::new);
         event.createProvider(SkyResources3BlockTagsProvider::new);

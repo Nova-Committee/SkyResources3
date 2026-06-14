@@ -1,11 +1,11 @@
 package committee.nova.mods.skyresources3.guide;
 
-import committee.nova.mods.skyresources3.item.DirtyGem;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
+import committee.nova.mods.skyresources3.item.DirtyGemItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
-import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
 import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import java.util.Collections;
@@ -124,7 +124,7 @@ public final class GuidePages {
             page(
                     "metalCreation",
                     STAGE_2,
-                    stack(() -> ModItems.ORE_ALCHEMICAL_DUSTS.get(OreAlchemyDust.IRON).get()),
+                    () -> OreAlchemyDustItem.forType(ModDataPackRegistries.IRON_ORE_ALCHEMY_DUST),
                     link("fusionTable", stack(() -> ModItems.FUSION_TABLE.get())),
                     link("crucible", stack(() -> ModItems.CRUCIBLE.get())),
                     link("fluidDropper", stack(() -> ModItems.FLUID_DROPPER.get())),
@@ -161,8 +161,8 @@ public final class GuidePages {
             page(
                     "gemProduction",
                     STAGE_2,
-                    stack(() -> ModItems.DIRTY_GEMS.get(DirtyGem.EMERALD).get()),
-                    recipe(GuideRecipeTargets.PROCESS_ROCK_GRINDER, stack(() -> ModItems.DIRTY_GEMS.get(DirtyGem.EMERALD).get())),
+                    () -> DirtyGemItem.forType(ModDataPackRegistries.EMERALD_DIRTY_GEM),
+                    recipe(GuideRecipeTargets.PROCESS_ROCK_GRINDER, () -> DirtyGemItem.forType(ModDataPackRegistries.EMERALD_DIRTY_GEM)),
                     recipe(GuideRecipeTargets.PROCESS_CAULDRON_CLEAN, stack(Items.EMERALD))
             ),
             page("wildlifeAttractor", STAGE_2, stack(() -> ModItems.WILDLIFE_ATTRACTOR.get())),

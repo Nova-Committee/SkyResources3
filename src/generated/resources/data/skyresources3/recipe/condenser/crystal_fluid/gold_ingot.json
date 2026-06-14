@@ -1,6 +1,14 @@
 {
   "type": "skyresources3:condenser",
-  "catalyst": "skyresources3:gold_ore_alchemical_dust",
+  "catalyst": {
+    "stack": {
+      "components": {
+        "skyresources3:ore_alchemy_dust_type": "skyresources3:gold"
+      },
+      "count": 1,
+      "id": "skyresources3:ore_alchemical_dust"
+    }
+  },
   "output": {
     "count": 1,
     "id": "minecraft:gold_ingot"

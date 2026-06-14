@@ -5,12 +5,8 @@ import java.util.List;
 import net.minecraft.world.item.ItemStack;
 
 final class JeiIngredientStacks {
-    @SuppressWarnings("deprecation")
     static List<ItemStack> stacks(final ProcessIngredient ingredient) {
-        return ingredient.ingredient().items()
-                .map(holder -> new ItemStack(holder.value(), ingredient.count()))
-                .filter(stack -> !stack.isEmpty())
-                .toList();
+        return ingredient.displayStacks();
     }
 
     static String number(final float value) {

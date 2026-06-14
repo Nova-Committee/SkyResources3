@@ -12,7 +12,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
@@ -24,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 
 public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     private final String group;
-    private final Ingredient catalyst;
+    private final ProcessIngredient catalyst;
     private final Source source;
     private final ItemStack output;
     private final float parameter;
@@ -32,7 +31,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
 
     public CondenserRecipe(
             final String group,
-            final Ingredient catalyst,
+            final ProcessIngredient catalyst,
             final Source source,
             final ItemStack output,
             final float parameter
@@ -52,7 +51,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
 
     @Override
     public boolean matches(final CondenserRecipeInput input, final Level level) {
-        return this.source.equals(input.source()) && this.catalyst.test(input.catalyst());
+        return this.source.equals(input.source()) && this.catalyst.matches(input.catalyst());
     }
 
     @Override
@@ -83,7 +82,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     @Override
     public PlacementInfo placementInfo() {
         if (this.placementInfo == null) {
-            this.placementInfo = PlacementInfo.create(this.catalyst);
+            this.placementInfo = PlacementInfo.create(this.catalyst.ingredient());
         }
         return this.placementInfo;
     }
@@ -93,12 +92,12 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
         return RecipeBookCategories.CRAFTING_MISC;
     }
 
-    public Ingredient catalyst() {
+    public ProcessIngredient catalyst() {
         return this.catalyst;
     }
 
     public boolean isCatalyst(final ItemStack stack) {
-        return this.catalyst.test(stack);
+        return this.catalyst.matches(stack);
     }
 
     public Source source() {
@@ -114,7 +113,15 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     }
 
     public int runtimeKeyHash() {
-        return Objects.hash(this.source, this.output.getItem(), this.output.getCount(), this.parameter);
+        return Objects.hash(
+                this.source,
+                this.catalyst.displayStacks().stream()
+                        .map(ItemStack::hashItemAndComponents)
+                        .toList(),
+                this.output.getItem(),
+                this.output.getCount(),
+                this.parameter
+        );
     }
 
     public record Source(SourceType type, Identifier id) {
@@ -172,7 +179,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
         private static final MapCodec<CondenserRecipe> CODEC =
                 RecordCodecBuilder.mapCodec(instance -> instance.group(
                         Codec.STRING.optionalFieldOf("group", "").forGetter(CondenserRecipe::group),
-                        Ingredient.CODEC.fieldOf("catalyst").forGetter(CondenserRecipe::catalyst),
+                        ProcessIngredient.CODEC.fieldOf("catalyst").forGetter(CondenserRecipe::catalyst),
                         Source.CODEC.fieldOf("source").forGetter(CondenserRecipe::source),
                         ItemStack.STRICT_CODEC.fieldOf("output").forGetter(CondenserRecipe::output),
                         Codec.FLOAT.fieldOf("parameter").forGetter(CondenserRecipe::parameter)
@@ -181,7 +188,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
                 StreamCodec.composite(
                         ByteBufCodecs.STRING_UTF8,
                         CondenserRecipe::group,
-                        Ingredient.CONTENTS_STREAM_CODEC,
+                        ProcessIngredient.STREAM_CODEC,
                         CondenserRecipe::catalyst,
                         Source.STREAM_CODEC,
                         CondenserRecipe::source,

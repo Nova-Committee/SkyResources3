@@ -3,10 +3,10 @@ package committee.nova.mods.skyresources3.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
-import committee.nova.mods.skyresources3.item.DirtyGem;
+import committee.nova.mods.skyresources3.item.DirtyGemItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.MachineCasingItem;
-import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -73,12 +73,14 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SECUNDUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.TERTIUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.QUARTUS_ALCHEMICAL_DUST.get());
-                        for (final OreAlchemyDust dust : OreAlchemyDust.values()) {
-                            output.accept(ModItems.ORE_ALCHEMICAL_DUSTS.get(dust).get());
-                        }
-                        for (final DirtyGem gem : DirtyGem.values()) {
-                            output.accept(ModItems.DIRTY_GEMS.get(gem).get());
-                        }
+                        parameters.holders().lookup(ModDataPackRegistries.ORE_ALCHEMY_DUST_TYPES)
+                                .ifPresent(registry -> registry.listElements()
+                                        .filter(reference -> reference.value().isAvailable(parameters.holders()))
+                                        .forEach(reference -> output.accept(OreAlchemyDustItem.forType(reference.key()))));
+                        parameters.holders().lookup(ModDataPackRegistries.DIRTY_GEM_TYPES)
+                                .ifPresent(registry -> registry.listElements()
+                                        .filter(reference -> reference.value().isAvailable(parameters.holders()))
+                                        .forEach(reference -> output.accept(DirtyGemItem.forType(reference.key()))));
                         output.accept(ModItems.ALCHEMICAL_COAL.get());
                         output.accept(ModItems.WOODEN_HEAT_COMPONENT.get());
                         output.accept(ModItems.STONE_ALCHEMY_COMPONENT.get());

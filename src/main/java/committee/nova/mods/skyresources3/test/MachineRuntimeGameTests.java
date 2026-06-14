@@ -8,7 +8,7 @@ import committee.nova.mods.skyresources3.event.MachineCasingEvents;
 import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
-import committee.nova.mods.skyresources3.item.OreAlchemyDust;
+import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
@@ -230,7 +230,7 @@ public final class MachineRuntimeGameTests {
         );
         casing.setStackInSlot(
                 MachineCasingBlockEntity.FUEL_SLOT,
-                new ItemStack(ModItems.ORE_ALCHEMICAL_DUSTS.get(OreAlchemyDust.COPPER).get())
+                OreAlchemyDustItem.forType(ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST)
         );
         return casing;
     }
