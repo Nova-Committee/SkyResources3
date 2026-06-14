@@ -9,12 +9,15 @@ import committee.nova.mods.skyresources3.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.item.CondenserItem;
 import committee.nova.mods.skyresources3.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
+import committee.nova.mods.skyresources3.machine.CasingType;
+import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -26,6 +29,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -37,6 +41,7 @@ public final class MachineRuntimeGameTests {
     private static final BlockPos CHAMBER_POS = CASING_POS.above();
     private static final BlockPos CONTROLLER_POS = CHAMBER_POS.north();
     private static final BlockPos COLLECTOR_POS = CHAMBER_POS.east();
+    private static final BlockPos REDSTONE_POS = CASING_POS.west();
     private static final double ITEM_ASSERT_RADIUS = 2.0D;
     private static final int EXPECTED_OUTPUT_COUNT = 1;
     private static final int DIRT_RECIPE_HEAT = 100;
@@ -211,6 +216,117 @@ public final class MachineRuntimeGameTests {
         helper.succeed();
     }
 
+    public static void woodenCombustionHeaterUsesWoodStructure(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final MachineCasingBlockEntity casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.IRON,
+                ModDataPackRegistries.WOODEN_COMBUSTION_HEATER
+        );
+
+        setWoodCombustionShell(helper, Blocks.OAK_TRAPDOOR.defaultBlockState());
+        helper.assertTrue(
+                casing.hasValidMultiblock(helper.getLevel()),
+                "Wooden combustion heater should accept a wooden shell even inside an iron casing"
+        );
+
+        helper.setBlock(CHAMBER_POS.west(), Blocks.COBBLESTONE);
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Wooden combustion heater should reject stone shell blocks"
+        );
+        helper.succeed();
+    }
+
+    public static void stoneCombustionHeaterRejectsAutomationBlocks(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final MachineCasingBlockEntity casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.IRON,
+                ModDataPackRegistries.STONE_COMBUSTION_HEATER
+        );
+
+        setStoneCombustionShell(helper, Blocks.STONE.defaultBlockState());
+        helper.assertTrue(
+                casing.hasValidMultiblock(helper.getLevel()),
+                "Stone combustion heater should accept mixed stone and cobblestone shell blocks"
+        );
+
+        helper.setBlock(CHAMBER_POS.east(), ModBlocks.COMBUSTION_COLLECTOR.get());
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Stone combustion heater should reject optional automation blocks"
+        );
+        helper.succeed();
+    }
+
+    public static void ironCombustionHeaterAcceptsMetalAutomationShell(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final MachineCasingBlockEntity casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.WOODEN,
+                ModDataPackRegistries.IRON_COMBUSTION_HEATER
+        );
+
+        setMetalAutomationShell(helper, ModBlocks.QUICK_DROPPER.get().defaultBlockState());
+        helper.assertTrue(
+                casing.hasValidMultiblock(helper.getLevel()),
+                "Iron combustion heater should accept side automation and a top quick dropper"
+        );
+
+        helper.setBlock(CHAMBER_POS.above(), Blocks.IRON_TRAPDOOR);
+        helper.assertTrue(
+                casing.hasValidMultiblock(helper.getLevel()),
+                "Iron combustion heater should accept an iron trapdoor as the top structure block"
+        );
+        helper.succeed();
+    }
+
+    public static void manualCombustionCraftsAfterStructureIsRestored(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final MachineCasingBlockEntity casing = setupCombustionCasing(
+                helper,
+                ModDataPackRegistries.IRON,
+                ModDataPackRegistries.IRON_COMBUSTION_HEATER
+        );
+        setStoneCombustionShell(helper, Blocks.STONE.defaultBlockState());
+        casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, new ItemStack(Items.COAL));
+        warmCasing(helper, casing, DIRT_RECIPE_HEAT);
+
+        helper.setBlock(CHAMBER_POS.west(), Blocks.AIR);
+        spawnItem(helper, CHAMBER_POS, new ItemStack(ModItems.PLANT_MATTER.get(), 4));
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Combustion structure should be invalid while one shell block is removed"
+        );
+
+        helper.setBlock(CHAMBER_POS.west(), Blocks.COBBLESTONE);
+        helper.assertTrue(
+                casing.hasValidMultiblock(helper.getLevel()),
+                "Combustion structure should become valid again after the shell block is restored"
+        );
+        helper.setBlock(REDSTONE_POS, Blocks.REDSTONE_BLOCK);
+        casing.serverTick(helper.getLevel());
+
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                Items.DIRT,
+                1,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Manual redstone pulse should craft the restored chamber input into dirt"
+        );
+        GameTestAssertions.assertDroppedItemCount(
+                helper,
+                ModItems.PLANT_MATTER.get(),
+                0,
+                CHAMBER_POS,
+                ITEM_ASSERT_RADIUS,
+                "Manual combustion should consume the plant matter input"
+        );
+        helper.succeed();
+    }
+
     private static MachineCasingBlockEntity setupCopperCrystalFluidCondenser(final GameTestHelper helper) {
         helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
         helper.setBlock(SOURCE_POS, ModBlocks.CRYSTAL_FLUID.get());
@@ -232,6 +348,20 @@ public final class MachineRuntimeGameTests {
                 MachineCasingBlockEntity.FUEL_SLOT,
                 OreAlchemyDustItem.forType(ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST)
         );
+        return casing;
+    }
+
+    private static MachineCasingBlockEntity setupCombustionCasing(
+            final GameTestHelper helper,
+            final ResourceKey<CasingType> casingType,
+            final ResourceKey<CombustionHeaterType> heaterType
+    ) {
+        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
+        final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
+        casing.setCasingType(casingType);
+        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final boolean installed = casing.installHeater(CombustionHeaterItem.forType(heaterType), player);
+        helper.assertTrue(installed, "Combustion heater should install into the machine casing");
         return casing;
     }
 
@@ -259,6 +389,56 @@ public final class MachineRuntimeGameTests {
         final CombustionControllerBlockEntity controller = combustionControllerAt(helper, CONTROLLER_POS);
         final CombustionCollectorBlockEntity collector = combustionCollectorAt(helper, COLLECTOR_POS);
         return new CombustionRig(casing, controller, collector);
+    }
+
+    private static void setWoodCombustionShell(final GameTestHelper helper, final BlockState topState) {
+        setCombustionShell(
+                helper,
+                Blocks.OAK_PLANKS.defaultBlockState(),
+                Blocks.SPRUCE_PLANKS.defaultBlockState(),
+                Blocks.OAK_LOG.defaultBlockState(),
+                Blocks.BIRCH_PLANKS.defaultBlockState(),
+                topState
+        );
+    }
+
+    private static void setStoneCombustionShell(final GameTestHelper helper, final BlockState topState) {
+        setCombustionShell(
+                helper,
+                Blocks.STONE.defaultBlockState(),
+                Blocks.COBBLESTONE.defaultBlockState(),
+                Blocks.ANDESITE.defaultBlockState(),
+                Blocks.COBBLESTONE.defaultBlockState(),
+                topState
+        );
+    }
+
+    private static void setMetalAutomationShell(final GameTestHelper helper, final BlockState topState) {
+        setCombustionShell(
+                helper,
+                ModBlocks.COMBUSTION_CONTROLLER.get()
+                        .defaultBlockState()
+                        .setValue(CombustionControllerBlock.FACING, Direction.WEST),
+                ModBlocks.COMBUSTION_COLLECTOR.get().defaultBlockState(),
+                Blocks.STONE.defaultBlockState(),
+                Blocks.COBBLESTONE.defaultBlockState(),
+                topState
+        );
+    }
+
+    private static void setCombustionShell(
+            final GameTestHelper helper,
+            final BlockState west,
+            final BlockState east,
+            final BlockState north,
+            final BlockState south,
+            final BlockState top
+    ) {
+        helper.setBlock(CHAMBER_POS.west(), west);
+        helper.setBlock(CHAMBER_POS.east(), east);
+        helper.setBlock(CHAMBER_POS.north(), north);
+        helper.setBlock(CHAMBER_POS.south(), south);
+        helper.setBlock(CHAMBER_POS.above(), top);
     }
 
     private static void warmCasing(

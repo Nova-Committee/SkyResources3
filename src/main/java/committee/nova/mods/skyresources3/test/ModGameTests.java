@@ -135,6 +135,30 @@ public final class ModGameTests {
                     "combustion_collector_overflow",
                     () -> MachineRuntimeGameTests::combustionCollectorDropsOverflow
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            WOODEN_COMBUSTION_STRUCTURE =
+            TEST_FUNCTIONS.register(
+                    "wooden_combustion_structure",
+                    () -> MachineRuntimeGameTests::woodenCombustionHeaterUsesWoodStructure
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            STONE_COMBUSTION_STRUCTURE =
+            TEST_FUNCTIONS.register(
+                    "stone_combustion_structure",
+                    () -> MachineRuntimeGameTests::stoneCombustionHeaterRejectsAutomationBlocks
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            IRON_COMBUSTION_AUTOMATION_STRUCTURE =
+            TEST_FUNCTIONS.register(
+                    "iron_combustion_automation_structure",
+                    () -> MachineRuntimeGameTests::ironCombustionHeaterAcceptsMetalAutomationShell
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            MANUAL_COMBUSTION_RESTORED_STRUCTURE =
+            TEST_FUNCTIONS.register(
+                    "manual_combustion_restored_structure",
+                    () -> MachineRuntimeGameTests::manualCombustionCraftsAfterStructureIsRestored
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SURVIVALIST_FISHING_LOOT =
             TEST_FUNCTIONS.register(
                     "survivalist_fishing_loot",
@@ -188,6 +212,20 @@ public final class ModGameTests {
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
         registerFunctionTest(event, "combustion_priority", COMBUSTION_PRIORITY, environment);
         registerFunctionTest(event, "combustion_collector_overflow", COMBUSTION_COLLECTOR_OVERFLOW, environment);
+        registerFunctionTest(event, "wooden_combustion_structure", WOODEN_COMBUSTION_STRUCTURE, environment);
+        registerFunctionTest(event, "stone_combustion_structure", STONE_COMBUSTION_STRUCTURE, environment);
+        registerFunctionTest(
+                event,
+                "iron_combustion_automation_structure",
+                IRON_COMBUSTION_AUTOMATION_STRUCTURE,
+                environment
+        );
+        registerFunctionTest(
+                event,
+                "manual_combustion_restored_structure",
+                MANUAL_COMBUSTION_RESTORED_STRUCTURE,
+                environment
+        );
         registerFunctionTest(event, "survivalist_fishing_loot", SURVIVALIST_FISHING_LOOT, environment);
         registerFunctionTest(event, "guide_data_integrity", GUIDE_DATA_INTEGRITY, environment);
         registerFunctionTest(event, "menu_type_registration", MENU_TYPE_REGISTRATION, environment);

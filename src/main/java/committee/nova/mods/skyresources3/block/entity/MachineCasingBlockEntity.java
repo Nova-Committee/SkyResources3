@@ -431,13 +431,17 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     public boolean hasValidMultiblock(final Level level) {
+        if (!this.hasCombustionHeater()) {
+            return false;
+        }
         final BlockPos chamber = this.worldPosition.above();
+        final CasingType.StructureRule structureRule = this.combustionHeaterType().structureRule();
         return level.getBlockState(chamber).isAir()
-                && this.isStructureBlockValid(level, chamber, this.worldPosition.west().above())
-                && this.isStructureBlockValid(level, chamber, this.worldPosition.east().above())
-                && this.isStructureBlockValid(level, chamber, this.worldPosition.north().above())
-                && this.isStructureBlockValid(level, chamber, this.worldPosition.south().above())
-                && this.isStructureBlockValid(level, chamber, this.worldPosition.above(2));
+                && this.isStructureBlockValid(level, chamber, this.worldPosition.west().above(), structureRule)
+                && this.isStructureBlockValid(level, chamber, this.worldPosition.east().above(), structureRule)
+                && this.isStructureBlockValid(level, chamber, this.worldPosition.north().above(), structureRule)
+                && this.isStructureBlockValid(level, chamber, this.worldPosition.south().above(), structureRule)
+                && this.isStructureBlockValid(level, chamber, this.worldPosition.above(2), structureRule);
     }
 
     public boolean usesCombustionChamber() {
@@ -924,7 +928,12 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         this.condenserCatalyst = ItemStack.EMPTY;
     }
 
-    private boolean isStructureBlockValid(final Level level, final BlockPos chamber, final BlockPos pos) {
+    private boolean isStructureBlockValid(
+            final Level level,
+            final BlockPos chamber,
+            final BlockPos pos,
+            final CasingType.StructureRule structureRule
+    ) {
         final BlockState state = level.getBlockState(pos);
         if (state.isAir()) {
             return false;
@@ -933,10 +942,14 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         if (face == null || !state.isFaceSturdy(level, pos, face)) {
             return false;
         }
-        return switch (this.casingType().structureRule()) {
-            case WOOD -> state.is(BlockTags.LOGS) || state.is(BlockTags.PLANKS) || isGlass(state);
+        final boolean topBlock = pos.equals(chamber.above());
+        return switch (structureRule) {
+            case WOOD -> state.is(BlockTags.LOGS)
+                    || state.is(BlockTags.PLANKS)
+                    || isGlass(state)
+                    || topBlock && state.is(BlockTags.WOODEN_TRAPDOORS);
             case STONE -> state.is(BlockTags.BASE_STONE_OVERWORLD) || state.is(Blocks.COBBLESTONE) || isGlass(state);
-            case METAL -> isMetalStoneOrGlass(state);
+            case METAL -> isMetalStoneOrGlass(state) || topBlock && isMetalTopAutomation(state);
         };
     }
 
@@ -952,6 +965,10 @@ public final class MachineCasingBlockEntity extends BlockEntity {
                 || state.is(ModBlocks.COMBUSTION_COLLECTOR.get())
                 || state.is(ModBlocks.COMBUSTION_CONTROLLER.get())
                 || isGlass(state);
+    }
+
+    private static boolean isMetalTopAutomation(final BlockState state) {
+        return state.is(Blocks.IRON_TRAPDOOR) || state.is(ModBlocks.QUICK_DROPPER.get());
     }
 
     private static boolean isGlass(final BlockState state) {

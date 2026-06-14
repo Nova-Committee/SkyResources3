@@ -18,6 +18,7 @@ public record CombustionHeaterType(
         float speed,
         float efficiency,
         MachineFuel fuel,
+        CasingType.StructureRule structureRule,
         List<Element> elements
 ) {
     public static final List<Element> DEFAULT_ELEMENTS = List.of(
@@ -31,6 +32,8 @@ public record CombustionHeaterType(
             Codec.FLOAT.fieldOf("speed").forGetter(CombustionHeaterType::speed),
             Codec.FLOAT.fieldOf("efficiency").forGetter(CombustionHeaterType::efficiency),
             MachineFuel.CODEC.fieldOf("fuel").forGetter(CombustionHeaterType::fuel),
+            CasingType.StructureRule.CODEC.optionalFieldOf("structure_rule", CasingType.StructureRule.METAL)
+                    .forGetter(CombustionHeaterType::structureRule),
             Element.CODEC.listOf().optionalFieldOf("elements", DEFAULT_ELEMENTS).forGetter(CombustionHeaterType::elements)
     ).apply(instance, CombustionHeaterType::new));
     private static final CombustionHeaterType FALLBACK = new CombustionHeaterType(
@@ -40,6 +43,7 @@ public record CombustionHeaterType(
             1.0F,
             1.2F,
             MachineFuel.furnace(),
+            CasingType.StructureRule.METAL,
             DEFAULT_ELEMENTS
     );
 

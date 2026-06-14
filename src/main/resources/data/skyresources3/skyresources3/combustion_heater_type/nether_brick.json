@@ -4,6 +4,7 @@
   "top_texture": "skyresources3:block/combustion",
   "speed": 1.6,
   "efficiency": 0.4,
+  "structure_rule": "metal",
   "fuel": {
     "kind": "item",
     "item": "minecraft:blaze_powder",

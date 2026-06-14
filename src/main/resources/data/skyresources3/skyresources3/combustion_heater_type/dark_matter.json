@@ -4,6 +4,7 @@
   "top_texture": "skyresources3:block/combustion",
   "speed": 100.0,
   "efficiency": 1.0,
+  "structure_rule": "metal",
   "fuel": {
     "kind": "item",
     "item": "skyresources3:dark_matter",
