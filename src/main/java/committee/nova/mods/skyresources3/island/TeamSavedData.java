@@ -62,18 +62,9 @@ public final class TeamSavedData extends SavedData {
     }
 
     public Optional<TeamRecord> getPendingInvitation(final UUID player) {
-        return this.getPendingJoinableInvitation(player)
-                .or(() -> this.teams.values()
-                        .stream()
-                        .filter(team -> team.hasInvite(player))
-                        .findFirst());
-    }
-
-    public Optional<TeamRecord> getPendingJoinableInvitation(final UUID player) {
         return this.teams.values()
                 .stream()
                 .filter(team -> team.hasInvite(player))
-                .filter(team -> !team.hasDeparted(player))
                 .findFirst();
     }
 
@@ -106,9 +97,6 @@ public final class TeamSavedData extends SavedData {
         for (final Map.Entry<UUID, TeamRecord> entry : this.teams.entrySet()) {
             final TeamRecord team = entry.getValue();
             if (team.hasInvite(player)) {
-                if (team.hasDeparted(player)) {
-                    continue;
-                }
                 final TeamRecord updated = team.acceptInvite(player, playerName);
                 this.teams.put(entry.getKey(), updated);
                 this.setDirty();
@@ -182,10 +170,6 @@ public final class TeamSavedData extends SavedData {
             return this.invites.containsKey(player);
         }
 
-        public boolean hasDeparted(final UUID player) {
-            return this.departedMembers.containsKey(player);
-        }
-
         public int playerCount() {
             return this.members.size() + 1;
         }
@@ -211,12 +195,8 @@ public final class TeamSavedData extends SavedData {
 
         private TeamRecord withoutMember(final UUID player) {
             final Map<UUID, String> updatedMembers = new HashMap<>(this.members);
-            final String departedName = updatedMembers.remove(player);
-            final Map<UUID, String> updatedDepartedMembers = new HashMap<>(this.departedMembers);
-            if (departedName != null) {
-                updatedDepartedMembers.put(player, departedName);
-            }
-            return new TeamRecord(this.owner, this.ownerName, updatedMembers, this.invites, updatedDepartedMembers);
+            updatedMembers.remove(player);
+            return new TeamRecord(this.owner, this.ownerName, updatedMembers, this.invites, this.departedMembers);
         }
     }
 }

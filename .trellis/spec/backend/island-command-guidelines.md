@@ -59,12 +59,12 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
   create an independent team before creating or joining an island.
 - `/skyresources3 team trust`, `/skyresources3 team untrust`, and `/skyresources3 team trusted` are compatibility
   aliases for the island trusted-visitor commands and must obey the same owner-only rules.
-- Members who leave an island are recorded on that island team and cannot be invited back, accept a stale invitation,
-  or return to that island through `/island visit`.
+- Members who leave an island are removed from that team but remain eligible for future invitations. Leaving an island
+  or using `/skyresources3 team leave` must not create a permanent deny list.
+- Old saved `departed_members` data may still be decoded for save compatibility, but it must not block invitation,
+  acceptance, or `/island visit` behavior.
 - When a trusted visitor accepts an island invitation, their trusted-visitor entry must be removed because team
   membership becomes the source of access. Leaving that island must also remove any stale trusted-visitor access.
-- A stale invitation from an island the player has already left must not block that player from accepting an invitation
-  to a different island.
 - Team disband by the island owner through `/island disband` or `/skyresources3 team disband` removes the team,
   removes online members from that team, and abandons the island saved record. It does not clear placed blocks from the
   world.
@@ -114,18 +114,19 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Invite target is offline -> reject invite.
 - Team owner has no island -> reject team creation/invite/home.
 - Team owner tries `/island leave` or `/skyresources3 team leave` -> reject and require disband.
-- Team member leaves an island -> remove the member and prevent that player from returning to the same island.
+- Team member leaves an island -> remove the member and keep that player eligible for a later invitation.
 - Team member leaves an island after previously being trusted -> remove the trusted access too.
+- Player leaves through `/island leave`, gets invited again by the same owner, and accepts -> rejoin succeeds.
+- Player leaves through `/skyresources3 team leave`, gets invited again by the same owner, and accepts -> rejoin succeeds.
 - Island owner disbands team -> remove the owned team, online member team links, and island record.
 - Invite target already has a pending team invitation -> reject invite to keep accept semantics unambiguous.
-- Player has a stale departed invite from one island and a valid invite from another island -> accept the valid invite.
 - Invite target is offline but has a cached local identity -> persist a pending invitation against the cached UUID.
 - Invite target is offline and has no cached local identity -> reject invite.
 - Visit target is offline but matches a saved island owner name -> teleport to that island.
 - Visit target is offline but matches a saved team owner/member name -> teleport to that team's owner island.
 - Visit target is offline and has no saved island/team name match -> reject visit.
 - Visit target has no own or team island -> reject visit.
-- Visitor previously left the target island -> reject visit.
+- Visitor previously left the target island -> follow normal visit rules; do not reject solely because of leave history.
 - Team member runs `/island reset confirm` without owning a personal island -> reject reset.
 - Island owner runs `/island reset confirm` with placed blocks inside the protected reset area -> clear those blocks before rebuilding the starter template.
 - Island owner runs `/island reset confirm` with placed blocks outside the protected reset area -> leave those blocks untouched.

@@ -258,13 +258,6 @@ public final class VoidIslandCommands {
             ));
             return 0;
         }
-        if (teams.getOwnedTeam(visitTarget.island().owner())
-                .map(team -> team.hasDeparted(player.getUUID()))
-                .orElse(false)) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.visit.previous_member"));
-            return 0;
-        }
-
         final ServerLevel targetLevel = source.getServer().getLevel(visitTarget.island().dimension());
         if (targetLevel == null) {
             source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
@@ -562,18 +555,10 @@ public final class VoidIslandCommands {
             source.sendFailure(Component.translatable("message.skyresources3.team.invite.target_in_team", targetName));
             return 0;
         }
-        if (teams.getPendingJoinableInvitation(target.uuid()).isPresent()) {
+        if (teams.getPendingInvitation(target.uuid()).isPresent()) {
             source.sendFailure(Component.translatable(
                     "message.skyresources3.team.invite.target_pending",
                     targetName
-            ));
-            return 0;
-        }
-        final TeamSavedData.TeamRecord ownerTeam = teams.getOwnedTeam(player.getUUID()).orElse(null);
-        if (ownerTeam != null && ownerTeam.hasDeparted(target.uuid())) {
-            source.sendFailure(Component.translatable(
-                    "message.skyresources3.team.invite.previous_member",
-                    target.name()
             ));
             return 0;
         }
@@ -616,10 +601,6 @@ public final class VoidIslandCommands {
             source.sendFailure(Component.translatable("message.skyresources3.team.accept.missing"));
             return 0;
         }
-        if (pendingTeam.hasDeparted(player.getUUID())) {
-            source.sendFailure(Component.translatable("message.skyresources3.team.accept.previous_member"));
-            return 0;
-        }
         final IslandSavedData.IslandRecord island = islands.getIsland(pendingTeam.owner()).orElse(null);
         if (island == null) {
             source.sendFailure(Component.translatable("message.skyresources3.team.home.no_island"));
@@ -636,7 +617,7 @@ public final class VoidIslandCommands {
                 player.getName().getString()
         ).orElse(null);
         if (team == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.team.accept.previous_member"));
+            source.sendFailure(Component.translatable("message.skyresources3.team.accept.missing"));
             return 0;
         }
 

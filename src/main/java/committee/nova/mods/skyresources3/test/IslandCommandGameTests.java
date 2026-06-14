@@ -250,7 +250,6 @@ public final class IslandCommandGameTests {
             final ServerPlayer owner = makeNamedMockServerPlayerInLevel(helper, "team_owner");
             final ServerPlayer member = makeNamedMockServerPlayerInLevel(helper, "team_member");
             final ServerPlayer stayingMember = makeNamedMockServerPlayerInLevel(helper, "team_stayer");
-            final ServerPlayer secondOwner = makeNamedMockServerPlayerInLevel(helper, "team_owner_2");
             assertCommandFails(helper, owner, "skyresources3 team create");
             assertCommandSucceeds(helper, owner, "island create");
             assertCommandSucceeds(helper, owner, "skyresources3 team trust " + member.getName().getString());
@@ -286,27 +285,29 @@ public final class IslandCommandGameTests {
             assertCommandSucceeds(helper, member, "island leave");
             helper.assertTrue(
                     teams.getTeamFor(member.getUUID()).isEmpty(),
-                    "Leaving should remove the player from the team"
+                    "Island leave should remove the player from the team"
             );
             island = getIslandOrFail(helper, islands, owner);
             helper.assertTrue(
                     !island.isTrustedVisitor(member.getUUID()),
                     "Leaving an island should not leave trusted access behind"
             );
-            assertCommandFails(helper, owner, "island invite " + member.getName().getString());
-            assertCommandFails(helper, member, "island visit " + owner.getName().getString());
-            teams.invite(
-                    owner.getUUID(),
-                    owner.getName().getString(),
-                    member.getUUID(),
-                    member.getName().getString()
-            );
-            assertCommandSucceeds(helper, secondOwner, "island create");
-            assertCommandSucceeds(helper, secondOwner, "island invite " + member.getName().getString());
+            assertCommandSucceeds(helper, owner, "island invite " + member.getName().getString());
             assertCommandSucceeds(helper, member, "island accept");
             helper.assertTrue(
-                    getTeamOrFail(helper, teams, secondOwner).includes(member.getUUID()),
-                    "A stale departed invite from an old island should not block joining a new island"
+                    getTeamOrFail(helper, teams, owner).includes(member.getUUID()),
+                    "A player who left through /island leave should be able to rejoin the island team"
+            );
+            assertCommandSucceeds(helper, member, "skyresources3 team leave");
+            helper.assertTrue(
+                    teams.getTeamFor(member.getUUID()).isEmpty(),
+                    "Team leave should remove the player from the team"
+            );
+            assertCommandSucceeds(helper, owner, "skyresources3 team invite " + member.getName().getString());
+            assertCommandSucceeds(helper, member, "island accept");
+            helper.assertTrue(
+                    getTeamOrFail(helper, teams, owner).includes(member.getUUID()),
+                    "A player who left through /skyresources3 team leave should be able to rejoin the island team"
             );
             assertCommandSucceeds(helper, owner, "island disband");
             helper.assertTrue(
@@ -316,6 +317,10 @@ public final class IslandCommandGameTests {
             helper.assertTrue(
                     teams.getTeamFor(stayingMember.getUUID()).isEmpty(),
                     "Disbanding should remove online members from the team"
+            );
+            helper.assertTrue(
+                    teams.getTeamFor(member.getUUID()).isEmpty(),
+                    "Disbanding should remove rejoined online members from the team"
             );
             helper.assertTrue(
                     islands.getIsland(owner.getUUID()).isEmpty(),
