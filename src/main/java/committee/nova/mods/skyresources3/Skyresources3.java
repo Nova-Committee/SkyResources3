@@ -10,6 +10,7 @@ import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
 import committee.nova.mods.skyresources3.island.IslandProtectionEvents;
 import committee.nova.mods.skyresources3.island.PlayerIdentityEvents;
 import committee.nova.mods.skyresources3.island.VoidIslandCommands;
+import committee.nova.mods.skyresources3.island.VoidIslandPlayerEvents;
 import committee.nova.mods.skyresources3.network.ModNetworking;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
@@ -58,6 +59,8 @@ public final class Skyresources3 {
         NeoForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockPlace);
         NeoForge.EVENT_BUS.addListener(IslandProtectionEvents::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(PlayerIdentityEvents::onPlayerLoggedIn);
+        NeoForge.EVENT_BUS.addListener(VoidIslandPlayerEvents::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(VoidIslandPlayerEvents::onPlayerLoggedIn);
         NeoForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);
         NeoForge.EVENT_BUS.addListener(EarlyHandHarvestEvents::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(CuttingKnifeEvents::onBlockBreak);

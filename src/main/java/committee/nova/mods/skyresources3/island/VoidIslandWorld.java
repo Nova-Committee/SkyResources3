@@ -13,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
+import net.minecraft.world.level.storage.LevelData;
 
 public final class VoidIslandWorld {
     public static final int ISLAND_Y = 192;
@@ -39,9 +41,30 @@ public final class VoidIslandWorld {
         return SPAWN_PLATFORM_CENTER;
     }
 
+    public static Optional<ServerLevel> getInitialSpawnLevel(final MinecraftServer server) {
+        final ServerLevel overworld = server.overworld();
+        if (isEmptyFlatLevel(overworld)) {
+            return Optional.of(overworld);
+        }
+        return Optional.empty();
+    }
+
+    public static boolean isEmptyFlatLevel(final ServerLevel level) {
+        return level.getChunkSource().getGenerator() instanceof FlatLevelSource flatLevelSource
+                && flatLevelSource.settings().getLayers().isEmpty();
+    }
+
+    public static void ensureInitialSpawnPlatform(final ServerLevel level) {
+        ensureSpawnPlatform(level, Blocks.BEDROCK.defaultBlockState());
+        level.setRespawnData(LevelData.RespawnData.of(level.dimension(), spawnHome(), 0.0F, 0.0F));
+    }
+
     public static void ensureSpawnPlatform(final ServerLevel level) {
+        ensureSpawnPlatform(level, Config.voidIslandSpawnPlatformBlock.defaultBlockState());
+    }
+
+    private static void ensureSpawnPlatform(final ServerLevel level, final BlockState platformBlock) {
         final int radius = Math.max(0, Config.voidIslandSpawnPlatformRadius);
-        final BlockState platformBlock = Config.voidIslandSpawnPlatformBlock.defaultBlockState();
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 level.setBlock(

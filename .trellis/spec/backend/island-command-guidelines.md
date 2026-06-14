@@ -15,6 +15,7 @@
 
 - `/island create`
 - `/island create <type>`
+- `/island`
 - `/island home`
 - `/island spawn`
 - `/island visit <player>`
@@ -29,6 +30,7 @@
 - `/island invite <player>`
 - `/island accept`
 - `/island leave`
+- `/island disband`
 - `/skyresources3 island ...`
 - `/skyresources3 team create`
 - `/skyresources3 team invite <player>`
@@ -51,6 +53,21 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - The `magma` starter template preserves the legacy VIC shape, including Crystal Fluid at the old `pos.west().south()`
   relative position next to the Magmafied Stone progression setup.
 - Team ownership is stored in `TeamSavedData`, keyed by team owner UUID.
+- Teams are island-scoped only. Creating an island automatically creates that island's team; accepting an island
+  invitation automatically joins the team and teleports the player to the island home.
+- `/skyresources3 team create` is retained only as a rejected compatibility command. Players must not be able to
+  create an independent team before creating or joining an island.
+- `/skyresources3 team trust`, `/skyresources3 team untrust`, and `/skyresources3 team trusted` are compatibility
+  aliases for the island trusted-visitor commands and must obey the same owner-only rules.
+- Members who leave an island are recorded on that island team and cannot be invited back, accept a stale invitation,
+  or return to that island through `/island visit`.
+- When a trusted visitor accepts an island invitation, their trusted-visitor entry must be removed because team
+  membership becomes the source of access. Leaving that island must also remove any stale trusted-visitor access.
+- A stale invitation from an island the player has already left must not block that player from accepting an invitation
+  to a different island.
+- Team disband by the island owner through `/island disband` or `/skyresources3 team disband` removes the team,
+  removes online members from that team, and abandons the island saved record. It does not clear placed blocks from the
+  world.
 - Player identity lookup is stored in `PlayerIdentitySavedData` as a local `UUID -> last known name` cache for players
   this mod has already observed. Do not use it as an external profile service or full rename-history index.
 - A team member without a personal island resolves `/island home` and `/island info` through the team owner's island.
@@ -63,7 +80,13 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - New islands are created in `skyresources3:void_island` when the data-pack dimension is available, with overworld fallback only for missing-dimension recovery.
 - `/island spawn` teleports to a generated spawn platform in `skyresources3:void_island` when available, with the old overworld origin-heightmap behavior as fallback.
 - `/island spawn` generates that shared spawn platform from `voidIslandSpawnPlatformRadius` and
-  `voidIslandSpawnPlatformBlock`; defaults must remain radius `2` and `minecraft:grass_block`.
+  `voidIslandSpawnPlatformBlock`; defaults must remain radius `2` and `minecraft:bedrock`.
+- When the `skyresources3:void_island` world preset creates an empty flat overworld, server startup must generate the
+  shared bedrock spawn platform, set the world spawn to it, and no-island/no-team players logging in there must be
+  placed on that platform. This initial overworld spawn platform must use `minecraft:bedrock` even if an older local
+  config file still contains a different `voidIslandSpawnPlatformBlock` value.
+- `/island` without subcommands must show localized guidance for creating a new island or joining another player's
+  island invitation.
 - Island protection uses the configured horizontal radius around each island center, derived from `IslandRecord.home().below()`.
 - Trusted visitors are stored on `IslandSavedData.IslandRecord` so solo island owners can grant access without creating a team.
 - Trust creation resolves online targets first, then cached local identities from `PlayerIdentitySavedData`; unresolved
@@ -85,17 +108,24 @@ Do not register a top-level `/team` command because vanilla Minecraft already ow
 - Void island config disabled -> reject every island/team command.
 - Player already owns an island -> reject team invitation acceptance.
 - Player is already a team member -> reject personal island creation.
+- Player is any team owner or member without a personal island -> reject personal island creation.
+- Player runs `/skyresources3 team create` -> reject; teams are created by `/island create`.
 - Inviter is a non-owner team member -> reject invite.
 - Invite target is offline -> reject invite.
 - Team owner has no island -> reject team creation/invite/home.
 - Team owner tries `/island leave` or `/skyresources3 team leave` -> reject and require disband.
+- Team member leaves an island -> remove the member and prevent that player from returning to the same island.
+- Team member leaves an island after previously being trusted -> remove the trusted access too.
+- Island owner disbands team -> remove the owned team, online member team links, and island record.
 - Invite target already has a pending team invitation -> reject invite to keep accept semantics unambiguous.
+- Player has a stale departed invite from one island and a valid invite from another island -> accept the valid invite.
 - Invite target is offline but has a cached local identity -> persist a pending invitation against the cached UUID.
 - Invite target is offline and has no cached local identity -> reject invite.
 - Visit target is offline but matches a saved island owner name -> teleport to that island.
 - Visit target is offline but matches a saved team owner/member name -> teleport to that team's owner island.
 - Visit target is offline and has no saved island/team name match -> reject visit.
 - Visit target has no own or team island -> reject visit.
+- Visitor previously left the target island -> reject visit.
 - Team member runs `/island reset confirm` without owning a personal island -> reject reset.
 - Island owner runs `/island reset confirm` with placed blocks inside the protected reset area -> clear those blocks before rebuilding the starter template.
 - Island owner runs `/island reset confirm` with placed blocks outside the protected reset area -> leave those blocks untouched.

@@ -62,9 +62,18 @@ public final class TeamSavedData extends SavedData {
     }
 
     public Optional<TeamRecord> getPendingInvitation(final UUID player) {
+        return this.getPendingJoinableInvitation(player)
+                .or(() -> this.teams.values()
+                        .stream()
+                        .filter(team -> team.hasInvite(player))
+                        .findFirst());
+    }
+
+    public Optional<TeamRecord> getPendingJoinableInvitation(final UUID player) {
         return this.teams.values()
                 .stream()
                 .filter(team -> team.hasInvite(player))
+                .filter(team -> !team.hasDeparted(player))
                 .findFirst();
     }
 
@@ -74,7 +83,7 @@ public final class TeamSavedData extends SavedData {
             return existing;
         }
 
-        final TeamRecord team = new TeamRecord(owner, ownerName, Map.of(), Map.of());
+        final TeamRecord team = new TeamRecord(owner, ownerName, Map.of(), Map.of(), Map.of());
         this.teams.put(owner, team);
         this.setDirty();
         return team;
@@ -97,6 +106,9 @@ public final class TeamSavedData extends SavedData {
         for (final Map.Entry<UUID, TeamRecord> entry : this.teams.entrySet()) {
             final TeamRecord team = entry.getValue();
             if (team.hasInvite(player)) {
+                if (team.hasDeparted(player)) {
+                    continue;
+                }
                 final TeamRecord updated = team.acceptInvite(player, playerName);
                 this.teams.put(entry.getKey(), updated);
                 this.setDirty();
@@ -130,7 +142,8 @@ public final class TeamSavedData extends SavedData {
             UUID owner,
             String ownerName,
             Map<UUID, String> members,
-            Map<UUID, String> invites
+            Map<UUID, String> invites,
+            Map<UUID, String> departedMembers
     ) {
         private static final Codec<TeamRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 UUIDUtil.STRING_CODEC.fieldOf("owner").forGetter(TeamRecord::owner),
@@ -140,12 +153,16 @@ public final class TeamSavedData extends SavedData {
                         .forGetter(TeamRecord::members),
                 Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING)
                         .optionalFieldOf("invites", Map.of())
-                        .forGetter(TeamRecord::invites)
+                        .forGetter(TeamRecord::invites),
+                Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING)
+                        .optionalFieldOf("departed_members", Map.of())
+                        .forGetter(TeamRecord::departedMembers)
         ).apply(instance, TeamRecord::new));
 
         public TeamRecord {
             members = Map.copyOf(members);
             invites = Map.copyOf(invites);
+            departedMembers = Map.copyOf(departedMembers);
         }
 
         public boolean isOwner(final UUID player) {
@@ -165,6 +182,10 @@ public final class TeamSavedData extends SavedData {
             return this.invites.containsKey(player);
         }
 
+        public boolean hasDeparted(final UUID player) {
+            return this.departedMembers.containsKey(player);
+        }
+
         public int playerCount() {
             return this.members.size() + 1;
         }
@@ -177,7 +198,7 @@ public final class TeamSavedData extends SavedData {
         private TeamRecord withInvite(final UUID target, final String targetName) {
             final Map<UUID, String> updatedInvites = new HashMap<>(this.invites);
             updatedInvites.put(target, targetName);
-            return new TeamRecord(this.owner, this.ownerName, this.members, updatedInvites);
+            return new TeamRecord(this.owner, this.ownerName, this.members, updatedInvites, this.departedMembers);
         }
 
         private TeamRecord acceptInvite(final UUID player, final String playerName) {
@@ -185,13 +206,17 @@ public final class TeamSavedData extends SavedData {
             updatedInvites.remove(player);
             final Map<UUID, String> updatedMembers = new HashMap<>(this.members);
             updatedMembers.put(player, playerName);
-            return new TeamRecord(this.owner, this.ownerName, updatedMembers, updatedInvites);
+            return new TeamRecord(this.owner, this.ownerName, updatedMembers, updatedInvites, this.departedMembers);
         }
 
         private TeamRecord withoutMember(final UUID player) {
             final Map<UUID, String> updatedMembers = new HashMap<>(this.members);
-            updatedMembers.remove(player);
-            return new TeamRecord(this.owner, this.ownerName, updatedMembers, this.invites);
+            final String departedName = updatedMembers.remove(player);
+            final Map<UUID, String> updatedDepartedMembers = new HashMap<>(this.departedMembers);
+            if (departedName != null) {
+                updatedDepartedMembers.put(player, departedName);
+            }
+            return new TeamRecord(this.owner, this.ownerName, updatedMembers, this.invites, updatedDepartedMembers);
         }
     }
 }

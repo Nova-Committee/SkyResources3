@@ -42,6 +42,7 @@ public final class VoidIslandCommands {
 
     private static LiteralArgumentBuilder<CommandSourceStack> islandNode() {
         return Commands.literal("island")
+                .executes(context -> showGuide(context.getSource()))
                 .then(Commands.literal("create")
                         .executes(context -> createIsland(context.getSource(), IslandTemplate.DEFAULT_ID))
                         .then(Commands.argument("type", StringArgumentType.word())
@@ -93,12 +94,13 @@ public final class VoidIslandCommands {
                                 ))))
                 .then(Commands.literal("trusted").executes(context -> listTrustedVisitors(context.getSource())))
                 .then(Commands.literal("accept").executes(context -> acceptInvite(context.getSource())))
-                .then(Commands.literal("leave").executes(context -> leaveTeam(context.getSource())));
+                .then(Commands.literal("leave").executes(context -> leaveTeam(context.getSource())))
+                .then(Commands.literal("disband").executes(context -> disbandTeam(context.getSource())));
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> teamNode() {
         return Commands.literal("team")
-                .then(Commands.literal("create").executes(context -> createTeam(context.getSource())))
+                .then(Commands.literal("create").executes(context -> rejectManualTeamCreate(context.getSource())))
                 .then(Commands.literal("invite")
                         .then(Commands.argument("player", StringArgumentType.word())
                                 .executes(context -> invitePlayer(
@@ -108,6 +110,20 @@ public final class VoidIslandCommands {
                 .then(Commands.literal("accept").executes(context -> acceptInvite(context.getSource())))
                 .then(Commands.literal("leave").executes(context -> leaveTeam(context.getSource())))
                 .then(Commands.literal("disband").executes(context -> disbandTeam(context.getSource())))
+                .then(Commands.literal("trust")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .executes(context -> trustVisitor(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("untrust")
+                        .then(Commands.argument("player", StringArgumentType.word())
+                                .suggests(VoidIslandCommands::suggestTrustedVisitors)
+                                .executes(context -> untrustVisitor(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, "player")
+                                ))))
+                .then(Commands.literal("trusted").executes(context -> listTrustedVisitors(context.getSource())))
                 .then(Commands.literal("home").executes(context -> teleportTeamHome(context.getSource())))
                 .then(Commands.literal("info").executes(context -> showTeamInfo(context.getSource())));
     }
@@ -124,7 +140,7 @@ public final class VoidIslandCommands {
         final IslandSavedData islands = IslandSavedData.get(storageLevel);
         final TeamSavedData teams = TeamSavedData.get(storageLevel);
         final Optional<TeamSavedData.TeamRecord> team = teams.getTeamFor(player.getUUID());
-        if (team.isPresent() && !team.get().isOwner(player.getUUID())) {
+        if (team.isPresent()) {
             source.sendFailure(Component.translatable("message.skyresources3.island.create.member_blocked"));
             return 0;
         }
@@ -147,7 +163,8 @@ public final class VoidIslandCommands {
                 template.home(center),
                 template.id()
         );
-        teleport(player, islandLevel, island.home());
+        teams.createTeam(player.getUUID(), player.getName().getString());
+        teleportTo(player, islandLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable(
                         "message.skyresources3.island.created",
@@ -179,7 +196,7 @@ public final class VoidIslandCommands {
             return 0;
         }
 
-        teleport(player, targetLevel, island.home());
+        teleportTo(player, targetLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable("message.skyresources3.island.home", formatPosition(island.home())),
                 false
@@ -198,11 +215,11 @@ public final class VoidIslandCommands {
         if (spawnLevel == null) {
             final ServerLevel fallbackLevel = source.getServer().overworld();
             spawn = fallbackLevel.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, TEMPORARY_SPAWN_COLUMN);
-            teleport(player, fallbackLevel, spawn);
+            teleportTo(player, fallbackLevel, spawn);
         } else {
             VoidIslandWorld.ensureSpawnPlatform(spawnLevel);
             spawn = VoidIslandWorld.spawnHome();
-            teleport(player, spawnLevel, spawn);
+            teleportTo(player, spawnLevel, spawn);
         }
 
         source.sendSuccess(
@@ -241,6 +258,12 @@ public final class VoidIslandCommands {
             ));
             return 0;
         }
+        if (teams.getOwnedTeam(visitTarget.island().owner())
+                .map(team -> team.hasDeparted(player.getUUID()))
+                .orElse(false)) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.visit.previous_member"));
+            return 0;
+        }
 
         final ServerLevel targetLevel = source.getServer().getLevel(visitTarget.island().dimension());
         if (targetLevel == null) {
@@ -248,7 +271,7 @@ public final class VoidIslandCommands {
             return 0;
         }
 
-        teleport(player, targetLevel, visitTarget.island().home());
+        teleportTo(player, targetLevel, visitTarget.island().home());
         source.sendSuccess(
                 () -> Component.translatable(
                         "message.skyresources3.island.visit.success",
@@ -451,7 +474,7 @@ public final class VoidIslandCommands {
         clearIslandResetArea(targetLevel, center);
         template.build(targetLevel, center);
         islands.updateIslandType(player.getUUID(), template.id());
-        teleport(player, targetLevel, island.home());
+        teleportTo(player, targetLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable(
                         "message.skyresources3.island.reset.done",
@@ -490,30 +513,14 @@ public final class VoidIslandCommands {
         return 1;
     }
 
-    private static int createTeam(final CommandSourceStack source) throws CommandSyntaxException {
+    private static int rejectManualTeamCreate(final CommandSourceStack source) throws CommandSyntaxException {
         if (!Config.enableVoidIslandFeatures) {
             return disabled(source);
         }
 
-        final ServerPlayer player = source.getPlayerOrException();
-        final ServerLevel level = source.getServer().overworld();
-        final IslandSavedData islands = IslandSavedData.get(level);
-        final TeamSavedData teams = TeamSavedData.get(level);
-        if (teams.getTeamFor(player.getUUID()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.team.already_in_team"));
-            return 0;
-        }
-        if (islands.getIsland(player.getUUID()).isEmpty()) {
-            source.sendFailure(Component.translatable("message.skyresources3.team.create.no_island"));
-            return 0;
-        }
-
-        teams.createTeam(player.getUUID(), player.getName().getString());
-        source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.team.created"),
-                false
-        );
-        return 1;
+        source.getPlayerOrException();
+        source.sendFailure(Component.translatable("message.skyresources3.team.create.disabled"));
+        return 0;
     }
 
     private static int invitePlayer(final CommandSourceStack source, final String targetName)
@@ -555,10 +562,18 @@ public final class VoidIslandCommands {
             source.sendFailure(Component.translatable("message.skyresources3.team.invite.target_in_team", targetName));
             return 0;
         }
-        if (teams.getPendingInvitation(target.uuid()).isPresent()) {
+        if (teams.getPendingJoinableInvitation(target.uuid()).isPresent()) {
             source.sendFailure(Component.translatable(
                     "message.skyresources3.team.invite.target_pending",
                     targetName
+            ));
+            return 0;
+        }
+        final TeamSavedData.TeamRecord ownerTeam = teams.getOwnedTeam(player.getUUID()).orElse(null);
+        if (ownerTeam != null && ownerTeam.hasDeparted(target.uuid())) {
+            source.sendFailure(Component.translatable(
+                    "message.skyresources3.team.invite.previous_member",
+                    target.name()
             ));
             return 0;
         }
@@ -596,17 +611,43 @@ public final class VoidIslandCommands {
             return 0;
         }
 
+        final TeamSavedData.TeamRecord pendingTeam = teams.getPendingInvitation(player.getUUID()).orElse(null);
+        if (pendingTeam == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.accept.missing"));
+            return 0;
+        }
+        if (pendingTeam.hasDeparted(player.getUUID())) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.accept.previous_member"));
+            return 0;
+        }
+        final IslandSavedData.IslandRecord island = islands.getIsland(pendingTeam.owner()).orElse(null);
+        if (island == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.team.home.no_island"));
+            return 0;
+        }
+        final ServerLevel islandLevel = source.getServer().getLevel(island.dimension());
+        if (islandLevel == null) {
+            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            return 0;
+        }
+
         final TeamSavedData.TeamRecord team = teams.acceptInvitation(
                 player.getUUID(),
                 player.getName().getString()
         ).orElse(null);
         if (team == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.team.accept.missing"));
+            source.sendFailure(Component.translatable("message.skyresources3.team.accept.previous_member"));
             return 0;
         }
 
+        islands.untrustVisitor(team.owner(), player.getUUID());
+        teleportTo(player, islandLevel, island.home());
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.team.accept.success", team.ownerName()),
+                () -> Component.translatable(
+                        "message.skyresources3.team.accept.success",
+                        team.ownerName(),
+                        formatPosition(island.home())
+                ),
                 false
         );
         return 1;
@@ -618,7 +659,9 @@ public final class VoidIslandCommands {
         }
 
         final ServerPlayer player = source.getPlayerOrException();
-        final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
+        final ServerLevel level = source.getServer().overworld();
+        final IslandSavedData islands = IslandSavedData.get(level);
+        final TeamSavedData teams = TeamSavedData.get(level);
         final TeamSavedData.TeamRecord team = teams.getTeamFor(player.getUUID()).orElse(null);
         if (team == null) {
             source.sendFailure(Component.translatable("message.skyresources3.team.leave.not_in_team"));
@@ -630,6 +673,8 @@ public final class VoidIslandCommands {
         }
 
         teams.leave(player.getUUID());
+        islands.untrustVisitor(team.owner(), player.getUUID());
+        teleportToInitialSpawn(player);
         source.sendSuccess(
                 () -> Component.translatable("message.skyresources3.team.leave.success"),
                 false
@@ -643,13 +688,23 @@ public final class VoidIslandCommands {
         }
 
         final ServerPlayer player = source.getPlayerOrException();
+        final IslandSavedData islands = IslandSavedData.get(source.getServer().overworld());
         final TeamSavedData teams = TeamSavedData.get(source.getServer().overworld());
-        if (teams.getOwnedTeam(player.getUUID()).isEmpty()) {
+        final TeamSavedData.TeamRecord team = teams.getOwnedTeam(player.getUUID()).orElse(null);
+        if (team == null) {
             source.sendFailure(Component.translatable("message.skyresources3.team.disband.not_owner"));
             return 0;
         }
 
         teams.disband(player.getUUID());
+        islands.deleteIsland(player.getUUID());
+        teleportToInitialSpawn(player);
+        for (final UUID memberId : team.members().keySet()) {
+            final ServerPlayer member = source.getServer().getPlayerList().getPlayer(memberId);
+            if (member != null) {
+                teleportToInitialSpawn(member);
+            }
+        }
         source.sendSuccess(
                 () -> Component.translatable("message.skyresources3.team.disband.success"),
                 false
@@ -682,7 +737,7 @@ public final class VoidIslandCommands {
             return 0;
         }
 
-        teleport(player, targetLevel, island.home());
+        teleportTo(player, targetLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable("message.skyresources3.team.home.success", formatPosition(island.home())),
                 false
@@ -714,6 +769,30 @@ public final class VoidIslandCommands {
                 false
         );
         return 1;
+    }
+
+    private static int showGuide(final CommandSourceStack source) throws CommandSyntaxException {
+        if (!Config.enableVoidIslandFeatures) {
+            return disabled(source);
+        }
+
+        source.getPlayerOrException();
+        sendGuide(source);
+        return 1;
+    }
+
+    private static void sendGuide(final CommandSourceStack source) {
+        source.sendSuccess(
+                () -> Component.translatable(
+                        "message.skyresources3.island.guide.create",
+                        String.join(", ", IslandTemplate.ids())
+                ),
+                false
+        );
+        source.sendSuccess(
+                () -> Component.translatable("message.skyresources3.island.guide.join"),
+                false
+        );
     }
 
     private static int disabled(final CommandSourceStack source) {
@@ -825,7 +904,19 @@ public final class VoidIslandCommands {
         return Math.max(STARTER_RESET_RADIUS, Math.min(Config.islandProtectionRadius, MAX_ISLAND_RESET_RADIUS));
     }
 
-    private static void teleport(final ServerPlayer player, final ServerLevel level, final BlockPos home) {
+    private static void teleportToInitialSpawn(final ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel currentLevel)) {
+            return;
+        }
+
+        VoidIslandWorld.getInitialSpawnLevel(currentLevel.getServer()).ifPresent(spawnLevel -> {
+            VoidIslandWorld.ensureInitialSpawnPlatform(spawnLevel);
+            teleportTo(player, spawnLevel, VoidIslandWorld.spawnHome());
+            VoidIslandPlayerEvents.sendGuide(player);
+        });
+    }
+
+    static void teleportTo(final ServerPlayer player, final ServerLevel level, final BlockPos home) {
         player.teleportTo(
                 level,
                 home.getX() + 0.5D,

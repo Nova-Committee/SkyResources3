@@ -39,7 +39,9 @@ public final class IslandCommandGameTests {
             assertCommandSucceeds(helper, player, "island create");
 
             final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
+            final TeamSavedData teams = TeamSavedData.get(helper.getLevel().getServer().overworld());
             final IslandSavedData.IslandRecord created = getIslandOrFail(helper, islands, player);
+            getTeamOrFail(helper, teams, player);
             helper.assertValueEqual(
                     IslandTemplate.DEFAULT_ID,
                     created.type(),
@@ -73,6 +75,31 @@ public final class IslandCommandGameTests {
         } finally {
             Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
             Config.islandProtectionRadius = originalIslandProtectionRadius;
+        }
+    }
+
+    @SuppressWarnings("removal")
+    public static void initialSpawnPlatformUsesBedrock(final GameTestHelper helper) {
+        final int originalSpawnPlatformRadius = Config.voidIslandSpawnPlatformRadius;
+        final Block originalSpawnPlatformBlock = Config.voidIslandSpawnPlatformBlock;
+        Config.voidIslandSpawnPlatformRadius = 1;
+        Config.voidIslandSpawnPlatformBlock = Blocks.COBBLESTONE;
+
+        try {
+            final ServerLevel level = helper.getLevel();
+            VoidIslandWorld.ensureInitialSpawnPlatform(level);
+            helper.assertTrue(
+                    level.getBlockState(VoidIslandWorld.spawnPlatformCenter()).is(Blocks.BEDROCK),
+                    "Initial spawn platform should always use bedrock"
+            );
+            helper.assertTrue(
+                    level.getBlockState(VoidIslandWorld.spawnPlatformCenter().offset(1, 0, 1)).is(Blocks.BEDROCK),
+                    "Initial spawn platform should keep the configured radius"
+            );
+            helper.succeed();
+        } finally {
+            Config.voidIslandSpawnPlatformRadius = originalSpawnPlatformRadius;
+            Config.voidIslandSpawnPlatformBlock = originalSpawnPlatformBlock;
         }
     }
 
@@ -222,15 +249,26 @@ public final class IslandCommandGameTests {
         try {
             final ServerPlayer owner = makeNamedMockServerPlayerInLevel(helper, "team_owner");
             final ServerPlayer member = makeNamedMockServerPlayerInLevel(helper, "team_member");
+            final ServerPlayer stayingMember = makeNamedMockServerPlayerInLevel(helper, "team_stayer");
+            final ServerPlayer secondOwner = makeNamedMockServerPlayerInLevel(helper, "team_owner_2");
+            assertCommandFails(helper, owner, "skyresources3 team create");
             assertCommandSucceeds(helper, owner, "island create");
+            assertCommandSucceeds(helper, owner, "skyresources3 team trust " + member.getName().getString());
             assertCommandSucceeds(helper, owner, "island invite " + member.getName().getString());
             assertCommandSucceeds(helper, member, "island accept");
+            assertCommandSucceeds(helper, owner, "island invite " + stayingMember.getName().getString());
+            assertCommandSucceeds(helper, stayingMember, "island accept");
 
             final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
             final TeamSavedData teams = TeamSavedData.get(helper.getLevel().getServer().overworld());
-            final IslandSavedData.IslandRecord island = getIslandOrFail(helper, islands, owner);
+            IslandSavedData.IslandRecord island = getIslandOrFail(helper, islands, owner);
             final TeamSavedData.TeamRecord team = getTeamOrFail(helper, teams, owner);
             helper.assertTrue(team.includes(member.getUUID()), "Accepted player should be a team member");
+            helper.assertTrue(team.includes(stayingMember.getUUID()), "Accepted player should stay on the team");
+            helper.assertTrue(
+                    !island.isTrustedVisitor(member.getUUID()),
+                    "Accepting an island invite should remove redundant trusted access"
+            );
 
             assertCommandSucceeds(helper, member, "island home");
             helper.assertValueEqual(
@@ -250,10 +288,38 @@ public final class IslandCommandGameTests {
                     teams.getTeamFor(member.getUUID()).isEmpty(),
                     "Leaving should remove the player from the team"
             );
-            assertCommandSucceeds(helper, owner, "skyresources3 team disband");
+            island = getIslandOrFail(helper, islands, owner);
+            helper.assertTrue(
+                    !island.isTrustedVisitor(member.getUUID()),
+                    "Leaving an island should not leave trusted access behind"
+            );
+            assertCommandFails(helper, owner, "island invite " + member.getName().getString());
+            assertCommandFails(helper, member, "island visit " + owner.getName().getString());
+            teams.invite(
+                    owner.getUUID(),
+                    owner.getName().getString(),
+                    member.getUUID(),
+                    member.getName().getString()
+            );
+            assertCommandSucceeds(helper, secondOwner, "island create");
+            assertCommandSucceeds(helper, secondOwner, "island invite " + member.getName().getString());
+            assertCommandSucceeds(helper, member, "island accept");
+            helper.assertTrue(
+                    getTeamOrFail(helper, teams, secondOwner).includes(member.getUUID()),
+                    "A stale departed invite from an old island should not block joining a new island"
+            );
+            assertCommandSucceeds(helper, owner, "island disband");
             helper.assertTrue(
                     teams.getOwnedTeam(owner.getUUID()).isEmpty(),
                     "Disbanding should remove the owner's team"
+            );
+            helper.assertTrue(
+                    teams.getTeamFor(stayingMember.getUUID()).isEmpty(),
+                    "Disbanding should remove online members from the team"
+            );
+            helper.assertTrue(
+                    islands.getIsland(owner.getUUID()).isEmpty(),
+                    "Disbanding should abandon the owner's island record"
             );
             helper.succeed();
         } finally {
@@ -369,6 +435,15 @@ public final class IslandCommandGameTests {
     ) {
         final int result = runCommand(helper, player, command);
         helper.assertTrue(result > 0, "/" + command + " should return a positive result");
+    }
+
+    private static void assertCommandFails(
+            final GameTestHelper helper,
+            final ServerPlayer player,
+            final String command
+    ) {
+        final int result = runCommand(helper, player, command);
+        helper.assertTrue(result == 0, "/" + command + " should return zero");
     }
 
     private static int runCommand(final GameTestHelper helper, final ServerPlayer player, final String command) {

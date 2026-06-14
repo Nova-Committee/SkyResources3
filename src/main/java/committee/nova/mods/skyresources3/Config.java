@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 @EventBusSubscriber(modid = Skyresources3.MODID)
 public final class Config {
-    private static final String DEFAULT_VOID_ISLAND_SPAWN_PLATFORM_BLOCK = "minecraft:grass_block";
+    private static final String DEFAULT_VOID_ISLAND_SPAWN_PLATFORM_BLOCK = "minecraft:bedrock";
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     private static final ModConfigSpec.BooleanValue ENABLE_MIGRATION_DEBUG_LOGGING = BUILDER
@@ -151,7 +151,7 @@ public final class Config {
     public static boolean enableVoidIslandFeatures;
     public static int islandProtectionRadius;
     public static int voidIslandSpawnPlatformRadius = 2;
-    public static Block voidIslandSpawnPlatformBlock = Blocks.GRASS_BLOCK;
+    public static Block voidIslandSpawnPlatformBlock = Blocks.BEDROCK;
     public static boolean enableMagmaIsland;
     public static int heavySnowballDamage;
     public static int explosiveHeavySnowballDamage;

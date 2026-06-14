@@ -61,6 +61,14 @@ public final class IslandSavedData extends SavedData {
         return this.islands.size();
     }
 
+    public boolean deleteIsland(final UUID owner) {
+        final boolean removed = this.islands.remove(owner) != null;
+        if (removed) {
+            this.setDirty();
+        }
+        return removed;
+    }
+
     public Optional<IslandRecord> findIslandAt(
             final ResourceKey<Level> dimension,
             final BlockPos pos,
@@ -136,6 +144,17 @@ public final class IslandSavedData extends SavedData {
         this.islands.put(owner, island.withoutTrustedVisitor(visitor));
         this.setDirty();
         return Optional.of(storedName);
+    }
+
+    public boolean untrustVisitor(final UUID owner, final UUID visitor) {
+        final IslandRecord island = this.islands.get(owner);
+        if (island == null || !island.isTrustedVisitor(visitor)) {
+            return false;
+        }
+
+        this.islands.put(owner, island.withoutTrustedVisitor(visitor));
+        this.setDirty();
+        return true;
     }
 
     public record IslandRecord(
