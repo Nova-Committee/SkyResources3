@@ -23,7 +23,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 
 public final class GuideMenuGameTests {
-    private static final String EN_US_TRANSLATIONS = "/assets/skyresources3/lang/en_us.json";
+    private static final String EN_US_TRANSLATIONS = "/assets/skyresources/lang/en_us.json";
     private static final Pattern ACTION_MARKER = Pattern.compile("\\{action:(\\d+)}");
     private static final Set<String> GUIDE_RECIPE_TARGETS = Set.of(
             GuideRecipeTargets.PROCESS_COMBUSTION,

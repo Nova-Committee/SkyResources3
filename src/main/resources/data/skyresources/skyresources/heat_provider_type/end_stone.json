@@ -1,0 +1,11 @@
+{
+  "translation_key": "block.skyresources.heat_provider.end_stone",
+  "texture": "minecraft:block/end_stone",
+  "speed": 6.6,
+  "efficiency": 6.6,
+  "fuel": {
+    "kind": "item",
+    "item": "minecraft:ender_pearl",
+    "rate": 2200
+  }
+}

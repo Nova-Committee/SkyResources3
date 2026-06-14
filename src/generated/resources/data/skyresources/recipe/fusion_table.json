@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "#minecraft:planks",
+    "Y": "skyresources:stone_alchemy_component",
+    "Z": "skyresources:primus_alchemical_dust"
+  },
+  "pattern": [
+    "XZX",
+    "XYX",
+    "X X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources:fusion_table"
+  }
+}

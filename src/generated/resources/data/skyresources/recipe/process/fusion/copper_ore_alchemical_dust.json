@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:pumpkin_seeds"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:gunpowder"
+    }
+  ],
+  "outputs": [
+    {
+      "components": {
+        "skyresources:ore_alchemy_dust_type": "skyresources:copper"
+      },
+      "count": 1,
+      "id": "skyresources:ore_alchemical_dust"
+    }
+  ],
+  "parameter": 8.0E-4,
+  "process": "fusion"
+}

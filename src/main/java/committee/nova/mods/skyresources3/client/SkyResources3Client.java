@@ -35,13 +35,13 @@ public final class SkyResources3Client {
     private static final KeyMapping.Category KEY_CATEGORY =
             KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Skyresources3.MODID, "guide"));
     private static final KeyMapping OPEN_GUIDE = new KeyMapping(
-            "key.skyresources3.guide",
+            "key.skyresources.guide",
             InputConstants.Type.KEYSYM,
             InputConstants.KEY_Y,
             KEY_CATEGORY
     );
     private static final KeyMapping OPEN_ISLAND = new KeyMapping(
-            "key.skyresources3.island",
+            "key.skyresources.island",
             InputConstants.Type.KEYSYM,
             InputConstants.KEY_I,
             KEY_CATEGORY

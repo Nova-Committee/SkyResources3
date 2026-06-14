@@ -1,0 +1,15 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:acacia_log"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "id": "minecraft:acacia_planks"
+    }
+  ],
+  "process": "knife"
+}

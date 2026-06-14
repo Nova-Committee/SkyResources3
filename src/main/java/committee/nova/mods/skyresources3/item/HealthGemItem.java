@@ -55,19 +55,19 @@ public final class HealthGemItem extends Item {
             final TooltipFlag tooltipFlag
     ) {
         if (!tooltipFlag.hasShiftDown()) {
-            tooltipAdder.accept(Component.translatable("item.skyresources3.health_gem.info")
+            tooltipAdder.accept(Component.translatable("item.skyresources.health_gem.info")
                     .withStyle(ChatFormatting.GREEN));
             return;
         }
 
-        tooltipAdder.accept(Component.translatable("item.skyresources3.health_gem.inject")
+        tooltipAdder.accept(Component.translatable("item.skyresources.health_gem.inject")
                 .withStyle(ChatFormatting.GREEN));
         tooltipAdder.accept(Component.translatable(
-                "item.skyresources3.health_gem.health_injected",
+                "item.skyresources.health_gem.health_injected",
                 getHealthInjected(stack)
         ).withStyle(ChatFormatting.RED));
         tooltipAdder.accept(Component.translatable(
-                "item.skyresources3.health_gem.health_gained",
+                "item.skyresources.health_gem.health_gained",
                 getHealthBoost(stack)
         ).withStyle(ChatFormatting.DARK_RED));
     }

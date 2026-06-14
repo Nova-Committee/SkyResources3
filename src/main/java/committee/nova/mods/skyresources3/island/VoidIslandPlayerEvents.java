@@ -41,10 +41,10 @@ public final class VoidIslandPlayerEvents {
 
     static void sendGuide(final ServerPlayer player) {
         player.sendSystemMessage(Component.translatable(
-                "message.skyresources3.island.guide.create",
+                "message.skyresources.island.guide.create",
                 String.join(", ", IslandTemplate.ids())
         ));
-        player.sendSystemMessage(Component.translatable("message.skyresources3.island.guide.join"));
+        player.sendSystemMessage(Component.translatable("message.skyresources.island.guide.join"));
     }
 
     private VoidIslandPlayerEvents() {

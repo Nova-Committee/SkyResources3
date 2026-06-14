@@ -1,0 +1,24 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 2,
+      "ingredient": "minecraft:redstone"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:blaze_powder"
+    },
+    {
+      "ingredient": "skyresources:alchemical_iron_ingot"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 5,
+      "id": "skyresources:secundus_alchemical_dust"
+    }
+  ],
+  "parameter": 0.0025,
+  "process": "fusion"
+}

@@ -90,7 +90,7 @@ public final class QuickDropperBlock extends Block implements EntityBlock {
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new QuickDropperMenu(containerId, inventory, dropper),
-                        Component.translatable("container.skyresources3.quick_dropper")
+                        Component.translatable("container.skyresources.quick_dropper")
                 ),
                 buffer -> QuickDropperMenu.writeClientSideData(buffer, pos)
         );

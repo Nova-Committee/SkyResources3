@@ -1,0 +1,11 @@
+{
+  "translation_key": "block.skyresources.combustion_heater.iron",
+  "body_texture": "skyresources:block/iron_machine",
+  "top_texture": "skyresources:block/combustion",
+  "speed": 1.0,
+  "efficiency": 1.2,
+  "structure_rule": "metal",
+  "fuel": {
+    "kind": "furnace"
+  }
+}

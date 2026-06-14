@@ -176,7 +176,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
             return;
         }
         final Component text = Component.translatable(
-                "screen.skyresources3.wildlife_attractor.energy",
+                "screen.skyresources.wildlife_attractor.energy",
                 this.menu.getEnergyStored(),
                 this.menu.getMaxEnergyStored()
         );
@@ -188,7 +188,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
             return;
         }
         final Component text = Component.translatable(
-                "screen.skyresources3.wildlife_attractor.water",
+                "screen.skyresources.wildlife_attractor.water",
                 this.menu.getWaterStored(),
                 this.menu.getMaxWaterStored()
         );
@@ -200,7 +200,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
             return;
         }
         final Component text = Component.translatable(
-                "screen.skyresources3.wildlife_attractor.matter",
+                "screen.skyresources.wildlife_attractor.matter",
                 this.menu.getMatterLeft(),
                 this.menu.getMaxMatterLeft()
         );
@@ -213,7 +213,7 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
         }
         this.renderTextTooltip(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.wildlife_attractor.matter_slot"),
+                Component.translatable("screen.skyresources.wildlife_attractor.matter_slot"),
                 mouseX,
                 mouseY
         );

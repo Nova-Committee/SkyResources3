@@ -90,7 +90,7 @@ public final class EndPortalCoreBlock extends Block implements EntityBlock {
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new EndPortalCoreMenu(containerId, inventory, core),
-                        Component.translatable("container.skyresources3.end_portal_core")
+                        Component.translatable("container.skyresources.end_portal_core")
                 ),
                 buffer -> EndPortalCoreMenu.writeClientSideData(buffer, pos, core)
         );

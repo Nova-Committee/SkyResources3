@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:cobblestone"
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XXX"
+  ],
+  "result": {
+    "components": {
+      "skyresources:casing_type": "skyresources:stone"
+    },
+    "count": 1,
+    "id": "skyresources:machine_casing"
+  }
+}

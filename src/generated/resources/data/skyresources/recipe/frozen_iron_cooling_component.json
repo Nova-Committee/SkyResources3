@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "skyresources:frozen_iron_ingot",
+    "Y": "minecraft:glowstone_dust",
+    "Z": "minecraft:lapis_lazuli"
+  },
+  "pattern": [
+    "XZX",
+    "XYX",
+    "XYX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources:frozen_iron_cooling_component"
+  }
+}

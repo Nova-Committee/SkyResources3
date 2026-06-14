@@ -60,7 +60,7 @@ public final class IslandProtectionEvents {
         }
 
         player.displayClientMessage(
-                Component.translatable("message.skyresources3.island.protection.denied", island.get().ownerName()),
+                Component.translatable("message.skyresources.island.protection.denied", island.get().ownerName()),
                 true
         );
         return true;

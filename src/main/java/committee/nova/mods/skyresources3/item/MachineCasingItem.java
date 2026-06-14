@@ -63,10 +63,10 @@ public final class MachineCasingItem extends BlockItem {
                 .flatMap(registry -> registry.get(ModDataPackRegistries.casingTypeKey(typeId)))
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
-                    tooltipAdder.accept(Component.translatable("item.skyresources3.machine_casing.max_heat", type.maxHeat())
+                    tooltipAdder.accept(Component.translatable("item.skyresources.machine_casing.max_heat", type.maxHeat())
                             .withStyle(ChatFormatting.GRAY));
                     tooltipAdder.accept(Component.translatable(
-                                    "item.skyresources3.machine_casing.efficiency",
+                                    "item.skyresources.machine_casing.efficiency",
                                     Math.round(type.efficiency() * 100.0F)
                             )
                             .withStyle(ChatFormatting.GRAY));
@@ -75,7 +75,7 @@ public final class MachineCasingItem extends BlockItem {
 
     public static String translationKey(final Identifier typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
-            return "block.skyresources3.machine_casing." + typeId.getPath();
+            return "block.skyresources.machine_casing." + typeId.getPath();
         }
         return "block." + typeId.getNamespace() + ".machine_casing." + typeId.getPath().replace('/', '.');
     }

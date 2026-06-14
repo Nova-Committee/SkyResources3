@@ -1,0 +1,20 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": "minecraft:apple"
+    },
+    {
+      "ingredient": "#minecraft:saplings"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:oak_sapling"
+    }
+  ],
+  "parameter": 10.0,
+  "process": "infusion"
+}

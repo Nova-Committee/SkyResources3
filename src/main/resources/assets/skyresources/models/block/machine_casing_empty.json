@@ -1,0 +1,7 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "skyresources:block/iron_machine"
+  },
+  "elements": []
+}

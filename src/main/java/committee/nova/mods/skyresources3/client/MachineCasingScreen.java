@@ -73,7 +73,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             guiGraphics.drawString(
                     this.font,
                     Component.translatable(
-                            "screen.skyresources3.machine_casing.heat",
+                            "screen.skyresources.machine_casing.heat",
                             this.menu.currentHeat(),
                             this.menu.maxHeat()
                     ),
@@ -84,7 +84,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             );
             guiGraphics.drawString(
                     this.font,
-                    Component.translatable("screen.skyresources3.machine_casing.heat_per_tick", this.menu.heatPerTick()),
+                    Component.translatable("screen.skyresources.machine_casing.heat_per_tick", this.menu.heatPerTick()),
                     19,
                     34,
                     TEXT_COLOR,
@@ -95,8 +95,8 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             guiGraphics.drawString(
                     this.font,
                     Component.translatable(this.menu.hasValidMultiblock()
-                            ? "screen.skyresources3.machine_casing.multiblock.formed"
-                            : "screen.skyresources3.machine_casing.multiblock.missing"),
+                            ? "screen.skyresources.machine_casing.multiblock.formed"
+                            : "screen.skyresources.machine_casing.multiblock.missing"),
                     19,
                     44,
                     this.menu.hasValidMultiblock() ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
@@ -105,7 +105,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
         } else if (this.menu.hasCondenser()) {
             guiGraphics.drawString(
                     this.font,
-                    Component.translatable("screen.skyresources3.machine_casing.condenser.installed"),
+                    Component.translatable("screen.skyresources.machine_casing.condenser.installed"),
                     19,
                     24,
                     TEXT_COLOR,
@@ -123,8 +123,8 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             guiGraphics.drawString(
                     this.font,
                     Component.translatable(this.menu.currentHeat() > 0
-                            ? "screen.skyresources3.machine_casing.heat_provider.active"
-                            : "screen.skyresources3.machine_casing.heat_provider.idle"),
+                            ? "screen.skyresources.machine_casing.heat_provider.active"
+                            : "screen.skyresources.machine_casing.heat_provider.idle"),
                     19,
                     44,
                     this.menu.currentHeat() > 0 ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
@@ -143,23 +143,23 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
     private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         if (this.isHovering(SLOT_X, SLOT_Y, SLOT_SIZE, SLOT_SIZE, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources3.machine_casing.slot"
+                    "screen.skyresources.machine_casing.slot"
             ));
             return;
         }
         if (this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources3.machine_casing.status"
+                    "screen.skyresources.machine_casing.status"
             ));
         }
     }
 
     private Component condenserProgressText() {
         if (this.menu.condenserMaxProgress() <= 0) {
-            return Component.translatable("screen.skyresources3.machine_casing.condenser.idle");
+            return Component.translatable("screen.skyresources.machine_casing.condenser.idle");
         }
         return Component.translatable(
-                "screen.skyresources3.machine_casing.condenser.progress",
+                "screen.skyresources.machine_casing.condenser.progress",
                 this.menu.condenserProgress(),
                 this.menu.condenserMaxProgress()
         );

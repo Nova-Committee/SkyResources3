@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "skyresources:frozen_iron_ingot",
+    "Z": "skyresources:mini_freezer"
+  },
+  "pattern": [
+    "XXX",
+    "XZX",
+    "XXX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources:iron_freezer"
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "translation_key": "block.skyresources3.machine_casing.end_stone",
-  "texture": "minecraft:block/end_stone",
-  "max_heat": 2164,
-  "efficiency": 6.6,
-  "structure_rule": "metal"
-}

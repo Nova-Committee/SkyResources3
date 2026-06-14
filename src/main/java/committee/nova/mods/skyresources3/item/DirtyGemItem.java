@@ -61,11 +61,11 @@ public final class DirtyGemItem extends Item {
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.dirty_gem.source_tag",
+                            "item.skyresources.dirty_gem.source_tag",
                             "#" + type.sourceTag().location()
                     ).withStyle(ChatFormatting.GRAY));
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.dirty_gem.rarity",
+                            "item.skyresources.dirty_gem.rarity",
                             type.rarity()
                     ).withStyle(ChatFormatting.GRAY));
                 });
@@ -73,7 +73,7 @@ public final class DirtyGemItem extends Item {
 
     public static String translationKey(final Identifier typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
-            return "item.skyresources3.dirty_gem." + typeId.getPath();
+            return "item.skyresources.dirty_gem." + typeId.getPath();
         }
         return "item." + typeId.getNamespace() + ".dirty_gem." + typeId.getPath().replace('/', '.');
     }

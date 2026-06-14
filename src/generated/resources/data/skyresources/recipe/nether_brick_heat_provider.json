@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:nether_bricks",
+    "Y": "minecraft:blaze_powder"
+  },
+  "pattern": [
+    "XYX",
+    "XYX",
+    "X X"
+  ],
+  "result": {
+    "components": {
+      "skyresources:heat_provider_type": "skyresources:nether_brick"
+    },
+    "count": 1,
+    "id": "skyresources:heat_provider"
+  }
+}

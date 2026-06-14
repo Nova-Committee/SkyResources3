@@ -1,7 +1,0 @@
-{
-  "translation_key": "block.skyresources3.machine_casing.light_matter",
-  "texture": "skyresources3:block/light_matter_block",
-  "max_heat": 1566,
-  "efficiency": 100.0,
-  "structure_rule": "metal"
-}

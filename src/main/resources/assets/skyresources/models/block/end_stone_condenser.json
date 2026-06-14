@@ -1,0 +1,6 @@
+{
+  "parent": "skyresources:block/condenser_body",
+  "textures": {
+    "all": "minecraft:block/end_stone"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "skyresources:block/combustion_heater_body",
+  "textures": {
+    "all": "minecraft:block/nether_bricks",
+    "part": "skyresources:block/combustion"
+  }
+}

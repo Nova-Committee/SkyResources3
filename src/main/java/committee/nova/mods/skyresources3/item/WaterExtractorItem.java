@@ -124,7 +124,7 @@ public final class WaterExtractorItem extends Item {
             final TooltipFlag tooltipFlag
     ) {
         tooltipAdder.accept(Component.translatable(
-                "item.skyresources3.water_extractor.water",
+                "item.skyresources.water_extractor.water",
                 getWaterAmount(stack),
                 getCapacity()
         ));

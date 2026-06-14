@@ -1,6 +1,0 @@
-{
-  "parent": "skyresources3:block/heat_provider_body",
-  "textures": {
-    "all": "minecraft:block/oak_log"
-  }
-}

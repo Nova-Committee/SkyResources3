@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "#minecraft:planks",
+    "Y": "skyresources:wooden_heat_component"
+  },
+  "pattern": [
+    "XYX",
+    "XYX",
+    "X X"
+  ],
+  "result": {
+    "components": {
+      "skyresources:heat_provider_type": "skyresources:wooden"
+    },
+    "count": 1,
+    "id": "skyresources:heat_provider"
+  }
+}

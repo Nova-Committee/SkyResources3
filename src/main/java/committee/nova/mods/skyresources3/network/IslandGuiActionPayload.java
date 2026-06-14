@@ -83,7 +83,7 @@ public record IslandGuiActionPayload(Action action, String value) implements Cus
         if (this.value.isEmpty()
                 || this.value.length() > MAX_VALUE_LENGTH
                 || this.value.chars().anyMatch(Character::isWhitespace)) {
-            player.sendSystemMessage(Component.translatable("message.skyresources3.island.gui.invalid_value"));
+            player.sendSystemMessage(Component.translatable("message.skyresources.island.gui.invalid_value"));
             return "";
         }
         return this.value;

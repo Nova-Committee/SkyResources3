@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "skyresources:item/ore_alchemical_dust",
+    "tints": [
+      {
+        "type": "skyresources:ore_alchemy_dust_color",
+        "default": "#FFFFFF"
+      }
+    ]
+  }
+}

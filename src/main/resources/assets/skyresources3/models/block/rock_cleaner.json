@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "top": "skyresources3:block/steel_machine",
-    "front": "skyresources3:block/rock_cleaner",
-    "side": "skyresources3:block/steel_machine"
-  }
-}

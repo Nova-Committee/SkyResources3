@@ -1,0 +1,7 @@
+{
+  "translation_key": "block.skyresources.machine_casing.iron",
+  "texture": "skyresources:block/iron_machine",
+  "max_heat": 1538,
+  "efficiency": 1.2,
+  "structure_rule": "metal"
+}

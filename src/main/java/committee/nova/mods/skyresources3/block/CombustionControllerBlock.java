@@ -123,7 +123,7 @@ public final class CombustionControllerBlock extends HorizontalDirectionalBlock 
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new CombustionControllerMenu(containerId, inventory, controller),
-                        Component.translatable("container.skyresources3.combustion_controller")
+                        Component.translatable("container.skyresources.combustion_controller")
                 ),
                 buffer -> CombustionControllerMenu.writeClientSideData(buffer, pos)
         );

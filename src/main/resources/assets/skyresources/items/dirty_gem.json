@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "skyresources:item/dirty_gem",
+    "tints": [
+      {
+        "type": "skyresources:dirty_gem_color",
+        "default": "#FFFFFF"
+      }
+    ]
+  }
+}

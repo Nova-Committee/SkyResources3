@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "skyresources:block/crystal_fluid"
+    }
+  }
+}

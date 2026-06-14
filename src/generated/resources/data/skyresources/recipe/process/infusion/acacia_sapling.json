@@ -1,0 +1,20 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 10,
+      "ingredient": "skyresources:primus_alchemical_dust"
+    },
+    {
+      "ingredient": "skyresources:cactus_fruit_needle"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:acacia_sapling"
+    }
+  ],
+  "parameter": 10.0,
+  "process": "infusion"
+}

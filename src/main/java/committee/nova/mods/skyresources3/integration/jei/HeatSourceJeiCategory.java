@@ -31,7 +31,7 @@ final class HeatSourceJeiCategory implements IRecipeCategory<HeatSourceJeiRecipe
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.skyresources3.category.heat_sources");
+        return Component.translatable("jei.skyresources.category.heat_sources");
     }
 
     @Override
@@ -66,7 +66,7 @@ final class HeatSourceJeiCategory implements IRecipeCategory<HeatSourceJeiRecipe
     ) {
         guiGraphics.drawString(
                 Minecraft.getInstance().font,
-                Component.translatable("jei.skyresources3.heat_value", recipe.heat()),
+                Component.translatable("jei.skyresources.heat_value", recipe.heat()),
                 34,
                 16,
                 TEXT_COLOR,

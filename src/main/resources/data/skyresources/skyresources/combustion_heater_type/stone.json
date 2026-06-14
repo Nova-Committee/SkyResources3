@@ -1,0 +1,11 @@
+{
+  "translation_key": "block.skyresources.combustion_heater.stone",
+  "body_texture": "minecraft:block/stone",
+  "top_texture": "skyresources:block/combustion",
+  "speed": 0.8,
+  "efficiency": 1.0,
+  "structure_rule": "stone",
+  "fuel": {
+    "kind": "furnace"
+  }
+}

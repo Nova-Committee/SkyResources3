@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 
 @Mod(Skyresources3.MODID)
 public final class Skyresources3 {
-    public static final String MODID = "skyresources3";
+    public static final String MODID = "skyresources";
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public Skyresources3(final IEventBus modEventBus, final ModContainer modContainer) {

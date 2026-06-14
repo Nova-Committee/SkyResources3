@@ -173,7 +173,7 @@ public final class AqueousMachineScreen extends AbstractContainerScreen<AqueousM
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.aqueous_machine.energy",
+                "screen.skyresources.aqueous_machine.energy",
                 this.menu.getEnergyStored(),
                 this.menu.getMaxEnergyStored()
         ));
@@ -184,7 +184,7 @@ public final class AqueousMachineScreen extends AbstractContainerScreen<AqueousM
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.aqueous_machine.water",
+                "screen.skyresources.aqueous_machine.water",
                 this.menu.getWaterStored(),
                 this.menu.getMaxWaterStored()
         ));
@@ -195,7 +195,7 @@ public final class AqueousMachineScreen extends AbstractContainerScreen<AqueousM
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.aqueous_machine.mode",
+                "screen.skyresources.aqueous_machine.mode",
                 Component.translatable(this.menu.getModeTranslationKey())
         ));
     }
@@ -205,7 +205,7 @@ public final class AqueousMachineScreen extends AbstractContainerScreen<AqueousM
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.aqueous_machine.progress",
+                "screen.skyresources.aqueous_machine.progress",
                 GuiTooltips.percent(this.menu.getProgressRatio())
         ));
     }

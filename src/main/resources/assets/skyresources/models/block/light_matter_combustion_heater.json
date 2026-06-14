@@ -1,0 +1,7 @@
+{
+  "parent": "skyresources:block/combustion_heater_body",
+  "textures": {
+    "all": "skyresources:block/light_matter_block",
+    "part": "skyresources:block/combustion"
+  }
+}

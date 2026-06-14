@@ -106,7 +106,7 @@ public final class LifeInjectorScreen extends AbstractContainerScreen<LifeInject
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.life.stored_health",
+                "screen.skyresources.life.stored_health",
                 this.menu.storedHealth() / 2.0F
         ));
     }

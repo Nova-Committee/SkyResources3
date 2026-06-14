@@ -104,7 +104,7 @@ public final class FusionTableBlock extends Block implements EntityBlock {
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new FusionTableMenu(containerId, inventory, fusionTable),
-                        Component.translatable("container.skyresources3.fusion_table")
+                        Component.translatable("container.skyresources.fusion_table")
                 ),
                 buffer -> FusionTableMenu.writeClientSideData(buffer, pos, fusionTable)
         );

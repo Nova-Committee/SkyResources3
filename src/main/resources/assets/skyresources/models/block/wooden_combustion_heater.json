@@ -1,0 +1,7 @@
+{
+  "parent": "skyresources:block/combustion_heater_body",
+  "textures": {
+    "all": "minecraft:block/oak_log",
+    "part": "skyresources:block/combustion"
+  }
+}

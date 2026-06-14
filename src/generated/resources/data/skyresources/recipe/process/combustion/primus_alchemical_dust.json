@@ -1,0 +1,24 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 3,
+      "ingredient": "minecraft:gunpowder"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:blaze_powder"
+    },
+    {
+      "ingredient": "minecraft:charcoal"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 5,
+      "id": "skyresources:primus_alchemical_dust"
+    }
+  ],
+  "parameter": 335.0,
+  "process": "combustion"
+}

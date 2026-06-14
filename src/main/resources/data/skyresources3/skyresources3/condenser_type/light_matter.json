@@ -1,6 +1,0 @@
-{
-  "translation_key": "block.skyresources3.condenser.light_matter",
-  "texture": "skyresources3:block/light_matter_block",
-  "speed": 1.0,
-  "efficiency": 100.0
-}

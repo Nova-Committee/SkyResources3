@@ -25,7 +25,7 @@ public final class GuidePages {
     private static final String STAGE_3 = "stage3";
     private static final String STAGE_4 = "stage4";
 
-    private static final String GUIDE_PREFIX = "guide.skyresources3.";
+    private static final String GUIDE_PREFIX = "guide.skyresources.";
 
     private static final List<String> CATEGORIES = List.of(
             key(STAGE_1),
@@ -283,7 +283,7 @@ public final class GuidePages {
     }
 
     private static GuideAction image(final String structureId, final Supplier<ItemStack> iconSupplier) {
-        return GuideAction.image(structureId, "guide.skyresources3.structure." + structureId, iconSupplier);
+        return GuideAction.image(structureId, "guide.skyresources.structure." + structureId, iconSupplier);
     }
 
     private static String key(final String name) {

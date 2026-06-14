@@ -110,11 +110,11 @@ public final class VoidIslandCommands {
         PlayerIdentitySavedData.get(storageLevel).remember(player);
         final IslandSavedData islands = IslandSavedData.get(storageLevel);
         if (islands.getIsland(player.getUUID()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.already_exists"));
+            source.sendFailure(Component.translatable("message.skyresources.island.already_exists"));
             return 0;
         }
         if (islands.getIslandFor(player.getUUID()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.create.member_blocked"));
+            source.sendFailure(Component.translatable("message.skyresources.island.create.member_blocked"));
             return 0;
         }
 
@@ -135,7 +135,7 @@ public final class VoidIslandCommands {
         teleportTo(player, islandLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.created",
+                        "message.skyresources.island.created",
                         template.id(),
                         formatPosition(island.home())
                 ),
@@ -153,19 +153,19 @@ public final class VoidIslandCommands {
         final IslandSavedData islands = IslandSavedData.get(source.getServer().overworld());
         final IslandSavedData.IslandRecord island = getAccessibleIsland(player.getUUID(), islands).orElse(null);
         if (island == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.missing"));
             return 0;
         }
 
         final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
         if (targetLevel == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.dimension_missing"));
             return 0;
         }
 
         teleportTo(player, targetLevel, island.home());
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.home", formatPosition(island.home())),
+                () -> Component.translatable("message.skyresources.island.home", formatPosition(island.home())),
                 false
         );
         return 1;
@@ -190,7 +190,7 @@ public final class VoidIslandCommands {
         }
 
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.spawn", formatPosition(spawn)),
+                () -> Component.translatable("message.skyresources.island.spawn", formatPosition(spawn)),
                 false
         );
         return 1;
@@ -212,28 +212,28 @@ public final class VoidIslandCommands {
             identities.remember(target);
         }
         if (target != null && player.getUUID().equals(target.getUUID())) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.visit.self"));
+            source.sendFailure(Component.translatable("message.skyresources.island.visit.self"));
             return 0;
         }
 
         final VisitTarget visitTarget = resolveVisitTarget(targetName, target, identities, islands).orElse(null);
         if (visitTarget == null) {
             source.sendFailure(Component.translatable(
-                    "message.skyresources3.island.visit.target_no_island",
+                    "message.skyresources.island.visit.target_no_island",
                     targetName
             ));
             return 0;
         }
         final ServerLevel targetLevel = source.getServer().getLevel(visitTarget.island().dimension());
         if (targetLevel == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.dimension_missing"));
             return 0;
         }
 
         teleportTo(player, targetLevel, visitTarget.island().home());
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.visit.success",
+                        "message.skyresources.island.visit.success",
                         visitTarget.name(),
                         formatPosition(visitTarget.island().home())
                 ),
@@ -254,11 +254,11 @@ public final class VoidIslandCommands {
         identities.remember(player);
         final CommandTarget target = resolveKnownPlayer(source, level, targetName);
         if (target == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.trust.target_missing", targetName));
+            source.sendFailure(Component.translatable("message.skyresources.island.trust.target_missing", targetName));
             return 0;
         }
         if (player.getUUID().equals(target.uuid())) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.trust.self"));
+            source.sendFailure(Component.translatable("message.skyresources.island.trust.self"));
             return 0;
         }
 
@@ -270,14 +270,14 @@ public final class VoidIslandCommands {
 
         if (island.includes(target.uuid())) {
             source.sendFailure(Component.translatable(
-                    "message.skyresources3.island.trust.already_member",
+                    "message.skyresources.island.trust.already_member",
                     target.name()
             ));
             return 0;
         }
         if (island.isTrustedVisitor(target.uuid())) {
             source.sendFailure(Component.translatable(
-                    "message.skyresources3.island.trust.already_trusted",
+                    "message.skyresources.island.trust.already_trusted",
                     target.name()
             ));
             return 0;
@@ -290,12 +290,12 @@ public final class VoidIslandCommands {
         );
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.trust.success",
+                        "message.skyresources.island.trust.success",
                         target.name()
                 ),
                 false
         );
-        target.sendSystemMessage("message.skyresources3.island.trust.received", player.getName().getString());
+        target.sendSystemMessage("message.skyresources.island.trust.received", player.getName().getString());
         return 1;
     }
 
@@ -316,12 +316,12 @@ public final class VoidIslandCommands {
 
         final String removedName = islands.untrustVisitor(player.getUUID(), targetName).orElse(null);
         if (removedName == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.untrust.missing", targetName));
+            source.sendFailure(Component.translatable("message.skyresources.island.untrust.missing", targetName));
             return 0;
         }
 
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.untrust.success", removedName),
+                () -> Component.translatable("message.skyresources.island.untrust.success", removedName),
                 false
         );
         return 1;
@@ -342,7 +342,7 @@ public final class VoidIslandCommands {
 
         if (!island.hasTrustedVisitors()) {
             source.sendSuccess(
-                    () -> Component.translatable("message.skyresources3.island.trusted.empty"),
+                    () -> Component.translatable("message.skyresources.island.trusted.empty"),
                     false
             );
             return 1;
@@ -350,7 +350,7 @@ public final class VoidIslandCommands {
 
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.trusted.list",
+                        "message.skyresources.island.trusted.list",
                         island.trustedVisitorNames()
                 ),
                 false
@@ -368,10 +368,10 @@ public final class VoidIslandCommands {
         final IslandSavedData islands = IslandSavedData.get(level);
         if (islands.getIsland(player.getUUID()).isEmpty()) {
             if (islands.getIslandFor(player.getUUID()).isPresent()) {
-                source.sendFailure(Component.translatable("message.skyresources3.island.reset.not_owner"));
+                source.sendFailure(Component.translatable("message.skyresources.island.reset.not_owner"));
                 return 0;
             }
-            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.missing"));
             return 0;
         }
 
@@ -386,7 +386,7 @@ public final class VoidIslandCommands {
                 : "/island reset " + template.id() + " confirm";
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.reset.confirm",
+                        "message.skyresources.island.reset.confirm",
                         template.id(),
                         confirmCommand
                 ),
@@ -406,10 +406,10 @@ public final class VoidIslandCommands {
         final IslandSavedData.IslandRecord island = islands.getIsland(player.getUUID()).orElse(null);
         if (island == null) {
             if (islands.getIslandFor(player.getUUID()).isPresent()) {
-                source.sendFailure(Component.translatable("message.skyresources3.island.reset.not_owner"));
+                source.sendFailure(Component.translatable("message.skyresources.island.reset.not_owner"));
                 return 0;
             }
-            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.missing"));
             return 0;
         }
 
@@ -420,7 +420,7 @@ public final class VoidIslandCommands {
 
         final ServerLevel targetLevel = source.getServer().getLevel(island.dimension());
         if (targetLevel == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.dimension_missing"));
             return 0;
         }
 
@@ -431,7 +431,7 @@ public final class VoidIslandCommands {
         teleportTo(player, targetLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.reset.done",
+                        "message.skyresources.island.reset.done",
                         template.id(),
                         formatPosition(island.home())
                 ),
@@ -449,13 +449,13 @@ public final class VoidIslandCommands {
         final IslandSavedData islands = IslandSavedData.get(source.getServer().overworld());
         final IslandSavedData.IslandRecord island = getAccessibleIsland(player.getUUID(), islands).orElse(null);
         if (island == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.missing"));
             return 0;
         }
 
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.info",
+                        "message.skyresources.island.info",
                         island.ownerName(),
                         island.type(),
                         island.dimension().identifier().toString(),
@@ -480,11 +480,11 @@ public final class VoidIslandCommands {
         identities.remember(player);
         final CommandTarget target = resolveKnownPlayer(source, level, targetName);
         if (target == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.invite.target_missing", targetName));
+            source.sendFailure(Component.translatable("message.skyresources.island.invite.target_missing", targetName));
             return 0;
         }
         if (player.getUUID().equals(target.uuid())) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.invite.self"));
+            source.sendFailure(Component.translatable("message.skyresources.island.invite.self"));
             return 0;
         }
 
@@ -492,23 +492,23 @@ public final class VoidIslandCommands {
         final IslandSavedData.IslandRecord ownerIsland = islands.getIsland(player.getUUID()).orElse(null);
         if (ownerIsland == null) {
             if (islands.getIslandFor(player.getUUID()).isPresent()) {
-                source.sendFailure(Component.translatable("message.skyresources3.island.invite.not_owner"));
+                source.sendFailure(Component.translatable("message.skyresources.island.invite.not_owner"));
                 return 0;
             }
-            source.sendFailure(Component.translatable("message.skyresources3.island.invite.no_island"));
+            source.sendFailure(Component.translatable("message.skyresources.island.invite.no_island"));
             return 0;
         }
         if (islands.getIsland(target.uuid()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.invite.target_has_island", targetName));
+            source.sendFailure(Component.translatable("message.skyresources.island.invite.target_has_island", targetName));
             return 0;
         }
         if (islands.getIslandFor(target.uuid()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.invite.target_in_island", targetName));
+            source.sendFailure(Component.translatable("message.skyresources.island.invite.target_in_island", targetName));
             return 0;
         }
         if (islands.getPendingInvitation(target.uuid()).isPresent()) {
             source.sendFailure(Component.translatable(
-                    "message.skyresources3.island.invite.target_pending",
+                    "message.skyresources.island.invite.target_pending",
                     targetName
             ));
             return 0;
@@ -520,10 +520,10 @@ public final class VoidIslandCommands {
                 target.name()
         );
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.invite.sent", target.name()),
+                () -> Component.translatable("message.skyresources.island.invite.sent", target.name()),
                 false
         );
-        target.sendSystemMessage("message.skyresources3.island.invite.received", player.getName().getString());
+        target.sendSystemMessage("message.skyresources.island.invite.received", player.getName().getString());
         return 1;
     }
 
@@ -537,22 +537,22 @@ public final class VoidIslandCommands {
         PlayerIdentitySavedData.get(level).remember(player);
         final IslandSavedData islands = IslandSavedData.get(level);
         if (islands.getIsland(player.getUUID()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.accept.has_island"));
+            source.sendFailure(Component.translatable("message.skyresources.island.accept.has_island"));
             return 0;
         }
         if (islands.getIslandFor(player.getUUID()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.already_joined"));
+            source.sendFailure(Component.translatable("message.skyresources.island.already_joined"));
             return 0;
         }
 
         final IslandSavedData.IslandRecord pendingIsland = islands.getPendingInvitation(player.getUUID()).orElse(null);
         if (pendingIsland == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.accept.missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.accept.missing"));
             return 0;
         }
         final ServerLevel islandLevel = source.getServer().getLevel(pendingIsland.dimension());
         if (islandLevel == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.dimension_missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.dimension_missing"));
             return 0;
         }
 
@@ -561,7 +561,7 @@ public final class VoidIslandCommands {
                 player.getName().getString()
         ).orElse(null);
         if (island == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.accept.missing"));
+            source.sendFailure(Component.translatable("message.skyresources.island.accept.missing"));
             return 0;
         }
 
@@ -569,7 +569,7 @@ public final class VoidIslandCommands {
         teleportTo(player, islandLevel, island.home());
         source.sendSuccess(
                 () -> Component.translatable(
-                        "message.skyresources3.island.accept.success",
+                        "message.skyresources.island.accept.success",
                         island.ownerName(),
                         formatPosition(island.home())
                 ),
@@ -588,11 +588,11 @@ public final class VoidIslandCommands {
         final IslandSavedData islands = IslandSavedData.get(level);
         final IslandSavedData.IslandRecord island = islands.getIslandFor(player.getUUID()).orElse(null);
         if (island == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.leave.not_in_island"));
+            source.sendFailure(Component.translatable("message.skyresources.island.leave.not_in_island"));
             return 0;
         }
         if (island.isOwner(player.getUUID())) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.leave.owner"));
+            source.sendFailure(Component.translatable("message.skyresources.island.leave.owner"));
             return 0;
         }
 
@@ -600,7 +600,7 @@ public final class VoidIslandCommands {
         islands.untrustVisitor(island.owner(), player.getUUID());
         teleportToInitialSpawn(player);
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.leave.success"),
+                () -> Component.translatable("message.skyresources.island.leave.success"),
                 false
         );
         return 1;
@@ -615,7 +615,7 @@ public final class VoidIslandCommands {
         final IslandSavedData islands = IslandSavedData.get(source.getServer().overworld());
         final IslandSavedData.IslandRecord island = islands.getIsland(player.getUUID()).orElse(null);
         if (island == null) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.disband.not_owner"));
+            source.sendFailure(Component.translatable("message.skyresources.island.disband.not_owner"));
             return 0;
         }
 
@@ -628,7 +628,7 @@ public final class VoidIslandCommands {
             }
         }
         source.sendSuccess(
-                () -> Component.translatable("message.skyresources3.island.disband.success"),
+                () -> Component.translatable("message.skyresources.island.disband.success"),
                 false
         );
         return 1;
@@ -644,7 +644,7 @@ public final class VoidIslandCommands {
     }
 
     private static int disabled(final CommandSourceStack source) {
-        source.sendFailure(Component.translatable("message.skyresources3.island.disabled"));
+        source.sendFailure(Component.translatable("message.skyresources.island.disabled"));
         return 0;
     }
 
@@ -716,10 +716,10 @@ public final class VoidIslandCommands {
             return island;
         }
         if (islands.getIslandFor(player.getUUID()).isPresent()) {
-            source.sendFailure(Component.translatable("message.skyresources3.island.trust.not_owner"));
+            source.sendFailure(Component.translatable("message.skyresources.island.trust.not_owner"));
             return Optional.empty();
         }
-        source.sendFailure(Component.translatable("message.skyresources3.island.missing"));
+        source.sendFailure(Component.translatable("message.skyresources.island.missing"));
         return Optional.empty();
     }
 
@@ -812,7 +812,7 @@ public final class VoidIslandCommands {
         final Optional<IslandTemplate> template = IslandTemplate.byId(typeName);
         if (template.isEmpty()) {
             source.sendFailure(Component.translatable(
-                    "message.skyresources3.island.type.invalid",
+                    "message.skyresources.island.type.invalid",
                     typeName,
                     String.join(", ", IslandTemplate.ids())
             ));

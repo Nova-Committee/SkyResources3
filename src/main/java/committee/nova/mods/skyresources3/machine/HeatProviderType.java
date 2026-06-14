@@ -31,7 +31,7 @@ public record HeatProviderType(
             CasingType.Element.CODEC.listOf().optionalFieldOf("elements", DEFAULT_ELEMENTS).forGetter(HeatProviderType::elements)
     ).apply(instance, HeatProviderType::new));
     private static final HeatProviderType FALLBACK = new HeatProviderType(
-            "block.skyresources3.heat_provider.iron",
+            "block.skyresources.heat_provider.iron",
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
             1.0F,
             1.2F,

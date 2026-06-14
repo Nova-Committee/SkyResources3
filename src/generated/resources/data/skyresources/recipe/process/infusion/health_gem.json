@@ -1,0 +1,19 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "skyresources:alchemical_diamond"
+    },
+    {
+      "ingredient": "minecraft:chorus_flower"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "skyresources:health_gem"
+    }
+  ],
+  "parameter": 15.0,
+  "process": "infusion"
+}

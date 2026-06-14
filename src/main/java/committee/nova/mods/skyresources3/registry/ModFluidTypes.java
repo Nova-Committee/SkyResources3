@@ -18,7 +18,7 @@ public final class ModFluidTypes {
     public static final DeferredHolder<FluidType, FluidType> CRYSTAL_FLUID = FLUID_TYPES.register(
             "crystal_fluid",
             () -> new FluidType(FluidType.Properties.create()
-                    .descriptionId("fluid_type.skyresources3.crystal_fluid")
+                    .descriptionId("fluid_type.skyresources.crystal_fluid")
                     .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                     .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY))
     );

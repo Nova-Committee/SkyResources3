@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "skyresources:alchemical_gold_ingot",
+    "B": "minecraft:quartz_block",
+    "X": "skyresources:dark_matter_block",
+    "Y": "minecraft:ender_eye",
+    "Z": "skyresources:quartz_amplification_component"
+  },
+  "pattern": [
+    "BYB",
+    "AZA",
+    "XXX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources:end_portal_core"
+  }
+}

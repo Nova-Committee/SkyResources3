@@ -1,0 +1,6 @@
+{
+  "parent": "skyresources:block/casing_frame",
+  "textures": {
+    "all": "minecraft:block/oak_log"
+  }
+}

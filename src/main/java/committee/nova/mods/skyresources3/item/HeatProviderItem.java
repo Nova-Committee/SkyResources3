@@ -63,11 +63,11 @@ public final class HeatProviderItem extends BlockItem {
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.heat_provider.heat",
+                            "item.skyresources.heat_provider.heat",
                             Math.round(type.heatPerTick())
                     ).withStyle(ChatFormatting.RED));
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.heat_provider.efficiency",
+                            "item.skyresources.heat_provider.efficiency",
                             Math.round(type.efficiency() * 100.0F)
                     ).withStyle(ChatFormatting.GREEN));
                 });
@@ -75,7 +75,7 @@ public final class HeatProviderItem extends BlockItem {
 
     public static String translationKey(final Identifier typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
-            return "block.skyresources3.heat_provider." + typeId.getPath();
+            return "block.skyresources.heat_provider." + typeId.getPath();
         }
         return "block." + typeId.getNamespace() + ".heat_provider." + typeId.getPath().replace('/', '.');
     }

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "skyresources:block/dark_matter_block",
+    "up": "skyresources:block/ender_core_top",
+    "north": "skyresources:block/dark_matter_block",
+    "south": "skyresources:block/dark_matter_block",
+    "west": "skyresources:block/dark_matter_block",
+    "east": "skyresources:block/dark_matter_block",
+    "particle": "skyresources:block/dark_matter_block"
+  }
+}

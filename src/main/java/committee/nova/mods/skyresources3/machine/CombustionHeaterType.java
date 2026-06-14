@@ -37,7 +37,7 @@ public record CombustionHeaterType(
             Element.CODEC.listOf().optionalFieldOf("elements", DEFAULT_ELEMENTS).forGetter(CombustionHeaterType::elements)
     ).apply(instance, CombustionHeaterType::new));
     private static final CombustionHeaterType FALLBACK = new CombustionHeaterType(
-            "block.skyresources3.combustion_heater.iron",
+            "block.skyresources.combustion_heater.iron",
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/combustion"),
             1.0F,

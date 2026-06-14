@@ -27,7 +27,7 @@ public record CondenserType(
             CasingType.Element.CODEC.listOf().optionalFieldOf("elements", DEFAULT_ELEMENTS).forGetter(CondenserType::elements)
     ).apply(instance, CondenserType::new));
     private static final CondenserType FALLBACK = new CondenserType(
-            "block.skyresources3.condenser.iron",
+            "block.skyresources.condenser.iron",
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
             1.0F,
             1.2F,

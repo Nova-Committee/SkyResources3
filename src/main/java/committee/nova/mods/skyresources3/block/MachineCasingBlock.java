@@ -115,7 +115,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new MachineCasingMenu(containerId, inventory, casing),
-                        Component.translatable("container.skyresources3.machine_casing")
+                        Component.translatable("container.skyresources.machine_casing")
                 ),
                 buffer -> MachineCasingMenu.writeClientSideData(buffer, pos)
         );

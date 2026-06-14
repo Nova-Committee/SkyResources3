@@ -61,11 +61,11 @@ public final class OreAlchemyDustItem extends Item {
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.ore_alchemical_dust.source_tag",
+                            "item.skyresources.ore_alchemical_dust.source_tag",
                             "#" + type.sourceTag().location()
                     ).withStyle(ChatFormatting.GRAY));
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.ore_alchemical_dust.rarity",
+                            "item.skyresources.ore_alchemical_dust.rarity",
                             type.rarity()
                     ).withStyle(ChatFormatting.GRAY));
                 });
@@ -73,7 +73,7 @@ public final class OreAlchemyDustItem extends Item {
 
     public static String translationKey(final Identifier typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
-            return "item.skyresources3.ore_alchemical_dust." + typeId.getPath();
+            return "item.skyresources.ore_alchemical_dust." + typeId.getPath();
         }
         return "item." + typeId.getNamespace() + ".ore_alchemical_dust." + typeId.getPath().replace('/', '.');
     }

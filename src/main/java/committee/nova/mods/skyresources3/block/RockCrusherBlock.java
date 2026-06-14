@@ -129,7 +129,7 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new RockCrusherMenu(containerId, inventory, crusher),
-                        Component.translatable("container.skyresources3.rock_crusher")
+                        Component.translatable("container.skyresources.rock_crusher")
                 ),
                 buffer -> RockCrusherMenu.writeClientSideData(buffer, pos)
         );

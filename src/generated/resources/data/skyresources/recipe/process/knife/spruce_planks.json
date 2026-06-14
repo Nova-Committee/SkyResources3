@@ -1,0 +1,15 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:spruce_log"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "id": "minecraft:spruce_planks"
+    }
+  ],
+  "process": "knife"
+}

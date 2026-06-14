@@ -1,0 +1,6 @@
+{
+  "parent": "skyresources:block/casing_frame",
+  "textures": {
+    "all": "skyresources:block/iron_machine"
+  }
+}

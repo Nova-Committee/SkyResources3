@@ -35,7 +35,7 @@ final class CrucibleRecipeJeiCategory implements IRecipeCategory<CrucibleRecipe>
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.skyresources3.category.crucible");
+        return Component.translatable("jei.skyresources.category.crucible");
     }
 
     @Override
@@ -76,7 +76,7 @@ final class CrucibleRecipeJeiCategory implements IRecipeCategory<CrucibleRecipe>
         this.arrow.draw(guiGraphics, 48, 24);
         guiGraphics.drawString(
                 Minecraft.getInstance().font,
-                Component.translatable("jei.skyresources3.fluid_amount", recipe.output().getAmount()),
+                Component.translatable("jei.skyresources.fluid_amount", recipe.output().getAmount()),
                 4,
                 52,
                 TEXT_COLOR,

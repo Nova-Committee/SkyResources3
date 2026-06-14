@@ -42,7 +42,7 @@ public final class IslandGuiScreen extends Screen {
     private String confirmAction = "";
 
     private IslandGuiScreen(final IslandGuiStatePayload state) {
-        super(Component.translatable("screen.skyresources3.island.title"));
+        super(Component.translatable("screen.skyresources.island.title"));
         this.state = state;
         this.templateIndex = templateIndex(state);
     }
@@ -111,8 +111,8 @@ public final class IslandGuiScreen extends Screen {
         final int compactStep = compactButtonWidth + BUTTON_GAP;
         int y = this.contentTop() + 22;
 
-        this.addButton("button.skyresources3.island.previous_template",
-                "tooltip.skyresources3.island.previous_template",
+        this.addButton("button.skyresources.island.previous_template",
+                "tooltip.skyresources.island.previous_template",
                 actionX,
                 y,
                 28,
@@ -120,8 +120,8 @@ public final class IslandGuiScreen extends Screen {
                 this.state.enabled() && !this.state.templates().isEmpty(),
                 ButtonTone.QUIET
         );
-        this.addButton("button.skyresources3.island.next_template",
-                "tooltip.skyresources3.island.next_template",
+        this.addButton("button.skyresources.island.next_template",
+                "tooltip.skyresources.island.next_template",
                 actionX + actionWidth - 28,
                 y,
                 28,
@@ -137,10 +137,10 @@ public final class IslandGuiScreen extends Screen {
                 y + 4,
                 actionWidth - 12,
                 BUTTON_HEIGHT - 6,
-                Component.translatable("screen.skyresources3.island.player_input")
+                Component.translatable("screen.skyresources.island.player_input")
         );
         this.playerBox.setMaxLength(40);
-        this.playerBox.setHint(Component.translatable("screen.skyresources3.island.player_hint"));
+        this.playerBox.setHint(Component.translatable("screen.skyresources.island.player_hint"));
         this.playerBox.setValue(playerName);
         this.playerBox.setBordered(false);
         this.playerBox.setTextColor(TEXT_COLOR);
@@ -148,10 +148,10 @@ public final class IslandGuiScreen extends Screen {
         this.addRenderableWidget(this.playerBox);
         y += BUTTON_HEIGHT + 24;
 
-        this.addButton("button.skyresources3.island.create",
+        this.addButton("button.skyresources.island.create",
                 this.state.hasIsland()
-                        ? "tooltip.skyresources3.island.create_disabled"
-                        : "tooltip.skyresources3.island.create",
+                        ? "tooltip.skyresources.island.create_disabled"
+                        : "tooltip.skyresources.island.create",
                 actionX,
                 y,
                 compactButtonWidth,
@@ -159,24 +159,24 @@ public final class IslandGuiScreen extends Screen {
                 this.state.enabled() && !this.state.hasIsland(),
                 ButtonTone.PRIMARY
         );
-        this.addButton(this.confirmLabel("reset", "button.skyresources3.island.reset"),
-                "tooltip.skyresources3.island.reset",
+        this.addButton(this.confirmLabel("reset", "button.skyresources.island.reset"),
+                "tooltip.skyresources.island.reset",
                 actionX + compactStep,
                 y,
                 compactButtonWidth,
                 button -> this.confirmOrSend("reset", IslandGuiActionPayload.Action.RESET, this.selectedTemplate()),
                 this.state.enabled() && this.state.owner()
         );
-        this.addButton("button.skyresources3.island.home",
-                "tooltip.skyresources3.island.home",
+        this.addButton("button.skyresources.island.home",
+                "tooltip.skyresources.island.home",
                 actionX + compactStep * 2,
                 y,
                 compactButtonWidth,
                 button -> this.send(IslandGuiActionPayload.Action.HOME),
                 this.state.enabled() && this.state.hasIsland()
         );
-        this.addButton("button.skyresources3.island.spawn",
-                "tooltip.skyresources3.island.spawn",
+        this.addButton("button.skyresources.island.spawn",
+                "tooltip.skyresources.island.spawn",
                 actionX + compactStep * 3,
                 y,
                 compactButtonWidth,
@@ -185,32 +185,32 @@ public final class IslandGuiScreen extends Screen {
         );
         y += BUTTON_HEIGHT + BUTTON_GAP;
 
-        this.addButton("button.skyresources3.island.info",
-                "tooltip.skyresources3.island.info",
+        this.addButton("button.skyresources.island.info",
+                "tooltip.skyresources.island.info",
                 actionX,
                 y,
                 compactButtonWidth,
                 button -> this.send(IslandGuiActionPayload.Action.INFO),
                 this.state.enabled() && this.state.hasIsland()
         );
-        this.addButton("button.skyresources3.island.trusted",
-                "tooltip.skyresources3.island.trusted",
+        this.addButton("button.skyresources.island.trusted",
+                "tooltip.skyresources.island.trusted",
                 actionX + compactStep,
                 y,
                 compactButtonWidth,
                 button -> this.send(IslandGuiActionPayload.Action.TRUSTED),
                 this.state.enabled() && this.state.owner()
         );
-        this.addButton("button.skyresources3.island.visit",
-                "tooltip.skyresources3.island.visit",
+        this.addButton("button.skyresources.island.visit",
+                "tooltip.skyresources.island.visit",
                 actionX + compactStep * 2,
                 y,
                 compactButtonWidth,
                 button -> this.sendWithPlayer(IslandGuiActionPayload.Action.VISIT),
                 this.state.enabled()
         );
-        this.addButton("button.skyresources3.island.invite",
-                "tooltip.skyresources3.island.invite",
+        this.addButton("button.skyresources.island.invite",
+                "tooltip.skyresources.island.invite",
                 actionX + compactStep * 3,
                 y,
                 compactButtonWidth,
@@ -219,32 +219,32 @@ public final class IslandGuiScreen extends Screen {
         );
         y += BUTTON_HEIGHT + BUTTON_GAP;
 
-        this.addButton("button.skyresources3.island.trust",
-                "tooltip.skyresources3.island.trust",
+        this.addButton("button.skyresources.island.trust",
+                "tooltip.skyresources.island.trust",
                 actionX,
                 y,
                 compactButtonWidth,
                 button -> this.sendWithPlayer(IslandGuiActionPayload.Action.TRUST),
                 this.state.enabled() && this.state.owner()
         );
-        this.addButton("button.skyresources3.island.untrust",
-                "tooltip.skyresources3.island.untrust",
+        this.addButton("button.skyresources.island.untrust",
+                "tooltip.skyresources.island.untrust",
                 actionX + compactStep,
                 y,
                 compactButtonWidth,
                 button -> this.sendWithPlayer(IslandGuiActionPayload.Action.UNTRUST),
                 this.state.enabled() && this.state.owner()
         );
-        this.addButton("button.skyresources3.island.accept",
-                "tooltip.skyresources3.island.accept",
+        this.addButton("button.skyresources.island.accept",
+                "tooltip.skyresources.island.accept",
                 actionX + compactStep * 2,
                 y,
                 compactButtonWidth,
                 button -> this.send(IslandGuiActionPayload.Action.ACCEPT),
                 this.state.enabled() && this.state.hasPendingInvite() && !this.state.hasIsland()
         );
-        this.addButton("button.skyresources3.island.refresh",
-                "tooltip.skyresources3.island.refresh",
+        this.addButton("button.skyresources.island.refresh",
+                "tooltip.skyresources.island.refresh",
                 actionX + compactStep * 3,
                 y,
                 compactButtonWidth,
@@ -254,8 +254,8 @@ public final class IslandGuiScreen extends Screen {
         );
 
         final int dangerY = panelY + panelHeight - PANEL_PADDING - BUTTON_HEIGHT;
-        this.addButton(this.confirmLabel("leave", "button.skyresources3.island.leave"),
-                "tooltip.skyresources3.island.leave",
+        this.addButton(this.confirmLabel("leave", "button.skyresources.island.leave"),
+                "tooltip.skyresources.island.leave",
                 actionX,
                 dangerY,
                 buttonWidth,
@@ -263,8 +263,8 @@ public final class IslandGuiScreen extends Screen {
                 this.state.enabled() && this.state.member(),
                 ButtonTone.DANGER
         );
-        this.addButton(this.confirmLabel("disband", "button.skyresources3.island.disband"),
-                "tooltip.skyresources3.island.disband",
+        this.addButton(this.confirmLabel("disband", "button.skyresources.island.disband"),
+                "tooltip.skyresources.island.disband",
                 actionX + buttonWidth + BUTTON_GAP,
                 dangerY,
                 buttonWidth,
@@ -284,22 +284,22 @@ public final class IslandGuiScreen extends Screen {
         int lineY = y;
         lineY = this.drawSectionHeader(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.section.status"),
+                Component.translatable("screen.skyresources.island.section.status"),
                 x,
                 lineY,
                 width,
                 SECTION_COLOR
         );
         if (!this.state.enabled()) {
-            this.drawWrapped(guiGraphics, Component.translatable("screen.skyresources3.island.status.disabled"), x, lineY, width, WARNING_TEXT_COLOR, 4);
+            this.drawWrapped(guiGraphics, Component.translatable("screen.skyresources.island.status.disabled"), x, lineY, width, WARNING_TEXT_COLOR, 4);
             return;
         }
         if (!this.state.hasIsland()) {
-            lineY = this.drawWrapped(guiGraphics, Component.translatable("screen.skyresources3.island.status.none"), x, lineY, width, TEXT_COLOR, 4);
+            lineY = this.drawWrapped(guiGraphics, Component.translatable("screen.skyresources.island.status.none"), x, lineY, width, TEXT_COLOR, 4);
             if (this.state.hasPendingInvite()) {
                 this.drawWrapped(
                         guiGraphics,
-                        Component.translatable("screen.skyresources3.island.status.pending", this.state.pendingInviteOwner()),
+                        Component.translatable("screen.skyresources.island.status.pending", this.state.pendingInviteOwner()),
                         x,
                         lineY + 4,
                         width,
@@ -311,29 +311,29 @@ public final class IslandGuiScreen extends Screen {
         }
 
         final Component relation = this.state.owner()
-                ? Component.translatable("screen.skyresources3.island.status.owner")
-                : Component.translatable("screen.skyresources3.island.status.member", this.state.ownerName());
+                ? Component.translatable("screen.skyresources.island.status.owner")
+                : Component.translatable("screen.skyresources.island.status.member", this.state.ownerName());
         lineY = this.drawWrapped(guiGraphics, relation, x, lineY, width, TEXT_COLOR, 2);
         lineY = this.drawLine(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.status.type", this.templateName(this.state.islandType())),
+                Component.translatable("screen.skyresources.island.status.type", this.templateName(this.state.islandType())),
                 x,
                 lineY + 2,
                 MUTED_TEXT_COLOR
         );
         lineY = this.drawWrapped(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.status.dimension", this.state.dimension()),
+                Component.translatable("screen.skyresources.island.status.dimension", this.state.dimension()),
                 x,
                 lineY,
                 width,
                 MUTED_TEXT_COLOR,
                 2
         );
-        lineY = this.drawLine(guiGraphics, Component.translatable("screen.skyresources3.island.status.home", this.state.home()), x, lineY, MUTED_TEXT_COLOR);
+        lineY = this.drawLine(guiGraphics, Component.translatable("screen.skyresources.island.status.home", this.state.home()), x, lineY, MUTED_TEXT_COLOR);
         lineY = this.drawWrapped(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.status.players", this.joined(this.state.players())),
+                Component.translatable("screen.skyresources.island.status.players", this.joined(this.state.players())),
                 x,
                 lineY + 4,
                 width,
@@ -342,7 +342,7 @@ public final class IslandGuiScreen extends Screen {
         );
         lineY = this.drawWrapped(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.status.invites", this.joined(this.state.invites())),
+                Component.translatable("screen.skyresources.island.status.invites", this.joined(this.state.invites())),
                 x,
                 lineY + 2,
                 width,
@@ -351,7 +351,7 @@ public final class IslandGuiScreen extends Screen {
         );
         this.drawWrapped(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.status.trusted", this.joined(this.state.trustedVisitors())),
+                Component.translatable("screen.skyresources.island.status.trusted", this.joined(this.state.trustedVisitors())),
                 x,
                 lineY + 2,
                 width,
@@ -370,7 +370,7 @@ public final class IslandGuiScreen extends Screen {
         int y = top;
         y = this.drawSectionHeader(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.section.template"),
+                Component.translatable("screen.skyresources.island.section.template"),
                 actionX,
                 y,
                 actionWidth,
@@ -388,7 +388,7 @@ public final class IslandGuiScreen extends Screen {
         final int inputY = this.playerBox == null ? top + 64 : this.playerBox.getY() - 4;
         this.drawLine(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.player_input"),
+                Component.translatable("screen.skyresources.island.player_input"),
                 actionX,
                 inputY - 12,
                 MUTED_TEXT_COLOR
@@ -398,7 +398,7 @@ public final class IslandGuiScreen extends Screen {
         final int actionLabelY = inputY + BUTTON_HEIGHT + 6;
         this.drawSectionHeader(
                 guiGraphics,
-                Component.translatable("screen.skyresources3.island.section.actions"),
+                Component.translatable("screen.skyresources.island.section.actions"),
                 actionX,
                 actionLabelY,
                 actionWidth,
@@ -511,7 +511,7 @@ public final class IslandGuiScreen extends Screen {
 
     private Component confirmLabel(final String confirmation, final String fallbackKey) {
         return Component.translatable(confirmation.equals(this.confirmAction)
-                ? "button.skyresources3.island.confirm"
+                ? "button.skyresources.island.confirm"
                 : fallbackKey);
     }
 
@@ -629,12 +629,12 @@ public final class IslandGuiScreen extends Screen {
     }
 
     private Component templateName(final String id) {
-        return Component.translatable("screen.skyresources3.island.template." + id);
+        return Component.translatable("screen.skyresources.island.template." + id);
     }
 
     private String joined(final List<String> values) {
         if (values.isEmpty()) {
-            return Component.translatable("screen.skyresources3.island.none").getString();
+            return Component.translatable("screen.skyresources.island.none").getString();
         }
         final String joined = String.join(", ", values);
         return joined.length() <= 72 ? joined : joined.substring(0, 69) + "...";

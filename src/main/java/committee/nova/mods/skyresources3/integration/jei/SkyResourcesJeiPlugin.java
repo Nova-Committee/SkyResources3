@@ -47,7 +47,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION,
                         "combustion",
                         CombustionHeaterItem.forType(ModDataPackRegistries.WOODEN_COMBUSTION_HEATER),
-                        "jei.skyresources3.process.heat",
+                        "jei.skyresources.process.heat",
                         ProcessRecipeJeiCategory.ParameterMode.INTEGER
                 ),
                 processCategory(
@@ -55,7 +55,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         SkyResourcesJeiRecipeTypes.PROCESS_FREEZER,
                         "freezer",
                         new ItemStack(ModItems.MINI_FREEZER.get()),
-                        "jei.skyresources3.process.ticks",
+                        "jei.skyresources.process.ticks",
                         ProcessRecipeJeiCategory.ParameterMode.INTEGER
                 ),
                 processCategory(
@@ -63,7 +63,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         SkyResourcesJeiRecipeTypes.PROCESS_FUSION,
                         "fusion",
                         new ItemStack(ModItems.FUSION_TABLE.get()),
-                        "jei.skyresources3.process.yield",
+                        "jei.skyresources.process.yield",
                         ProcessRecipeJeiCategory.ParameterMode.NUMBER
                 ),
                 processCategory(
@@ -71,7 +71,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         SkyResourcesJeiRecipeTypes.PROCESS_INFUSION,
                         "infusion",
                         new ItemStack(ModItems.ALCHEMICAL_INFUSION_STONE.get()),
-                        "jei.skyresources3.process.health",
+                        "jei.skyresources.process.health",
                         ProcessRecipeJeiCategory.ParameterMode.INTEGER
                 ),
                 processCategory(
@@ -87,7 +87,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         SkyResourcesJeiRecipeTypes.PROCESS_ROCK_GRINDER,
                         "rock_grinder",
                         new ItemStack(ModItems.STONE_GRINDER.get()),
-                        "jei.skyresources3.process.chance",
+                        "jei.skyresources.process.chance",
                         ProcessRecipeJeiCategory.ParameterMode.PERCENT
                 ),
                 processCategory(
@@ -95,7 +95,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         SkyResourcesJeiRecipeTypes.PROCESS_CAULDRON_CLEAN,
                         "cauldron_clean",
                         new ItemStack(Blocks.CAULDRON),
-                        "jei.skyresources3.process.chance",
+                        "jei.skyresources.process.chance",
                         ProcessRecipeJeiCategory.ParameterMode.PERCENT
                 ),
                 new CrucibleRecipeJeiCategory(guiHelper),
@@ -226,7 +226,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         return new ProcessRecipeJeiCategory(
                 guiHelper,
                 recipeType,
-                Component.translatable("jei.skyresources3.category.process." + translationSuffix),
+                Component.translatable("jei.skyresources.category.process." + translationSuffix),
                 icon,
                 parameterKey,
                 parameterMode

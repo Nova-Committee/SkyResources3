@@ -45,7 +45,7 @@ public final class DarkMatterWarperScreen extends AbstractContainerScreen<DarkMa
     private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         if (this.isHovering(FUEL_X, FUEL_Y, FUEL_WIDTH, FUEL_HEIGHT, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources3.dark_matter_warper.fuel",
+                    "screen.skyresources.dark_matter_warper.fuel",
                     this.menu.getBurnTime(),
                     this.menu.getMaxBurnTime()
             ));
@@ -56,7 +56,7 @@ public final class DarkMatterWarperScreen extends AbstractContainerScreen<DarkMa
                     this.font,
                     mouseX,
                     mouseY,
-                    Component.translatable("screen.skyresources3.dark_matter_warper.fuel_slot")
+                    Component.translatable("screen.skyresources.dark_matter_warper.fuel_slot")
             );
         }
     }

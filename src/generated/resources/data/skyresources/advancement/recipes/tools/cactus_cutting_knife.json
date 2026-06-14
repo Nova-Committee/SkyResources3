@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cactus_needle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "skyresources:cactus_needle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "skyresources:cactus_cutting_knife"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cactus_needle"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "skyresources:cactus_cutting_knife"
+    ]
+  }
+}

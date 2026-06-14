@@ -111,7 +111,7 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new CrucibleInserterMenu(containerId, inventory, inserter),
-                        Component.translatable("container.skyresources3.crucible_inserter")
+                        Component.translatable("container.skyresources.crucible_inserter")
                 ),
                 buffer -> CrucibleInserterMenu.writeClientSideData(buffer, pos)
         );

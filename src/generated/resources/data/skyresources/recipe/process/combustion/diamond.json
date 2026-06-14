@@ -1,0 +1,16 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "skyresources:compressed_coal_block"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:diamond"
+    }
+  ],
+  "parameter": 1600.0,
+  "process": "combustion"
+}

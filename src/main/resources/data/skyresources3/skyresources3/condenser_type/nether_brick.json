@@ -1,6 +1,0 @@
-{
-  "translation_key": "block.skyresources3.condenser.nether_brick",
-  "texture": "minecraft:block/nether_bricks",
-  "speed": 1.6,
-  "efficiency": 0.4
-}

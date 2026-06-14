@@ -1,0 +1,6 @@
+{
+  "translation_key": "block.skyresources.condenser.dark_matter",
+  "texture": "skyresources:block/dark_matter_block",
+  "speed": 100.0,
+  "efficiency": 1.0
+}

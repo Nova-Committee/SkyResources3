@@ -1,0 +1,32 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 5,
+      "ingredient": "minecraft:soul_sand"
+    },
+    {
+      "count": 3,
+      "ingredient": "skyresources:compressed_coal_block"
+    },
+    {
+      "ingredient": "minecraft:gold_ingot"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:iron_ingot"
+    },
+    {
+      "count": 4,
+      "ingredient": "minecraft:brick"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "skyresources:dark_matter"
+    }
+  ],
+  "parameter": 2900.0,
+  "process": "combustion"
+}

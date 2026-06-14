@@ -24,7 +24,7 @@ public final class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = CREATIVE_MODE_TABS.register(
             "main",
             () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.skyresources3.main"))
+                    .title(Component.translatable("itemGroup.skyresources.main"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(() -> ModItems.CACTUS_FRUIT.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {

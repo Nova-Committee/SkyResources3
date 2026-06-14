@@ -30,14 +30,14 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
     private static void appendData(final ITooltip tooltip, final SkyResourcesProbeData data) {
         appendHeatRequirement(tooltip, data.heatRequirementState());
         if (data.heatSourceValue() != SkyResourcesProbeData.VALUE_NONE) {
-            tooltip.add(Component.translatable("jade.skyresources3.heat_source_value", data.heatSourceValue())
+            tooltip.add(Component.translatable("jade.skyresources.heat_source_value", data.heatSourceValue())
                     .withStyle(ChatFormatting.YELLOW));
         }
         if (data.currentHeat() != SkyResourcesProbeData.VALUE_NONE) {
-            tooltip.add(Component.translatable("jade.skyresources3.machine_heat", data.currentHeat(), data.maxHeat())
+            tooltip.add(Component.translatable("jade.skyresources.machine_heat", data.currentHeat(), data.maxHeat())
                     .withStyle(ChatFormatting.GOLD));
             if (data.heatPerTick() > 0) {
-                tooltip.add(Component.translatable("jade.skyresources3.heat_per_tick", data.heatPerTick())
+                tooltip.add(Component.translatable("jade.skyresources.heat_per_tick", data.heatPerTick())
                         .withStyle(ChatFormatting.YELLOW));
             }
         }
@@ -49,8 +49,8 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
             return;
         }
         tooltip.add(Component.translatable(state == SkyResourcesProbeData.STATE_VALID
-                        ? "jade.skyresources3.heat_source.valid"
-                        : "jade.skyresources3.heat_source.invalid")
+                        ? "jade.skyresources.heat_source.valid"
+                        : "jade.skyresources.heat_source.invalid")
                 .withStyle(state == SkyResourcesProbeData.STATE_VALID ? ChatFormatting.GREEN : ChatFormatting.YELLOW));
     }
 
@@ -60,14 +60,14 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
         }
         final boolean valid = state != SkyResourcesProbeData.STATE_INVALID;
         tooltip.add(Component.translatable(valid
-                        ? "jade.skyresources3.multiblock.valid"
-                        : "jade.skyresources3.multiblock.invalid")
+                        ? "jade.skyresources.multiblock.valid"
+                        : "jade.skyresources.multiblock.invalid")
                 .withStyle(valid ? ChatFormatting.GREEN : ChatFormatting.YELLOW));
         if (state == SkyResourcesProbeData.STATE_VALID_TIER2
                 || state == SkyResourcesProbeData.STATE_VALID_TIER2_MISSING) {
             tooltip.add(Component.translatable(state == SkyResourcesProbeData.STATE_VALID_TIER2
-                            ? "jade.skyresources3.multiblock.tier2_valid"
-                            : "jade.skyresources3.multiblock.tier2_invalid")
+                            ? "jade.skyresources.multiblock.tier2_valid"
+                            : "jade.skyresources.multiblock.tier2_invalid")
                     .withStyle(state == SkyResourcesProbeData.STATE_VALID_TIER2
                             ? ChatFormatting.GREEN
                             : ChatFormatting.YELLOW));

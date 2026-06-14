@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "skyresources:alchemical_gold_ingot"
+  },
+  "pattern": [
+    "X",
+    "X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources:alchemical_gold_needle"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:iron_ingot",
+    "Y": "skyresources:advanced_power_component"
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XYX"
+  ],
+  "result": {
+    "components": {
+      "skyresources:combustion_heater_type": "skyresources:iron"
+    },
+    "count": 1,
+    "id": "skyresources:combustion_heater"
+  }
+}

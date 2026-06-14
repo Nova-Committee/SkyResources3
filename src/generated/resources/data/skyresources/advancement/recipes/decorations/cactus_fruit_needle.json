@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cactus_fruit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "skyresources:cactus_fruit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "skyresources:cactus_fruit_needle"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cactus_fruit"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "skyresources:cactus_fruit_needle"
+    ]
+  }
+}

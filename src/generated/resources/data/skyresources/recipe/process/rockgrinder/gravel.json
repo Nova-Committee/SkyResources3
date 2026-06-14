@@ -1,0 +1,16 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:cobblestone"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:gravel"
+    }
+  ],
+  "parameter": 1.0,
+  "process": "rockgrinder"
+}

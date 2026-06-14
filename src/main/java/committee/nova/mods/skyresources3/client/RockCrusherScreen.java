@@ -129,7 +129,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.rock_crusher.energy",
+                "screen.skyresources.rock_crusher.energy",
                 this.menu.getEnergyStored(),
                 this.menu.getMaxEnergyStored()
         ));
@@ -140,7 +140,7 @@ public final class RockCrusherScreen extends AbstractContainerScreen<RockCrusher
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.rock_crusher.progress",
+                "screen.skyresources.rock_crusher.progress",
                 GuiTooltips.percent(this.menu.getProgressRatio())
         ));
     }

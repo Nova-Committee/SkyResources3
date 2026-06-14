@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "top": "minecraft:block/dirt",
-    "front": "skyresources3:block/dirt_furnace_on",
-    "side": "minecraft:block/dirt"
-  }
-}

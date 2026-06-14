@@ -1,0 +1,9 @@
+{
+  "translation_key": "block.skyresources.heat_provider.stone",
+  "texture": "minecraft:block/stone",
+  "speed": 0.8,
+  "efficiency": 1.0,
+  "fuel": {
+    "kind": "furnace"
+  }
+}

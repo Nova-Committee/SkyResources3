@@ -76,14 +76,14 @@ public final class InfusionStoneItem extends Item {
         final Level level = context.getLevel();
         if (player.getMaxHealth() < recipe.healthCost()) {
             player.displayClientMessage(
-                    Component.translatable("message.skyresources3.infusion_stone.max_health_too_low"),
+                    Component.translatable("message.skyresources.infusion_stone.max_health_too_low"),
                     true
             );
             return;
         }
         if (player.getHealth() < recipe.healthCost()) {
             player.displayClientMessage(
-                    Component.translatable("message.skyresources3.infusion_stone.not_enough_health"),
+                    Component.translatable("message.skyresources.infusion_stone.not_enough_health"),
                     true
             );
             return;

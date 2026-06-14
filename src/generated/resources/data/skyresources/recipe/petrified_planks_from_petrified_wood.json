@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "skyresources:petrified_wood"
+  ],
+  "result": {
+    "count": 4,
+    "id": "skyresources:petrified_planks"
+  }
+}

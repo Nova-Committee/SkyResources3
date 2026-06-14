@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_light_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "skyresources:light_matter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "skyresources:light_matter_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_light_matter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "skyresources:light_matter_block"
+    ]
+  }
+}

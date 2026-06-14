@@ -1,0 +1,20 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 8,
+      "ingredient": "skyresources:plant_matter"
+    },
+    {
+      "ingredient": "minecraft:snowball"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:slime_ball"
+    }
+  ],
+  "parameter": 200.0,
+  "process": "combustion"
+}

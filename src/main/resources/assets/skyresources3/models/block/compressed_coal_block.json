@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "skyresources3:block/compressed_coal_block"
-  }
-}

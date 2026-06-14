@@ -140,7 +140,7 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new RockCleanerMenu(containerId, inventory, cleaner),
-                        Component.translatable("container.skyresources3.rock_cleaner")
+                        Component.translatable("container.skyresources.rock_cleaner")
                 ),
                 buffer -> RockCleanerMenu.writeClientSideData(buffer, pos)
         );

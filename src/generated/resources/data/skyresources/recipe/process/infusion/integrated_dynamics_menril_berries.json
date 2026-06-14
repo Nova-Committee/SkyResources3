@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "integrateddynamics"
+    }
+  ],
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": "minecraft:light_blue_dye"
+    },
+    {
+      "ingredient": "minecraft:red_mushroom"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "integrateddynamics:menril_berries"
+    }
+  ],
+  "parameter": 12.0,
+  "process": "infusion"
+}

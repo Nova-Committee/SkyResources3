@@ -15,7 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 public final class GuideStructures {
-    private static final String STRUCTURE_PREFIX = "guide.skyresources3.structure.";
+    private static final String STRUCTURE_PREFIX = "guide.skyresources.structure.";
 
     private static final Map<String, GuideStructure> STRUCTURES = index(List.of(
             ironFreezer(),

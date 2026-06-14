@@ -1,0 +1,40 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "skyresources:heat_provider_type",
+    "cases": [
+      {
+        "when": ["skyresources:wooden"],
+        "model": { "type": "minecraft:model", "model": "skyresources:block/wooden_heat_provider" }
+      },
+      {
+        "when": ["skyresources:stone"],
+        "model": { "type": "minecraft:model", "model": "skyresources:block/stone_heat_provider" }
+      },
+      {
+        "when": ["skyresources:iron"],
+        "model": { "type": "minecraft:model", "model": "skyresources:block/iron_heat_provider" }
+      },
+      {
+        "when": ["skyresources:nether_brick"],
+        "model": { "type": "minecraft:model", "model": "skyresources:block/nether_brick_heat_provider" }
+      },
+      {
+        "when": ["skyresources:end_stone"],
+        "model": { "type": "minecraft:model", "model": "skyresources:block/end_stone_heat_provider" }
+      },
+      {
+        "when": ["skyresources:dark_matter"],
+        "model": { "type": "minecraft:model", "model": "skyresources:block/dark_matter_heat_provider" }
+      },
+      {
+        "when": ["skyresources:light_matter"],
+        "model": { "type": "minecraft:model", "model": "skyresources:block/light_matter_heat_provider" }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "skyresources:block/iron_heat_provider"
+    }
+  }
+}

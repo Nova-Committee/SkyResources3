@@ -115,7 +115,7 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
 
     @Override
     protected Component getDefaultName() {
-        return Component.translatable("container.skyresources3.dirt_furnace");
+        return Component.translatable("container.skyresources.dirt_furnace");
     }
 
     @Override

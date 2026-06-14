@@ -133,7 +133,7 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
                                 inventory,
                                 lifeInjector
                         ),
-                        Component.translatable("container.skyresources3.life_injector")
+                        Component.translatable("container.skyresources.life_injector")
                 ),
                 buffer -> LifeInjectorMenu.writeClientSideData(buffer, pos)
         );

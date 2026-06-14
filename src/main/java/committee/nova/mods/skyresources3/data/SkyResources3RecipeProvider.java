@@ -78,7 +78,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.PETRIFIED_PLANKS.get(), 4)
                 .requires(ModBlocks.PETRIFIED_WOOD.get())
                 .unlockedBy("has_petrified_wood", has(ModBlocks.PETRIFIED_WOOD.get()))
-                .save(this.output, "skyresources3:petrified_planks_from_petrified_wood");
+                .save(this.output, "skyresources:petrified_planks_from_petrified_wood");
 
         this.shaped(RecipeCategory.MISC, ModItems.PLANT_MATTER.get(), 3)
                 .define('X', ModItems.CACTUS_FRUIT.get())
@@ -86,7 +86,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("XXX")
                 .pattern(" X ")
                 .unlockedBy("has_cactus_fruit", has(ModItems.CACTUS_FRUIT.get()))
-                .save(this.output, "skyresources3:plant_matter_from_cactus_fruit");
+                .save(this.output, "skyresources:plant_matter_from_cactus_fruit");
 
         this.shaped(RecipeCategory.FOOD, ModItems.FLESHY_SNOW_NUGGET.get(), 3)
                 .define('S', Items.SNOWBALL)
@@ -317,7 +317,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.shapeless(RecipeCategory.MISC, ModItems.ALCHEMICAL_COAL.get(), 9)
                 .requires(ModBlocks.COAL_INFUSED_BLOCK.get())
                 .unlockedBy("has_coal_infused_block", has(ModBlocks.COAL_INFUSED_BLOCK.get()))
-                .save(this.output, "skyresources3:alchemical_coal_from_block");
+                .save(this.output, "skyresources:alchemical_coal_from_block");
 
         this.shapeless(RecipeCategory.MISC, ModItems.HEAVY_EXPLOSIVE_SNOWBALL.get(), 3)
                 .requires(ModItems.HEAVY_SNOWBALL.get())
@@ -419,7 +419,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.shapeless(RecipeCategory.MISC, ModItems.DARK_MATTER.get(), 9)
                 .requires(ModBlocks.DARK_MATTER_BLOCK.get())
                 .unlockedBy("has_dark_matter_block", has(ModBlocks.DARK_MATTER_BLOCK.get()))
-                .save(this.output, "skyresources3:dark_matter_from_block");
+                .save(this.output, "skyresources:dark_matter_from_block");
 
         this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LIGHT_MATTER_BLOCK.get())
                 .define('X', ModItems.LIGHT_MATTER.get())
@@ -432,7 +432,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.shapeless(RecipeCategory.MISC, ModItems.LIGHT_MATTER.get(), 9)
                 .requires(ModBlocks.LIGHT_MATTER_BLOCK.get())
                 .unlockedBy("has_light_matter_block", has(ModBlocks.LIGHT_MATTER_BLOCK.get()))
-                .save(this.output, "skyresources3:light_matter_from_block");
+                .save(this.output, "skyresources:light_matter_from_block");
 
         this.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIFE_INFUSER.get())
                 .define('X', ItemTags.LOGS)

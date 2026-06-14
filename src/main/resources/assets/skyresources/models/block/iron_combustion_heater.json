@@ -1,0 +1,7 @@
+{
+  "parent": "skyresources:block/combustion_heater_body",
+  "textures": {
+    "all": "skyresources:block/iron_machine",
+    "part": "skyresources:block/combustion"
+  }
+}

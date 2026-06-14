@@ -81,7 +81,7 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
         );
         guiGraphics.drawString(
                 this.font,
-                Component.translatable("screen.skyresources3.freezer.speed", formatSpeed(this.menu.getSpeed())),
+                Component.translatable("screen.skyresources.freezer.speed", formatSpeed(this.menu.getSpeed())),
                 SPEED_LABEL_X,
                 SPEED_LABEL_Y,
                 0xFF404040,
@@ -139,7 +139,7 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
     private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         if (this.isHovering(SPEED_LABEL_X, SPEED_LABEL_Y - 1, SPEED_LABEL_WIDTH, this.font.lineHeight + 2, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources3.freezer.speed.tooltip",
+                    "screen.skyresources.freezer.speed.tooltip",
                     formatSpeed(this.menu.getSpeed())
             ));
             return;
@@ -147,15 +147,15 @@ public final class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
         if (this.menu.requiresMultiblock()
                 && this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(this.menu.hasValidMultiblock()
-                    ? "screen.skyresources3.freezer.multiblock.formed"
-                    : "screen.skyresources3.freezer.multiblock.missing"));
+                    ? "screen.skyresources.freezer.multiblock.formed"
+                    : "screen.skyresources.freezer.multiblock.missing"));
             return;
         }
         for (int inputSlot = 0; inputSlot < this.menu.getInputCount(); inputSlot++) {
             final int x = FreezerMenu.SLOT_START_X + inputSlot * FreezerMenu.SLOT_SPACING;
             if (this.isHovering(x, FreezerMenu.INPUT_SLOT_Y, 16, 16, mouseX, mouseY)) {
                 GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                        "screen.skyresources3.freezer.progress",
+                        "screen.skyresources.freezer.progress",
                         GuiTooltips.percent(this.menu.getProgressRatio(inputSlot))
                 ));
                 return;

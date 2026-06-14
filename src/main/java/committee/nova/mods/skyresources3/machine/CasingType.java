@@ -40,7 +40,7 @@ public record CasingType(
             Element.CODEC.listOf().optionalFieldOf("elements", DEFAULT_FRAME_ELEMENTS).forGetter(CasingType::elements)
     ).apply(instance, CasingType::new));
     private static final CasingType FALLBACK = new CasingType(
-            "block.skyresources3.machine_casing.iron",
+            "block.skyresources.machine_casing.iron",
             Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
             1538,
             1.2F,

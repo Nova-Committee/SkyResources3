@@ -1,7 +1,7 @@
 {
   "values": [
-    "skyresources3:petrified_planks",
-    "skyresources3:fusion_table",
-    "skyresources3:machine_casing"
+    "skyresources:petrified_planks",
+    "skyresources:fusion_table",
+    "skyresources:machine_casing"
   ]
 }

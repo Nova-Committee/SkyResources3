@@ -1,6 +1,0 @@
-{
-  "parent": "skyresources3:block/condenser_body",
-  "textures": {
-    "all": "skyresources3:block/light_matter_block"
-  }
-}

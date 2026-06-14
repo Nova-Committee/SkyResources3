@@ -63,11 +63,11 @@ public final class CombustionHeaterItem extends BlockItem {
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.combustion_heater.speed",
+                            "item.skyresources.combustion_heater.speed",
                             Math.round(type.speed() * 100.0F)
                     ).withStyle(ChatFormatting.BLUE));
                     tooltipAdder.accept(Component.translatable(
-                            "item.skyresources3.combustion_heater.efficiency",
+                            "item.skyresources.combustion_heater.efficiency",
                             Math.round(type.efficiency() * 100.0F)
                     ).withStyle(ChatFormatting.GREEN));
                 });
@@ -75,7 +75,7 @@ public final class CombustionHeaterItem extends BlockItem {
 
     public static String translationKey(final Identifier typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
-            return "block.skyresources3.combustion_heater." + typeId.getPath();
+            return "block.skyresources.combustion_heater." + typeId.getPath();
         }
         return "block." + typeId.getNamespace() + ".combustion_heater." + typeId.getPath().replace('/', '.');
     }

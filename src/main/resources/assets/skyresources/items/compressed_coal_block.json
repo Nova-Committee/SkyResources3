@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "skyresources:block/compressed_coal_block"
+  }
+}

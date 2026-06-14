@@ -60,7 +60,7 @@ public final class GuideScreen extends Screen {
     private final List<InlineActionRegion> inlineActionRegions = new ArrayList<>();
 
     public GuideScreen() {
-        super(Component.translatable("screen.skyresources3.guide.title"));
+        super(Component.translatable("screen.skyresources.guide.title"));
     }
 
     @Override
@@ -77,10 +77,10 @@ public final class GuideScreen extends Screen {
                 panelY + 24,
                 panelWidth - PANEL_PADDING * 2,
                 SEARCH_HEIGHT,
-                Component.translatable("screen.skyresources3.guide.search")
+                Component.translatable("screen.skyresources.guide.search")
         );
         this.searchBox.setMaxLength(40);
-        this.searchBox.setHint(Component.translatable("screen.skyresources3.guide.search_hint"));
+        this.searchBox.setHint(Component.translatable("screen.skyresources.guide.search_hint"));
         this.searchBox.setValue(currentSearch);
         this.searchBox.setResponder(value -> {
             this.searchText = value;
@@ -100,28 +100,28 @@ public final class GuideScreen extends Screen {
                         button -> this.changeCategory(-1)
                 )
                 .bounds(panelX + PANEL_PADDING, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources3.guide.previous_category")))
+                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.previous_category")))
                 .build());
         this.addRenderableWidget(Button.builder(
                         Component.literal(">"),
                         button -> this.changeCategory(1)
                 )
                 .bounds(panelX + PANEL_PADDING + SMALL_BUTTON_WIDTH + 4, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources3.guide.next_category")))
+                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.next_category")))
                 .build());
         this.addRenderableWidget(Button.builder(
                         Component.literal("<"),
                         button -> this.changePage(-1)
                 )
                 .bounds(panelX + 84, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources3.guide.previous_page")))
+                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.previous_page")))
                 .build());
         this.addRenderableWidget(Button.builder(
                         Component.literal(">"),
                         button -> this.changePage(1)
                 )
                 .bounds(panelX + 84 + SMALL_BUTTON_WIDTH + 4, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources3.guide.next_page")))
+                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.next_page")))
                 .build());
         this.addRenderableWidget(Button.builder(
                         Component.translatable("gui.done"),
@@ -209,7 +209,7 @@ public final class GuideScreen extends Screen {
         if (categories.isEmpty()) {
             this.drawCenteredString(
                     guiGraphics,
-                    Component.translatable("screen.skyresources3.guide.no_pages"),
+                    Component.translatable("screen.skyresources.guide.no_pages"),
                     panelX + panelWidth / 2,
                     panelY + panelHeight / 2 - this.font.lineHeight,
                     MUTED_TEXT_COLOR
@@ -226,7 +226,7 @@ public final class GuideScreen extends Screen {
         if (categoryPages.isEmpty()) {
             this.drawCenteredString(
                     guiGraphics,
-                    Component.translatable("screen.skyresources3.guide.no_pages"),
+                    Component.translatable("screen.skyresources.guide.no_pages"),
                     panelX + panelWidth / 2,
                     panelY + panelHeight / 2 - this.font.lineHeight,
                     MUTED_TEXT_COLOR
@@ -261,13 +261,13 @@ public final class GuideScreen extends Screen {
                 ? panelWidth - PANEL_PADDING * 2 - this.indexWidth(panelWidth) - INDEX_GAP
                 : panelWidth - PANEL_PADDING * 2;
         final Component category = Component.translatable(
-                "screen.skyresources3.guide.category_counter",
+                "screen.skyresources.guide.category_counter",
                 page.category(),
                 this.categoryIndex(page.categoryKey()) + 1,
                 categories.size()
         );
         final Component pageCounter = Component.translatable(
-                "screen.skyresources3.guide.page_counter",
+                "screen.skyresources.guide.page_counter",
                 this.selectedPageIndex + 1,
                 pages.size()
         );
@@ -344,7 +344,7 @@ public final class GuideScreen extends Screen {
         final int x = panelX + PANEL_PADDING;
         final int y = panelY + 48;
         final Component resultCount = Component.translatable(
-                "screen.skyresources3.guide.result_count",
+                "screen.skyresources.guide.result_count",
                 pages.size(),
                 categoryPageCount
         );
@@ -450,7 +450,7 @@ public final class GuideScreen extends Screen {
                 : panelWidth - PANEL_PADDING * 2;
         guiGraphics.drawWordWrap(
                 this.font,
-                Component.translatable("screen.skyresources3.guide.no_results"),
+                Component.translatable("screen.skyresources.guide.no_results"),
                 contentX,
                 panelY + Math.max(72, panelHeight / 2 - this.font.lineHeight),
                 contentWidth,
@@ -668,7 +668,7 @@ public final class GuideScreen extends Screen {
         }
 
         final Component type = Component.translatable(
-                "screen.skyresources3.guide.action_type." + action.type().name().toLowerCase(Locale.ROOT)
+                "screen.skyresources.guide.action_type." + action.type().name().toLowerCase(Locale.ROOT)
         );
         final int typeWidth = this.font.width(type);
         final int labelX = x + ICON_SIZE + 6;
@@ -711,7 +711,7 @@ public final class GuideScreen extends Screen {
         guiGraphics.drawString(this.font, structure.title(), contentX, contentY, TEXT_COLOR, false);
         guiGraphics.drawString(
                 this.font,
-                Component.translatable("screen.skyresources3.guide.structure_count", structure.blocks().size()),
+                Component.translatable("screen.skyresources.guide.structure_count", structure.blocks().size()),
                 contentX,
                 contentY + 14,
                 MUTED_TEXT_COLOR,
@@ -719,7 +719,7 @@ public final class GuideScreen extends Screen {
         );
         guiGraphics.drawString(
                 this.font,
-                Component.translatable("screen.skyresources3.guide.structure_close_hint"),
+                Component.translatable("screen.skyresources.guide.structure_close_hint"),
                 contentX,
                 contentBottom - this.font.lineHeight,
                 MUTED_TEXT_COLOR,
@@ -861,7 +861,7 @@ public final class GuideScreen extends Screen {
             guiGraphics.renderFakeItem(icon, x + 1, rowY + 1);
         }
         final Component position = Component.translatable(
-                "screen.skyresources3.guide.structure_position",
+                "screen.skyresources.guide.structure_position",
                 block.position()
         );
         final int positionWidth = this.font.width(position);
@@ -1145,7 +1145,7 @@ public final class GuideScreen extends Screen {
                 if (GuideRecipeIntegration.open(action)) {
                     this.feedbackMessage = null;
                 } else {
-                    this.feedbackMessage = Component.translatable("screen.skyresources3.guide.recipe_unavailable", action.label());
+                    this.feedbackMessage = Component.translatable("screen.skyresources.guide.recipe_unavailable", action.label());
                 }
                 yield true;
             }
@@ -1155,13 +1155,13 @@ public final class GuideScreen extends Screen {
     private boolean openGuidePage(final String pageId) {
         final GuidePage target = GuidePages.find(pageId).orElse(null);
         if (target == null) {
-            this.feedbackMessage = Component.translatable("screen.skyresources3.guide.missing_page", pageId);
+            this.feedbackMessage = Component.translatable("screen.skyresources.guide.missing_page", pageId);
             return true;
         }
         final List<String> categories = GuidePages.categories();
         final int categoryIndex = categories.indexOf(target.categoryKey());
         if (categoryIndex < 0) {
-            this.feedbackMessage = Component.translatable("screen.skyresources3.guide.missing_page", pageId);
+            this.feedbackMessage = Component.translatable("screen.skyresources.guide.missing_page", pageId);
             return true;
         }
 
@@ -1184,7 +1184,7 @@ public final class GuideScreen extends Screen {
         this.currentStructure = GuideStructures.find(structureId).orElse(null);
         this.structureScrollOffset = 0;
         if (this.currentStructure == null) {
-            this.feedbackMessage = Component.translatable("screen.skyresources3.guide.missing_structure", structureId);
+            this.feedbackMessage = Component.translatable("screen.skyresources.guide.missing_structure", structureId);
         } else {
             this.feedbackMessage = null;
         }
@@ -1295,9 +1295,9 @@ public final class GuideScreen extends Screen {
 
     private Component actionTooltip(final GuideAction action) {
         return switch (action.type()) {
-            case LINK -> Component.translatable("screen.skyresources3.guide.action_tooltip.link");
-            case RECIPE -> Component.translatable("screen.skyresources3.guide.action_tooltip.recipe");
-            case IMAGE -> Component.translatable("screen.skyresources3.guide.action_tooltip.image");
+            case LINK -> Component.translatable("screen.skyresources.guide.action_tooltip.link");
+            case RECIPE -> Component.translatable("screen.skyresources.guide.action_tooltip.recipe");
+            case IMAGE -> Component.translatable("screen.skyresources.guide.action_tooltip.image");
         };
     }
 

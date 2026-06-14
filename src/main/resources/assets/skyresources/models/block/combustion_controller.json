@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "skyresources:block/steel_machine",
+    "up": "skyresources:block/steel_machine",
+    "north": "skyresources:block/combustion_controller",
+    "south": "skyresources:block/steel_machine",
+    "west": "skyresources:block/steel_machine",
+    "east": "skyresources:block/steel_machine",
+    "particle": "skyresources:block/combustion_controller"
+  }
+}

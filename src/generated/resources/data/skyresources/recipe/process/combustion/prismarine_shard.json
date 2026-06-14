@@ -1,0 +1,20 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": "minecraft:quartz"
+    },
+    {
+      "ingredient": "minecraft:mossy_cobblestone"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "minecraft:prismarine_shard"
+    }
+  ],
+  "parameter": 1900.0,
+  "process": "combustion"
+}

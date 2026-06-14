@@ -1,0 +1,21 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": "minecraft:redstone"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:blaze_powder"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 5,
+      "id": "minecraft:glowstone_dust"
+    }
+  ],
+  "parameter": 1700.0,
+  "process": "combustion"
+}

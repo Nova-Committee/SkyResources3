@@ -1,0 +1,15 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "#minecraft:planks"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "id": "minecraft:stick"
+    }
+  ],
+  "process": "knife"
+}

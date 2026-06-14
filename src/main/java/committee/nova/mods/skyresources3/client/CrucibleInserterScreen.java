@@ -94,7 +94,7 @@ public final class CrucibleInserterScreen extends AbstractContainerScreen<Crucib
                 this.font,
                 mouseX,
                 mouseY,
-                Component.translatable("screen.skyresources3.crucible_inserter.slot")
+                Component.translatable("screen.skyresources.crucible_inserter.slot")
         );
     }
 }

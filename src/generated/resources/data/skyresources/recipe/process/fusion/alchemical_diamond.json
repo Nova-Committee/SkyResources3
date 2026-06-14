@@ -1,0 +1,20 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "minecraft:diamond"
+    },
+    {
+      "count": 8,
+      "ingredient": "minecraft:redstone"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "skyresources:alchemical_diamond"
+    }
+  ],
+  "parameter": 0.03,
+  "process": "fusion"
+}

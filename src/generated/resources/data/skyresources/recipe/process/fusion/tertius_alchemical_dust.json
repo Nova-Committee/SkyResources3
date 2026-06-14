@@ -1,0 +1,24 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 2,
+      "ingredient": "minecraft:glowstone_dust"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:lapis_lazuli"
+    },
+    {
+      "ingredient": "skyresources:alchemical_gold_ingot"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 5,
+      "id": "skyresources:tertius_alchemical_dust"
+    }
+  ],
+  "parameter": 0.004,
+  "process": "fusion"
+}

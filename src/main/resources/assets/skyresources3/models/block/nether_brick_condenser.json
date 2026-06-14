@@ -1,6 +1,0 @@
-{
-  "parent": "skyresources3:block/condenser_body",
-  "textures": {
-    "all": "minecraft:block/nether_bricks"
-  }
-}

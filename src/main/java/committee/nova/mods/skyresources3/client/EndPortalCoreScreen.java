@@ -98,11 +98,11 @@ public final class EndPortalCoreScreen extends AbstractContainerScreen<EndPortal
         }
         final String key;
         if (this.menu.hasValidTier2()) {
-            key = "screen.skyresources3.end_portal_core.structure.improved";
+            key = "screen.skyresources.end_portal_core.structure.improved";
         } else if (this.menu.hasValidMultiblock()) {
-            key = "screen.skyresources3.end_portal_core.structure.basic";
+            key = "screen.skyresources.end_portal_core.structure.basic";
         } else {
-            key = "screen.skyresources3.end_portal_core.structure.missing";
+            key = "screen.skyresources.end_portal_core.structure.missing";
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(key));
     }

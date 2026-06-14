@@ -1,0 +1,16 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": "skyresources:sandy_netherrack"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:soul_sand"
+    }
+  ],
+  "parameter": 1500.0,
+  "process": "freezer"
+}

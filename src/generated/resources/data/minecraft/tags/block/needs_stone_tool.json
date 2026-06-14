@@ -1,16 +1,16 @@
 {
   "values": [
-    "skyresources3:compressed_coal_block",
-    "skyresources3:coal_infused_block",
-    "skyresources3:dark_matter_block",
-    "skyresources3:light_matter_block",
-    "skyresources3:dark_matter_warper",
-    "skyresources3:end_portal_core",
-    "skyresources3:machine_casing",
-    "skyresources3:combustion_heater",
-    "skyresources3:heat_provider",
-    "skyresources3:condenser",
-    "skyresources3:combustion_collector",
-    "skyresources3:combustion_controller"
+    "skyresources:compressed_coal_block",
+    "skyresources:coal_infused_block",
+    "skyresources:dark_matter_block",
+    "skyresources:light_matter_block",
+    "skyresources:dark_matter_warper",
+    "skyresources:end_portal_core",
+    "skyresources:machine_casing",
+    "skyresources:combustion_heater",
+    "skyresources:heat_provider",
+    "skyresources:condenser",
+    "skyresources:combustion_collector",
+    "skyresources:combustion_controller"
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:iron_ingot",
+    "Y": "skyresources:diamond_grinder",
+    "Z": "skyresources:advanced_power_component"
+  },
+  "pattern": [
+    "XXX",
+    "XYX",
+    "XZX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "skyresources:rock_crusher"
+  }
+}

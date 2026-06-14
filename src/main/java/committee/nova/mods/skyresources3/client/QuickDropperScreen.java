@@ -94,7 +94,7 @@ public final class QuickDropperScreen extends AbstractContainerScreen<QuickDropp
                 this.font,
                 mouseX,
                 mouseY,
-                Component.translatable("screen.skyresources3.quick_dropper.slot")
+                Component.translatable("screen.skyresources.quick_dropper.slot")
         );
     }
 }

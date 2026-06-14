@@ -142,7 +142,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
                                 inventory,
                                 lifeInfuser
                         ),
-                        Component.translatable("container.skyresources3.life_infuser")
+                        Component.translatable("container.skyresources.life_infuser")
                 ),
                 buffer -> LifeInfuserMenu.writeClientSideData(buffer, pos)
         );

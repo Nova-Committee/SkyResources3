@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_petrified_wood": {
+      "conditions": {
+        "items": [
+          {
+            "items": "skyresources:petrified_wood"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "skyresources:petrified_planks_from_petrified_wood"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_petrified_wood"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "skyresources:petrified_planks_from_petrified_wood"
+    ]
+  }
+}

@@ -105,7 +105,7 @@ public final class DarkMatterWarperBlock extends Block implements EntityBlock {
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new DarkMatterWarperMenu(containerId, inventory, warper),
-                        Component.translatable("container.skyresources3.dark_matter_warper")
+                        Component.translatable("container.skyresources.dark_matter_warper")
                 ),
                 buffer -> DarkMatterWarperMenu.writeClientSideData(buffer, pos, warper)
         );

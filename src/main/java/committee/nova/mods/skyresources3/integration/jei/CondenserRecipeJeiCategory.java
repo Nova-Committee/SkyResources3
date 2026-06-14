@@ -42,7 +42,7 @@ final class CondenserRecipeJeiCategory implements IRecipeCategory<CondenserRecip
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.skyresources3.category.condenser");
+        return Component.translatable("jei.skyresources.category.condenser");
     }
 
     @Override
@@ -84,7 +84,7 @@ final class CondenserRecipeJeiCategory implements IRecipeCategory<CondenserRecip
         this.arrow.draw(guiGraphics, 76, 24);
         guiGraphics.drawString(
                 Minecraft.getInstance().font,
-                Component.translatable("jei.skyresources3.condenser_time", JeiIngredientStacks.number(recipe.parameter())),
+                Component.translatable("jei.skyresources.condenser_time", JeiIngredientStacks.number(recipe.parameter())),
                 4,
                 52,
                 TEXT_COLOR,

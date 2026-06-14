@@ -113,15 +113,15 @@ public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuser
     private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         if (this.isHovering(HEALTH_X, HEALTH_Y, HEALTH_WIDTH, HEALTH_HEIGHT, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources3.life.stored_health",
+                    "screen.skyresources.life.stored_health",
                     this.menu.storedHealth() / 2.0F
             ));
             return;
         }
         if (this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(this.menu.hasValidMultiblock()
-                    ? "screen.skyresources3.life_infuser.multiblock.formed"
-                    : "screen.skyresources3.life_infuser.multiblock.missing"));
+                    ? "screen.skyresources.life_infuser.multiblock.formed"
+                    : "screen.skyresources.life_infuser.multiblock.missing"));
         }
     }
 }

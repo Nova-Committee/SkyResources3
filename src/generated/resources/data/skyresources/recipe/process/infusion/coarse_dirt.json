@@ -1,0 +1,20 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": "skyresources:cactus_fruit"
+    },
+    {
+      "ingredient": "minecraft:red_sand"
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:coarse_dirt"
+    }
+  ],
+  "parameter": 15.0,
+  "process": "infusion"
+}

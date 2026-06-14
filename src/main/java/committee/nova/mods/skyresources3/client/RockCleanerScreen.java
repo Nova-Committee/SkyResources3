@@ -162,7 +162,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.rock_cleaner.energy",
+                "screen.skyresources.rock_cleaner.energy",
                 this.menu.getEnergyStored(),
                 this.menu.getMaxEnergyStored()
         ));
@@ -173,7 +173,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.rock_cleaner.water",
+                "screen.skyresources.rock_cleaner.water",
                 this.menu.getWaterStored(),
                 this.menu.getMaxWaterStored()
         ));
@@ -184,7 +184,7 @@ public final class RockCleanerScreen extends AbstractContainerScreen<RockCleaner
             return;
         }
         GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                "screen.skyresources3.rock_cleaner.progress",
+                "screen.skyresources.rock_cleaner.progress",
                 GuiTooltips.percent(this.menu.getProgressRatio())
         ));
     }

@@ -64,7 +64,7 @@ public final class CombustionCollectorBlock extends Block implements EntityBlock
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new CombustionCollectorMenu(containerId, inventory, collector),
-                        Component.translatable("container.skyresources3.combustion_collector")
+                        Component.translatable("container.skyresources.combustion_collector")
                 ),
                 buffer -> CombustionCollectorMenu.writeClientSideData(buffer, pos)
         );

@@ -1,8 +1,8 @@
 {
   "values": [
-    "skyresources3:heavy_snow",
-    "skyresources3:blaze_powder_block",
-    "skyresources3:dirt_furnace",
-    "skyresources3:mini_freezer"
+    "skyresources:heavy_snow",
+    "skyresources:blaze_powder_block",
+    "skyresources:dirt_furnace",
+    "skyresources:mini_freezer"
   ]
 }

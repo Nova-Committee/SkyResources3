@@ -243,7 +243,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
         }
 
         public String containerTranslationKey() {
-            return "container.skyresources3." + this.id;
+            return "container.skyresources." + this.id;
         }
     }
 }

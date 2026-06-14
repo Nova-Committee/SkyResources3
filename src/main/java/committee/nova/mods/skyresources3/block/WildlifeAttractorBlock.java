@@ -103,7 +103,7 @@ public final class WildlifeAttractorBlock extends Block implements EntityBlock {
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new WildlifeAttractorMenu(containerId, inventory, attractor),
-                        Component.translatable("container.skyresources3.wildlife_attractor")
+                        Component.translatable("container.skyresources.wildlife_attractor")
                 ),
                 buffer -> WildlifeAttractorMenu.writeClientSideData(buffer, pos)
         );

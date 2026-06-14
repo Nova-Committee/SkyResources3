@@ -1,9 +1,0 @@
-{
-  "translation_key": "block.skyresources3.heat_provider.wooden",
-  "texture": "minecraft:block/oak_log",
-  "speed": 0.4,
-  "efficiency": 0.5,
-  "fuel": {
-    "kind": "furnace"
-  }
-}

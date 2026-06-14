@@ -49,11 +49,11 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
     protected void init() {
         super.init();
         this.addRenderableWidget(Button.builder(
-                        Component.translatable("button.skyresources3.dump.short"),
+                        Component.translatable("button.skyresources.dump.short"),
                         button -> ClientPacketDistributor.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos()))
                 )
                 .bounds(this.leftPos + 153, this.topPos + 73, 18, 18)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources3.dump")))
+                .tooltip(Tooltip.create(Component.translatable("button.skyresources.dump")))
                 .build());
     }
 
@@ -191,14 +191,14 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
     private void renderComponentTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         if (this.isHovering(PROGRESS_X, PROGRESS_Y, PROGRESS_WIDTH, PROGRESS_HEIGHT, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources3.fusion_table.progress",
+                    "screen.skyresources.fusion_table.progress",
                     GuiTooltips.percent(this.menu.getProgressRatio())
             ));
             return;
         }
         if (this.isHovering(YIELD_X, YIELD_Y, YIELD_WIDTH + 2, YIELD_HEIGHT, mouseX, mouseY)) {
             GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources3.fusion_table.yield",
+                    "screen.skyresources.fusion_table.yield",
                     GuiTooltips.percent(this.menu.getCurrentYieldRatio())
             ));
             return;
@@ -210,11 +210,11 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
                     mouseX,
                     mouseY,
                     Component.translatable(
-                            "screen.skyresources3.fusion_table.catalyst_bonus",
+                            "screen.skyresources.fusion_table.catalyst_bonus",
                             this.menu.getCatalystYieldPercent()
                     ),
                     Component.translatable(
-                            "screen.skyresources3.fusion_table.catalyst_left",
+                            "screen.skyresources.fusion_table.catalyst_left",
                             GuiTooltips.percent(this.menu.getCatalystLeftRatio())
                     )
             );
@@ -232,7 +232,7 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
             final int y = 34;
             if (this.isHovering(x, y, 16, 16, mouseX, mouseY)) {
                 GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                        "screen.skyresources3.fusion_table.filter_ghost",
+                        "screen.skyresources.fusion_table.filter_ghost",
                         filter.getHoverName()
                 ));
                 return;

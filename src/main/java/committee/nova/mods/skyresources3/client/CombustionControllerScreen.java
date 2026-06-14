@@ -19,7 +19,7 @@ public final class CombustionControllerScreen extends AbstractCombustionInventor
     @Override
     protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
-        final Component filterText = Component.translatable("screen.skyresources3.combustion_controller.filter");
+        final Component filterText = Component.translatable("screen.skyresources.combustion_controller.filter");
         guiGraphics.drawString(
                 this.font,
                 filterText,
@@ -40,7 +40,7 @@ public final class CombustionControllerScreen extends AbstractCombustionInventor
                 this.font,
                 mouseX,
                 mouseY,
-                Component.translatable("screen.skyresources3.combustion_controller.filter.tooltip")
+                Component.translatable("screen.skyresources.combustion_controller.filter.tooltip")
         );
     }
 }
