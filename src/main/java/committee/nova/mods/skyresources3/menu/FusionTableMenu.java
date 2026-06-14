@@ -45,7 +45,7 @@ public final class FusionTableMenu extends AbstractContainerMenu {
                 playerInventory,
                 new FusionTableClientData(
                         blockEntity.getBlockPos(),
-                        null,
+                        blockEntity,
                         ContainerLevelAccess.create(playerInventory.player.level(), blockEntity.getBlockPos()),
                         copyFilters(blockEntity)
                 )

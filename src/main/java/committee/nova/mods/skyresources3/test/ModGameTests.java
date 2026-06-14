@@ -110,6 +110,12 @@ public final class ModGameTests {
                     () -> FusionTableGameTests::fusionTableSplitDuplicateStacksDoNotMatchRecipe
             );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            FUSION_TABLE_MENU_SLOT_PERSISTENCE =
+            TEST_FUNCTIONS.register(
+                    "fusion_table_menu_slot_persistence",
+                    () -> FusionTableGameTests::fusionTableMenuWritesToBlockEntity
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
             COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID =
             TEST_FUNCTIONS.register(
                     "combustion_heater_embeds_as_type_id",
@@ -270,6 +276,12 @@ public final class ModGameTests {
                 event,
                 "fusion_table_split_duplicate_inputs",
                 FUSION_TABLE_SPLIT_DUPLICATE_INPUTS,
+                environment
+        );
+        registerFunctionTest(
+                event,
+                "fusion_table_menu_slot_persistence",
+                FUSION_TABLE_MENU_SLOT_PERSISTENCE,
                 environment
         );
         registerFunctionTest(event, "combustion_heater_embeds_as_type_id", COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID, environment);

@@ -1,10 +1,13 @@
 package committee.nova.mods.skyresources3.test;
 
 import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
+import committee.nova.mods.skyresources3.menu.FusionTableMenu;
 import committee.nova.mods.skyresources3.registry.ModBlocks;
 import committee.nova.mods.skyresources3.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -61,6 +64,24 @@ public final class FusionTableGameTests {
         );
         assertStack(helper, table.getStackInSlot(FusionTableBlockEntity.CATALYST_SLOT),
                 ModItems.TERTIUS_ALCHEMICAL_DUST.get(), 1);
+        helper.succeed();
+    }
+
+    public static void fusionTableMenuWritesToBlockEntity(final GameTestHelper helper) {
+        final FusionTableBlockEntity table = setupFusionTable(helper);
+        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final FusionTableMenu menu = new FusionTableMenu(0, player.getInventory(), table);
+
+        menu.slots.get(FusionTableBlockEntity.CATALYST_SLOT)
+                .setByPlayer(new ItemStack(ModItems.PRIMUS_ALCHEMICAL_DUST.get()));
+        menu.slots.get(FusionTableBlockEntity.FIRST_INPUT_SLOT)
+                .setByPlayer(new ItemStack(Items.COAL, 3));
+        menu.removed(player);
+
+        assertStack(helper, table.getStackInSlot(FusionTableBlockEntity.CATALYST_SLOT),
+                ModItems.PRIMUS_ALCHEMICAL_DUST.get(), 1);
+        assertStack(helper, table.getStackInSlot(FusionTableBlockEntity.FIRST_INPUT_SLOT), Items.COAL, 3);
+        assertStack(helper, table.getFilterStack(0), Items.COAL, 3);
         helper.succeed();
     }
 
