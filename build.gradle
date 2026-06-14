@@ -5,8 +5,12 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.141'
 }
 
-version = mod_version
+version = minecraft_version + "-" + mod_version + "-" + mod_version_tag
 group = mod_group_id
+
+base {
+    archivesName = mod_name + "-" + mod_loader
+}
 
 repositories {
     mavenLocal()
@@ -18,10 +22,6 @@ repositories {
         name = 'Modrinth'
         url = 'https://api.modrinth.com/maven'
     }
-}
-
-base {
-    archivesName = mod_id
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
