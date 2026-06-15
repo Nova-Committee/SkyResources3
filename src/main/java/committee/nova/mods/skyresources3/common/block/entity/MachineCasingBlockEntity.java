@@ -422,6 +422,32 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return Math.round(this.heatPerTick);
     }
 
+    public int installedSpeedPercent() {
+        if (this.combustionHeaterTypeId != null) {
+            return percent(this.combustionHeaterType().speed());
+        }
+        if (this.heatProviderTypeId != null) {
+            return percent(this.heatProviderType().speed());
+        }
+        if (this.condenserTypeId != null) {
+            return percent(this.condenserType().speed());
+        }
+        return 0;
+    }
+
+    public int installedEfficiencyPercent() {
+        if (this.combustionHeaterTypeId != null) {
+            return percent(this.combinedEfficiency(this.combustionHeaterType()));
+        }
+        if (this.heatProviderTypeId != null) {
+            return percent(this.combinedEfficiency(this.heatProviderType()));
+        }
+        if (this.condenserTypeId != null) {
+            return percent(this.combinedEfficiency(this.condenserType()));
+        }
+        return percent(this.casingType().efficiency());
+    }
+
     public int condenserProgress() {
         return this.condenserTime;
     }
@@ -829,6 +855,10 @@ public final class MachineCasingBlockEntity extends BlockEntity {
 
     private float combinedEfficiency(final CondenserType condenserType) {
         return condenserType.efficiency() * this.casingType().efficiency();
+    }
+
+    private static int percent(final float value) {
+        return Math.round(value * 100.0F);
     }
 
     private void routeOutput(final ServerLevel level, final BlockPos chamber, final ItemStack output) {

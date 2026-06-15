@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.common.menu;
 
+import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.common.block.entity.AqueousMachineBlockEntity;
 import committee.nova.mods.skyresources3.core.machine.AqueousMachineMode;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
@@ -96,6 +97,12 @@ public final class AqueousMachineMenu extends AbstractContainerMenu {
 
     public float getProgressRatio() {
         return Math.min(1.0F, this.progress.get() / (float) AqueousMachineBlockEntity.MAX_PROGRESS);
+    }
+
+    public int getSpeed() {
+        return this.mode.isConcentrator()
+                ? Config.aqueousConcentratorSpeed
+                : Config.aqueousDeconcentratorSpeed;
     }
 
     public int getEnergyStored() {

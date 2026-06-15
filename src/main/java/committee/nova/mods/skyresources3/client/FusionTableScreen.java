@@ -1,6 +1,5 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.common.menu.FusionTableMenu;
 import committee.nova.mods.skyresources3.common.network.FusionTableDumpPayload;
@@ -9,22 +8,15 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 public final class FusionTableScreen extends AbstractContainerScreen<FusionTableMenu> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-            Skyresources3.MODID,
-            "textures/gui/fusion_table.png"
-    );
-    private static final int TEXTURE_WIDTH = 256;
-    private static final int TEXTURE_HEIGHT = 256;
     private static final int PROGRESS_X = 7;
     private static final int PROGRESS_Y = 51;
-    private static final int PROGRESS_WIDTH = 162;
-    private static final int PROGRESS_HEIGHT = 17;
+    private static final int PROGRESS_WIDTH = 80;
+    private static final int PROGRESS_HEIGHT = 16;
     private static final int YIELD_X = 103;
     private static final int YIELD_Y = 69;
     private static final int YIELD_WIDTH = 3;
@@ -71,36 +63,19 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
             final int mouseX,
             final int mouseY
     ) {
-        GuiBlit.blit(guiGraphics,
-                TEXTURE,
-                this.leftPos,
-                this.topPos,
-                0,
-                0,
-                this.imageWidth,
-                this.imageHeight,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
-        );
+        MachineGuiTheme.renderPanel(guiGraphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
+        MachineGuiTheme.renderSlots(guiGraphics, this.leftPos, this.topPos, this.menu.slots);
     }
 
     @Override
     protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
-        guiGraphics.drawString(
-                this.font,
-                this.title,
-                (this.imageWidth - this.font.width(this.title)) / 2,
-                6,
-                0xFF404040,
-                false
-        );
-        guiGraphics.drawString(
+        MachineGuiTheme.renderTitle(guiGraphics, this.font, this.title, this.imageWidth);
+        MachineGuiTheme.renderInventoryLabel(
+                guiGraphics,
                 this.font,
                 this.playerInventoryTitle,
                 this.inventoryLabelX,
-                this.inventoryLabelY,
-                0xFF404040,
-                false
+                this.inventoryLabelY
         );
         this.renderProgress(guiGraphics);
         this.renderYield(guiGraphics);
@@ -109,66 +84,56 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
     }
 
     private void renderProgress(final GuiGraphics guiGraphics) {
-        final int height = Math.round(this.menu.getProgressRatio() * 17.0F);
-        if (height <= 0) {
-            return;
-        }
-        GuiBlit.blit(guiGraphics,
-                TEXTURE,
+        MachineGuiTheme.renderHorizontalGauge(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.progress"),
+                MachineGuiTheme.percent(this.menu.getProgressRatio()),
                 PROGRESS_X,
                 PROGRESS_Y,
-                0,
-                181,
                 PROGRESS_WIDTH,
-                height,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+                this.menu.getProgressRatio(),
+                MachineGuiTheme.PROGRESS
         );
     }
 
     private void renderYield(final GuiGraphics guiGraphics) {
         final int height = Math.round(this.menu.getCurrentYieldRatio() * 26.0F);
-        GuiBlit.blit(guiGraphics,
-                TEXTURE,
-                YIELD_X,
-                YIELD_Y,
-                176,
-                0,
-                YIELD_WIDTH,
-                YIELD_HEIGHT,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
-        );
+        guiGraphics.fill(YIELD_X, YIELD_Y, YIELD_X + YIELD_WIDTH, YIELD_Y + YIELD_HEIGHT, 0xFF3B4650);
+        guiGraphics.fill(YIELD_X + 1, YIELD_Y + 1, YIELD_X + YIELD_WIDTH - 1, YIELD_Y + YIELD_HEIGHT - 1, 0xFF0C1117);
         if (height <= 0) {
             return;
         }
-        GuiBlit.blit(guiGraphics,
-                TEXTURE,
-                104,
-                95 - height,
-                179,
-                26 - height,
-                1,
-                height,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+        guiGraphics.fill(
+                YIELD_X + 1,
+                YIELD_Y + YIELD_HEIGHT - 1 - height,
+                YIELD_X + YIELD_WIDTH - 1,
+                YIELD_Y + YIELD_HEIGHT - 1,
+                MachineGuiTheme.MATTER
         );
     }
 
     private void renderCatalyst(final GuiGraphics guiGraphics) {
-        guiGraphics.fill(CATALYST_X, CATALYST_Y, CATALYST_X + 3, CATALYST_Y + CATALYST_HEIGHT, 0xFF4A4A4A);
-        guiGraphics.fill(135, 74, 136, 90, 0xFFB8B8B8);
-        final int height = Math.round(this.menu.getCatalystLeftRatio() * 16.0F);
-        if (height > 0) {
-            guiGraphics.fill(135, 90 - height, 136, 90, 0xFF40B83E);
-        }
-        guiGraphics.drawString(
+        MachineGuiTheme.renderMetricChip(
+                guiGraphics,
                 this.font,
-                this.menu.getCatalystYieldPercent() + "%",
-                140,
-                78,
-                0xFF404040,
-                false
+                Component.translatable("screen.skyresources.metric.efficiency"),
+                MachineGuiTheme.percent(this.menu.getCatalystYieldPercent()),
+                92,
+                51,
+                77,
+                MachineGuiTheme.CATALYST
+        );
+        MachineGuiTheme.renderVerticalGauge(
+                guiGraphics,
+                this.font,
+                Component.empty(),
+                136,
+                73,
+                5,
+                CATALYST_HEIGHT,
+                this.menu.getCatalystLeftRatio(),
+                MachineGuiTheme.CATALYST
         );
     }
 

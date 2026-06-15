@@ -1,39 +1,24 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.menu.AqueousMachineMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class AqueousMachineScreen extends AbstractContainerScreen<AqueousMachineMenu> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-            Skyresources3.MODID,
-            "textures/gui/aqueous_concentrator.png"
-    );
-    private static final Identifier ICONS = Identifier.fromNamespaceAndPath(
-            Skyresources3.MODID,
-            "textures/gui/gui_icons.png"
-    );
-    private static final int TEXTURE_WIDTH = 256;
-    private static final int TEXTURE_HEIGHT = 256;
     private static final int ENERGY_X = 22;
     private static final int ENERGY_Y = 30;
     private static final int ENERGY_WIDTH = 8;
-    private static final int ENERGY_HEIGHT = 58;
+    private static final int ENERGY_HEIGHT = 52;
     private static final int WATER_X = 142;
     private static final int WATER_Y = 30;
     private static final int WATER_WIDTH = 16;
-    private static final int WATER_HEIGHT = 58;
-    private static final int WATER_OVERLAY_U = 34;
-    private static final int WATER_OVERLAY_V = 0;
+    private static final int WATER_HEIGHT = 52;
     private static final int PROGRESS_X = 78;
     private static final int PROGRESS_Y = 49;
     private static final int PROGRESS_WIDTH = 24;
     private static final int MODE_Y = 20;
-    private static final int WATER_COLOR = 0xCC3F76E4;
 
     public AqueousMachineScreen(
             final AqueousMachineMenu menu,
@@ -63,108 +48,91 @@ public final class AqueousMachineScreen extends AbstractContainerScreen<AqueousM
             final int mouseX,
             final int mouseY
     ) {
-        GuiBlit.blit(guiGraphics,
-                TEXTURE,
-                this.leftPos,
-                this.topPos,
-                0,
-                0,
-                this.imageWidth,
-                this.imageHeight,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+        MachineGuiTheme.renderPanel(guiGraphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
+        MachineGuiTheme.renderSlots(guiGraphics, this.leftPos, this.topPos, this.menu.slots);
+    }
+
+    @Override
+    protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        MachineGuiTheme.renderTitle(guiGraphics, this.font, this.title, this.imageWidth);
+        final Component mode = Component.translatable(this.menu.getModeTranslationKey());
+        MachineGuiTheme.renderMetricChip(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.mode"),
+                mode,
+                MODE_Y,
+                20,
+                136,
+                MachineGuiTheme.PROGRESS
+        );
+        MachineGuiTheme.renderMetricChip(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.speed"),
+                Component.literal(Integer.toString(this.menu.getSpeed())),
+                55,
+                70,
+                66,
+                MachineGuiTheme.CATALYST
+        );
+        MachineGuiTheme.renderInventoryLabel(
+                guiGraphics,
+                this.font,
+                this.playerInventoryTitle,
+                this.inventoryLabelX,
+                this.inventoryLabelY
         );
         this.renderEnergy(guiGraphics);
         this.renderWater(guiGraphics);
         this.renderProgress(guiGraphics);
     }
 
-    @Override
-    protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
-        guiGraphics.drawString(
-                this.font,
-                this.title,
-                (this.imageWidth - this.font.width(this.title)) / 2,
-                6,
-                0xFF404040,
-                false
-        );
-        final Component mode = Component.translatable(this.menu.getModeTranslationKey());
-        guiGraphics.drawString(
-                this.font,
-                mode,
-                (this.imageWidth - this.font.width(mode)) / 2,
-                MODE_Y,
-                0xFF404040,
-                false
-        );
-        guiGraphics.drawString(
-                this.font,
-                this.playerInventoryTitle,
-                this.inventoryLabelX,
-                this.inventoryLabelY,
-                0xFF404040,
-                false
-        );
-    }
-
     private void renderEnergy(final GuiGraphics guiGraphics) {
-        final int height = Math.round(this.menu.getEnergyRatio() * ENERGY_HEIGHT);
-        if (height <= 0) {
-            return;
-        }
-        GuiBlit.blit(guiGraphics,
-                ICONS,
-                this.leftPos + ENERGY_X,
-                this.topPos + ENERGY_Y + ENERGY_HEIGHT - height,
-                51,
-                59 - height,
+        MachineGuiTheme.renderVerticalGauge(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.energy_short"),
+                ENERGY_X,
+                ENERGY_Y,
                 ENERGY_WIDTH,
-                height,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+                ENERGY_HEIGHT,
+                this.menu.getEnergyRatio(),
+                MachineGuiTheme.ENERGY
         );
     }
 
     private void renderWater(final GuiGraphics guiGraphics) {
-        final int height = Math.round(this.menu.getWaterRatio() * WATER_HEIGHT);
-        if (height > 0) {
-            guiGraphics.fill(
-                    this.leftPos + WATER_X,
-                    this.topPos + WATER_Y + WATER_HEIGHT - height,
-                    this.leftPos + WATER_X + WATER_WIDTH,
-                    this.topPos + WATER_Y + WATER_HEIGHT,
-                    WATER_COLOR
-            );
-        }
-        GuiBlit.blit(guiGraphics,
-                ICONS,
-                this.leftPos + WATER_X,
-                this.topPos + WATER_Y,
-                WATER_OVERLAY_U,
-                WATER_OVERLAY_V,
+        MachineGuiTheme.renderVerticalGauge(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.water_short"),
+                WATER_X,
+                WATER_Y,
                 WATER_WIDTH,
-                WATER_HEIGHT + 1,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+                WATER_HEIGHT,
+                this.menu.getWaterRatio(),
+                MachineGuiTheme.WATER
         );
     }
 
     private void renderProgress(final GuiGraphics guiGraphics) {
-        final int width = Math.round(this.menu.getProgressRatio() * PROGRESS_WIDTH);
-        if (width <= 0) {
-            return;
-        }
-        GuiBlit.blit(guiGraphics,
-                ICONS,
-                this.leftPos + PROGRESS_X,
-                this.topPos + PROGRESS_Y,
-                35,
-                60,
-                width + 1,
-                16,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+        MachineGuiTheme.renderHorizontalFill(
+                guiGraphics,
+                PROGRESS_X,
+                PROGRESS_Y + 5,
+                PROGRESS_WIDTH + 1,
+                7,
+                this.menu.getProgressRatio(),
+                MachineGuiTheme.PROGRESS
+        );
+        guiGraphics.drawString(
+                this.font,
+                MachineGuiTheme.percent(this.menu.getProgressRatio()),
+                PROGRESS_X - 2,
+                PROGRESS_Y - 6,
+                MachineGuiTheme.TEXT,
+                false
         );
     }
 

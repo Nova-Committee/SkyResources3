@@ -1,39 +1,24 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.menu.WildlifeAttractorMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class WildlifeAttractorScreen extends AbstractContainerScreen<WildlifeAttractorMenu> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-            Skyresources3.MODID,
-            "textures/gui/wildlife_attractor.png"
-    );
-    private static final Identifier ICONS = Identifier.fromNamespaceAndPath(
-            Skyresources3.MODID,
-            "textures/gui/gui_icons.png"
-    );
-    private static final int TEXTURE_WIDTH = 256;
-    private static final int TEXTURE_HEIGHT = 256;
     private static final int ENERGY_X = 22;
     private static final int ENERGY_Y = 30;
     private static final int ENERGY_WIDTH = 8;
-    private static final int ENERGY_HEIGHT = 58;
+    private static final int ENERGY_HEIGHT = 52;
     private static final int WATER_X = 142;
     private static final int WATER_Y = 30;
     private static final int WATER_WIDTH = 16;
-    private static final int WATER_HEIGHT = 58;
-    private static final int WATER_OVERLAY_U = 34;
-    private static final int WATER_OVERLAY_V = 0;
-    private static final int MATTER_X = 81;
-    private static final int MATTER_Y = 43;
-    private static final int MATTER_WIDTH = 14;
-    private static final int MATTER_HEIGHT = 13;
-    private static final int WATER_COLOR = 0xCC3F76E4;
+    private static final int WATER_HEIGHT = 52;
+    private static final int MATTER_X = 55;
+    private static final int MATTER_Y = 25;
+    private static final int MATTER_WIDTH = 66;
+    private static final int MATTER_HEIGHT = 16;
 
     public WildlifeAttractorScreen(
             final WildlifeAttractorMenu menu,
@@ -63,111 +48,64 @@ public final class WildlifeAttractorScreen extends AbstractContainerScreen<Wildl
             final int mouseX,
             final int mouseY
     ) {
-        GuiBlit.blit(guiGraphics,
-                TEXTURE,
-                this.leftPos,
-                this.topPos,
-                0,
-                0,
-                this.imageWidth,
-                this.imageHeight,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+        MachineGuiTheme.renderPanel(guiGraphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
+        MachineGuiTheme.renderSlots(guiGraphics, this.leftPos, this.topPos, this.menu.slots);
+    }
+
+    @Override
+    protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+        MachineGuiTheme.renderTitle(guiGraphics, this.font, this.title, this.imageWidth);
+        MachineGuiTheme.renderInventoryLabel(
+                guiGraphics,
+                this.font,
+                this.playerInventoryTitle,
+                this.inventoryLabelX,
+                this.inventoryLabelY
         );
         this.renderEnergy(guiGraphics);
         this.renderWater(guiGraphics);
         this.renderMatter(guiGraphics);
     }
 
-    @Override
-    protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
-        guiGraphics.drawString(
-                this.font,
-                this.title,
-                (this.imageWidth - this.font.width(this.title)) / 2,
-                6,
-                0xFF404040,
-                false
-        );
-        guiGraphics.drawString(
-                this.font,
-                this.playerInventoryTitle,
-                this.inventoryLabelX,
-                this.inventoryLabelY,
-                0xFF404040,
-                false
-        );
-    }
-
     private void renderEnergy(final GuiGraphics guiGraphics) {
-        final int height = Math.round(this.menu.getEnergyRatio() * ENERGY_HEIGHT);
-        if (height <= 0) {
-            return;
-        }
-        GuiBlit.blit(guiGraphics,
-                ICONS,
-                this.leftPos + ENERGY_X,
-                this.topPos + ENERGY_Y + ENERGY_HEIGHT - height,
-                51,
-                59 - height,
+        MachineGuiTheme.renderVerticalGauge(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.energy_short"),
+                ENERGY_X,
+                ENERGY_Y,
                 ENERGY_WIDTH,
-                height,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+                ENERGY_HEIGHT,
+                this.menu.getEnergyRatio(),
+                MachineGuiTheme.ENERGY
         );
     }
 
     private void renderWater(final GuiGraphics guiGraphics) {
-        final int height = Math.round(this.menu.getWaterRatio() * WATER_HEIGHT);
-        if (height > 0) {
-            guiGraphics.fill(
-                    this.leftPos + WATER_X,
-                    this.topPos + WATER_Y + WATER_HEIGHT - height,
-                    this.leftPos + WATER_X + WATER_WIDTH,
-                    this.topPos + WATER_Y + WATER_HEIGHT,
-                    WATER_COLOR
-            );
-        }
-        GuiBlit.blit(guiGraphics,
-                ICONS,
-                this.leftPos + WATER_X,
-                this.topPos + WATER_Y,
-                WATER_OVERLAY_U,
-                WATER_OVERLAY_V,
+        MachineGuiTheme.renderVerticalGauge(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.water_short"),
+                WATER_X,
+                WATER_Y,
                 WATER_WIDTH,
-                WATER_HEIGHT + 1,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+                WATER_HEIGHT,
+                this.menu.getWaterRatio(),
+                MachineGuiTheme.WATER
         );
     }
 
     private void renderMatter(final GuiGraphics guiGraphics) {
-        GuiBlit.blit(guiGraphics,
-                ICONS,
-                this.leftPos + MATTER_X,
-                this.topPos + MATTER_Y,
-                85,
-                0,
+        MachineGuiTheme.renderHorizontalGauge(
+                guiGraphics,
+                this.font,
+                Component.translatable("screen.skyresources.metric.matter"),
+                MachineGuiTheme.percent(this.menu.getMatterRatio()),
+                MATTER_X,
+                MATTER_Y,
                 MATTER_WIDTH,
-                MATTER_HEIGHT,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
-        );
-
-        final int height = Math.round(this.menu.getMatterRatio() * MATTER_HEIGHT);
-        if (height <= 0) {
-            return;
-        }
-        GuiBlit.blit(guiGraphics,
-                ICONS,
-                this.leftPos + MATTER_X,
-                this.topPos + MATTER_Y + MATTER_HEIGHT - height,
-                59,
-                MATTER_HEIGHT - height,
-                MATTER_WIDTH,
-                height,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+                this.menu.getMatterRatio(),
+                MachineGuiTheme.MATTER
         );
     }
 

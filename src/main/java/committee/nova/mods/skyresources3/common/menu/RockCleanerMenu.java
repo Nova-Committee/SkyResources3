@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.common.menu;
 
+import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.common.block.entity.RockCleanerBlockEntity;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
@@ -83,6 +84,10 @@ public final class RockCleanerMenu extends AbstractContainerMenu {
 
     public float getProgressRatio() {
         return Math.min(1.0F, this.progress.get() / (float) RockCleanerBlockEntity.MAX_PROGRESS);
+    }
+
+    public int getSpeed() {
+        return Config.rockCleanerSpeed;
     }
 
     public int getEnergyStored() {

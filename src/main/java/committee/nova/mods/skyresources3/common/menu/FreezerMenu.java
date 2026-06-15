@@ -23,7 +23,7 @@ public final class FreezerMenu extends AbstractContainerMenu {
     public static final int INPUT_SLOT_Y = 22;
     public static final int OUTPUT_SLOT_Y = 40;
     public static final int SLOT_SPACING = 18;
-    private static final int PLAYER_INVENTORY_Y = 84;
+    private static final int PLAYER_INVENTORY_Y = 92;
     private static final int PROGRESS_SCALE = 1_000;
 
     private final BlockPos blockPos;

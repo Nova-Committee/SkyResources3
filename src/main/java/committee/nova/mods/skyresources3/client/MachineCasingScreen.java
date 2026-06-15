@@ -1,28 +1,19 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.menu.MachineCasingMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class MachineCasingScreen extends AbstractContainerScreen<MachineCasingMenu> {
-    private static final Identifier BACKGROUND =
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "textures/gui/blank_inventory.png");
-    private static final int TEXTURE_WIDTH = 256;
-    private static final int TEXTURE_HEIGHT = 256;
-    private static final int TEXT_COLOR = 0xFF404040;
-    private static final int VALID_TEXT_COLOR = 0xFF207020;
-    private static final int INVALID_TEXT_COLOR = 0xFF902020;
     private static final int SLOT_X = 79;
     private static final int SLOT_Y = 52;
     private static final int SLOT_SIZE = 18;
-    private static final int STATUS_X = 19;
-    private static final int STATUS_Y = 24;
-    private static final int STATUS_WIDTH = 140;
-    private static final int STATUS_HEIGHT = 31;
+    private static final int STATUS_X = 14;
+    private static final int STATUS_Y = 61;
+    private static final int STATUS_WIDTH = 148;
+    private static final int STATUS_HEIGHT = 18;
 
     public MachineCasingScreen(
             final MachineCasingMenu menu,
@@ -31,8 +22,8 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
     ) {
         super(menu, playerInventory, title);
         this.imageWidth = 176;
-        this.imageHeight = 166;
-        this.inventoryLabelY = 72;
+        this.imageHeight = 174;
+        this.inventoryLabelY = 80;
     }
 
     @Override
@@ -42,95 +33,93 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             final int mouseX,
             final int mouseY
     ) {
-        GuiBlit.blit(guiGraphics,
-                BACKGROUND,
-                this.leftPos,
-                this.topPos,
-                0,
-                0,
-                this.imageWidth,
-                this.imageHeight,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
-        );
-        GuiBlit.blit(guiGraphics,
-                BACKGROUND,
-                this.leftPos + SLOT_X,
-                this.topPos + SLOT_Y,
-                7,
-                83,
-                SLOT_SIZE,
-                SLOT_SIZE,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
-        );
+        MachineGuiTheme.renderPanel(guiGraphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
+        MachineGuiTheme.renderSlots(guiGraphics, this.leftPos, this.topPos, this.menu.slots);
     }
 
     @Override
     protected void renderLabels(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+        MachineGuiTheme.renderTitle(guiGraphics, this.font, this.title, this.imageWidth);
         if (this.menu.usesHeatDisplay()) {
-            guiGraphics.drawString(
+            MachineGuiTheme.renderHorizontalGauge(
+                    guiGraphics,
                     this.font,
-                    Component.translatable(
-                            "screen.skyresources.machine_casing.heat",
-                            this.menu.currentHeat(),
-                            this.menu.maxHeat()
-                    ),
+                    Component.translatable("screen.skyresources.metric.heat"),
+                    Component.literal(this.menu.currentHeat() + "/" + this.menu.maxHeat()),
                     19,
                     24,
-                    TEXT_COLOR,
-                    false
+                    138,
+                    this.heatRatio(),
+                    MachineGuiTheme.HEAT
             );
-            guiGraphics.drawString(
+            MachineGuiTheme.renderMetricChip(
+                    guiGraphics,
                     this.font,
-                    Component.translatable("screen.skyresources.machine_casing.heat_per_tick", this.menu.heatPerTick()),
-                    19,
-                    34,
-                    TEXT_COLOR,
-                    false
+                    Component.translatable("screen.skyresources.metric.speed"),
+                    MachineGuiTheme.percent(this.menu.speedPercent()),
+                    14,
+                    42,
+                    62,
+                    MachineGuiTheme.PROGRESS
+            );
+            MachineGuiTheme.renderMetricChip(
+                    guiGraphics,
+                    this.font,
+                    Component.translatable("screen.skyresources.metric.efficiency"),
+                    MachineGuiTheme.percent(this.menu.efficiencyPercent()),
+                    100,
+                    42,
+                    62,
+                    MachineGuiTheme.CATALYST
             );
         }
         if (this.menu.usesCombustionChamber()) {
-            guiGraphics.drawString(
-                    this.font,
-                    Component.translatable(this.menu.hasValidMultiblock()
-                            ? "screen.skyresources.machine_casing.multiblock.formed"
-                            : "screen.skyresources.machine_casing.multiblock.missing"),
-                    19,
-                    44,
-                    this.menu.hasValidMultiblock() ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
-                    false
-            );
+            this.renderStatus(guiGraphics, this.menu.hasValidMultiblock());
         } else if (this.menu.hasCondenser()) {
-            guiGraphics.drawString(
+            MachineGuiTheme.renderHorizontalGauge(
+                    guiGraphics,
                     this.font,
-                    Component.translatable("screen.skyresources.machine_casing.condenser.installed"),
+                    Component.translatable("screen.skyresources.metric.progress"),
+                    this.condenserProgressValue(),
                     19,
                     24,
-                    TEXT_COLOR,
-                    false
+                    138,
+                    this.condenserRatio(),
+                    MachineGuiTheme.PROGRESS
             );
-            guiGraphics.drawString(
+            MachineGuiTheme.renderMetricChip(
+                    guiGraphics,
                     this.font,
-                    this.condenserProgressText(),
-                    19,
-                    34,
-                    this.menu.condenserMaxProgress() > 0 ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
-                    false
+                    Component.translatable("screen.skyresources.metric.speed"),
+                    MachineGuiTheme.percent(this.menu.speedPercent()),
+                    14,
+                    42,
+                    62,
+                    MachineGuiTheme.PROGRESS
             );
+            MachineGuiTheme.renderMetricChip(
+                    guiGraphics,
+                    this.font,
+                    Component.translatable("screen.skyresources.metric.efficiency"),
+                    MachineGuiTheme.percent(this.menu.efficiencyPercent()),
+                    100,
+                    42,
+                    62,
+                    MachineGuiTheme.CATALYST
+            );
+            this.renderStatus(guiGraphics, this.menu.condenserMaxProgress() > 0);
         } else if (this.menu.hasHeater()) {
-            guiGraphics.drawString(
-                    this.font,
-                    Component.translatable(this.menu.currentHeat() > 0
-                            ? "screen.skyresources.machine_casing.heat_provider.active"
-                            : "screen.skyresources.machine_casing.heat_provider.idle"),
-                    19,
-                    44,
-                    this.menu.currentHeat() > 0 ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR,
-                    false
-            );
+            this.renderStatus(guiGraphics, this.menu.currentHeat() > 0);
+        } else {
+            this.renderStatus(guiGraphics, false);
         }
+        MachineGuiTheme.renderInventoryLabel(
+                guiGraphics,
+                this.font,
+                this.playerInventoryTitle,
+                this.inventoryLabelX,
+                this.inventoryLabelY
+        );
     }
 
     @Override
@@ -154,14 +143,63 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
         }
     }
 
-    private Component condenserProgressText() {
-        if (this.menu.condenserMaxProgress() <= 0) {
-            return Component.translatable("screen.skyresources.machine_casing.condenser.idle");
-        }
-        return Component.translatable(
-                "screen.skyresources.machine_casing.condenser.progress",
-                this.menu.condenserProgress(),
-                this.menu.condenserMaxProgress()
+    private void renderStatus(final GuiGraphics guiGraphics, final boolean valid) {
+        MachineGuiTheme.renderStatus(
+                guiGraphics,
+                this.font,
+                this.statusLabel(),
+                this.statusValue(),
+                STATUS_X,
+                STATUS_Y,
+                STATUS_WIDTH,
+                valid
         );
+    }
+
+    private Component statusValue() {
+        if (this.menu.usesCombustionChamber()) {
+            return Component.translatable(this.menu.hasValidMultiblock()
+                    ? "screen.skyresources.metric.formed"
+                    : "screen.skyresources.metric.missing");
+        }
+        if (this.menu.hasCondenser()) {
+            return Component.translatable(this.menu.condenserMaxProgress() > 0
+                    ? "screen.skyresources.metric.active"
+                    : "screen.skyresources.metric.idle");
+        }
+        if (this.menu.hasHeater()) {
+            return Component.translatable(this.menu.currentHeat() > 0
+                    ? "screen.skyresources.metric.active"
+                    : "screen.skyresources.metric.idle");
+        }
+        return Component.translatable("screen.skyresources.metric.empty");
+    }
+
+    private Component statusLabel() {
+        if (this.menu.usesCombustionChamber()) {
+            return Component.translatable("screen.skyresources.metric.structure");
+        }
+        return Component.translatable("screen.skyresources.metric.status");
+    }
+
+    private Component condenserProgressValue() {
+        if (this.menu.condenserMaxProgress() <= 0) {
+            return Component.translatable("screen.skyresources.metric.idle");
+        }
+        return Component.literal(this.menu.condenserProgress() + "/" + this.menu.condenserMaxProgress());
+    }
+
+    private float heatRatio() {
+        if (this.menu.maxHeat() <= 0) {
+            return 0.0F;
+        }
+        return Math.min(1.0F, this.menu.currentHeat() / (float) this.menu.maxHeat());
+    }
+
+    private float condenserRatio() {
+        if (this.menu.condenserMaxProgress() <= 0) {
+            return 0.0F;
+        }
+        return Math.min(1.0F, this.menu.condenserProgress() / (float) this.menu.condenserMaxProgress());
     }
 }

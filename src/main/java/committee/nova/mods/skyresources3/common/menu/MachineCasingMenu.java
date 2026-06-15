@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 public final class MachineCasingMenu extends AbstractContainerMenu {
     public static final int FUEL_SLOT_X = 80;
     public static final int FUEL_SLOT_Y = 53;
-    private static final int PLAYER_INVENTORY_Y = 84;
+    private static final int PLAYER_INVENTORY_Y = 92;
     private static final int PLAYER_SLOT_START = MachineCasingBlockEntity.SLOT_COUNT;
     private static final int PLAYER_SLOT_END = PLAYER_SLOT_START + 36;
 
@@ -35,6 +35,8 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
     private final DataSlot validMultiblock;
     private final DataSlot condenserProgress;
     private final DataSlot condenserMaxProgress;
+    private final DataSlot speedPercent;
+    private final DataSlot efficiencyPercent;
 
     public MachineCasingMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
@@ -82,6 +84,8 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
         this.validMultiblock = this.addDataSlot(validMultiblockSlot(playerInventory, data));
         this.condenserProgress = this.addDataSlot(condenserProgressSlot(data.blockEntity()));
         this.condenserMaxProgress = this.addDataSlot(condenserMaxProgressSlot(data.blockEntity()));
+        this.speedPercent = this.addDataSlot(speedPercentSlot(data.blockEntity()));
+        this.efficiencyPercent = this.addDataSlot(efficiencyPercentSlot(data.blockEntity()));
     }
 
     public static void writeClientSideData(final RegistryFriendlyByteBuf buffer, final BlockPos pos) {
@@ -136,6 +140,14 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
 
     public boolean hasValidMultiblock() {
         return this.validMultiblock.get() > 0;
+    }
+
+    public int speedPercent() {
+        return this.speedPercent.get();
+    }
+
+    public int efficiencyPercent() {
+        return this.efficiencyPercent.get();
     }
 
     @Override
@@ -323,6 +335,38 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
             @Override
             public int get() {
                 return blockEntity.condenserMaxProgress();
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
+    private static DataSlot speedPercentSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return blockEntity.installedSpeedPercent();
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
+    private static DataSlot efficiencyPercentSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return blockEntity.installedEfficiencyPercent();
             }
 
             @Override
