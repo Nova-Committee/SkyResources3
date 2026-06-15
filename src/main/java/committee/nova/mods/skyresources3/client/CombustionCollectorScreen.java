@@ -1,6 +1,6 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.menu.CombustionCollectorMenu;
+import committee.nova.mods.skyresources3.common.menu.CombustionCollectorMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 

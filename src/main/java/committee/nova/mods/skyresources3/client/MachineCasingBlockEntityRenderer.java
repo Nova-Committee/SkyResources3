@@ -2,11 +2,11 @@ package committee.nova.mods.skyresources3.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
-import committee.nova.mods.skyresources3.machine.CombustionHeaterType;
-import committee.nova.mods.skyresources3.machine.CondenserType;
-import committee.nova.mods.skyresources3.machine.CasingType;
-import committee.nova.mods.skyresources3.machine.HeatProviderType;
+import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.core.machine.CombustionHeaterType;
+import committee.nova.mods.skyresources3.core.machine.CondenserType;
+import committee.nova.mods.skyresources3.core.machine.CasingType;
+import committee.nova.mods.skyresources3.core.machine.HeatProviderType;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.SubmitNodeCollector;

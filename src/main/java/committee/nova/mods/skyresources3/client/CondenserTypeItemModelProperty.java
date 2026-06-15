@@ -2,7 +2,7 @@ package committee.nova.mods.skyresources3.client;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import committee.nova.mods.skyresources3.item.CondenserItem;
+import committee.nova.mods.skyresources3.common.item.CondenserItem;
 import javax.annotation.Nullable;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperty;

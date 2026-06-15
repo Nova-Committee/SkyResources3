@@ -1,9 +1,9 @@
 package committee.nova.mods.skyresources3.test;
 
-import committee.nova.mods.skyresources3.event.CuttingKnifeEvents;
-import committee.nova.mods.skyresources3.event.RockGrinderEvents;
-import committee.nova.mods.skyresources3.registry.ModBlocks;
-import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.init.event.CuttingKnifeEvents;
+import committee.nova.mods.skyresources3.init.event.RockGrinderEvents;
+import committee.nova.mods.skyresources3.init.registry.ModBlocks;
+import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;

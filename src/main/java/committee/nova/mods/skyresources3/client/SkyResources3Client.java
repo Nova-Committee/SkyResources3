@@ -1,13 +1,13 @@
 package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.entity.HeavyExplosiveSnowball;
-import committee.nova.mods.skyresources3.entity.HeavySnowball;
-import committee.nova.mods.skyresources3.network.IslandGuiStatePayload;
-import committee.nova.mods.skyresources3.registry.ModBlockEntityTypes;
-import committee.nova.mods.skyresources3.registry.ModEntityTypes;
-import committee.nova.mods.skyresources3.registry.ModFluidTypes;
-import committee.nova.mods.skyresources3.registry.ModMenuTypes;
+import committee.nova.mods.skyresources3.common.entity.HeavyExplosiveSnowball;
+import committee.nova.mods.skyresources3.common.entity.HeavySnowball;
+import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;
+import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
+import committee.nova.mods.skyresources3.init.registry.ModEntityTypes;
+import committee.nova.mods.skyresources3.init.registry.ModFluidTypes;
+import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

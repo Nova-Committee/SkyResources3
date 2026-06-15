@@ -1,8 +1,8 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.network.IslandGuiActionPayload;
-import committee.nova.mods.skyresources3.network.IslandGuiRequestPayload;
-import committee.nova.mods.skyresources3.network.IslandGuiStatePayload;
+import committee.nova.mods.skyresources3.common.network.IslandGuiActionPayload;
+import committee.nova.mods.skyresources3.common.network.IslandGuiRequestPayload;
+import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

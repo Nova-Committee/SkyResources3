@@ -1,13 +1,13 @@
 package committee.nova.mods.skyresources3.test;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.guide.GuideAction;
-import committee.nova.mods.skyresources3.guide.GuidePage;
-import committee.nova.mods.skyresources3.guide.GuidePages;
-import committee.nova.mods.skyresources3.guide.GuideRecipeTargets;
-import committee.nova.mods.skyresources3.guide.GuideStructure;
-import committee.nova.mods.skyresources3.guide.GuideStructures;
-import committee.nova.mods.skyresources3.registry.ModMenuTypes;
+import committee.nova.mods.skyresources3.core.guide.GuideAction;
+import committee.nova.mods.skyresources3.core.guide.GuidePage;
+import committee.nova.mods.skyresources3.core.guide.GuidePages;
+import committee.nova.mods.skyresources3.core.guide.GuideRecipeTargets;
+import committee.nova.mods.skyresources3.core.guide.GuideStructure;
+import committee.nova.mods.skyresources3.core.guide.GuideStructures;
+import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;

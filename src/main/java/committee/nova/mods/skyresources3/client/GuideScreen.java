@@ -1,10 +1,10 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.guide.GuideAction;
-import committee.nova.mods.skyresources3.guide.GuidePage;
-import committee.nova.mods.skyresources3.guide.GuidePages;
-import committee.nova.mods.skyresources3.guide.GuideStructure;
-import committee.nova.mods.skyresources3.guide.GuideStructures;
+import committee.nova.mods.skyresources3.core.guide.GuideAction;
+import committee.nova.mods.skyresources3.core.guide.GuidePage;
+import committee.nova.mods.skyresources3.core.guide.GuidePages;
+import committee.nova.mods.skyresources3.core.guide.GuideStructure;
+import committee.nova.mods.skyresources3.core.guide.GuideStructures;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

@@ -1,6 +1,6 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.item.WaterExtractorItem;
+import committee.nova.mods.skyresources3.common.item.WaterExtractorItem;
 import com.mojang.serialization.MapCodec;
 import javax.annotation.Nullable;
 import net.minecraft.client.multiplayer.ClientLevel;

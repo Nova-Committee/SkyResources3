@@ -1,9 +1,9 @@
 package committee.nova.mods.skyresources3.test;
 
-import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
-import committee.nova.mods.skyresources3.menu.FusionTableMenu;
-import committee.nova.mods.skyresources3.registry.ModBlocks;
-import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.common.block.entity.FusionTableBlockEntity;
+import committee.nova.mods.skyresources3.common.menu.FusionTableMenu;
+import committee.nova.mods.skyresources3.init.registry.ModBlocks;
+import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;

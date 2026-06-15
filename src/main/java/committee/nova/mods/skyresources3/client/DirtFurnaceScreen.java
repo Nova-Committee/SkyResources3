@@ -1,6 +1,6 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.menu.DirtFurnaceMenu;
+import committee.nova.mods.skyresources3.common.menu.DirtFurnaceMenu;
 import java.util.List;
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;

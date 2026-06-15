@@ -1,6 +1,6 @@
 package committee.nova.mods.skyresources3.util;
 
-import committee.nova.mods.skyresources3.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockEntity;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

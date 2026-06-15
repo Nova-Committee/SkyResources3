@@ -1,7 +1,7 @@
 package committee.nova.mods.skyresources3.test;
 
-import committee.nova.mods.skyresources3.event.SurvivalistFishingEvents;
-import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.init.event.SurvivalistFishingEvents;
+import committee.nova.mods.skyresources3.init.registry.ModItems;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;

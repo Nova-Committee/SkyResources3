@@ -1,7 +1,7 @@
 package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.menu.EndPortalCoreMenu;
+import committee.nova.mods.skyresources3.common.menu.EndPortalCoreMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;

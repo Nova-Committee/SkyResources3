@@ -1,10 +1,10 @@
 package committee.nova.mods.skyresources3.test;
 
-import committee.nova.mods.skyresources3.block.entity.LifeInfuserBlockEntity;
-import committee.nova.mods.skyresources3.block.entity.LifeInjectorBlockEntity;
-import committee.nova.mods.skyresources3.item.HealthGemItem;
-import committee.nova.mods.skyresources3.registry.ModBlocks;
-import committee.nova.mods.skyresources3.registry.ModItems;
+import committee.nova.mods.skyresources3.common.block.entity.LifeInfuserBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.LifeInjectorBlockEntity;
+import committee.nova.mods.skyresources3.common.item.HealthGemItem;
+import committee.nova.mods.skyresources3.init.registry.ModBlocks;
+import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;

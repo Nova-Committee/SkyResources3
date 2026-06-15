@@ -1,9 +1,9 @@
 package committee.nova.mods.skyresources3.test;
 
-import committee.nova.mods.skyresources3.block.FreezerBlock;
-import committee.nova.mods.skyresources3.block.entity.FreezerBlockEntity;
-import committee.nova.mods.skyresources3.menu.FreezerMenu;
-import committee.nova.mods.skyresources3.registry.ModBlocks;
+import committee.nova.mods.skyresources3.common.block.FreezerBlock;
+import committee.nova.mods.skyresources3.common.block.entity.FreezerBlockEntity;
+import committee.nova.mods.skyresources3.common.menu.FreezerMenu;
+import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;

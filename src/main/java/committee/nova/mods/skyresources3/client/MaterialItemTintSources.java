@@ -1,11 +1,11 @@
 package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.item.DirtyGemItem;
-import committee.nova.mods.skyresources3.item.DirtyGemType;
-import committee.nova.mods.skyresources3.item.OreAlchemyDustItem;
-import committee.nova.mods.skyresources3.item.OreAlchemyDustType;
-import committee.nova.mods.skyresources3.registry.ModDataPackRegistries;
+import committee.nova.mods.skyresources3.common.item.DirtyGemItem;
+import committee.nova.mods.skyresources3.common.item.DirtyGemType;
+import committee.nova.mods.skyresources3.common.item.OreAlchemyDustItem;
+import committee.nova.mods.skyresources3.common.item.OreAlchemyDustType;
+import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.function.ToIntFunction;

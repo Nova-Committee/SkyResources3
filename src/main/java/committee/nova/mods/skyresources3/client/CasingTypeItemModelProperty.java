@@ -1,6 +1,6 @@
 package committee.nova.mods.skyresources3.client;
 
-import committee.nova.mods.skyresources3.item.MachineCasingItem;
+import committee.nova.mods.skyresources3.common.item.MachineCasingItem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import javax.annotation.Nullable;

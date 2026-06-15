@@ -1,9 +1,9 @@
 package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.block.entity.FusionTableBlockEntity;
-import committee.nova.mods.skyresources3.menu.FusionTableMenu;
-import committee.nova.mods.skyresources3.network.FusionTableDumpPayload;
+import committee.nova.mods.skyresources3.common.block.entity.FusionTableBlockEntity;
+import committee.nova.mods.skyresources3.common.menu.FusionTableMenu;
+import committee.nova.mods.skyresources3.common.network.FusionTableDumpPayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
