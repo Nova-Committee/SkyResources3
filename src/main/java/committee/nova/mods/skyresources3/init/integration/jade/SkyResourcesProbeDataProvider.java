@@ -44,6 +44,13 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
             if (casing.usesCombustionChamber()) {
                 data = data.withMachineHeat(casing.currentHeat(), casing.maxHeat(), casing.heatPerTick())
                         .withMultiblock(SkyResourcesProbeData.state(casing.hasValidMultiblock(level)));
+            } else if (casing.installedMachineMode() == MachineCasingBlockEntity.MACHINE_MODE_CONDENSER) {
+                data = data.withCondenser(
+                        casing.condenserProgress(),
+                        casing.condenserMaxProgress(),
+                        scale(casing.condenserCatalystLeft(), 100),
+                        scale(casing.condenserExpectedOutputValue(), SkyResourcesProbeData.EXPECTED_OUTPUT_SCALE)
+                );
             }
         } else if (blockEntity instanceof LifeInfuserBlockEntity lifeInfuser && level instanceof ServerLevel serverLevel) {
             data = data.withMultiblock(SkyResourcesProbeData.state(lifeInfuser.hasValidMultiblock(serverLevel)));
@@ -92,6 +99,17 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
         return endPortalCore.hasValidMultiblockTier2()
                 ? SkyResourcesProbeData.STATE_VALID_TIER2
                 : SkyResourcesProbeData.STATE_VALID_TIER2_MISSING;
+    }
+
+    private static int scale(final double value, final int scale) {
+        if (value <= 0.0D) {
+            return 0;
+        }
+        final double scaled = value * scale;
+        if (scaled >= Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        return (int) Math.round(scaled);
     }
 
     private SkyResourcesProbeDataProvider() {

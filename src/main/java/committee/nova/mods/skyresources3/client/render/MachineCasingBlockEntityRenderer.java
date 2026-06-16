@@ -61,6 +61,9 @@ public final class MachineCasingBlockEntityRenderer
         state.combustionElements = List.of();
         state.combustionBodySprite = null;
         state.combustionTopSprite = null;
+        state.condenserElements = List.of();
+        state.condenserBodySprite = null;
+        state.condenserPartSprite = null;
         state.installedElements = List.of();
         state.installedSprite = null;
         if (blockEntity.combustionHeaterTypeId() != null) {
@@ -80,8 +83,11 @@ public final class MachineCasingBlockEntityRenderer
         }
         if (blockEntity.condenserTypeId() != null) {
             final CondenserType condenserType = blockEntity.condenserType();
-            state.installedElements = condenserType.elements();
-            state.installedSprite = this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, condenserType.texture()));
+            state.condenserElements = condenserType.elements();
+            state.condenserBodySprite =
+                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, condenserType.texture()));
+            state.condenserPartSprite =
+                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, condenserType.partTexture()));
             return;
         }
 
@@ -159,6 +165,43 @@ public final class MachineCasingBlockEntityRenderer
             }
         }
 
+        if (!state.condenserElements.isEmpty()) {
+            final List<CondenserType.Element> elements = state.condenserElements;
+            final TextureAtlasSprite bodySprite = state.condenserBodySprite;
+            final TextureAtlasSprite partSprite = state.condenserPartSprite;
+            if (bodySprite != null && partSprite != null) {
+                final int lightCoords = state.lightCoords;
+                submitter.submitCustomGeometry(
+                        poseStack,
+                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
+                        (pose, buffer) -> {
+                            for (final CondenserType.Element element : elements) {
+                                switch (element.texture()) {
+                                    case BODY -> renderElement(
+                                            element.from(),
+                                            element.to(),
+                                            pose,
+                                            buffer,
+                                            bodySprite,
+                                            lightCoords,
+                                            OverlayTexture.NO_OVERLAY
+                                    );
+                                    case PART -> renderTopFace(
+                                            element.from(),
+                                            element.to(),
+                                            pose,
+                                            buffer,
+                                            partSprite,
+                                            lightCoords,
+                                            OverlayTexture.NO_OVERLAY
+                                    );
+                                }
+                            }
+                        }
+                );
+            }
+        }
+
         if (state.machine.isEmpty()) {
             return;
         }
@@ -189,6 +232,26 @@ public final class MachineCasingBlockEntityRenderer
             final int packedOverlay
     ) {
         renderElement(element.from(), element.to(), pose, buffer, sprite, packedLight, packedOverlay);
+    }
+
+    private static void renderTopFace(
+            final Vector3f from,
+            final Vector3f to,
+            final PoseStack.Pose pose,
+            final VertexConsumer buffer,
+            final TextureAtlasSprite sprite,
+            final int packedLight,
+            final int packedOverlay
+    ) {
+        final float x1 = Math.min(from.x(), to.x()) * MODEL_SCALE;
+        final float y = Math.max(from.y(), to.y()) * MODEL_SCALE;
+        final float z1 = Math.min(from.z(), to.z()) * MODEL_SCALE;
+        final float x2 = Math.max(from.x(), to.x()) * MODEL_SCALE;
+        final float z2 = Math.max(from.z(), to.z()) * MODEL_SCALE;
+        if (x1 == x2 || z1 == z2) {
+            return;
+        }
+        quad(buffer, pose, sprite, x1, y, z1, x2, y, z1, x2, y, z2, x1, y, z2, 0.0F, 1.0F, 0.0F, packedLight, packedOverlay);
     }
 
     private static void renderElement(
@@ -272,6 +335,7 @@ public final class MachineCasingBlockEntityRenderer
     public static final class State extends BlockEntityRenderState {
         private List<CasingType.Element> elements = List.of();
         private List<CombustionHeaterType.Element> combustionElements = List.of();
+        private List<CondenserType.Element> condenserElements = List.of();
         private List<CasingType.Element> installedElements = List.of();
         @Nullable
         private TextureAtlasSprite sprite;
@@ -279,6 +343,10 @@ public final class MachineCasingBlockEntityRenderer
         private TextureAtlasSprite combustionBodySprite;
         @Nullable
         private TextureAtlasSprite combustionTopSprite;
+        @Nullable
+        private TextureAtlasSprite condenserBodySprite;
+        @Nullable
+        private TextureAtlasSprite condenserPartSprite;
         @Nullable
         private TextureAtlasSprite installedSprite;
         private final ItemStackRenderState machine = new ItemStackRenderState();

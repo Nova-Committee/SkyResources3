@@ -457,6 +457,48 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return this.condenserMaxTime;
     }
 
+    public float condenserCatalystLeft() {
+        if (this.condenserCatalystLeft > 0.0F && !this.condenserCatalyst.isEmpty()) {
+            return this.condenserCatalystLeft;
+        }
+        if (this.condenserTypeId != null && !this.fuelItems.stack(FUEL_SLOT).isEmpty()) {
+            return 1.0F;
+        }
+        return 0.0F;
+    }
+
+    public float condenserExpectedOutputValue() {
+        if (!(this.level instanceof ServerLevel serverLevel) || this.condenserTypeId == null) {
+            return 0.0F;
+        }
+        final Optional<CondenserRecipe.Source> source =
+                this.condenserSource(serverLevel, this.worldPosition.above());
+        if (source.isEmpty()) {
+            return 0.0F;
+        }
+        final ItemStack catalyst = this.activeCondenserCatalyst();
+        final Optional<RecipeHolder<CondenserRecipe>> holder =
+                CondenserRecipes.find(serverLevel, catalyst, source.get());
+        if (holder.isEmpty()) {
+            return 0.0F;
+        }
+
+        final CondenserRecipe recipe = holder.get().value();
+        final float catalystLeft = this.condenserCatalystLeft();
+        if (catalystLeft <= 0.0F) {
+            return 0.0F;
+        }
+
+        final double parameter = Math.max(1.0D, recipe.parameter());
+        final double speed = Math.max(0.001D, this.condenserType().speed());
+        final double efficiency = Math.max(0.001D, this.combinedEfficiency(this.condenserType()));
+        return (float) (
+                2400.0D * speed * efficiency / Math.pow(parameter, 1.3D)
+                        * catalystLeft
+                        * recipe.output().getCount()
+        );
+    }
+
     public boolean hasValidMultiblock(final Level level) {
         if (!this.hasCombustionHeater()) {
             return false;

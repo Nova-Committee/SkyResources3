@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.client.screen;
 import committee.nova.mods.skyresources3.client.utils.GuiTooltips;
 import committee.nova.mods.skyresources3.client.utils.MachineGuiTheme;
 import committee.nova.mods.skyresources3.common.menu.MachineCasingMenu;
+import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -109,7 +110,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                     62,
                     MachineGuiTheme.CATALYST
             );
-            this.renderStatus(guiGraphics, this.menu.condenserMaxProgress() > 0);
+            this.renderStatus(guiGraphics, this.menu.condenserCatalystLeftRatio() > 0.0F);
         } else if (this.menu.hasHeater()) {
             this.renderStatus(guiGraphics, this.menu.currentHeat() > 0);
         } else {
@@ -139,9 +140,26 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             return;
         }
         if (this.isHovering(STATUS_X, STATUS_Y, STATUS_WIDTH, STATUS_HEIGHT, mouseX, mouseY)) {
-            GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
-                    "screen.skyresources.machine_casing.status"
-            ));
+            if (this.menu.hasCondenser()) {
+                GuiTooltips.render(
+                        guiGraphics,
+                        this.font,
+                        mouseX,
+                        mouseY,
+                        Component.translatable(
+                                "screen.skyresources.machine_casing.condenser_catalyst",
+                                GuiTooltips.percent(this.menu.condenserCatalystLeftRatio())
+                        ),
+                        Component.translatable(
+                                "screen.skyresources.machine_casing.condenser_expected",
+                                this.condenserExpectedValue()
+                        )
+                );
+            } else {
+                GuiTooltips.render(guiGraphics, this.font, mouseX, mouseY, Component.translatable(
+                        "screen.skyresources.machine_casing.status"
+                ));
+            }
         }
     }
 
@@ -165,9 +183,7 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
                     : "screen.skyresources.metric.missing");
         }
         if (this.menu.hasCondenser()) {
-            return Component.translatable(this.menu.condenserMaxProgress() > 0
-                    ? "screen.skyresources.metric.active"
-                    : "screen.skyresources.metric.idle");
+            return this.condenserCatalystValue();
         }
         if (this.menu.hasHeater()) {
             return Component.translatable(this.menu.currentHeat() > 0
@@ -181,6 +197,9 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
         if (this.menu.usesCombustionChamber()) {
             return Component.translatable("screen.skyresources.metric.structure");
         }
+        if (this.menu.hasCondenser()) {
+            return Component.translatable("screen.skyresources.metric.catalyst");
+        }
         return Component.translatable("screen.skyresources.metric.status");
     }
 
@@ -189,6 +208,33 @@ public final class MachineCasingScreen extends AbstractContainerScreen<MachineCa
             return Component.translatable("screen.skyresources.metric.idle");
         }
         return Component.literal(this.menu.condenserProgress() + "/" + this.menu.condenserMaxProgress());
+    }
+
+    private Component condenserCatalystValue() {
+        final int catalystPercent = GuiTooltips.percent(this.menu.condenserCatalystLeftRatio());
+        if (this.menu.condenserExpectedOutputValue() <= 0) {
+            return Component.translatable("screen.skyresources.metric.percent", catalystPercent);
+        }
+        return Component.literal(catalystPercent + "% / " + this.formatCondenserExpectedValue());
+    }
+
+    private Component condenserExpectedValue() {
+        if (this.menu.condenserExpectedOutputValue() <= 0) {
+            return Component.translatable("screen.skyresources.metric.idle");
+        }
+        return Component.literal(this.formatCondenserExpectedValue());
+    }
+
+    private String formatCondenserExpectedValue() {
+        final float value = this.menu.condenserExpectedOutput();
+        final String suffix = this.menu.isCondenserExpectedOutputValueCapped() ? "+" : "";
+        if (value >= 100.0F) {
+            return String.format(Locale.ROOT, "%.0f%s", value, suffix);
+        }
+        if (value >= 10.0F) {
+            return String.format(Locale.ROOT, "%.1f%s", value, suffix);
+        }
+        return String.format(Locale.ROOT, "%.2f%s", value, suffix);
     }
 
     private float heatRatio() {

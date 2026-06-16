@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 public final class MachineCasingMenu extends AbstractContainerMenu {
     public static final int FUEL_SLOT_X = 80;
     public static final int FUEL_SLOT_Y = 43;
+    private static final int RATIO_SCALE = 1_000;
+    private static final int VALUE_SCALE = 100;
     private static final int PLAYER_INVENTORY_Y = 92;
     private static final int PLAYER_SLOT_START = MachineCasingBlockEntity.SLOT_COUNT;
     private static final int PLAYER_SLOT_END = PLAYER_SLOT_START + 36;
@@ -35,6 +37,8 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
     private final DataSlot validMultiblock;
     private final DataSlot condenserProgress;
     private final DataSlot condenserMaxProgress;
+    private final DataSlot condenserCatalystLeft;
+    private final DataSlot condenserExpectedOutputValue;
     private final DataSlot speedPercent;
     private final DataSlot efficiencyPercent;
 
@@ -84,6 +88,8 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
         this.validMultiblock = this.addDataSlot(validMultiblockSlot(playerInventory, data));
         this.condenserProgress = this.addDataSlot(condenserProgressSlot(data.blockEntity()));
         this.condenserMaxProgress = this.addDataSlot(condenserMaxProgressSlot(data.blockEntity()));
+        this.condenserCatalystLeft = this.addDataSlot(condenserCatalystLeftSlot(data.blockEntity()));
+        this.condenserExpectedOutputValue = this.addDataSlot(condenserExpectedOutputValueSlot(data.blockEntity()));
         this.speedPercent = this.addDataSlot(speedPercentSlot(data.blockEntity()));
         this.efficiencyPercent = this.addDataSlot(efficiencyPercentSlot(data.blockEntity()));
     }
@@ -132,6 +138,22 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
 
     public int condenserMaxProgress() {
         return this.condenserMaxProgress.get();
+    }
+
+    public float condenserCatalystLeftRatio() {
+        return Math.min(1.0F, this.condenserCatalystLeft.get() / (float) RATIO_SCALE);
+    }
+
+    public int condenserExpectedOutputValue() {
+        return this.condenserExpectedOutputValue.get();
+    }
+
+    public float condenserExpectedOutput() {
+        return this.condenserExpectedOutputValue.get() / (float) VALUE_SCALE;
+    }
+
+    public boolean isCondenserExpectedOutputValueCapped() {
+        return this.condenserExpectedOutputValue.get() == Short.MAX_VALUE;
     }
 
     public int installedMachineMode() {
@@ -343,6 +365,38 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
         };
     }
 
+    private static DataSlot condenserCatalystLeftSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return scale(blockEntity.condenserCatalystLeft(), RATIO_SCALE);
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
+    private static DataSlot condenserExpectedOutputValueSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
+        if (blockEntity == null) {
+            return DataSlot.standalone();
+        }
+        return new DataSlot() {
+            @Override
+            public int get() {
+                return scale(blockEntity.condenserExpectedOutputValue(), VALUE_SCALE);
+            }
+
+            @Override
+            public void set(final int value) {
+            }
+        };
+    }
+
     private static DataSlot speedPercentSlot(@Nullable final MachineCasingBlockEntity blockEntity) {
         if (blockEntity == null) {
             return DataSlot.standalone();
@@ -373,6 +427,13 @@ public final class MachineCasingMenu extends AbstractContainerMenu {
             public void set(final int value) {
             }
         };
+    }
+
+    private static int scale(final double value, final int scale) {
+        if (value <= 0.0D) {
+            return 0;
+        }
+        return Math.min(Short.MAX_VALUE, (int) Math.round(value * scale));
     }
 
     private static MachineCasingClientData readClientData(

@@ -1,6 +1,7 @@
 {
   "translation_key": "block.skyresources.condenser.stone",
   "texture": "minecraft:block/stone",
+  "part_texture": "skyresources:block/condenser",
   "speed": 0.8,
   "efficiency": 1.0
 }

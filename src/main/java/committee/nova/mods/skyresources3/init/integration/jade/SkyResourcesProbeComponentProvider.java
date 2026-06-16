@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.init.integration.jade;
 
+import java.util.Locale;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -41,6 +42,7 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
                         .withStyle(ChatFormatting.YELLOW));
             }
         }
+        appendCondenser(tooltip, data);
         appendMultiblock(tooltip, data.multiblockState());
     }
 
@@ -72,6 +74,49 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
                             ? ChatFormatting.GREEN
                             : ChatFormatting.YELLOW));
         }
+    }
+
+    private static void appendCondenser(final ITooltip tooltip, final SkyResourcesProbeData data) {
+        if (data.condenserProgress() == SkyResourcesProbeData.VALUE_NONE) {
+            return;
+        }
+        if (data.condenserMaxProgress() > 0) {
+            tooltip.add(Component.translatable(
+                            "jade.skyresources.condenser_progress",
+                            data.condenserProgress(),
+                            data.condenserMaxProgress()
+                    )
+                    .withStyle(ChatFormatting.AQUA));
+        } else {
+            tooltip.add(Component.translatable("jade.skyresources.condenser_idle")
+                    .withStyle(ChatFormatting.GRAY));
+        }
+        if (data.condenserCatalystPercent() != SkyResourcesProbeData.VALUE_NONE) {
+            tooltip.add(Component.translatable(
+                            "jade.skyresources.condenser_catalyst",
+                            data.condenserCatalystPercent()
+                    )
+                    .withStyle(ChatFormatting.GREEN));
+        }
+        if (data.condenserExpectedOutputValue() > 0) {
+            tooltip.add(Component.translatable(
+                            "jade.skyresources.condenser_expected",
+                            formatExpectedOutput(data.condenserExpectedOutputValue())
+                    )
+                    .withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+    }
+
+    private static String formatExpectedOutput(final int scaledValue) {
+        final float value = scaledValue / (float) SkyResourcesProbeData.EXPECTED_OUTPUT_SCALE;
+        final String suffix = scaledValue == Integer.MAX_VALUE ? "+" : "";
+        if (value >= 100.0F) {
+            return String.format(Locale.ROOT, "%.0f%s", value, suffix);
+        }
+        if (value >= 10.0F) {
+            return String.format(Locale.ROOT, "%.1f%s", value, suffix);
+        }
+        return String.format(Locale.ROOT, "%.2f%s", value, suffix);
     }
 
     private SkyResourcesProbeComponentProvider() {

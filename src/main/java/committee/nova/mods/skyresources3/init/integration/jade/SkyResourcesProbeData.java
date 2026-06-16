@@ -10,7 +10,11 @@ record SkyResourcesProbeData(
         int currentHeat,
         int maxHeat,
         int heatPerTick,
-        int multiblockState
+        int multiblockState,
+        int condenserProgress,
+        int condenserMaxProgress,
+        int condenserCatalystPercent,
+        int condenserExpectedOutputValue
 ) {
     static final int STATE_NONE = 0;
     static final int STATE_INVALID = 1;
@@ -18,25 +22,52 @@ record SkyResourcesProbeData(
     static final int STATE_VALID_TIER2 = 3;
     static final int STATE_VALID_TIER2_MISSING = 4;
     static final int VALUE_NONE = -1;
-    static final StreamCodec<RegistryFriendlyByteBuf, SkyResourcesProbeData> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT,
-                    SkyResourcesProbeData::heatRequirementState,
-                    ByteBufCodecs.VAR_INT,
-                    SkyResourcesProbeData::heatSourceValue,
-                    ByteBufCodecs.VAR_INT,
-                    SkyResourcesProbeData::currentHeat,
-                    ByteBufCodecs.VAR_INT,
-                    SkyResourcesProbeData::maxHeat,
-                    ByteBufCodecs.VAR_INT,
-                    SkyResourcesProbeData::heatPerTick,
-                    ByteBufCodecs.VAR_INT,
-                    SkyResourcesProbeData::multiblockState,
-                    SkyResourcesProbeData::new
+    static final int EXPECTED_OUTPUT_SCALE = 100;
+    static final StreamCodec<RegistryFriendlyByteBuf, SkyResourcesProbeData> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public SkyResourcesProbeData decode(final RegistryFriendlyByteBuf buffer) {
+            return new SkyResourcesProbeData(
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer),
+                    ByteBufCodecs.VAR_INT.decode(buffer)
             );
+        }
+
+        @Override
+        public void encode(final RegistryFriendlyByteBuf buffer, final SkyResourcesProbeData value) {
+            ByteBufCodecs.VAR_INT.encode(buffer, value.heatRequirementState);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.heatSourceValue);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.currentHeat);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.maxHeat);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.heatPerTick);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.multiblockState);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserProgress);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserMaxProgress);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserCatalystPercent);
+            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserExpectedOutputValue);
+        }
+    };
 
     static SkyResourcesProbeData empty() {
-        return new SkyResourcesProbeData(STATE_NONE, VALUE_NONE, VALUE_NONE, 0, 0, STATE_NONE);
+        return new SkyResourcesProbeData(
+                STATE_NONE,
+                VALUE_NONE,
+                VALUE_NONE,
+                0,
+                0,
+                STATE_NONE,
+                VALUE_NONE,
+                0,
+                VALUE_NONE,
+                VALUE_NONE
+        );
     }
 
     SkyResourcesProbeData withHeatRequirement(final boolean valid) {
@@ -46,7 +77,11 @@ record SkyResourcesProbeData(
                 this.currentHeat,
                 this.maxHeat,
                 this.heatPerTick,
-                this.multiblockState
+                this.multiblockState,
+                this.condenserProgress,
+                this.condenserMaxProgress,
+                this.condenserCatalystPercent,
+                this.condenserExpectedOutputValue
         );
     }
 
@@ -57,7 +92,11 @@ record SkyResourcesProbeData(
                 this.currentHeat,
                 this.maxHeat,
                 this.heatPerTick,
-                this.multiblockState
+                this.multiblockState,
+                this.condenserProgress,
+                this.condenserMaxProgress,
+                this.condenserCatalystPercent,
+                this.condenserExpectedOutputValue
         );
     }
 
@@ -68,7 +107,11 @@ record SkyResourcesProbeData(
                 current,
                 max,
                 perTick,
-                this.multiblockState
+                this.multiblockState,
+                this.condenserProgress,
+                this.condenserMaxProgress,
+                this.condenserCatalystPercent,
+                this.condenserExpectedOutputValue
         );
     }
 
@@ -79,7 +122,31 @@ record SkyResourcesProbeData(
                 this.currentHeat,
                 this.maxHeat,
                 this.heatPerTick,
-                state
+                state,
+                this.condenserProgress,
+                this.condenserMaxProgress,
+                this.condenserCatalystPercent,
+                this.condenserExpectedOutputValue
+        );
+    }
+
+    SkyResourcesProbeData withCondenser(
+            final int progress,
+            final int maxProgress,
+            final int catalystPercent,
+            final int expectedOutputValue
+    ) {
+        return new SkyResourcesProbeData(
+                this.heatRequirementState,
+                this.heatSourceValue,
+                this.currentHeat,
+                this.maxHeat,
+                this.heatPerTick,
+                this.multiblockState,
+                progress,
+                maxProgress,
+                catalystPercent,
+                expectedOutputValue
         );
     }
 
@@ -87,7 +154,9 @@ record SkyResourcesProbeData(
         return this.heatRequirementState != STATE_NONE
                 || this.heatSourceValue != VALUE_NONE
                 || this.currentHeat != VALUE_NONE
-                || this.multiblockState != STATE_NONE;
+                || this.multiblockState != STATE_NONE
+                || this.condenserProgress != VALUE_NONE
+                || this.condenserCatalystPercent != VALUE_NONE;
     }
 
     static int state(final boolean valid) {

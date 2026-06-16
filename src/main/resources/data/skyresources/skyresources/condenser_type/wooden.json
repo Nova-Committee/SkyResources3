@@ -1,6 +1,7 @@
 {
   "translation_key": "block.skyresources.condenser.wooden",
   "texture": "minecraft:block/oak_log",
+  "part_texture": "skyresources:block/condenser",
   "speed": 0.4,
   "efficiency": 0.5
 }

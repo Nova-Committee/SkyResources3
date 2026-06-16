@@ -1,6 +1,7 @@
 {
   "translation_key": "block.skyresources.condenser.iron",
   "texture": "skyresources:block/iron_machine",
+  "part_texture": "skyresources:block/condenser",
   "speed": 1.0,
   "efficiency": 1.2
 }
