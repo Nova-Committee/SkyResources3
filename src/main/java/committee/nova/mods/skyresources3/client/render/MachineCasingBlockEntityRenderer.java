@@ -121,7 +121,7 @@ public final class MachineCasingBlockEntityRenderer
             final int lightCoords = state.lightCoords;
             submitter.submitCustomGeometry(
                     poseStack,
-                    RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
+                    RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
                     (pose, buffer) -> {
                         for (final CasingType.Element element : elements) {
                             renderElement(element, pose, buffer, sprite, lightCoords, OverlayTexture.NO_OVERLAY);
@@ -138,7 +138,7 @@ public final class MachineCasingBlockEntityRenderer
                 final int lightCoords = state.lightCoords;
                 submitter.submitCustomGeometry(
                         poseStack,
-                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
+                        RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
                         (pose, buffer) -> {
                             for (final CombustionHeaterType.Element element : elements) {
                                 final TextureAtlasSprite elementSprite = switch (element.texture()) {
@@ -160,7 +160,7 @@ public final class MachineCasingBlockEntityRenderer
                 final int lightCoords = state.lightCoords;
                 submitter.submitCustomGeometry(
                         poseStack,
-                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
+                        RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
                         (pose, buffer) -> {
                             for (final HeatProviderType.Element element : elements) {
                                 switch (element.texture()) {
@@ -197,7 +197,7 @@ public final class MachineCasingBlockEntityRenderer
                 final int lightCoords = state.lightCoords;
                 submitter.submitCustomGeometry(
                         poseStack,
-                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
+                        RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
                         (pose, buffer) -> {
                             for (final CondenserType.Element element : elements) {
                                 switch (element.texture()) {
