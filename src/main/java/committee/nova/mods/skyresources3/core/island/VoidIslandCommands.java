@@ -32,7 +32,7 @@ public final class VoidIslandCommands {
     private static final int STARTER_RESET_RADIUS = 3;
     private static final int MAX_ISLAND_RESET_RADIUS = ISLAND_SPACING / 2 - 1;
     private static final int STARTER_RESET_MIN_Y_OFFSET = -1;
-    private static final int STARTER_RESET_MAX_Y_OFFSET = 4;
+    private static final int STARTER_RESET_MAX_Y_OFFSET = 5;
     private static final BlockPos TEMPORARY_SPAWN_COLUMN = new BlockPos(0, 0, 0);
     private static final Set<Relative> NO_RELATIVE_MOVEMENT = Set.of();
 

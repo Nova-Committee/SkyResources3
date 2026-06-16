@@ -264,6 +264,49 @@ public final class IslandCommandGameTests {
     }
 
     @SuppressWarnings("removal")
+    public static void starterTemplatesUseLegacyLayeredStructures(final GameTestHelper helper) {
+        final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
+        Config.enableVoidIslandFeatures = true;
+
+        try {
+            final IslandSavedData.IslandRecord grass = createIsland(helper, "legacy_grass_owner", "grass");
+            final ServerLevel grassLevel = islandLevel(helper, grass);
+            final BlockPos grassCenter = grass.home().below();
+            assertBlock(helper, grassLevel, grassCenter, Blocks.GRASS_BLOCK, "Grass island top layer");
+            assertBlock(helper, grassLevel, grassCenter.below(), Blocks.BEDROCK, "Grass island bottom layer");
+            assertBlock(helper, grassLevel, grassCenter.above(), Blocks.OAK_LOG, "Grass island tree trunk");
+            assertBlock(helper, grassLevel, grassCenter.above(5), Blocks.OAK_LEAVES, "Grass island tree canopy");
+
+            final IslandSavedData.IslandRecord sand = createIsland(helper, "legacy_sand_owner", "sand");
+            final ServerLevel sandLevel = islandLevel(helper, sand);
+            final BlockPos sandCenter = sand.home().below();
+            assertBlock(helper, sandLevel, sandCenter, Blocks.RED_SAND, "Sand island top layer");
+            assertBlock(helper, sandLevel, sandCenter.below(), Blocks.BEDROCK, "Sand island bottom layer");
+            assertBlock(helper, sandLevel, sandCenter.offset(-1, 1, 1), Blocks.CACTUS, "Sand island cactus");
+
+            final IslandSavedData.IslandRecord snow = createIsland(helper, "legacy_snow_owner", "snow");
+            final ServerLevel snowLevel = islandLevel(helper, snow);
+            final BlockPos snowCenter = snow.home().below();
+            assertBlock(helper, snowLevel, snowCenter, Blocks.SNOW_BLOCK, "Snow island top layer");
+            assertBlock(helper, snowLevel, snowCenter.below(), Blocks.BEDROCK, "Snow island bottom layer");
+            assertBlock(helper, snowLevel, snowCenter.above(), Blocks.SNOW, "Snow island snow cover");
+            assertBlock(helper, snowLevel, snowCenter.offset(-1, 1, 1), Blocks.PUMPKIN, "Snow island pumpkin");
+
+            final IslandSavedData.IslandRecord wood = createIsland(helper, "legacy_wood_owner", "wood");
+            final ServerLevel woodLevel = islandLevel(helper, wood);
+            final BlockPos woodCenter = wood.home().below();
+            assertBlock(helper, woodLevel, woodCenter, Blocks.WATER, "Wood island center water");
+            assertBlock(helper, woodLevel, woodCenter.below(), Blocks.BEDROCK, "Wood island bottom layer");
+            assertBlock(helper, woodLevel, woodCenter.east(), Blocks.DARK_OAK_PLANKS, "Wood island planks");
+            assertBlock(helper, woodLevel, woodCenter.offset(-1, 1, 1), Blocks.TRIPWIRE, "Wood island string");
+
+            helper.succeed();
+        } finally {
+            Config.enableVoidIslandFeatures = originalVoidIslandFeatures;
+        }
+    }
+
+    @SuppressWarnings("removal")
     public static void islandInviteHomeLeaveAndDisband(final GameTestHelper helper) {
         final boolean originalVoidIslandFeatures = Config.enableVoidIslandFeatures;
         Config.enableVoidIslandFeatures = true;
@@ -429,6 +472,35 @@ public final class IslandCommandGameTests {
             helper.fail("Expected island record for mock player");
         }
         return island;
+    }
+
+    private static IslandSavedData.IslandRecord createIsland(
+            final GameTestHelper helper,
+            final String playerName,
+            final String template
+    ) {
+        final ServerPlayer player = makeNamedMockServerPlayerInLevel(helper, playerName);
+        assertCommandSucceeds(helper, player, "island create " + template);
+        final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
+        return getIslandOrFail(helper, islands, player);
+    }
+
+    private static ServerLevel islandLevel(final GameTestHelper helper, final IslandSavedData.IslandRecord island) {
+        final ServerLevel level = helper.getLevel().getServer().getLevel(island.dimension());
+        if (level == null) {
+            helper.fail("Expected target level for island");
+        }
+        return level;
+    }
+
+    private static void assertBlock(
+            final GameTestHelper helper,
+            final ServerLevel level,
+            final BlockPos pos,
+            final Block block,
+            final String message
+    ) {
+        helper.assertTrue(level.getBlockState(pos).is(block), message);
     }
 
     private static void assertCommandSucceeds(

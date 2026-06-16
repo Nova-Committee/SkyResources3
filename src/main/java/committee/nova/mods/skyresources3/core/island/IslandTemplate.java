@@ -17,13 +17,13 @@ public enum IslandTemplate {
         @Override
         public void build(final ServerLevel level, final BlockPos center) {
             fillPlatform(level, center, Blocks.GRASS_BLOCK.defaultBlockState());
-            set(level, center.offset(2, 1, 2), Blocks.OAK_SAPLING.defaultBlockState());
+            buildOakTree(level, center);
         }
     },
     SAND("sand") {
         @Override
         public void build(final ServerLevel level, final BlockPos center) {
-            fillPlatform(level, center, Blocks.SAND.defaultBlockState());
+            fillPlatform(level, center, Blocks.RED_SAND.defaultBlockState());
             set(level, center.offset(-1, 1, 1), Blocks.CACTUS.defaultBlockState());
             set(level, center.offset(-1, 2, 1), Blocks.CACTUS.defaultBlockState());
             set(level, center.offset(-1, 3, 1), Blocks.CACTUS.defaultBlockState());
@@ -33,18 +33,22 @@ public enum IslandTemplate {
         @Override
         public void build(final ServerLevel level, final BlockPos center) {
             fillPlatform(level, center, Blocks.SNOW_BLOCK.defaultBlockState());
-            set(level, center.offset(-1, 0, -1), Blocks.PACKED_ICE.defaultBlockState());
-            set(level, center.offset(1, 0, 1), Blocks.ICE.defaultBlockState());
-            set(level, center.offset(2, 1, 2), Blocks.PUMPKIN.defaultBlockState());
+            for (int x = -PLATFORM_RADIUS; x <= PLATFORM_RADIUS; x++) {
+                for (int z = -PLATFORM_RADIUS; z <= PLATFORM_RADIUS; z++) {
+                    final BlockState decoration = ((x == -1 || x == 1) && z == 1)
+                            ? Blocks.PUMPKIN.defaultBlockState()
+                            : Blocks.SNOW.defaultBlockState();
+                    set(level, center.offset(x, 1, z), decoration);
+                }
+            }
         }
     },
     WOOD("wood") {
         @Override
         public void build(final ServerLevel level, final BlockPos center) {
-            fillPlatform(level, center, Blocks.OAK_PLANKS.defaultBlockState());
-            set(level, center.offset(-2, 1, -2), Blocks.OAK_LOG.defaultBlockState());
-            set(level, center.offset(-2, 2, -2), Blocks.OAK_LOG.defaultBlockState());
-            set(level, center.offset(2, 1, 2), Blocks.OAK_SAPLING.defaultBlockState());
+            fillPlatform(level, center, Blocks.DARK_OAK_PLANKS.defaultBlockState());
+            set(level, center, Blocks.WATER.defaultBlockState());
+            set(level, center.offset(-1, 1, 1), Blocks.TRIPWIRE.defaultBlockState());
         }
     },
     GOG("gog") {
@@ -90,7 +94,7 @@ public enum IslandTemplate {
     };
 
     public static final String DEFAULT_ID = "grass";
-    private static final int PLATFORM_RADIUS = 2;
+    private static final int PLATFORM_RADIUS = 1;
 
     private final String id;
 
@@ -136,9 +140,37 @@ public enum IslandTemplate {
             final BlockPos center,
             final BlockState state
     ) {
+        fillPlatform(level, center, state, Blocks.BEDROCK.defaultBlockState());
+    }
+
+    protected static void fillPlatform(
+            final ServerLevel level,
+            final BlockPos center,
+            final BlockState topState,
+            final BlockState bottomState
+    ) {
         for (int x = -PLATFORM_RADIUS; x <= PLATFORM_RADIUS; x++) {
             for (int z = -PLATFORM_RADIUS; z <= PLATFORM_RADIUS; z++) {
-                set(level, center.offset(x, 0, z), state);
+                final BlockPos pos = center.offset(x, 0, z);
+                set(level, pos, topState);
+                set(level, pos.below(), bottomState);
+            }
+        }
+    }
+
+    private static void buildOakTree(final ServerLevel level, final BlockPos center) {
+        for (int y = 1; y <= 5; y++) {
+            for (int x = -2; x <= 2; x++) {
+                for (int z = -2; z <= 2; z++) {
+                    final BlockPos pos = center.offset(x, y, z);
+                    if (x == 0 && z == 0) {
+                        set(level, pos, y <= 3
+                                ? Blocks.OAK_LOG.defaultBlockState()
+                                : Blocks.OAK_LEAVES.defaultBlockState());
+                    } else if (y == 3 || y == 4 || (y == 5 && Math.abs(x) <= 1 && Math.abs(z) <= 1)) {
+                        set(level, pos, Blocks.OAK_LEAVES.defaultBlockState());
+                    }
+                }
             }
         }
     }

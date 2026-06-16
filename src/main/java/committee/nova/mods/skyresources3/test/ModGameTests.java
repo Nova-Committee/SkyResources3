@@ -54,6 +54,11 @@ public final class ModGameTests {
                     "island_magma_template",
                     () -> IslandCommandGameTests::magmaIslandPlacesCrystalFluid
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_LAYERED_TEMPLATES =
+            TEST_FUNCTIONS.register(
+                    "island_layered_templates",
+                    () -> IslandCommandGameTests::starterTemplatesUseLegacyLayeredStructures
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_RELATION_COMMANDS =
             TEST_FUNCTIONS.register(
                     "island_relation_commands",
@@ -308,6 +313,7 @@ public final class ModGameTests {
         registerFunctionTest(event, "island_visit", ISLAND_VISIT, environment);
         registerFunctionTest(event, "island_offline_visit", ISLAND_OFFLINE_VISIT, environment);
         registerFunctionTest(event, "island_magma_template", ISLAND_MAGMA_TEMPLATE, environment);
+        registerFunctionTest(event, "island_layered_templates", ISLAND_LAYERED_TEMPLATES, environment);
         registerFunctionTest(event, "island_relation_commands", ISLAND_RELATION_COMMANDS, environment);
         registerFunctionTest(event, "island_trust_commands", ISLAND_TRUST_COMMANDS, environment);
         registerFunctionTest(event, "island_offline_identity", ISLAND_OFFLINE_IDENTITY, environment);
