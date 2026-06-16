@@ -24,7 +24,9 @@ import committee.nova.mods.skyresources3.common.block.QuickDropperBlock;
 import committee.nova.mods.skyresources3.common.block.RockCleanerBlock;
 import committee.nova.mods.skyresources3.common.block.RockCrusherBlock;
 import committee.nova.mods.skyresources3.common.block.SilverfishDisruptorBlock;
+import committee.nova.mods.skyresources3.common.block.StandaloneMachineBlock;
 import committee.nova.mods.skyresources3.common.block.WildlifeAttractorBlock;
+import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -183,16 +185,28 @@ public final class ModBlocks {
             MachineCasingBlock::new,
             () -> properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<Block> COMBUSTION_HEATER = BLOCKS.registerSimpleBlock(
+    public static final DeferredBlock<StandaloneMachineBlock> COMBUSTION_HEATER = BLOCKS.registerBlock(
             "combustion_heater",
+            properties -> new StandaloneMachineBlock(
+                    StandaloneMachineBlockEntity.MachineKind.COMBUSTION_HEATER,
+                    properties
+            ),
             () -> properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<Block> HEAT_PROVIDER = BLOCKS.registerSimpleBlock(
+    public static final DeferredBlock<StandaloneMachineBlock> HEAT_PROVIDER = BLOCKS.registerBlock(
             "heat_provider",
+            properties -> new StandaloneMachineBlock(
+                    StandaloneMachineBlockEntity.MachineKind.HEAT_PROVIDER,
+                    properties
+            ),
             () -> properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<Block> CONDENSER = BLOCKS.registerSimpleBlock(
+    public static final DeferredBlock<StandaloneMachineBlock> CONDENSER = BLOCKS.registerBlock(
             "condenser",
+            properties -> new StandaloneMachineBlock(
+                    StandaloneMachineBlockEntity.MachineKind.CONDENSER,
+                    properties
+            ),
             () -> properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
     public static final DeferredBlock<CombustionCollectorBlock> COMBUSTION_COLLECTOR = BLOCKS.registerBlock(

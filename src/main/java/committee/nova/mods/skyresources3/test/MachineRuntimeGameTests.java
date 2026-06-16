@@ -1,28 +1,32 @@
 package committee.nova.mods.skyresources3.test;
 
+import java.util.function.Function;
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.common.block.CombustionControllerBlock;
 import committee.nova.mods.skyresources3.common.block.entity.CombustionCollectorBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.CombustionControllerBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockEntity;
-import committee.nova.mods.skyresources3.init.event.MachineCasingEvents;
+import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
 import committee.nova.mods.skyresources3.common.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.common.item.CondenserItem;
 import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.common.item.OreAlchemyDustItem;
+import committee.nova.mods.skyresources3.common.menu.CombustionControllerMenu;
 import committee.nova.mods.skyresources3.core.machine.CasingType;
 import committee.nova.mods.skyresources3.core.machine.CombustionHeaterType;
-import committee.nova.mods.skyresources3.common.menu.CombustionControllerMenu;
+import committee.nova.mods.skyresources3.init.event.MachineCasingEvents;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -31,13 +35,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -138,6 +143,38 @@ public final class MachineRuntimeGameTests {
                 ModDataPackRegistries.heatProviderTypeId(ModDataPackRegistries.IRON_HEAT_PROVIDER)
                         .equals(HeatProviderItem.heatProviderTypeId(removed)),
                 "Removed provider should keep its type component"
+        );
+        helper.succeed();
+    }
+
+    public static void standaloneMachineBlocksPersistTypeComponents(final GameTestHelper helper) {
+        helper.killAllEntities();
+        assertStandaloneMachineType(
+                helper,
+                new BlockPos(1, 1, 1),
+                ModBlocks.COMBUSTION_HEATER.get(),
+                CombustionHeaterItem.forType(ModDataPackRegistries.DARK_MATTER_COMBUSTION_HEATER),
+                ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.DARK_MATTER_COMBUSTION_HEATER),
+                CombustionHeaterItem::combustionHeaterTypeId,
+                "Standalone combustion heater"
+        );
+        assertStandaloneMachineType(
+                helper,
+                new BlockPos(2, 1, 1),
+                ModBlocks.HEAT_PROVIDER.get(),
+                HeatProviderItem.forType(ModDataPackRegistries.END_STONE_HEAT_PROVIDER),
+                ModDataPackRegistries.heatProviderTypeId(ModDataPackRegistries.END_STONE_HEAT_PROVIDER),
+                HeatProviderItem::heatProviderTypeId,
+                "Standalone heat provider"
+        );
+        assertStandaloneMachineType(
+                helper,
+                new BlockPos(3, 1, 1),
+                ModBlocks.CONDENSER.get(),
+                CondenserItem.forType(ModDataPackRegistries.LIGHT_MATTER_CONDENSER),
+                ModDataPackRegistries.condenserTypeId(ModDataPackRegistries.LIGHT_MATTER_CONDENSER),
+                CondenserItem::condenserTypeId,
+                "Standalone condenser"
         );
         helper.succeed();
     }
@@ -927,6 +964,42 @@ public final class MachineRuntimeGameTests {
                 "Expected a machine casing block entity"
         );
         return (MachineCasingBlockEntity) blockEntity;
+    }
+
+    private static StandaloneMachineBlockEntity standaloneMachineAt(
+            final GameTestHelper helper,
+            final BlockPos relativePos
+    ) {
+        final BlockEntity blockEntity = blockEntityAt(helper, relativePos);
+        helper.assertTrue(
+                blockEntity instanceof StandaloneMachineBlockEntity,
+                "Expected a standalone machine block entity"
+        );
+        return (StandaloneMachineBlockEntity) blockEntity;
+    }
+
+    private static void assertStandaloneMachineType(
+            final GameTestHelper helper,
+            final BlockPos relativePos,
+            final Block block,
+            final ItemStack placedStack,
+            final Identifier expectedTypeId,
+            final Function<ItemStack, Identifier> typeReader,
+            final String label
+    ) {
+        helper.setBlock(relativePos, block);
+        final StandaloneMachineBlockEntity machine = standaloneMachineAt(helper, relativePos);
+        machine.applyComponentsFromItemStack(placedStack);
+
+        helper.assertValueEqual(expectedTypeId, machine.typeId(), label + " block entity type");
+        helper.assertValueEqual(expectedTypeId, typeReader.apply(machine.asItemStack()), label + " clone stack type");
+
+        helper.getLevel().destroyBlock(helper.absolutePos(relativePos), true);
+        final boolean droppedTypedStack = helper.getEntities(EntityType.ITEM, relativePos, ITEM_ASSERT_RADIUS)
+                .stream()
+                .map(ItemEntity::getItem)
+                .anyMatch(stack -> stack.is(placedStack.getItem()) && expectedTypeId.equals(typeReader.apply(stack)));
+        helper.assertTrue(droppedTypedStack, label + " drop should keep its type component");
     }
 
     private static BlockHitResult hitResult(final GameTestHelper helper, final BlockPos relativePos) {

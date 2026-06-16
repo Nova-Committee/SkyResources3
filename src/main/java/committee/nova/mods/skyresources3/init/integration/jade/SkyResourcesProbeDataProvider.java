@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.common.block.entity.EndPortalCoreBlockE
 import committee.nova.mods.skyresources3.common.block.entity.FreezerBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.LifeInfuserBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.util.HeatSources;
 import net.minecraft.core.BlockPos;
@@ -57,6 +58,8 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
                         scale(casing.condenserExpectedOutputValue(), SkyResourcesProbeData.EXPECTED_OUTPUT_SCALE)
                 );
             }
+        } else if (blockEntity instanceof StandaloneMachineBlockEntity machine) {
+            data = data.withObjectName(machine.displayName());
         } else if (blockEntity instanceof LifeInfuserBlockEntity lifeInfuser && level instanceof ServerLevel serverLevel) {
             data = data.withMultiblock(SkyResourcesProbeData.state(lifeInfuser.hasValidMultiblock(serverLevel)));
         } else if (blockEntity instanceof EndPortalCoreBlockEntity endPortalCore) {

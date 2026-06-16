@@ -18,6 +18,7 @@ import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockE
 import committee.nova.mods.skyresources3.common.block.entity.QuickDropperBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.RockCleanerBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.RockCrusherBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.WildlifeAttractorBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -125,6 +126,17 @@ public final class ModBlockEntityTypes {
                     () -> new BlockEntityType<>(
                             MachineCasingBlockEntity::new,
                             ModBlocks.MACHINE_CASING.get()
+                    )
+            );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StandaloneMachineBlockEntity>>
+            STANDALONE_MACHINE =
+            BLOCK_ENTITY_TYPES.register(
+                    "standalone_machine",
+                    () -> new BlockEntityType<>(
+                            StandaloneMachineBlockEntity::new,
+                            ModBlocks.COMBUSTION_HEATER.get(),
+                            ModBlocks.HEAT_PROVIDER.get(),
+                            ModBlocks.CONDENSER.get()
                     )
             );
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionCollectorBlockEntity>>

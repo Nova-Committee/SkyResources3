@@ -291,7 +291,7 @@ public final class MachineCasingBlockEntityRenderer
         renderElement(element.from(), element.to(), pose, buffer, sprite, packedLight, packedOverlay);
     }
 
-    private static void renderTopFace(
+    static void renderTopFace(
             final Vector3f from,
             final Vector3f to,
             final PoseStack.Pose pose,
@@ -311,7 +311,7 @@ public final class MachineCasingBlockEntityRenderer
         quad(buffer, pose, sprite, x1, y, z1, x2, y, z1, x2, y, z2, x1, y, z2, 0.0F, 1.0F, 0.0F, packedLight, packedOverlay);
     }
 
-    private static void renderElement(
+    static void renderElement(
             final Vector3f from,
             final Vector3f to,
             final PoseStack.Pose pose,
@@ -408,7 +408,7 @@ public final class MachineCasingBlockEntityRenderer
         };
     }
 
-    private static Identifier machineBodyTexture(
+    static Identifier machineBodyTexture(
             final Identifier typeId,
             final Identifier resolvedTexture,
             final String translationKey,

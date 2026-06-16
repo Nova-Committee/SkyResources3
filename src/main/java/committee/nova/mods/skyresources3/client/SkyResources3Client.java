@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.client;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.client.model.*;
 import committee.nova.mods.skyresources3.client.render.MachineCasingBlockEntityRenderer;
+import committee.nova.mods.skyresources3.client.render.StandaloneMachineBlockEntityRenderer;
 import committee.nova.mods.skyresources3.client.screen.*;
 import committee.nova.mods.skyresources3.client.utils.MaterialItemTintSources;
 import committee.nova.mods.skyresources3.common.entity.HeavyExplosiveSnowball;
@@ -64,6 +65,10 @@ public final class SkyResources3Client {
         event.registerBlockEntityRenderer(
                 ModBlockEntityTypes.MACHINE_CASING.get(),
                 MachineCasingBlockEntityRenderer::new
+        );
+        event.registerBlockEntityRenderer(
+                ModBlockEntityTypes.STANDALONE_MACHINE.get(),
+                StandaloneMachineBlockEntityRenderer::new
         );
     }
 

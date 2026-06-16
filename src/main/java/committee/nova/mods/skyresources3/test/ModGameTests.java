@@ -158,6 +158,12 @@ public final class ModGameTests {
                     "heat_provider_embeds_as_type_id",
                     () -> MachineRuntimeGameTests::heatProviderEmbedsAsTypeIdAndProvidesHeat
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            STANDALONE_MACHINE_TYPE_COMPONENTS =
+            TEST_FUNCTIONS.register(
+                    "standalone_machine_type_components",
+                    () -> MachineRuntimeGameTests::standaloneMachineBlocksPersistTypeComponents
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_drops_output",
@@ -336,6 +342,7 @@ public final class ModGameTests {
                 environment
         );
         registerFunctionTest(event, "heat_provider_embeds_as_type_id", HEAT_PROVIDER_EMBEDS_AS_TYPE_ID, environment);
+        registerFunctionTest(event, "standalone_machine_type_components", STANDALONE_MACHINE_TYPE_COMPONENTS, environment);
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
         registerFunctionTest(event, "condenser_catalyst_slot", CONDENSER_CATALYST_SLOT, environment);
