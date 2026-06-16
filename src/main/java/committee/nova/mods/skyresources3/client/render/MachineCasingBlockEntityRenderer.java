@@ -2,10 +2,11 @@ package committee.nova.mods.skyresources3.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.core.machine.CasingType;
 import committee.nova.mods.skyresources3.core.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.core.machine.CondenserType;
-import committee.nova.mods.skyresources3.core.machine.CasingType;
 import committee.nova.mods.skyresources3.core.machine.HeatProviderType;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -23,6 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -31,6 +33,18 @@ import org.joml.Vector3f;
 public final class MachineCasingBlockEntityRenderer
         implements BlockEntityRenderer<MachineCasingBlockEntity, MachineCasingBlockEntityRenderer.State> {
     private static final float MODEL_SCALE = 1.0F / 16.0F;
+    private static final Identifier IRON_MACHINE_TEXTURE = texture(Skyresources3.MODID, "block/iron_machine");
+    private static final Identifier DARK_MATTER_TEXTURE = texture(Skyresources3.MODID, "block/dark_matter_block");
+    private static final Identifier LIGHT_MATTER_TEXTURE = texture(Skyresources3.MODID, "block/light_matter_block");
+    private static final Identifier OAK_LOG_TEXTURE = texture("minecraft", "block/oak_log");
+    private static final Identifier STONE_TEXTURE = texture("minecraft", "block/stone");
+    private static final Identifier COBBLESTONE_TEXTURE = texture("minecraft", "block/cobblestone");
+    private static final Identifier NETHER_BRICKS_TEXTURE = texture("minecraft", "block/nether_bricks");
+    private static final Identifier END_STONE_TEXTURE = texture("minecraft", "block/end_stone");
+    private static final String FALLBACK_CASING_TRANSLATION_KEY = "block.skyresources.machine_casing.iron";
+    private static final String FALLBACK_COMBUSTION_TRANSLATION_KEY = "block.skyresources.combustion_heater.iron";
+    private static final String FALLBACK_HEAT_PROVIDER_TRANSLATION_KEY = "block.skyresources.heat_provider.iron";
+    private static final String FALLBACK_CONDENSER_TRANSLATION_KEY = "block.skyresources.condenser.iron";
     private final ItemModelResolver itemModelResolver;
     private final MaterialSet materials;
 
@@ -55,7 +69,11 @@ public final class MachineCasingBlockEntityRenderer
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPos, crumblingOverlay);
         final CasingType casingType = blockEntity.casingType();
         state.elements = casingType.elements();
-        state.sprite = this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, casingType.texture()));
+        state.sprite = this.sprite(casingTexture(
+                blockEntity.casingTypeId(),
+                casingType.texture(),
+                casingType.translationKey()
+        ));
 
         state.machine.clear();
         state.combustionElements = List.of();
@@ -68,30 +86,42 @@ public final class MachineCasingBlockEntityRenderer
         state.installedBodySprite = null;
         state.installedPartSprite = null;
         if (blockEntity.combustionHeaterTypeId() != null) {
+            final Identifier heaterTypeId = blockEntity.combustionHeaterTypeId();
             final CombustionHeaterType heaterType = blockEntity.combustionHeaterType();
             state.combustionElements = heaterType.elements();
-            state.combustionBodySprite =
-                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, heaterType.bodyTexture()));
-            state.combustionTopSprite =
-                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, heaterType.topTexture()));
+            state.combustionBodySprite = this.sprite(machineBodyTexture(
+                    heaterTypeId,
+                    heaterType.bodyTexture(),
+                    heaterType.translationKey(),
+                    FALLBACK_COMBUSTION_TRANSLATION_KEY
+            ));
+            state.combustionTopSprite = this.sprite(heaterType.topTexture());
             return;
         }
         if (blockEntity.heatProviderTypeId() != null) {
+            final Identifier providerTypeId = blockEntity.heatProviderTypeId();
             final HeatProviderType providerType = blockEntity.heatProviderType();
             state.installedElements = providerType.elements();
-            state.installedBodySprite =
-                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, providerType.texture()));
-            state.installedPartSprite =
-                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, providerType.partTexture()));
+            state.installedBodySprite = this.sprite(machineBodyTexture(
+                    providerTypeId,
+                    providerType.texture(),
+                    providerType.translationKey(),
+                    FALLBACK_HEAT_PROVIDER_TRANSLATION_KEY
+            ));
+            state.installedPartSprite = this.sprite(providerType.partTexture());
             return;
         }
         if (blockEntity.condenserTypeId() != null) {
+            final Identifier condenserTypeId = blockEntity.condenserTypeId();
             final CondenserType condenserType = blockEntity.condenserType();
             state.condenserElements = condenserType.elements();
-            state.condenserBodySprite =
-                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, condenserType.texture()));
-            state.condenserPartSprite =
-                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, condenserType.partTexture()));
+            state.condenserBodySprite = this.sprite(machineBodyTexture(
+                    condenserTypeId,
+                    condenserType.texture(),
+                    condenserType.translationKey(),
+                    FALLBACK_CONDENSER_TRANSLATION_KEY
+            ));
+            state.condenserPartSprite = this.sprite(condenserType.partTexture());
             return;
         }
 
@@ -100,12 +130,16 @@ public final class MachineCasingBlockEntityRenderer
             this.itemModelResolver.updateForTopItem(
                     state.machine,
                     machine,
-                    ItemDisplayContext.FIXED,
+                    ItemDisplayContext.NONE,
                     blockEntity.getLevel(),
                     null,
                     blockEntity.getBlockPos().hashCode()
             );
         }
+    }
+
+    private TextureAtlasSprite sprite(final Identifier texture) {
+        return this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, texture));
     }
 
     @Override
@@ -121,7 +155,7 @@ public final class MachineCasingBlockEntityRenderer
             final int lightCoords = state.lightCoords;
             submitter.submitCustomGeometry(
                     poseStack,
-                    RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
+                    RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
                     (pose, buffer) -> {
                         for (final CasingType.Element element : elements) {
                             renderElement(element, pose, buffer, sprite, lightCoords, OverlayTexture.NO_OVERLAY);
@@ -138,7 +172,7 @@ public final class MachineCasingBlockEntityRenderer
                 final int lightCoords = state.lightCoords;
                 submitter.submitCustomGeometry(
                         poseStack,
-                        RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
+                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
                         (pose, buffer) -> {
                             for (final CombustionHeaterType.Element element : elements) {
                                 final TextureAtlasSprite elementSprite = switch (element.texture()) {
@@ -160,7 +194,7 @@ public final class MachineCasingBlockEntityRenderer
                 final int lightCoords = state.lightCoords;
                 submitter.submitCustomGeometry(
                         poseStack,
-                        RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
+                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
                         (pose, buffer) -> {
                             for (final HeatProviderType.Element element : elements) {
                                 switch (element.texture()) {
@@ -197,7 +231,7 @@ public final class MachineCasingBlockEntityRenderer
                 final int lightCoords = state.lightCoords;
                 submitter.submitCustomGeometry(
                         poseStack,
-                        RenderTypes.entitySolid(TextureAtlas.LOCATION_BLOCKS),
+                        RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
                         (pose, buffer) -> {
                             for (final CondenserType.Element element : elements) {
                                 switch (element.texture()) {
@@ -231,7 +265,6 @@ public final class MachineCasingBlockEntityRenderer
         }
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        poseStack.scale(0.5F, 0.5F, 0.5F);
         state.machine.submit(poseStack, submitter, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
     }
@@ -354,6 +387,61 @@ public final class MachineCasingBlockEntityRenderer
                 .setOverlay(packedOverlay)
                 .setLight(packedLight)
                 .setNormal(pose, normalX, normalY, normalZ);
+    }
+
+    private static Identifier casingTexture(
+            final Identifier typeId,
+            final Identifier resolvedTexture,
+            final String translationKey
+    ) {
+        if (!shouldUseBuiltinFallback(typeId, resolvedTexture, translationKey, FALLBACK_CASING_TRANSLATION_KEY)) {
+            return resolvedTexture;
+        }
+        return switch (typeId.getPath()) {
+            case "wooden" -> OAK_LOG_TEXTURE;
+            case "stone" -> COBBLESTONE_TEXTURE;
+            case "nether_brick" -> NETHER_BRICKS_TEXTURE;
+            case "end_stone" -> END_STONE_TEXTURE;
+            case "dark_matter" -> DARK_MATTER_TEXTURE;
+            case "light_matter" -> LIGHT_MATTER_TEXTURE;
+            default -> resolvedTexture;
+        };
+    }
+
+    private static Identifier machineBodyTexture(
+            final Identifier typeId,
+            final Identifier resolvedTexture,
+            final String translationKey,
+            final String fallbackTranslationKey
+    ) {
+        if (!shouldUseBuiltinFallback(typeId, resolvedTexture, translationKey, fallbackTranslationKey)) {
+            return resolvedTexture;
+        }
+        return switch (typeId.getPath()) {
+            case "wooden" -> OAK_LOG_TEXTURE;
+            case "stone" -> STONE_TEXTURE;
+            case "nether_brick" -> NETHER_BRICKS_TEXTURE;
+            case "end_stone" -> END_STONE_TEXTURE;
+            case "dark_matter" -> DARK_MATTER_TEXTURE;
+            case "light_matter" -> LIGHT_MATTER_TEXTURE;
+            default -> resolvedTexture;
+        };
+    }
+
+    private static boolean shouldUseBuiltinFallback(
+            final Identifier typeId,
+            final Identifier resolvedTexture,
+            final String translationKey,
+            final String fallbackTranslationKey
+    ) {
+        return IRON_MACHINE_TEXTURE.equals(resolvedTexture)
+                && fallbackTranslationKey.equals(translationKey)
+                && Skyresources3.MODID.equals(typeId.getNamespace())
+                && !"iron".equals(typeId.getPath());
+    }
+
+    private static Identifier texture(final String namespace, final String path) {
+        return Identifier.fromNamespaceAndPath(namespace, path);
     }
 
     public static final class State extends BlockEntityRenderState {
