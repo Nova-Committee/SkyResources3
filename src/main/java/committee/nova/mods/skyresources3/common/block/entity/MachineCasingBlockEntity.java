@@ -31,6 +31,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -301,6 +302,15 @@ public final class MachineCasingBlockEntity extends BlockEntity {
                 || this.heatProviderTypeId != null
                 || this.condenserTypeId != null
                 || !this.heater.isEmpty();
+    }
+
+    public Component menuTitle() {
+        final Component casingName = Component.translatable(this.casingType().translationKey());
+        final Component machineName = this.installedMachineName();
+        if (machineName == null) {
+            return casingName;
+        }
+        return Component.translatable("container.skyresources.machine_casing.with_machine", casingName, machineName);
     }
 
     private boolean hasCombustionHeater() {
@@ -972,6 +982,23 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             return CondenserItem.forType(this.condenserTypeId);
         }
         return this.heater.copy();
+    }
+
+    @Nullable
+    private Component installedMachineName() {
+        if (this.combustionHeaterTypeId != null) {
+            return Component.translatable(this.combustionHeaterType().translationKey());
+        }
+        if (this.heatProviderTypeId != null) {
+            return Component.translatable(this.heatProviderType().translationKey());
+        }
+        if (this.condenserTypeId != null) {
+            return Component.translatable(this.condenserType().translationKey());
+        }
+        if (!this.heater.isEmpty()) {
+            return this.heater.getHoverName();
+        }
+        return null;
     }
 
     private void migrateInstalledMachineStack() {

@@ -70,7 +70,17 @@ public final class MachineGuiTheme {
             final Component title,
             final int imageWidth
     ) {
-        guiGraphics.drawString(font, title, (imageWidth - font.width(title)) / 2, 7, TEXT, false);
+        final Component fittedTitle = fitTitle(font, title, imageWidth - 16);
+        guiGraphics.drawString(font, fittedTitle, (imageWidth - font.width(fittedTitle)) / 2, 7, TEXT, false);
+    }
+
+    private static Component fitTitle(final Font font, final Component title, final int maxWidth) {
+        if (font.width(title) <= maxWidth) {
+            return title;
+        }
+        final String ellipsis = "...";
+        final int textWidth = Math.max(0, maxWidth - font.width(ellipsis));
+        return Component.literal(font.plainSubstrByWidth(title.getString(), textWidth) + ellipsis);
     }
 
     public static void renderInventoryLabel(

@@ -338,6 +338,7 @@
   "item.skyresources.machine_casing.max_heat": "最高热量：%s HU",
   "item.skyresources.machine_casing.efficiency": "效率：%s%%",
   "container.skyresources.machine_casing": "框架",
+  "container.skyresources.machine_casing.with_machine": "%s - %s",
   "screen.skyresources.machine_casing.slot": "框架的升级、热量或燃料输入槽。",
   "screen.skyresources.machine_casing.status": "显示此外壳的热量、冷凝器或结构状态。",
   "screen.skyresources.machine_casing.heat": "热量：%s / %s HU",

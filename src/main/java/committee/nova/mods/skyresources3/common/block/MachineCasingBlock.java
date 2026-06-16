@@ -4,7 +4,6 @@ import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockE
 import committee.nova.mods.skyresources3.common.menu.MachineCasingMenu;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -115,7 +114,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
         player.openMenu(
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new MachineCasingMenu(containerId, inventory, casing),
-                        Component.translatable("container.skyresources.machine_casing")
+                        casing.menuTitle()
                 ),
                 buffer -> MachineCasingMenu.writeClientSideData(buffer, pos)
         );

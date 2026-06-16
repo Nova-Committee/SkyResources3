@@ -338,6 +338,7 @@
   "item.skyresources.machine_casing.max_heat": "Max Heat: %s HU",
   "item.skyresources.machine_casing.efficiency": "Efficiency: %s%%",
   "container.skyresources.machine_casing": "Machine Casing",
+  "container.skyresources.machine_casing.with_machine": "%s - %s",
   "screen.skyresources.machine_casing.slot": "Casing upgrade, heat, or fuel input slot.",
   "screen.skyresources.machine_casing.status": "Shows this casing's heat, condenser, or structure state.",
   "screen.skyresources.machine_casing.heat": "Heat: %s / %s HU",
