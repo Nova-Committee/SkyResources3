@@ -5,10 +5,12 @@ import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import snownee.jade.api.JadeIds;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.theme.IThemeHelper;
 
 final class SkyResourcesProbeComponentProvider implements IBlockComponentProvider {
     static final SkyResourcesProbeComponentProvider INSTANCE = new SkyResourcesProbeComponentProvider();
@@ -29,6 +31,7 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
     }
 
     private static void appendData(final ITooltip tooltip, final SkyResourcesProbeData data) {
+        replaceObjectName(tooltip, data);
         appendHeatRequirement(tooltip, data.heatRequirementState());
         if (data.heatSourceValue() != SkyResourcesProbeData.VALUE_NONE) {
             tooltip.add(Component.translatable("jade.skyresources.heat_source_value", data.heatSourceValue())
@@ -44,6 +47,13 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
         }
         appendCondenser(tooltip, data);
         appendMultiblock(tooltip, data.multiblockState());
+    }
+
+    private static void replaceObjectName(final ITooltip tooltip, final SkyResourcesProbeData data) {
+        final Component objectName = data.objectName();
+        if (objectName != null) {
+            tooltip.replace(JadeIds.CORE_OBJECT_NAME, IThemeHelper.get().title(objectName));
+        }
     }
 
     private static void appendHeatRequirement(final ITooltip tooltip, final int state) {

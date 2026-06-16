@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.test;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.core.Holder;
@@ -12,6 +13,7 @@ import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -278,6 +280,11 @@ public final class ModGameTests {
                     "menu_type_registration",
                     () -> GuideMenuGameTests::menuTypesResolve
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> JADE_MACHINE_CASING_OBJECT_NAME =
+            TEST_FUNCTIONS.register(
+                    "jade_machine_casing_object_name",
+                    () -> ModGameTests::jadeMachineCasingObjectName
+            );
 
     public static void register(final IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
@@ -391,6 +398,7 @@ public final class ModGameTests {
         registerFunctionTest(event, "survivalist_fishing_loot", SURVIVALIST_FISHING_LOOT, environment);
         registerFunctionTest(event, "guide_data_integrity", GUIDE_DATA_INTEGRITY, environment);
         registerFunctionTest(event, "menu_type_registration", MENU_TYPE_REGISTRATION, environment);
+        registerFunctionTest(event, "jade_machine_casing_object_name", JADE_MACHINE_CASING_OBJECT_NAME, environment);
     }
 
     private static void registerFunctionTest(
@@ -412,6 +420,29 @@ public final class ModGameTests {
 
     private static Identifier id(final String path) {
         return Identifier.fromNamespaceAndPath(Skyresources3.MODID, path);
+    }
+
+    private static void jadeMachineCasingObjectName(final GameTestHelper helper) {
+        if (!ModList.get().isLoaded("jade")) {
+            helper.succeed();
+            return;
+        }
+        try {
+            Class.forName("committee.nova.mods.skyresources3.init.integration.jade.SkyResourcesJadeGameTests")
+                    .getMethod("machineCasingUsesDynamicObjectNames", GameTestHelper.class)
+                    .invoke(null, helper);
+        } catch (final InvocationTargetException exception) {
+            final Throwable cause = exception.getCause();
+            if (cause instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            helper.fail("Jade machine casing object name test failed: " + cause);
+        } catch (final ReflectiveOperationException exception) {
+            helper.fail("Jade machine casing object name test is unavailable: " + exception.getMessage());
+        }
     }
 
     private ModGameTests() {

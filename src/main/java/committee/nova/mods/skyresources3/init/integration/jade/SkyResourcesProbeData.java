@@ -1,10 +1,14 @@
 package committee.nova.mods.skyresources3.init.integration.jade;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import org.jspecify.annotations.Nullable;
 
 record SkyResourcesProbeData(
+        @Nullable Component objectName,
         int heatRequirementState,
         int heatSourceValue,
         int currentHeat,
@@ -26,7 +30,11 @@ record SkyResourcesProbeData(
     static final StreamCodec<RegistryFriendlyByteBuf, SkyResourcesProbeData> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public SkyResourcesProbeData decode(final RegistryFriendlyByteBuf buffer) {
+            final Component objectName = ByteBufCodecs.BOOL.decode(buffer)
+                    ? ComponentSerialization.STREAM_CODEC.decode(buffer)
+                    : null;
             return new SkyResourcesProbeData(
+                    objectName,
                     ByteBufCodecs.VAR_INT.decode(buffer),
                     ByteBufCodecs.VAR_INT.decode(buffer),
                     ByteBufCodecs.VAR_INT.decode(buffer),
@@ -42,6 +50,10 @@ record SkyResourcesProbeData(
 
         @Override
         public void encode(final RegistryFriendlyByteBuf buffer, final SkyResourcesProbeData value) {
+            ByteBufCodecs.BOOL.encode(buffer, value.objectName != null);
+            if (value.objectName != null) {
+                ComponentSerialization.STREAM_CODEC.encode(buffer, value.objectName);
+            }
             ByteBufCodecs.VAR_INT.encode(buffer, value.heatRequirementState);
             ByteBufCodecs.VAR_INT.encode(buffer, value.heatSourceValue);
             ByteBufCodecs.VAR_INT.encode(buffer, value.currentHeat);
@@ -57,6 +69,7 @@ record SkyResourcesProbeData(
 
     static SkyResourcesProbeData empty() {
         return new SkyResourcesProbeData(
+                null,
                 STATE_NONE,
                 VALUE_NONE,
                 VALUE_NONE,
@@ -70,8 +83,25 @@ record SkyResourcesProbeData(
         );
     }
 
+    SkyResourcesProbeData withObjectName(final Component objectName) {
+        return new SkyResourcesProbeData(
+                objectName,
+                this.heatRequirementState,
+                this.heatSourceValue,
+                this.currentHeat,
+                this.maxHeat,
+                this.heatPerTick,
+                this.multiblockState,
+                this.condenserProgress,
+                this.condenserMaxProgress,
+                this.condenserCatalystPercent,
+                this.condenserExpectedOutputValue
+        );
+    }
+
     SkyResourcesProbeData withHeatRequirement(final boolean valid) {
         return new SkyResourcesProbeData(
+                this.objectName,
                 state(valid),
                 this.heatSourceValue,
                 this.currentHeat,
@@ -87,6 +117,7 @@ record SkyResourcesProbeData(
 
     SkyResourcesProbeData withHeatSourceValue(final int value) {
         return new SkyResourcesProbeData(
+                this.objectName,
                 this.heatRequirementState,
                 value,
                 this.currentHeat,
@@ -102,6 +133,7 @@ record SkyResourcesProbeData(
 
     SkyResourcesProbeData withMachineHeat(final int current, final int max, final int perTick) {
         return new SkyResourcesProbeData(
+                this.objectName,
                 this.heatRequirementState,
                 this.heatSourceValue,
                 current,
@@ -117,6 +149,7 @@ record SkyResourcesProbeData(
 
     SkyResourcesProbeData withMultiblock(final int state) {
         return new SkyResourcesProbeData(
+                this.objectName,
                 this.heatRequirementState,
                 this.heatSourceValue,
                 this.currentHeat,
@@ -137,6 +170,7 @@ record SkyResourcesProbeData(
             final int expectedOutputValue
     ) {
         return new SkyResourcesProbeData(
+                this.objectName,
                 this.heatRequirementState,
                 this.heatSourceValue,
                 this.currentHeat,
@@ -151,7 +185,8 @@ record SkyResourcesProbeData(
     }
 
     boolean hasAnyValue() {
-        return this.heatRequirementState != STATE_NONE
+        return this.objectName != null
+                || this.heatRequirementState != STATE_NONE
                 || this.heatSourceValue != VALUE_NONE
                 || this.currentHeat != VALUE_NONE
                 || this.multiblockState != STATE_NONE

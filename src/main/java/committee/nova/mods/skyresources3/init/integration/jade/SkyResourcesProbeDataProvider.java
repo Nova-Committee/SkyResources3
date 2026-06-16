@@ -43,6 +43,7 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
         }
 
         if (blockEntity instanceof MachineCasingBlockEntity casing) {
+            data = data.withObjectName(casing.menuTitle());
             if (casing.usesCombustionChamber()) {
                 data = data.withMachineHeat(casing.currentHeat(), casing.maxHeat(), casing.heatPerTick())
                         .withMultiblock(SkyResourcesProbeData.state(casing.hasValidMultiblock(level)));
