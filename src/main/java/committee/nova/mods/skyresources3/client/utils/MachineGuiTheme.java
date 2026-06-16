@@ -174,7 +174,7 @@ public final class MachineGuiTheme {
         guiGraphics.fill(x, y, x + width, y + 16, 0xFF111820);
         guiGraphics.fill(x + 1, y + 1, x + width - 1, y + 15, 0xFF232C35);
         guiGraphics.fill(x + 3, y + 3, x + 5, y + 13, color);
-        final int valueX = x + width - font.width(value) - 4;
+        final int valueX = x + width - font.width(value) / 2 - 14;
         if (x + 8 + font.width(label) + 3 < valueX) {
             guiGraphics.drawString(font, label, x + 8, y + 4, MUTED, false);
             guiGraphics.drawString(font, value, valueX, y + 4, TEXT, false);
