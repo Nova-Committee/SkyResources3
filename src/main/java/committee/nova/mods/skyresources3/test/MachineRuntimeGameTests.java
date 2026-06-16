@@ -37,6 +37,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public final class MachineRuntimeGameTests {
     private static final BlockPos CASING_POS = new BlockPos(2, 1, 2);
@@ -202,6 +206,40 @@ public final class MachineRuntimeGameTests {
                         new ItemStack(ModItems.PRIMUS_ALCHEMICAL_DUST.get())
                 ),
                 "Condenser catalyst slot should reject alchemical dust that is not used by a condenser recipe"
+        );
+        helper.succeed();
+    }
+
+    public static void condenserHopperBelowDoesNotExtractCatalyst(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(OUTPUT_POS, Blocks.HOPPER);
+        final MachineCasingBlockEntity casing = setupCopperCrystalFluidCondenser(helper);
+        final ItemStack catalyst = OreAlchemyDustItem.forType(ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST);
+        casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, catalyst.copyWithCount(2));
+
+        final ResourceHandler<ItemResource> casingHandler = helper.getLevel().getCapability(
+                Capabilities.Item.BLOCK,
+                helper.absolutePos(CASING_POS),
+                Direction.DOWN
+        );
+        helper.assertTrue(casingHandler != null, "Expected machine casing item transfer capability");
+        final int extracted = extract(casingHandler, MachineCasingBlockEntity.FUEL_SLOT, catalyst, 1);
+
+        helper.assertValueEqual(0, extracted, "External automation should not extract condenser catalyst");
+        helper.assertValueEqual(
+                2,
+                casing.getStackInSlot(MachineCasingBlockEntity.FUEL_SLOT).getCount(),
+                "Catalyst stack should remain before condenser processing"
+        );
+
+        casing.serverTick(helper.getLevel());
+
+        assertContainerItemCount(helper, OUTPUT_POS, Items.COPPER_INGOT, EXPECTED_OUTPUT_COUNT);
+        assertContainerItemCount(helper, OUTPUT_POS, ModItems.ORE_ALCHEMICAL_DUST.get(), 0);
+        helper.assertValueEqual(
+                1,
+                casing.getStackInSlot(MachineCasingBlockEntity.FUEL_SLOT).getCount(),
+                "Only the condenser itself should consume one catalyst"
         );
         helper.succeed();
     }
@@ -867,6 +905,19 @@ public final class MachineRuntimeGameTests {
             }
         }
         throw new IllegalStateException("Menu slot not found");
+    }
+
+    private static int extract(
+            final ResourceHandler<ItemResource> handler,
+            final int slot,
+            final ItemStack stack,
+            final int amount
+    ) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            final int extracted = handler.extract(slot, ItemResource.of(stack), amount, transaction);
+            transaction.commit();
+            return extracted;
+        }
     }
 
     private static MachineCasingBlockEntity machineCasingAt(final GameTestHelper helper, final BlockPos relativePos) {

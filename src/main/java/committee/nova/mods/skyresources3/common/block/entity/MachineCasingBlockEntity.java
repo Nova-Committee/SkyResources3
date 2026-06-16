@@ -59,6 +59,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public final class MachineCasingBlockEntity extends BlockEntity {
     public static final int FUEL_SLOT = 0;
@@ -1099,6 +1100,16 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         @Override
         public boolean isValid(final int index, final ItemResource resource) {
             return index == FUEL_SLOT && this.owner.isValidFuel(resource.toStack());
+        }
+
+        @Override
+        public int extract(
+                final int index,
+                final ItemResource resource,
+                final int amount,
+                final TransactionContext transaction
+        ) {
+            return 0;
         }
 
         @Override

@@ -171,6 +171,11 @@ public final class ModGameTests {
                     "condenser_catalyst_slot",
                     () -> MachineRuntimeGameTests::condenserFuelSlotAcceptsOreAlchemyDustCatalyst
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_HOPPER_OUTPUT =
+            TEST_FUNCTIONS.register(
+                    "condenser_hopper_output",
+                    () -> MachineRuntimeGameTests::condenserHopperBelowDoesNotExtractCatalyst
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_PRIORITY =
             TEST_FUNCTIONS.register(
                     "combustion_priority",
@@ -327,6 +332,7 @@ public final class ModGameTests {
         registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
         registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
         registerFunctionTest(event, "condenser_catalyst_slot", CONDENSER_CATALYST_SLOT, environment);
+        registerFunctionTest(event, "condenser_hopper_output", CONDENSER_HOPPER_OUTPUT, environment);
         registerFunctionTest(event, "combustion_priority", COMBUSTION_PRIORITY, environment);
         registerFunctionTest(event, "combustion_cooldown", COMBUSTION_COOLDOWN, environment);
         registerFunctionTest(event, "combustion_powered_controller", COMBUSTION_POWERED_CONTROLLER, environment);
