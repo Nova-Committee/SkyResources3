@@ -1,6 +1,10 @@
 package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.client.model.*;
+import committee.nova.mods.skyresources3.client.render.MachineCasingBlockEntityRenderer;
+import committee.nova.mods.skyresources3.client.screen.*;
+import committee.nova.mods.skyresources3.client.utils.MaterialItemTintSources;
 import committee.nova.mods.skyresources3.common.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.common.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;

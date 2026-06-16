@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 
 public final class MachineCasingMenu extends AbstractContainerMenu {
     public static final int FUEL_SLOT_X = 80;
-    public static final int FUEL_SLOT_Y = 53;
+    public static final int FUEL_SLOT_Y = 43;
     private static final int PLAYER_INVENTORY_Y = 92;
     private static final int PLAYER_SLOT_START = MachineCasingBlockEntity.SLOT_COUNT;
     private static final int PLAYER_SLOT_END = PLAYER_SLOT_START + 36;

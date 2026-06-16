@@ -20,9 +20,9 @@ import net.minecraft.world.item.ItemStack;
 
 public final class RockCleanerMenu extends AbstractContainerMenu {
     public static final int INPUT_SLOT_X = 55;
-    public static final int INPUT_SLOT_Y = 49;
+    public static final int INPUT_SLOT_Y = 53;
     public static final int OUTPUT_SLOT_X = 109;
-    public static final int FIRST_OUTPUT_SLOT_Y = 31;
+    public static final int FIRST_OUTPUT_SLOT_Y = 35;
     public static final int SLOT_SPACING = 18;
     private static final int PLAYER_INVENTORY_Y = 107;
     private static final int PLAYER_SLOT_START = RockCleanerBlockEntity.SLOT_COUNT;
