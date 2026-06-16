@@ -17,6 +17,7 @@ import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
+import committee.nova.mods.skyresources3.init.registry.ModItems;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -896,7 +897,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
 
     private boolean isValidFuel(final ItemStack stack) {
         if (this.condenserTypeId != null) {
-            return this.level instanceof ServerLevel serverLevel && CondenserRecipes.hasCatalyst(serverLevel, stack);
+            return this.isValidCondenserCatalyst(stack);
         }
         if (this.hasCombustionHeater()) {
             return this.level != null && this.combustionHeaterType().isValidFuel(stack, this.level);
@@ -905,6 +906,16 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             return false;
         }
         return this.heatProviderType().isValidFuel(stack, this.level);
+    }
+
+    private boolean isValidCondenserCatalyst(final ItemStack stack) {
+        if (stack.is(ModItems.ORE_ALCHEMICAL_DUST.get())) {
+            return true;
+        }
+        if (this.level instanceof ServerLevel serverLevel) {
+            return CondenserRecipes.hasCatalyst(serverLevel, stack);
+        }
+        return false;
     }
 
     private ItemStack installedMachineStack() {

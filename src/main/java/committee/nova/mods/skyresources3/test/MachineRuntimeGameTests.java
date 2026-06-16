@@ -180,6 +180,32 @@ public final class MachineRuntimeGameTests {
         helper.succeed();
     }
 
+    public static void condenserFuelSlotAcceptsOreAlchemyDustCatalyst(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final MachineCasingBlockEntity casing = setupCopperCrystalFluidCondenser(helper);
+        final ItemStack catalyst = OreAlchemyDustItem.forType(ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST);
+        final ItemStack dataDrivenCatalyst = OreAlchemyDustItem.forType(
+                ModDataPackRegistries.oreAlchemyDustTypeKey("tin")
+        );
+
+        helper.assertTrue(
+                casing.mayPlaceInSlot(MachineCasingBlockEntity.FUEL_SLOT, catalyst),
+                "Condenser catalyst slot should accept ore alchemical dust used by condenser recipes"
+        );
+        helper.assertTrue(
+                casing.mayPlaceInSlot(MachineCasingBlockEntity.FUEL_SLOT, dataDrivenCatalyst),
+                "Condenser catalyst slot should accept data-driven ore alchemical dust variants"
+        );
+        helper.assertTrue(
+                !casing.mayPlaceInSlot(
+                        MachineCasingBlockEntity.FUEL_SLOT,
+                        new ItemStack(ModItems.PRIMUS_ALCHEMICAL_DUST.get())
+                ),
+                "Condenser catalyst slot should reject alchemical dust that is not used by a condenser recipe"
+        );
+        helper.succeed();
+    }
+
     public static void combustionControllerUsesFilterPriority(final GameTestHelper helper) {
         helper.killAllEntities();
         final CombustionRig rig = setupIronCombustionRig(helper, DIRT_RECIPE_HEAT);
