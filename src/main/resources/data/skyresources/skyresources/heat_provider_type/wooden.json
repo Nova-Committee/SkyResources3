@@ -1,6 +1,7 @@
 {
   "translation_key": "block.skyresources.heat_provider.wooden",
   "texture": "minecraft:block/oak_log",
+  "part_texture": "skyresources:block/heat_provider",
   "speed": 0.4,
   "efficiency": 0.5,
   "fuel": {

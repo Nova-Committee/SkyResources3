@@ -35,8 +35,10 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
             data = data.withHeatRequirement(HeatSources.getHeatSourceValue(level, pos.below()) > 0);
         }
 
+        final boolean heatProviderCasing = blockEntity instanceof MachineCasingBlockEntity casing
+                && casing.installedMachineMode() == MachineCasingBlockEntity.MACHINE_MODE_HEAT_PROVIDER;
         final int heatValue = HeatSources.getHeatSourceValue(level, pos);
-        if (heatValue > 0) {
+        if (heatValue > 0 && !heatProviderCasing) {
             data = data.withHeatSourceValue(heatValue);
         }
 
@@ -44,6 +46,8 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
             if (casing.usesCombustionChamber()) {
                 data = data.withMachineHeat(casing.currentHeat(), casing.maxHeat(), casing.heatPerTick())
                         .withMultiblock(SkyResourcesProbeData.state(casing.hasValidMultiblock(level)));
+            } else if (casing.installedMachineMode() == MachineCasingBlockEntity.MACHINE_MODE_HEAT_PROVIDER) {
+                data = data.withMachineHeat(casing.currentHeat(), casing.maxHeat(), casing.heatPerTick());
             } else if (casing.installedMachineMode() == MachineCasingBlockEntity.MACHINE_MODE_CONDENSER) {
                 data = data.withCondenser(
                         casing.condenserProgress(),

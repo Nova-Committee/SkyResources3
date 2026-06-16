@@ -65,7 +65,8 @@ public final class MachineCasingBlockEntityRenderer
         state.condenserBodySprite = null;
         state.condenserPartSprite = null;
         state.installedElements = List.of();
-        state.installedSprite = null;
+        state.installedBodySprite = null;
+        state.installedPartSprite = null;
         if (blockEntity.combustionHeaterTypeId() != null) {
             final CombustionHeaterType heaterType = blockEntity.combustionHeaterType();
             state.combustionElements = heaterType.elements();
@@ -78,7 +79,10 @@ public final class MachineCasingBlockEntityRenderer
         if (blockEntity.heatProviderTypeId() != null) {
             final HeatProviderType providerType = blockEntity.heatProviderType();
             state.installedElements = providerType.elements();
-            state.installedSprite = this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, providerType.texture()));
+            state.installedBodySprite =
+                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, providerType.texture()));
+            state.installedPartSprite =
+                    this.materials.get(new Material(TextureAtlas.LOCATION_BLOCKS, providerType.partTexture()));
             return;
         }
         if (blockEntity.condenserTypeId() != null) {
@@ -149,16 +153,36 @@ public final class MachineCasingBlockEntityRenderer
         }
 
         if (!state.installedElements.isEmpty()) {
-            final List<CasingType.Element> elements = state.installedElements;
-            final TextureAtlasSprite installedSprite = state.installedSprite;
-            if (installedSprite != null) {
+            final List<HeatProviderType.Element> elements = state.installedElements;
+            final TextureAtlasSprite bodySprite = state.installedBodySprite;
+            final TextureAtlasSprite partSprite = state.installedPartSprite;
+            if (bodySprite != null && partSprite != null) {
                 final int lightCoords = state.lightCoords;
                 submitter.submitCustomGeometry(
                         poseStack,
                         RenderTypes.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS),
                         (pose, buffer) -> {
-                            for (final CasingType.Element element : elements) {
-                                renderElement(element, pose, buffer, installedSprite, lightCoords, OverlayTexture.NO_OVERLAY);
+                            for (final HeatProviderType.Element element : elements) {
+                                switch (element.texture()) {
+                                    case BODY -> renderElement(
+                                            element.from(),
+                                            element.to(),
+                                            pose,
+                                            buffer,
+                                            bodySprite,
+                                            lightCoords,
+                                            OverlayTexture.NO_OVERLAY
+                                    );
+                                    case PART -> renderTopFace(
+                                            element.from(),
+                                            element.to(),
+                                            pose,
+                                            buffer,
+                                            partSprite,
+                                            lightCoords,
+                                            OverlayTexture.NO_OVERLAY
+                                    );
+                                }
                             }
                         }
                 );
@@ -336,7 +360,7 @@ public final class MachineCasingBlockEntityRenderer
         private List<CasingType.Element> elements = List.of();
         private List<CombustionHeaterType.Element> combustionElements = List.of();
         private List<CondenserType.Element> condenserElements = List.of();
-        private List<CasingType.Element> installedElements = List.of();
+        private List<HeatProviderType.Element> installedElements = List.of();
         @Nullable
         private TextureAtlasSprite sprite;
         @Nullable
@@ -348,7 +372,9 @@ public final class MachineCasingBlockEntityRenderer
         @Nullable
         private TextureAtlasSprite condenserPartSprite;
         @Nullable
-        private TextureAtlasSprite installedSprite;
+        private TextureAtlasSprite installedBodySprite;
+        @Nullable
+        private TextureAtlasSprite installedPartSprite;
         private final ItemStackRenderState machine = new ItemStackRenderState();
     }
 }

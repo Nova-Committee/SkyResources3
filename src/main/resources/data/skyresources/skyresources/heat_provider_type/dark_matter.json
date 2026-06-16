@@ -1,6 +1,7 @@
 {
   "translation_key": "block.skyresources.heat_provider.dark_matter",
   "texture": "skyresources:block/dark_matter_block",
+  "part_texture": "skyresources:block/heat_provider",
   "speed": 100.0,
   "efficiency": 1.0,
   "fuel": {

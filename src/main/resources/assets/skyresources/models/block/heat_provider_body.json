@@ -1,13 +1,14 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "particle": "#all",
-    "all": "skyresources:block/iron_machine"
+    "particle": "#part",
+    "all": "skyresources:block/iron_machine",
+    "part": "skyresources:block/heat_provider"
   },
   "elements": [
     {
-      "from": [3, 2, 3],
-      "to": [13, 4, 13],
+      "from": [2, 2, 2],
+      "to": [14, 14, 14],
       "faces": {
         "down": { "texture": "#all" },
         "up": { "texture": "#all" },
@@ -18,27 +19,10 @@
       }
     },
     {
-      "from": [4, 4, 4],
-      "to": [12, 12, 12],
+      "from": [2, 13, 2],
+      "to": [14, 14, 14],
       "faces": {
-        "down": { "texture": "#all" },
-        "up": { "texture": "#all" },
-        "north": { "texture": "#all" },
-        "south": { "texture": "#all" },
-        "west": { "texture": "#all" },
-        "east": { "texture": "#all" }
-      }
-    },
-    {
-      "from": [5, 12, 5],
-      "to": [11, 14, 11],
-      "faces": {
-        "down": { "texture": "#all" },
-        "up": { "texture": "#all" },
-        "north": { "texture": "#all" },
-        "south": { "texture": "#all" },
-        "west": { "texture": "#all" },
-        "east": { "texture": "#all" }
+        "up": { "texture": "#part" }
       }
     }
   ],

@@ -1,6 +1,7 @@
 {
   "translation_key": "block.skyresources.heat_provider.end_stone",
   "texture": "minecraft:block/end_stone",
+  "part_texture": "skyresources:block/heat_provider",
   "speed": 6.6,
   "efficiency": 6.6,
   "fuel": {
