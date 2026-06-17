@@ -47,6 +47,8 @@ public final class GuideStructurePictureRenderer extends PictureInPictureRendere
         final float centerY = (bounds.minY() + bounds.maxY() + 1.0F) * 0.5F;
         final float centerZ = (bounds.minZ() + bounds.maxZ() + 1.0F) * 0.5F;
 
+        // PIP applies a z-negative scale for GUI textures; cancel it for world-space block states.
+        poseStack.scale(1.0F, 1.0F, -1.0F);
         poseStack.mulPose(Axis.XP.rotationDegrees(renderState.pitch()));
         poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yaw()));
         poseStack.translate(-centerX, -centerY, -centerZ);
@@ -54,7 +56,7 @@ public final class GuideStructurePictureRenderer extends PictureInPictureRendere
         for (final GuideStructureRenderState.StructureBlock block : blocks) {
             if (block.state() != null) {
                 poseStack.pushPose();
-                poseStack.translate(block.x(), block.y(), block.z());
+                poseStack.translate(block.x(), block.displayY(), block.z());
                 blockRenderer.renderSingleBlock(
                         block.state(),
                         poseStack,
@@ -81,7 +83,7 @@ public final class GuideStructurePictureRenderer extends PictureInPictureRendere
                 continue;
             }
             poseStack.pushPose();
-            poseStack.translate(block.x() + 0.5F, block.y() + 0.5F, block.z() + 0.5F);
+            poseStack.translate(block.x() + 0.5F, block.displayY() + 0.5F, block.z() + 0.5F);
             itemState.submit(
                     poseStack,
                     featureDispatcher.getSubmitNodeStorage(),

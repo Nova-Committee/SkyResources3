@@ -37,7 +37,15 @@ public record GuideStructureRenderState(
     public record SceneBounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
     }
 
-    public record StructureBlock(@Nullable BlockState state, ItemStack stack, int x, int y, int z, int index) {
+    public record StructureBlock(
+            @Nullable BlockState state,
+            ItemStack stack,
+            int x,
+            int y,
+            int z,
+            int displayY,
+            int index
+    ) {
         public StructureBlock {
             stack = stack.copy();
         }

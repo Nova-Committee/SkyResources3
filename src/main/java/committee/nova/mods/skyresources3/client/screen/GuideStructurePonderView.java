@@ -221,8 +221,9 @@ final class GuideStructurePonderView {
                         state,
                         icon,
                         entry.x(),
-                        bounds.displayY(entry.y()),
+                        entry.y(),
                         entry.z(),
+                        bounds.displayY(entry.y()),
                         i
                 ));
             }
