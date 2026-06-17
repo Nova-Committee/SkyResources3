@@ -130,7 +130,8 @@ final class GuideStructurePonderView {
         final int sceneY = this.sceneY(y);
         final int sceneWidth = this.sceneWidth(width);
         final int sceneHeight = this.sceneHeight(height);
-        final List<GuideStructureRenderState.StructureBlock> blocks = this.visibleStructureBlocks(structure, visibleCount);
+        final StructureBounds bounds = StructureBounds.from(structure);
+        final List<GuideStructureRenderState.StructureBlock> blocks = this.visibleStructureBlocks(structure, visibleCount, bounds);
         guiGraphics.submitPictureInPictureRenderState(new GuideStructureRenderState(
                 blocks,
                 this.viewYaw,
@@ -140,6 +141,14 @@ final class GuideStructurePonderView {
                 sceneX + sceneWidth,
                 sceneY + sceneHeight,
                 this.sceneScale(structure, sceneWidth, sceneHeight),
+                new GuideStructureRenderState.SceneBounds(
+                        bounds.minX(),
+                        bounds.minY(),
+                        bounds.minZ(),
+                        bounds.maxX(),
+                        bounds.maxY(),
+                        bounds.maxZ()
+                ),
                 guiGraphics.peekScissorStack()
         ));
     }
@@ -193,12 +202,13 @@ final class GuideStructurePonderView {
     }
 
     private List<GuideStructureRenderState.StructureBlock> visibleStructureBlocks(final GuideStructure structure,
-                                                                                  final int visibleStep) {
+                                                                                  final int visibleStep,
+                                                                                  final StructureBounds bounds) {
         final List<GuideStructureRenderState.StructureBlock> blocks = new ArrayList<>();
         if (visibleStep <= 0 || structure.blocks().isEmpty()) {
             return blocks;
         }
-        final int visibleLayer = StructureBounds.from(structure).minY() + visibleStep - 1;
+        final int visibleLayer = bounds.minY() + visibleStep - 1;
         for (int i = 0; i < structure.blocks().size(); i++) {
             final GuideStructure.BlockEntry entry = structure.blocks().get(i);
             if (entry.y() > visibleLayer) {
@@ -211,7 +221,7 @@ final class GuideStructurePonderView {
                         state,
                         icon,
                         entry.x(),
-                        entry.y(),
+                        bounds.displayY(entry.y()),
                         entry.z(),
                         i
                 ));
@@ -429,6 +439,11 @@ final class GuideStructurePonderView {
 
         int layerCount() {
             return this.maxY - this.minY + 1;
+        }
+
+        int displayY(final int y) {
+            // GUI PIP rendering is visually y-down; guide structure data stays in Minecraft's y-up coordinates.
+            return this.maxY + this.minY - y;
         }
     }
 }

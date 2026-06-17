@@ -42,7 +42,7 @@ public final class GuideStructurePictureRenderer extends PictureInPictureRendere
         final FeatureRenderDispatcher featureDispatcher = minecraft.gameRenderer.getFeatureRenderDispatcher();
         minecraft.gameRenderer.getLighting().setupFor(Lighting.Entry.ITEMS_3D);
 
-        final StructureBounds bounds = StructureBounds.from(blocks);
+        final GuideStructureRenderState.SceneBounds bounds = renderState.sceneBounds();
         final float centerX = (bounds.minX() + bounds.maxX() + 1.0F) * 0.5F;
         final float centerY = (bounds.minY() + bounds.maxY() + 1.0F) * 0.5F;
         final float centerZ = (bounds.minZ() + bounds.maxZ() + 1.0F) * 0.5F;
@@ -102,25 +102,5 @@ public final class GuideStructurePictureRenderer extends PictureInPictureRendere
     @Override
     protected String getTextureLabel() {
         return "guide_structure";
-    }
-
-    private record StructureBounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
-        static StructureBounds from(final List<GuideStructureRenderState.StructureBlock> blocks) {
-            int minX = Integer.MAX_VALUE;
-            int minY = Integer.MAX_VALUE;
-            int minZ = Integer.MAX_VALUE;
-            int maxX = Integer.MIN_VALUE;
-            int maxY = Integer.MIN_VALUE;
-            int maxZ = Integer.MIN_VALUE;
-            for (final GuideStructureRenderState.StructureBlock block : blocks) {
-                minX = Math.min(minX, block.x());
-                minY = Math.min(minY, block.y());
-                minZ = Math.min(minZ, block.z());
-                maxX = Math.max(maxX, block.x());
-                maxY = Math.max(maxY, block.y());
-                maxZ = Math.max(maxZ, block.z());
-            }
-            return new StructureBounds(minX, minY, minZ, maxX, maxY, maxZ);
-        }
     }
 }

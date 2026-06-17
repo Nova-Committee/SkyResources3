@@ -16,6 +16,7 @@ public record GuideStructureRenderState(
         int x1,
         int y1,
         float scale,
+        SceneBounds sceneBounds,
         @Nullable ScreenRectangle scissorArea,
         @Nullable ScreenRectangle bounds
 ) implements PictureInPictureRenderState {
@@ -27,9 +28,13 @@ public record GuideStructureRenderState(
                                      final int x1,
                                      final int y1,
                                      final float scale,
+                                     final SceneBounds sceneBounds,
                                      @Nullable final ScreenRectangle scissorArea) {
-        this(List.copyOf(blocks), yaw, pitch, x0, y0, x1, y1, scale, scissorArea,
+        this(List.copyOf(blocks), yaw, pitch, x0, y0, x1, y1, scale, sceneBounds, scissorArea,
                 PictureInPictureRenderState.getBounds(x0, y0, x1, y1, scissorArea));
+    }
+
+    public record SceneBounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
     }
 
     public record StructureBlock(@Nullable BlockState state, ItemStack stack, int x, int y, int z, int index) {
