@@ -341,7 +341,7 @@ public final class FusionTableBlockEntity extends BlockEntity {
         output.grow(stack.getCount());
     }
 
-    private static float getCatalystValue(final ItemStack stack) {
+    public static float getCatalystValue(final ItemStack stack) {
         if (stack.isEmpty()) {
             return 0.0F;
         }

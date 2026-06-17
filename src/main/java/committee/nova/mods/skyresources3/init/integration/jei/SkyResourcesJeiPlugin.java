@@ -4,7 +4,9 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.common.item.CondenserItem;
 import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
+import committee.nova.mods.skyresources3.common.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.common.recipe.ProcessRecipes;
+import committee.nova.mods.skyresources3.common.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
@@ -63,8 +65,8 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                         SkyResourcesJeiRecipeTypes.PROCESS_FUSION,
                         "fusion",
                         new ItemStack(ModItems.FUSION_TABLE.get()),
-                        "jei.skyresources.process.yield",
-                        ProcessRecipeJeiCategory.ParameterMode.NUMBER
+                        "jei.skyresources.process.catalyst_use",
+                        ProcessRecipeJeiCategory.ParameterMode.FUSION_CATALYST_PERCENT
                 ),
                 processCategory(
                         guiHelper,
@@ -107,22 +109,48 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipes(final IRecipeRegistration registration) {
         final RecipeMap syncedRecipes = SkyResourcesJeiRecipeMaps.clientSyncedRecipes();
-        this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION, ProcessRecipes.COMBUSTION);
+        final List<SkyResourcesProcessRecipe> combustionRecipes = this.addProcessRecipes(
+                registration,
+                syncedRecipes,
+                SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION,
+                ProcessRecipes.COMBUSTION
+        );
         this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_FREEZER, ProcessRecipes.FREEZER);
-        this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_FUSION, ProcessRecipes.FUSION);
-        this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_INFUSION, ProcessRecipes.INFUSION);
+        final List<SkyResourcesProcessRecipe> fusionRecipes = this.addProcessRecipes(
+                registration,
+                syncedRecipes,
+                SkyResourcesJeiRecipeTypes.PROCESS_FUSION,
+                ProcessRecipes.FUSION
+        );
+        final List<SkyResourcesProcessRecipe> infusionRecipes = this.addProcessRecipes(
+                registration,
+                syncedRecipes,
+                SkyResourcesJeiRecipeTypes.PROCESS_INFUSION,
+                ProcessRecipes.INFUSION
+        );
         this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_KNIFE, ProcessRecipes.KNIFE);
         this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_ROCK_GRINDER, ProcessRecipes.ROCK_GRINDER);
         this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_CAULDRON_CLEAN, ProcessRecipes.CAULDRON_CLEAN);
+        final List<CrucibleRecipe> crucibleRecipes =
+                SkyResourcesJeiRecipeMaps.recipes(syncedRecipes, ModRecipeTypes.CRUCIBLE_TYPE.get());
+        final List<CondenserRecipe> condenserRecipes =
+                SkyResourcesJeiRecipeMaps.recipes(syncedRecipes, ModRecipeTypes.CONDENSER_TYPE.get());
         registration.addRecipes(
                 SkyResourcesJeiRecipeTypes.CRUCIBLE,
-                SkyResourcesJeiRecipeMaps.recipes(syncedRecipes, ModRecipeTypes.CRUCIBLE_TYPE.get())
+                crucibleRecipes
         );
         registration.addRecipes(
                 SkyResourcesJeiRecipeTypes.CONDENSER,
-                SkyResourcesJeiRecipeMaps.recipes(syncedRecipes, ModRecipeTypes.CONDENSER_TYPE.get())
+                condenserRecipes
         );
         registration.addRecipes(SkyResourcesJeiRecipeTypes.HEAT_SOURCES, HeatSourceJeiRecipe.recipes());
+        JeiSourceDescriptions.registerIngredientInfo(
+                registration,
+                combustionRecipes,
+                fusionRecipes,
+                infusionRecipes,
+                condenserRecipes
+        );
     }
 
     @Override
@@ -206,13 +234,15 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         return openItemRecipe(jeiRuntime, icon);
     }
 
-    private void addProcessRecipes(
+    private List<SkyResourcesProcessRecipe> addProcessRecipes(
             final IRecipeRegistration registration,
             final RecipeMap syncedRecipes,
             final IRecipeType<SkyResourcesProcessRecipe> recipeType,
             final String process
     ) {
-        registration.addRecipes(recipeType, SkyResourcesJeiRecipeMaps.processRecipes(syncedRecipes, process));
+        final List<SkyResourcesProcessRecipe> recipes = SkyResourcesJeiRecipeMaps.processRecipes(syncedRecipes, process);
+        registration.addRecipes(recipeType, recipes);
+        return recipes;
     }
 
     private static ProcessRecipeJeiCategory processCategory(

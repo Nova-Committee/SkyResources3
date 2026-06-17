@@ -62,15 +62,18 @@ final class CondenserRecipeJeiCategory implements IRecipeCategory<CondenserRecip
 
     @Override
     public void setRecipe(final IRecipeLayoutBuilder builder, final CondenserRecipe recipe, final IFocusGroup focuses) {
-        builder.addInputSlot(8, 22)
+        final IRecipeSlotBuilder catalystSlot = builder.addInputSlot(8, 22)
                 .setStandardSlotBackground()
                 .addItemStacks(JeiIngredientStacks.stacks(recipe.catalyst()));
+        JeiSourceDescriptions.addCondenserCatalystTooltip(catalystSlot);
         final IRecipeSlotBuilder sourceSlot = builder.addInputSlot(38, 22)
                 .setStandardSlotBackground();
         this.addSource(sourceSlot, recipe.source());
-        builder.addOutputSlot(116, 22)
+        JeiSourceDescriptions.addCondenserSourceTooltip(sourceSlot, recipe.source());
+        final IRecipeSlotBuilder outputSlot = builder.addOutputSlot(116, 22)
                 .setOutputSlotBackground()
                 .add(recipe.output());
+        JeiSourceDescriptions.addCondenserOutputTooltip(outputSlot);
     }
 
     @Override

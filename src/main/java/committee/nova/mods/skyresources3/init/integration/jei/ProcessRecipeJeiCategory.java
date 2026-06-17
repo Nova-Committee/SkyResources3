@@ -1,9 +1,11 @@
 package committee.nova.mods.skyresources3.init.integration.jei;
 
 import committee.nova.mods.skyresources3.common.recipe.ProcessIngredient;
+import committee.nova.mods.skyresources3.common.recipe.ProcessRecipes;
 import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
 import java.util.List;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -16,8 +18,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProcessRecipe> {
-    private static final int WIDTH = 150;
-    private static final int HEIGHT = 64;
+    private static final int WIDTH = 184;
+    private static final int HEIGHT = 84;
     private static final int TEXT_COLOR = 0xFF404040;
 
     private final IRecipeType<SkyResourcesProcessRecipe> recipeType;
@@ -74,8 +76,11 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
             final SkyResourcesProcessRecipe recipe,
             final IFocusGroup focuses
     ) {
-        this.addInputs(builder, recipe.inputs());
-        this.addOutputs(builder, recipe.outputs());
+        this.addInputs(builder, recipe.process(), recipe.inputs());
+        if (ProcessRecipes.FUSION.equals(recipe.process())) {
+            JeiSourceDescriptions.addFusionCatalystSlot(builder);
+        }
+        this.addOutputs(builder, recipe.process(), recipe.outputs());
     }
 
     @Override
@@ -86,7 +91,7 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
             final double mouseX,
             final double mouseY
     ) {
-        this.arrow.draw(guiGraphics, 66, 22);
+        this.arrow.draw(guiGraphics, 76, 22);
         if (this.parameterMode == ParameterMode.NONE || recipe.parameter() <= 0.0F) {
             return;
         }
@@ -94,29 +99,39 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
                 Minecraft.getInstance().font,
                 this.parameter(recipe.parameter()),
                 4,
-                52,
+                68,
                 TEXT_COLOR,
                 false
         );
     }
 
-    private void addInputs(final IRecipeLayoutBuilder builder, final List<ProcessIngredient> inputs) {
+    private void addInputs(
+            final IRecipeLayoutBuilder builder,
+            final String process,
+            final List<ProcessIngredient> inputs
+    ) {
         for (int index = 0; index < inputs.size(); index++) {
             final int x = 4 + index % 3 * 20;
             final int y = 8 + index / 3 * 20;
-            builder.addInputSlot(x, y)
+            final IRecipeSlotBuilder slot = builder.addInputSlot(x, y)
                     .setStandardSlotBackground()
                     .addItemStacks(JeiIngredientStacks.stacks(inputs.get(index)));
+            JeiSourceDescriptions.addProcessInputTooltip(slot, process, index);
         }
     }
 
-    private void addOutputs(final IRecipeLayoutBuilder builder, final List<ItemStack> outputs) {
+    private void addOutputs(
+            final IRecipeLayoutBuilder builder,
+            final String process,
+            final List<ItemStack> outputs
+    ) {
         for (int index = 0; index < outputs.size(); index++) {
-            final int x = 116 + index % 2 * 20;
+            final int x = 136 + index % 2 * 20;
             final int y = 14 + index / 2 * 20;
-            builder.addOutputSlot(x, y)
+            final IRecipeSlotBuilder slot = builder.addOutputSlot(x, y)
                     .setOutputSlotBackground()
                     .add(outputs.get(index));
+            JeiSourceDescriptions.addProcessOutputTooltip(slot, process);
         }
     }
 
@@ -126,6 +141,7 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
             case NUMBER -> JeiIngredientStacks.number(value);
             case INTEGER -> Math.round(value);
             case PERCENT -> Math.round(value * 100.0F);
+            case FUSION_CATALYST_PERCENT -> Math.round(value * 10000.0F);
         };
         return Component.translatable(this.parameterKey, parameter);
     }
@@ -134,6 +150,7 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
         NONE,
         NUMBER,
         INTEGER,
-        PERCENT
+        PERCENT,
+        FUSION_CATALYST_PERCENT
     }
 }
