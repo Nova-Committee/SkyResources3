@@ -51,6 +51,7 @@ public final class GuideMenuGameTests {
         for (final GuidePage page : GuidePages.pages()) {
             validatePage(helper, translations, pageIds, page);
         }
+        validateKnownStructureLayouts(helper);
 
         helper.succeed();
     }
@@ -191,6 +192,152 @@ public final class GuideMenuGameTests {
         }
     }
 
+    private static void validateKnownStructureLayouts(final GameTestHelper helper) {
+        assertStructureLayout(helper, "ironFreezer", Set.of(
+                pos(0, -1, 0),
+                pos(0, 0, 0)
+        ));
+        assertStructureLayout(helper, "combustion", Set.of(
+                pos(0, -1, 0),
+                pos(1, 0, 0),
+                pos(-1, 0, 0),
+                pos(0, 0, 1),
+                pos(0, 0, -1),
+                pos(0, 1, 0),
+                pos(0, -1, -1)
+        ));
+        assertStructureLayout(helper, "lava", Set.of(
+                pos(0, -1, 0),
+                pos(0, 0, 0)
+        ));
+        assertStructureLayout(helper, "crystalSetup", Set.of(
+                pos(0, -1, 0),
+                pos(-1, 0, 0),
+                pos(0, 0, 1),
+                pos(0, 0, -1),
+                pos(1, 0, 0),
+                pos(0, 1, 0),
+                pos(0, 2, 0),
+                pos(1, 2, 0),
+                pos(1, 1, 0)
+        ));
+        assertStructureLayout(helper, "end", endPortalPositions(false));
+        assertStructureLayout(helper, "end2", endPortalPositions(true));
+        assertStructureLayout(helper, "infuser", lifeInfuserPositions());
+    }
+
+    private static void assertStructureLayout(
+            final GameTestHelper helper,
+            final String structureId,
+            final Set<StructurePos> expectedPositions
+    ) {
+        final GuideStructure structure = GuideStructures.find(structureId).orElse(null);
+        helper.assertTrue(structure != null, "Guide structure should resolve: " + structureId);
+        final Set<StructurePos> actualPositions = new HashSet<>();
+        for (final GuideStructure.BlockEntry block : structure.blocks()) {
+            final StructurePos position = pos(block.x(), block.y(), block.z());
+            helper.assertTrue(
+                    actualPositions.add(position),
+                    "Guide structure should not duplicate position: " + structureId + " " + position
+            );
+        }
+        helper.assertTrue(
+                actualPositions.size() == expectedPositions.size(),
+                "Guide structure should match original block count: "
+                        + structureId
+                        + " expected "
+                        + expectedPositions.size()
+                        + " got "
+                        + actualPositions.size()
+        );
+        for (final StructurePos expectedPosition : expectedPositions) {
+            helper.assertTrue(
+                    actualPositions.contains(expectedPosition),
+                    "Guide structure should include original position: " + structureId + " " + expectedPosition
+            );
+        }
+    }
+
+    private static Set<StructurePos> endPortalPositions(final boolean improved) {
+        final Set<StructurePos> positions = new HashSet<>();
+        addBaseEndPortalPositions(positions);
+        final int radius = improved ? 3 : 2;
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                if (Math.abs(x) == radius || Math.abs(z) == radius) {
+                    positions.add(pos(x, -1, z));
+                } else if (improved && (Math.abs(x) == 2 || Math.abs(z) == 2)) {
+                    positions.add(pos(x, -1, z));
+                }
+            }
+        }
+        addEndPillarPositions(positions, improved);
+        positions.add(pos(0, 0, 0));
+        return positions;
+    }
+
+    private static void addBaseEndPortalPositions(final Set<StructurePos> positions) {
+        positions.add(pos(0, -1, 0));
+        positions.add(pos(-1, -1, 0));
+        positions.add(pos(1, -1, 0));
+        positions.add(pos(0, -1, -1));
+        positions.add(pos(0, -1, 1));
+        positions.add(pos(-1, -1, -1));
+        positions.add(pos(1, -1, -1));
+        positions.add(pos(-1, -1, 1));
+        positions.add(pos(1, -1, 1));
+    }
+
+    private static void addEndPillarPositions(final Set<StructurePos> positions, final boolean improved) {
+        for (final int x : new int[] {-2, 2}) {
+            for (final int z : new int[] {-2, 2}) {
+                positions.add(pos(x, 0, z));
+                positions.add(pos(x, 1, z));
+                positions.add(pos(x, 2, z));
+                if (improved) {
+                    positions.add(pos(x, 3, z));
+                }
+            }
+        }
+        if (!improved) {
+            return;
+        }
+        for (final int x : new int[] {-3, 3}) {
+            for (final int z : new int[] {-3, 3}) {
+                positions.add(pos(x, 0, z));
+                positions.add(pos(x, 1, z));
+                positions.add(pos(x, 2, z));
+                positions.add(pos(x, 3, z));
+                positions.add(pos(x, 4, z));
+            }
+        }
+    }
+
+    private static Set<StructurePos> lifeInfuserPositions() {
+        final Set<StructurePos> positions = new HashSet<>();
+        for (final int x : new int[] {-1, 1}) {
+            for (final int z : new int[] {-1, 1}) {
+                positions.add(pos(x, -1, z));
+                positions.add(pos(x, 0, z));
+            }
+        }
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                if (x != 0 || z != 0) {
+                    positions.add(pos(x, 1, z));
+                }
+            }
+        }
+        positions.add(pos(0, 0, 0));
+        positions.add(pos(0, 1, 0));
+        positions.add(pos(0, 2, 0));
+        return positions;
+    }
+
+    private static StructurePos pos(final int x, final int y, final int z) {
+        return new StructurePos(x, y, z);
+    }
+
     private static void assertMenuType(
             final GameTestHelper helper,
             final String path,
@@ -245,6 +392,9 @@ public final class GuideMenuGameTests {
             helper.fail("Failed to load guide translations: " + exception.getMessage());
             return new JsonObject();
         }
+    }
+
+    private record StructurePos(int x, int y, int z) {
     }
 
     private GuideMenuGameTests() {

@@ -37,8 +37,14 @@ public final class GuideScreen extends Screen {
     private static final int ACTION_GAP = 6;
     private static final int INLINE_ACTION_GAP = 4;
     private static final int STRUCTURE_ROW_HEIGHT = 18;
-    private static final int STRUCTURE_PREVIEW_HEIGHT = 76;
+    private static final int STRUCTURE_PREVIEW_HEIGHT = 116;
     private static final int STRUCTURE_PREVIEW_GAP = 6;
+    private static final int STRUCTURE_CONTROL_HEIGHT = 18;
+    private static final int STRUCTURE_CONTROL_GAP = 4;
+    private static final int STRUCTURE_CONTROL_BUTTON_WIDTH = 22;
+    private static final int STRUCTURE_CONTROL_VIEW_BUTTON_WIDTH = 32;
+    private static final int STRUCTURE_ANIMATION_STEP_MILLIS = 450;
+    private static final int STRUCTURE_ANIMATION_HOLD_STEPS = 5;
     private static final int ICON_SIZE = 16;
     private static final int BACKGROUND_COLOR = 0xC0101010;
     private static final int PANEL_COLOR = 0xF0181B21;
@@ -63,6 +69,10 @@ public final class GuideScreen extends Screen {
     private int actionScrollOffset;
     private int bodyScrollOffset;
     private int structureScrollOffset;
+    private boolean structureAnimationPaused;
+    private int structureManualStep = 1;
+    private long structureAnimationStartMillis;
+    private int structureViewQuarter;
     private String searchText = "";
     private EditBox searchBox;
     private GuideStructure currentStructure;
@@ -179,7 +189,8 @@ public final class GuideScreen extends Screen {
         if (event.button() != 0) {
             return false;
         }
-        return this.selectInlineActionAt(event.x(), event.y())
+        return this.selectStructureControlAt(event.x(), event.y())
+                || this.selectInlineActionAt(event.x(), event.y())
                 || this.selectActionAt(event.x(), event.y())
                 || this.selectResultAt(event.x(), event.y());
     }
@@ -197,7 +208,8 @@ public final class GuideScreen extends Screen {
         if (scrollY == 0.0D) {
             return false;
         }
-        return this.scrollStructureAt(mouseX, mouseY, scrollY)
+        return this.rotateStructureAt(mouseX, mouseY, scrollY)
+                || this.scrollStructureAt(mouseX, mouseY, scrollY)
                 || this.scrollActionListAt(mouseX, mouseY, scrollY)
                 || this.scrollGuideBodyAt(mouseX, mouseY, scrollY)
                 || this.scrollResultIndexAt(mouseX, mouseY, scrollY);
@@ -916,6 +928,17 @@ public final class GuideScreen extends Screen {
                 MUTED_TEXT_COLOR,
                 false
         );
+        final int visibleBlockCount = this.visibleStructureBlockCount(structure);
+        this.renderStructureControls(
+                guiGraphics,
+                mouseX,
+                mouseY,
+                contentX,
+                this.structureControlsY(panelY),
+                contentWidth,
+                visibleBlockCount,
+                structure.blocks().size()
+        );
         guiGraphics.drawString(
                 this.font,
                 this.truncate(Component.translatable("screen.skyresources.guide.structure_close_hint").getString(), contentWidth),
@@ -936,7 +959,8 @@ public final class GuideScreen extends Screen {
                     contentX,
                     previewY,
                     contentWidth,
-                    previewBottom - previewY
+                    previewBottom - previewY,
+                    visibleBlockCount
             );
         }
 
@@ -969,16 +993,16 @@ public final class GuideScreen extends Screen {
             final int x,
             final int y,
             final int width,
-            final int height
+            final int height,
+            final int visibleBlockCount
     ) {
         if (structure.blocks().isEmpty() || height < ICON_SIZE) {
             return;
         }
 
-        final List<GuideStructure.BlockEntry> blocks = new ArrayList<>(structure.blocks());
-        blocks.sort(Comparator.comparingInt(GuideStructure.BlockEntry::y)
-                .thenComparingInt(block -> block.x() + block.z())
-                .thenComparingInt(GuideStructure.BlockEntry::x));
+        final List<GuideStructure.BlockEntry> allBlocks = structure.blocks();
+        final int visibleCount = Math.max(0, Math.min(visibleBlockCount, allBlocks.size()));
+        final int viewQuarter = Math.floorMod(this.structureViewQuarter, 4);
 
         int minX = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
@@ -986,13 +1010,15 @@ public final class GuideScreen extends Screen {
         int maxY = Integer.MIN_VALUE;
         int minZ = Integer.MAX_VALUE;
         int maxZ = Integer.MIN_VALUE;
-        for (final GuideStructure.BlockEntry block : blocks) {
-            minX = Math.min(minX, block.x());
-            maxX = Math.max(maxX, block.x());
+        for (final GuideStructure.BlockEntry block : allBlocks) {
+            final int viewX = this.structureViewX(block, viewQuarter);
+            final int viewZ = this.structureViewZ(block, viewQuarter);
+            minX = Math.min(minX, viewX);
+            maxX = Math.max(maxX, viewX);
             minY = Math.min(minY, block.y());
             maxY = Math.max(maxY, block.y());
-            minZ = Math.min(minZ, block.z());
-            maxZ = Math.max(maxZ, block.z());
+            minZ = Math.min(minZ, viewZ);
+            maxZ = Math.max(maxZ, viewZ);
         }
 
         final int horizontalUnits = Math.max(1, maxX - minX + maxZ - minZ);
@@ -1006,15 +1032,26 @@ public final class GuideScreen extends Screen {
         int maxTileX = Integer.MIN_VALUE;
         int minTileY = Integer.MAX_VALUE;
         int maxTileY = Integer.MIN_VALUE;
-        for (final GuideStructure.BlockEntry block : blocks) {
-            final int tileX = (block.x() - block.z()) * stepX;
-            final int tileY = (block.x() + block.z()) * stepY - (block.y() - minY) * layerStep;
-            tiles.add(new StructurePreviewTile(block, tileX, tileY));
+        for (int blockIndex = 0; blockIndex < allBlocks.size(); blockIndex++) {
+            final GuideStructure.BlockEntry block = allBlocks.get(blockIndex);
+            final int viewX = this.structureViewX(block, viewQuarter);
+            final int viewZ = this.structureViewZ(block, viewQuarter);
+            final int tileX = (viewX - viewZ) * stepX;
+            final int tileY = (viewX + viewZ) * stepY - (block.y() - minY) * layerStep;
+            if (blockIndex < visibleCount) {
+                tiles.add(new StructurePreviewTile(block, tileX, tileY, viewX + viewZ, viewX));
+            }
             minTileX = Math.min(minTileX, tileX);
             maxTileX = Math.max(maxTileX, tileX + ICON_SIZE);
             minTileY = Math.min(minTileY, tileY);
             maxTileY = Math.max(maxTileY, tileY + ICON_SIZE);
         }
+        if (tiles.isEmpty()) {
+            return;
+        }
+        tiles.sort(Comparator.comparingInt((StructurePreviewTile tile) -> tile.block().y())
+                .thenComparingInt(StructurePreviewTile::depth)
+                .thenComparingInt(StructurePreviewTile::secondary));
 
         final int offsetX = x + (width - (maxTileX - minTileX)) / 2 - minTileX;
         final int offsetY = y + (height - (maxTileY - minTileY)) / 2 - minTileY;
@@ -1038,6 +1075,149 @@ public final class GuideScreen extends Screen {
             }
         }
         guiGraphics.disableScissor();
+    }
+
+    private void renderStructureControls(
+            final GuiGraphics guiGraphics,
+            final int mouseX,
+            final int mouseY,
+            final int x,
+            final int y,
+            final int width,
+            final int visibleBlockCount,
+            final int totalBlockCount
+    ) {
+        final Component progress = Component.translatable(
+                "screen.skyresources.guide.structure_progress",
+                visibleBlockCount,
+                totalBlockCount
+        );
+        final List<StructureControl> controls = this.structureControls(x, y, width);
+        final int controlLeft = controls.isEmpty() ? x + width : controls.get(0).x();
+        guiGraphics.drawString(
+                this.font,
+                this.truncate(progress.getString(), Math.max(16, controlLeft - x - 4)),
+                x,
+                y + 5,
+                MUTED_TEXT_COLOR,
+                false
+        );
+        for (final StructureControl control : controls) {
+            final boolean hovered = this.isInside(mouseX, mouseY, control.x(), control.y(), control.width(), control.height());
+            guiGraphics.fill(
+                    control.x(),
+                    control.y(),
+                    control.x() + control.width(),
+                    control.y() + control.height(),
+                    hovered ? HOVERED_ROW_COLOR : ACTION_ROW_COLOR
+            );
+            guiGraphics.renderOutline(control.x(), control.y(), control.width(), control.height(), BORDER_COLOR);
+            this.drawCenteredTruncatedString(
+                    guiGraphics,
+                    control.label(),
+                    control.x() + control.width() / 2,
+                    control.y() + (control.height() - this.font.lineHeight) / 2,
+                    control.width() - 4,
+                    TEXT_COLOR
+            );
+            if (hovered) {
+                guiGraphics.setTooltipForNextFrame(this.font, control.tooltip(), mouseX, mouseY);
+            }
+        }
+    }
+
+    private List<StructureControl> structureControls(final int x, final int y, final int width) {
+        final int gap = STRUCTURE_CONTROL_GAP;
+        final int totalWidth = STRUCTURE_CONTROL_VIEW_BUTTON_WIDTH * 2
+                + STRUCTURE_CONTROL_BUTTON_WIDTH * 3
+                + gap * 4;
+        final int startX = x + Math.max(0, width - totalWidth);
+        final List<StructureControl> controls = new ArrayList<>(5);
+        int controlX = startX;
+        controls.add(new StructureControl(
+                controlX,
+                y,
+                STRUCTURE_CONTROL_VIEW_BUTTON_WIDTH,
+                STRUCTURE_CONTROL_HEIGHT,
+                Component.literal("L"),
+                Component.translatable("button.skyresources.guide.structure_view_left"),
+                StructureControlAction.VIEW_LEFT
+        ));
+        controlX += STRUCTURE_CONTROL_VIEW_BUTTON_WIDTH + gap;
+        controls.add(new StructureControl(
+                controlX,
+                y,
+                STRUCTURE_CONTROL_BUTTON_WIDTH,
+                STRUCTURE_CONTROL_HEIGHT,
+                Component.literal("<"),
+                Component.translatable("button.skyresources.guide.structure_prev_step"),
+                StructureControlAction.PREVIOUS_STEP
+        ));
+        controlX += STRUCTURE_CONTROL_BUTTON_WIDTH + gap;
+        controls.add(new StructureControl(
+                controlX,
+                y,
+                STRUCTURE_CONTROL_BUTTON_WIDTH,
+                STRUCTURE_CONTROL_HEIGHT,
+                this.structureAnimationPaused ? Component.literal(">") : Component.literal("||"),
+                this.structureAnimationPaused
+                        ? Component.translatable("button.skyresources.guide.structure_play")
+                        : Component.translatable("button.skyresources.guide.structure_pause"),
+                StructureControlAction.TOGGLE_ANIMATION
+        ));
+        controlX += STRUCTURE_CONTROL_BUTTON_WIDTH + gap;
+        controls.add(new StructureControl(
+                controlX,
+                y,
+                STRUCTURE_CONTROL_BUTTON_WIDTH,
+                STRUCTURE_CONTROL_HEIGHT,
+                Component.literal(">"),
+                Component.translatable("button.skyresources.guide.structure_next_step"),
+                StructureControlAction.NEXT_STEP
+        ));
+        controlX += STRUCTURE_CONTROL_BUTTON_WIDTH + gap;
+        controls.add(new StructureControl(
+                controlX,
+                y,
+                STRUCTURE_CONTROL_VIEW_BUTTON_WIDTH,
+                STRUCTURE_CONTROL_HEIGHT,
+                Component.literal("R"),
+                Component.translatable("button.skyresources.guide.structure_view_right"),
+                StructureControlAction.VIEW_RIGHT
+        ));
+        return controls;
+    }
+
+    private int visibleStructureBlockCount(final GuideStructure structure) {
+        final int totalBlocks = structure.blocks().size();
+        if (totalBlocks <= 0) {
+            return 0;
+        }
+        if (this.structureAnimationPaused) {
+            return Math.max(1, Math.min(this.structureManualStep, totalBlocks));
+        }
+        final long elapsed = Math.max(0L, System.currentTimeMillis() - this.structureAnimationStartMillis);
+        final int cycleSteps = totalBlocks + STRUCTURE_ANIMATION_HOLD_STEPS;
+        final int animationStep = (int) ((elapsed / STRUCTURE_ANIMATION_STEP_MILLIS) % cycleSteps);
+        return Math.min(totalBlocks, animationStep + 1);
+    }
+
+    private int structureViewX(final GuideStructure.BlockEntry block, final int viewQuarter) {
+        return switch (viewQuarter) {
+            case 1 -> block.z();
+            case 2 -> -block.x();
+            case 3 -> -block.z();
+            default -> block.x();
+        };
+    }
+
+    private int structureViewZ(final GuideStructure.BlockEntry block, final int viewQuarter) {
+        return switch (viewQuarter) {
+            case 1 -> -block.x();
+            case 2 -> -block.z();
+            case 3 -> block.x();
+            default -> block.z();
+        };
     }
 
     private void renderStructureBlockRow(
@@ -1200,6 +1380,24 @@ public final class GuideScreen extends Screen {
 
     private int contentTop(final int panelWidth, final int panelY) {
         return this.hasWideIndex(panelWidth) ? panelY + 54 : panelY + 70;
+    }
+
+    private boolean selectStructureControlAt(final double mouseX, final double mouseY) {
+        if (this.currentStructure == null) {
+            return false;
+        }
+        final int panelX = this.panelX();
+        final int panelY = this.panelY();
+        final int panelWidth = this.panelWidth();
+        final int contentX = panelX + PANEL_PADDING;
+        final int contentWidth = panelWidth - PANEL_PADDING * 2;
+        for (final StructureControl control : this.structureControls(contentX, this.structureControlsY(panelY), contentWidth)) {
+            if (this.isInside((int) mouseX, (int) mouseY, control.x(), control.y(), control.width(), control.height())) {
+                this.handleStructureControl(control.action());
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean selectInlineActionAt(final double mouseX, final double mouseY) {
@@ -1365,6 +1563,26 @@ public final class GuideScreen extends Screen {
         return oldOffset != this.bodyScrollOffset;
     }
 
+    private boolean rotateStructureAt(final double mouseX, final double mouseY, final double scrollY) {
+        if (this.currentStructure == null) {
+            return false;
+        }
+        final int panelX = this.panelX();
+        final int panelY = this.panelY();
+        final int panelWidth = this.panelWidth();
+        final int panelHeight = this.panelHeight();
+        final int contentX = panelX + PANEL_PADDING;
+        final int contentWidth = panelWidth - PANEL_PADDING * 2;
+        final int previewY = this.structurePreviewY(panelY);
+        final int previewBottom = this.structurePreviewBottom(panelY, panelHeight);
+        if (previewBottom <= previewY
+                || !this.isInside((int) mouseX, (int) mouseY, contentX, previewY, contentWidth, previewBottom - previewY)) {
+            return false;
+        }
+        this.rotateStructureView(scrollY > 0.0D ? -1 : 1);
+        return true;
+    }
+
     private boolean scrollStructureAt(final double mouseX, final double mouseY, final double scrollY) {
         if (this.currentStructure == null) {
             return false;
@@ -1407,6 +1625,46 @@ public final class GuideScreen extends Screen {
         };
     }
 
+    private void handleStructureControl(final StructureControlAction action) {
+        switch (action) {
+            case VIEW_LEFT -> this.rotateStructureView(-1);
+            case VIEW_RIGHT -> this.rotateStructureView(1);
+            case PREVIOUS_STEP -> this.stepStructureAnimation(-1);
+            case NEXT_STEP -> this.stepStructureAnimation(1);
+            case TOGGLE_ANIMATION -> this.toggleStructureAnimation();
+        }
+    }
+
+    private void rotateStructureView(final int direction) {
+        this.structureViewQuarter = Math.floorMod(this.structureViewQuarter + direction, 4);
+    }
+
+    private void stepStructureAnimation(final int direction) {
+        if (this.currentStructure == null || this.currentStructure.blocks().isEmpty()) {
+            return;
+        }
+        if (!this.structureAnimationPaused) {
+            this.structureManualStep = this.visibleStructureBlockCount(this.currentStructure);
+            this.structureAnimationPaused = true;
+        }
+        final int totalBlocks = this.currentStructure.blocks().size();
+        this.structureManualStep = Math.floorMod(this.structureManualStep - 1 + direction, totalBlocks) + 1;
+    }
+
+    private void toggleStructureAnimation() {
+        if (this.currentStructure == null || this.currentStructure.blocks().isEmpty()) {
+            return;
+        }
+        if (this.structureAnimationPaused) {
+            this.structureAnimationPaused = false;
+            this.structureAnimationStartMillis = System.currentTimeMillis()
+                    - (long) Math.max(0, this.structureManualStep - 1) * STRUCTURE_ANIMATION_STEP_MILLIS;
+        } else {
+            this.structureManualStep = this.visibleStructureBlockCount(this.currentStructure);
+            this.structureAnimationPaused = true;
+        }
+    }
+
     private boolean openGuidePage(final String pageId) {
         final GuidePage target = GuidePages.find(pageId).orElse(null);
         if (target == null) {
@@ -1440,6 +1698,10 @@ public final class GuideScreen extends Screen {
         this.currentStructure = GuideStructures.find(structureId).orElse(null);
         this.bodyScrollOffset = 0;
         this.structureScrollOffset = 0;
+        this.structureAnimationPaused = false;
+        this.structureManualStep = 1;
+        this.structureAnimationStartMillis = System.currentTimeMillis();
+        this.structureViewQuarter = 0;
         if (this.currentStructure == null) {
             this.feedbackMessage = Component.translatable("screen.skyresources.guide.missing_structure", structureId);
         } else {
@@ -1487,8 +1749,12 @@ public final class GuideScreen extends Screen {
         return Math.max(0, (bottom - top) / ACTION_ROW_HEIGHT);
     }
 
+    private int structureControlsY(final int panelY) {
+        return panelY + 76;
+    }
+
     private int structurePreviewY(final int panelY) {
-        return panelY + 80;
+        return this.structureControlsY(panelY) + STRUCTURE_CONTROL_HEIGHT + STRUCTURE_PREVIEW_GAP;
     }
 
     private int structurePreviewBottom(final int panelY, final int panelHeight) {
@@ -1603,6 +1869,10 @@ public final class GuideScreen extends Screen {
         this.currentStructure = null;
         this.feedbackMessage = null;
         this.structureScrollOffset = 0;
+        this.structureAnimationPaused = false;
+        this.structureManualStep = 1;
+        this.structureAnimationStartMillis = 0L;
+        this.structureViewQuarter = 0;
     }
 
     private int indexWidth(final int panelWidth) {
@@ -1722,6 +1992,25 @@ public final class GuideScreen extends Screen {
     private record InlineActionRegion(int x, int y, int width, int height, GuideAction action) {
     }
 
-    private record StructurePreviewTile(GuideStructure.BlockEntry block, int x, int y) {
+    private enum StructureControlAction {
+        VIEW_LEFT,
+        PREVIOUS_STEP,
+        TOGGLE_ANIMATION,
+        NEXT_STEP,
+        VIEW_RIGHT
+    }
+
+    private record StructureControl(
+            int x,
+            int y,
+            int width,
+            int height,
+            Component label,
+            Component tooltip,
+            StructureControlAction action
+    ) {
+    }
+
+    private record StructurePreviewTile(GuideStructure.BlockEntry block, int x, int y, int depth, int secondary) {
     }
 }
