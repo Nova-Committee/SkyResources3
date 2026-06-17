@@ -133,6 +133,7 @@
   "screen.skyresources.guide.structure_timeline_tooltip": "点击跳转到对应搭建步骤。",
   "screen.skyresources.guide.structure_close_hint": "完成会关闭此结构。",
   "screen.skyresources.guide.structure_position": "（%s）",
+  "button.skyresources.guide.structure_back": "返回",
   "button.skyresources.guide.structure_view_left": "向左旋转视角",
   "button.skyresources.guide.structure_view_right": "向右旋转视角",
   "button.skyresources.guide.structure_prev_step": "暂停并显示上一个方块",

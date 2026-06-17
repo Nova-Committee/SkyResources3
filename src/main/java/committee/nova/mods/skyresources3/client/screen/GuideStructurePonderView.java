@@ -10,33 +10,34 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 final class GuideStructurePonderView {
-    private static final int PANEL_PADDING = 14;
-    private static final int FOOTER_HEIGHT = 34;
-    private static final int HEADER_SPACE = 48;
-    private static final int STORY_HEIGHT = 82;
-    private static final int STORY_PADDING = 8;
-    private static final int CONTROL_HEIGHT = 18;
-    private static final int CONTROL_GAP = 4;
-    private static final int CONTROL_WIDTH = 22;
-    private static final int VIEW_CONTROL_WIDTH = 32;
-    private static final int TIMELINE_HEIGHT = 8;
-    private static final int ICON_SIZE = 16;
+    private static final int EDGE_PADDING = 12;
+    private static final int TOP_BAR_HEIGHT = 28;
+    private static final int BOTTOM_BAR_HEIGHT = 44;
+    private static final int BACK_BUTTON_WIDTH = 58;
+    private static final int BUTTON_HEIGHT = 20;
+    private static final int CONTROL_HEIGHT = 20;
+    private static final int CONTROL_GAP = 5;
+    private static final int CONTROL_WIDTH = 24;
+    private static final int VIEW_CONTROL_WIDTH = 34;
+    private static final int TIMELINE_HEIGHT = 7;
+    private static final int BASE_ICON_SIZE = 16;
+    private static final int MIN_TILE_SIZE = 18;
+    private static final int MAX_TILE_SIZE = 56;
     private static final int ANIMATION_STEP_MILLIS = 650;
     private static final int ANIMATION_HOLD_STEPS = 4;
 
-    private static final int CONTENT_COLOR = 0xF0E9DDC4;
     private static final int SCENE_COLOR = 0xF0212730;
-    private static final int STORY_COLOR = 0xE0F5E8CE;
+    private static final int OVERLAY_COLOR = 0xB010141A;
+    private static final int BUTTON_COLOR = 0x90404A55;
+    private static final int HOVERED_BUTTON_COLOR = 0xB05B747B;
     private static final int BORDER_COLOR = 0xFF6E7E89;
-    private static final int TEXT_COLOR = 0xFF2B241A;
-    private static final int MUTED_TEXT_COLOR = 0xFF675E52;
-    private static final int HEADER_TEXT_COLOR = 0xFFEFE5CF;
-    private static final int HOVERED_ROW_COLOR = 0x503E6F78;
-    private static final int ACTION_ROW_COLOR = 0x305C465F;
+    private static final int TEXT_COLOR = 0xFFEFE5CF;
+    private static final int MUTED_TEXT_COLOR = 0xFFB6C7C2;
+    private static final int HOVERED_BLOCK_COLOR = 0x604A7F87;
     private static final int ACTIVE_BLOCK_COLOR = 0xB0E8B654;
-    private static final int GHOST_BLOCK_COLOR = 0x405C6672;
-    private static final int TIMELINE_COLOR = 0x605C6672;
-    private static final int TIMELINE_PROGRESS_COLOR = 0xC0E8B654;
+    private static final int GHOST_BLOCK_COLOR = 0x385C6672;
+    private static final int TIMELINE_COLOR = 0x805C6672;
+    private static final int TIMELINE_PROGRESS_COLOR = 0xD0E8B654;
 
     private boolean paused;
     private int manualStep = 1;
@@ -62,103 +63,57 @@ final class GuideStructurePonderView {
             final Font font,
             final int mouseX,
             final int mouseY,
-            final int panelX,
-            final int panelY,
-            final int panelWidth,
-            final int panelHeight,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
             final GuideStructure structure
     ) {
-        final int contentX = panelX + PANEL_PADDING;
-        final int contentY = panelY + HEADER_SPACE;
-        final int contentWidth = panelWidth - PANEL_PADDING * 2;
-        final int contentBottom = panelY + panelHeight - FOOTER_HEIGHT;
-        final int storyHeight = this.storyHeight(panelY, panelHeight);
-        final int storyY = contentBottom - storyHeight;
-        final int sceneY = contentY + 30;
-        final int sceneBottom = Math.max(sceneY, storyY - 6);
         final int visibleCount = this.visibleBlockCount(structure);
+        guiGraphics.fill(x, y, x + width, y + height, SCENE_COLOR);
 
-        guiGraphics.fill(contentX - 6, contentY - 6, contentX + contentWidth + 6, contentBottom, CONTENT_COLOR);
-        guiGraphics.renderOutline(contentX - 6, contentY - 6, contentWidth + 12, contentBottom - contentY + 6, BORDER_COLOR);
-        guiGraphics.drawString(
-                font,
-                this.truncate(font, structure.title().getString(), contentWidth),
-                contentX,
-                contentY,
-                TEXT_COLOR,
-                false
-        );
-        guiGraphics.drawString(
-                font,
-                this.truncate(
-                        font,
-                        Component.translatable("screen.skyresources.guide.structure_ponder_subtitle").getString(),
-                        contentWidth
-                ),
-                contentX,
-                contentY + 14,
-                MUTED_TEXT_COLOR,
-                false
-        );
-
-        if (sceneBottom > sceneY) {
-            this.renderScene(
-                    guiGraphics,
-                    font,
-                    mouseX,
-                    mouseY,
-                    structure,
-                    contentX,
-                    sceneY,
-                    contentWidth,
-                    sceneBottom - sceneY,
-                    visibleCount
-            );
-        }
-        this.renderStoryboard(
-                guiGraphics,
-                font,
-                mouseX,
-                mouseY,
-                structure,
-                contentX,
-                storyY,
-                contentWidth,
-                storyHeight,
-                visibleCount
-        );
+        final int sceneX = x + EDGE_PADDING;
+        final int sceneY = y + TOP_BAR_HEIGHT;
+        final int sceneWidth = Math.max(0, width - EDGE_PADDING * 2);
+        final int sceneHeight = Math.max(0, height - TOP_BAR_HEIGHT - BOTTOM_BAR_HEIGHT);
+        this.renderScene(guiGraphics, font, mouseX, mouseY, structure, sceneX, sceneY, sceneWidth, sceneHeight, visibleCount);
+        this.renderTopOverlay(guiGraphics, font, mouseX, mouseY, x, y, width, structure, visibleCount);
+        this.renderBottomOverlay(guiGraphics, font, mouseX, mouseY, x, y, width, height, structure, visibleCount);
     }
 
-    boolean mouseClicked(
+    ClickResult mouseClicked(
             final double mouseX,
             final double mouseY,
-            final int panelX,
-            final int panelY,
-            final int panelWidth,
-            final int panelHeight,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
             final GuideStructure structure
     ) {
-        if (this.selectControlAt(mouseX, mouseY, panelX, panelY, panelWidth, panelHeight, structure)) {
-            return true;
+        if (this.isInside((int) mouseX, (int) mouseY, this.backButtonX(x), this.backButtonY(y), BACK_BUTTON_WIDTH, BUTTON_HEIGHT)) {
+            return ClickResult.BACK;
         }
-        return this.selectTimelineAt(mouseX, mouseY, panelX, panelY, panelWidth, panelHeight, structure);
+        if (this.selectControlAt(mouseX, mouseY, x, y, width, height, structure)
+                || this.selectTimelineAt(mouseX, mouseY, x, y, width, height, structure)) {
+            return ClickResult.HANDLED;
+        }
+        return ClickResult.NONE;
     }
 
     boolean mouseScrolled(
             final double mouseX,
             final double mouseY,
             final double scrollY,
-            final int panelX,
-            final int panelY,
-            final int panelWidth,
-            final int panelHeight
+            final int x,
+            final int y,
+            final int width,
+            final int height
     ) {
-        final int contentX = panelX + PANEL_PADDING;
-        final int contentWidth = panelWidth - PANEL_PADDING * 2;
-        final int sceneY = panelY + HEADER_SPACE + 30;
-        final int sceneBottom = this.storyY(panelY, panelHeight) - 6;
-        if (sceneBottom <= sceneY
-                || !this.isInside((int) mouseX, (int) mouseY, contentX, sceneY, contentWidth, sceneBottom - sceneY)) {
+        final int sceneX = x + EDGE_PADDING;
+        final int sceneY = y + TOP_BAR_HEIGHT;
+        final int sceneWidth = Math.max(0, width - EDGE_PADDING * 2);
+        final int sceneHeight = Math.max(0, height - TOP_BAR_HEIGHT - BOTTOM_BAR_HEIGHT);
+        if (sceneHeight <= 0 || !this.isInside((int) mouseX, (int) mouseY, sceneX, sceneY, sceneWidth, sceneHeight)) {
             return false;
         }
         this.rotateView(scrollY > 0.0D ? -1 : 1);
@@ -177,43 +132,29 @@ final class GuideStructurePonderView {
             final int height,
             final int visibleCount
     ) {
-        guiGraphics.fill(x, y, x + width, y + height, SCENE_COLOR);
-        guiGraphics.renderOutline(x, y, width, height, BORDER_COLOR);
-        guiGraphics.drawString(
-                font,
-                Component.translatable("screen.skyresources.guide.structure_scene_identify"),
-                x + 8,
-                y + 7,
-                HEADER_TEXT_COLOR,
-                false
-        );
-        guiGraphics.drawString(
-                font,
-                Component.translatable("screen.skyresources.guide.structure_scene_rotate"),
-                x + width - 8 - font.width(Component.translatable("screen.skyresources.guide.structure_scene_rotate")),
-                y + 7,
-                HEADER_TEXT_COLOR,
-                false
-        );
-
-        final List<StructureTile> tiles = this.layoutTiles(structure, width - 18, height - 28, visibleCount);
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+        final int tileSize = this.tileSize(structure, width, height);
+        final List<StructureTile> tiles = this.layoutTiles(structure, tileSize, visibleCount);
         if (tiles.isEmpty()) {
             return;
         }
+
         int minTileX = Integer.MAX_VALUE;
         int maxTileX = Integer.MIN_VALUE;
         int minTileY = Integer.MAX_VALUE;
         int maxTileY = Integer.MIN_VALUE;
         for (final StructureTile tile : tiles) {
             minTileX = Math.min(minTileX, tile.x());
-            maxTileX = Math.max(maxTileX, tile.x() + ICON_SIZE);
+            maxTileX = Math.max(maxTileX, tile.x() + tile.size());
             minTileY = Math.min(minTileY, tile.y());
-            maxTileY = Math.max(maxTileY, tile.y() + ICON_SIZE);
+            maxTileY = Math.max(maxTileY, tile.y() + tile.size());
         }
         final int offsetX = x + (width - (maxTileX - minTileX)) / 2 - minTileX;
-        final int offsetY = y + 24 + Math.max(0, (height - 28 - (maxTileY - minTileY)) / 2) - minTileY;
+        final int offsetY = y + (height - (maxTileY - minTileY)) / 2 - minTileY;
 
-        guiGraphics.enableScissor(x + 1, y + 20, x + width - 1, y + height - 1);
+        guiGraphics.enableScissor(x, y, x + width, y + height);
         for (final StructureTile tile : tiles) {
             if (tile.index() < visibleCount) {
                 continue;
@@ -229,6 +170,84 @@ final class GuideStructurePonderView {
         guiGraphics.disableScissor();
     }
 
+    private void renderTopOverlay(
+            final GuiGraphics guiGraphics,
+            final Font font,
+            final int mouseX,
+            final int mouseY,
+            final int x,
+            final int y,
+            final int width,
+            final GuideStructure structure,
+            final int visibleCount
+    ) {
+        guiGraphics.fill(x, y, x + width, y + TOP_BAR_HEIGHT, OVERLAY_COLOR);
+        final int backX = this.backButtonX(x);
+        final int backY = this.backButtonY(y);
+        this.renderButton(
+                guiGraphics,
+                font,
+                Component.translatable("button.skyresources.guide.structure_back"),
+                Component.translatable("button.skyresources.guide.structure_back"),
+                mouseX,
+                mouseY,
+                backX,
+                backY,
+                BACK_BUTTON_WIDTH,
+                BUTTON_HEIGHT
+        );
+
+        final Component step = Component.translatable(
+                "screen.skyresources.guide.structure_scene_step",
+                visibleCount,
+                structure.blocks().size()
+        );
+        final String fittedStep = this.truncate(font, step.getString(), Math.max(24, width / 4));
+        final int stepX = x + width - EDGE_PADDING - font.width(fittedStep);
+        guiGraphics.drawString(font, fittedStep, stepX, y + 9, MUTED_TEXT_COLOR, false);
+
+        final int titleX = backX + BACK_BUTTON_WIDTH + 10;
+        final int titleWidth = stepX - titleX - 8;
+        if (titleWidth > 12) {
+            guiGraphics.drawString(
+                    font,
+                    this.truncate(font, structure.title().getString(), titleWidth),
+                    titleX,
+                    y + 9,
+                    TEXT_COLOR,
+                    false
+            );
+        }
+    }
+
+    private void renderBottomOverlay(
+            final GuiGraphics guiGraphics,
+            final Font font,
+            final int mouseX,
+            final int mouseY,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
+            final GuideStructure structure,
+            final int visibleCount
+    ) {
+        final int overlayY = y + height - BOTTOM_BAR_HEIGHT;
+        guiGraphics.fill(x, overlayY, x + width, y + height, OVERLAY_COLOR);
+        this.renderControls(guiGraphics, font, mouseX, mouseY, this.controlsX(x, width), this.controlsY(y, height));
+        this.renderTimeline(
+                guiGraphics,
+                font,
+                mouseX,
+                mouseY,
+                structure,
+                this.timelineX(x),
+                this.timelineY(y, height),
+                this.timelineWidth(width),
+                visibleCount
+        );
+    }
+
     private void renderGhostTile(
             final GuiGraphics guiGraphics,
             final Font font,
@@ -240,9 +259,16 @@ final class GuideStructurePonderView {
     ) {
         final int drawX = offsetX + tile.x();
         final int drawY = offsetY + tile.y();
-        final boolean hovered = this.isInside(mouseX, mouseY, drawX, drawY, ICON_SIZE, ICON_SIZE);
-        guiGraphics.fill(drawX, drawY, drawX + ICON_SIZE, drawY + ICON_SIZE, GHOST_BLOCK_COLOR);
-        guiGraphics.renderOutline(drawX, drawY, ICON_SIZE, ICON_SIZE, hovered ? ACTIVE_BLOCK_COLOR : BORDER_COLOR);
+        final int size = tile.size();
+        final boolean hovered = this.isInside(mouseX, mouseY, drawX, drawY, size, size);
+        guiGraphics.fill(drawX + size / 6, drawY + size / 6, drawX + size * 5 / 6, drawY + size * 5 / 6, GHOST_BLOCK_COLOR);
+        guiGraphics.renderOutline(
+                drawX + size / 6,
+                drawY + size / 6,
+                size * 2 / 3,
+                size * 2 / 3,
+                hovered ? ACTIVE_BLOCK_COLOR : BORDER_COLOR
+        );
         if (hovered) {
             final ItemStack icon = tile.block().icon();
             guiGraphics.setTooltipForNextFrame(font, this.blockTooltip(tile.block(), icon), mouseX, mouseY);
@@ -266,92 +292,39 @@ final class GuideStructurePonderView {
         }
         final int drawX = offsetX + tile.x();
         final int drawY = offsetY + tile.y();
-        final boolean hovered = this.isInside(mouseX, mouseY, drawX, drawY, ICON_SIZE, ICON_SIZE);
+        final int size = tile.size();
+        final boolean hovered = this.isInside(mouseX, mouseY, drawX, drawY, size, size);
         if (active || hovered) {
             guiGraphics.fill(
-                    drawX - 1,
-                    drawY - 1,
-                    drawX + ICON_SIZE + 1,
-                    drawY + ICON_SIZE + 1,
-                    active ? ACTIVE_BLOCK_COLOR : HOVERED_ROW_COLOR
+                    drawX - 2,
+                    drawY - 2,
+                    drawX + size + 2,
+                    drawY + size + 2,
+                    active ? ACTIVE_BLOCK_COLOR : HOVERED_BLOCK_COLOR
             );
         }
-        guiGraphics.renderFakeItem(icon, drawX, drawY);
+        this.renderScaledItem(guiGraphics, icon, drawX, drawY, size);
         if (active || hovered) {
-            guiGraphics.renderOutline(drawX - 1, drawY - 1, ICON_SIZE + 2, ICON_SIZE + 2, active ? ACTIVE_BLOCK_COLOR : BORDER_COLOR);
+            guiGraphics.renderOutline(drawX - 2, drawY - 2, size + 4, size + 4, active ? ACTIVE_BLOCK_COLOR : BORDER_COLOR);
         }
         if (hovered) {
             guiGraphics.setTooltipForNextFrame(font, this.blockTooltip(block, icon), mouseX, mouseY);
         }
     }
 
-    private void renderStoryboard(
+    private void renderScaledItem(
             final GuiGraphics guiGraphics,
-            final Font font,
-            final int mouseX,
-            final int mouseY,
-            final GuideStructure structure,
+            final ItemStack icon,
             final int x,
             final int y,
-            final int width,
-            final int height,
-            final int visibleCount
+            final int size
     ) {
-        guiGraphics.fill(x, y, x + width, y + height, STORY_COLOR);
-        guiGraphics.renderOutline(x, y, width, height, BORDER_COLOR);
-        final GuideStructure.BlockEntry activeBlock = structure.blocks().get(Math.max(0, visibleCount - 1));
-        final ItemStack activeIcon = activeBlock.icon();
-        final int textX = x + STORY_PADDING + ICON_SIZE + 8;
-        final int controlsY = y + STORY_PADDING;
-        if (!activeIcon.isEmpty()) {
-            guiGraphics.renderFakeItem(activeIcon, x + STORY_PADDING, y + STORY_PADDING + 2);
-        }
-        guiGraphics.drawString(
-                font,
-                this.truncate(
-                        font,
-                        Component.translatable(
-                                "screen.skyresources.guide.structure_scene_step",
-                                visibleCount,
-                                structure.blocks().size()
-                        ).getString(),
-                        Math.max(24, width - (textX - x) - this.controlsWidth() - 14)
-                ),
-                textX,
-                y + STORY_PADDING,
-                TEXT_COLOR,
-                false
-        );
-        guiGraphics.drawString(
-                font,
-                this.truncate(
-                        font,
-                        Component.translatable(
-                                "screen.skyresources.guide.structure_scene_place",
-                                activeIcon.getHoverName(),
-                                activeBlock.position()
-                        ).getString(),
-                        Math.max(24, width - (textX - x) - this.controlsWidth() - 14)
-                ),
-                textX,
-                y + STORY_PADDING + 14,
-                TEXT_COLOR,
-                false
-        );
-        guiGraphics.drawString(
-                font,
-                this.truncate(
-                        font,
-                        Component.translatable("screen.skyresources.guide.structure_scene_hint").getString(),
-                        width - STORY_PADDING * 2
-                ),
-                x + STORY_PADDING,
-                y + STORY_PADDING + 34,
-                MUTED_TEXT_COLOR,
-                false
-        );
-        this.renderControls(guiGraphics, font, mouseX, mouseY, x + width - STORY_PADDING - this.controlsWidth(), controlsY);
-        this.renderTimeline(guiGraphics, font, mouseX, mouseY, structure, x + STORY_PADDING, y + height - 18, width - STORY_PADDING * 2, visibleCount);
+        final float scale = size / (float) BASE_ICON_SIZE;
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(x, y);
+        guiGraphics.pose().scale(scale, scale);
+        guiGraphics.renderFakeItem(icon, 0, 0);
+        guiGraphics.pose().popMatrix();
     }
 
     private void renderControls(
@@ -362,30 +335,40 @@ final class GuideStructurePonderView {
             final int x,
             final int y
     ) {
-        int controlX = x;
         for (final StructureControl control : this.controls(x, y)) {
-            final boolean hovered = this.isInside(mouseX, mouseY, control.x(), control.y(), control.width(), control.height());
-            guiGraphics.fill(
-                    control.x(),
-                    control.y(),
-                    control.x() + control.width(),
-                    control.y() + control.height(),
-                    hovered ? HOVERED_ROW_COLOR : ACTION_ROW_COLOR
-            );
-            guiGraphics.renderOutline(control.x(), control.y(), control.width(), control.height(), BORDER_COLOR);
-            this.drawCenteredTruncatedString(
+            this.renderButton(
                     guiGraphics,
                     font,
                     control.label(),
-                    control.x() + control.width() / 2,
-                    control.y() + (control.height() - font.lineHeight) / 2,
-                    control.width() - 4,
-                    TEXT_COLOR
+                    control.tooltip(),
+                    mouseX,
+                    mouseY,
+                    control.x(),
+                    control.y(),
+                    control.width(),
+                    control.height()
             );
-            if (hovered) {
-                guiGraphics.setTooltipForNextFrame(font, control.tooltip(), mouseX, mouseY);
-            }
-            controlX += control.width() + CONTROL_GAP;
+        }
+    }
+
+    private void renderButton(
+            final GuiGraphics guiGraphics,
+            final Font font,
+            final Component label,
+            final Component tooltip,
+            final int mouseX,
+            final int mouseY,
+            final int x,
+            final int y,
+            final int width,
+            final int height
+    ) {
+        final boolean hovered = this.isInside(mouseX, mouseY, x, y, width, height);
+        guiGraphics.fill(x, y, x + width, y + height, hovered ? HOVERED_BUTTON_COLOR : BUTTON_COLOR);
+        guiGraphics.renderOutline(x, y, width, height, BORDER_COLOR);
+        this.drawCenteredTruncatedString(guiGraphics, font, label, x + width / 2, y + (height - font.lineHeight) / 2, width - 4, TEXT_COLOR);
+        if (hovered) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip, mouseX, mouseY);
         }
     }
 
@@ -400,10 +383,13 @@ final class GuideStructurePonderView {
             final int width,
             final int visibleCount
     ) {
+        if (width <= 0 || structure.blocks().isEmpty()) {
+            return;
+        }
         guiGraphics.fill(x, y, x + width, y + TIMELINE_HEIGHT, TIMELINE_COLOR);
         final int progressWidth = Math.max(1, width * visibleCount / Math.max(1, structure.blocks().size()));
         guiGraphics.fill(x, y, x + progressWidth, y + TIMELINE_HEIGHT, TIMELINE_PROGRESS_COLOR);
-        final int marks = Math.min(structure.blocks().size(), 16);
+        final int marks = Math.min(structure.blocks().size(), 24);
         for (int mark = 1; mark < marks; mark++) {
             final int markX = x + width * mark / marks;
             guiGraphics.fill(markX, y - 1, markX + 1, y + TIMELINE_HEIGHT + 1, BORDER_COLOR);
@@ -418,9 +404,53 @@ final class GuideStructurePonderView {
         }
     }
 
-    private List<StructureTile> layoutTiles(final GuideStructure structure, final int width, final int height, final int visibleCount) {
+    private List<StructureTile> layoutTiles(final GuideStructure structure, final int tileSize, final int visibleCount) {
         final List<GuideStructure.BlockEntry> blocks = structure.blocks();
         final int view = Math.floorMod(this.viewQuarter, 4);
+        final StructureBounds bounds = this.bounds(blocks, view);
+        final int minY = bounds.minY();
+        final int stepX = Math.max(10, tileSize * 3 / 4);
+        final int stepY = Math.max(5, tileSize / 3);
+        final int layerStep = Math.max(8, tileSize * 2 / 3);
+        final List<StructureTile> tiles = new ArrayList<>(blocks.size());
+        for (int index = 0; index < blocks.size(); index++) {
+            final GuideStructure.BlockEntry block = blocks.get(index);
+            final int viewX = this.viewX(block, view);
+            final int viewZ = this.viewZ(block, view);
+            tiles.add(new StructureTile(
+                    block,
+                    (viewX - viewZ) * stepX,
+                    (viewX + viewZ) * stepY - (block.y() - minY) * layerStep,
+                    viewX + viewZ,
+                    viewX,
+                    index,
+                    tileSize
+            ));
+        }
+        tiles.sort(Comparator.comparingInt((StructureTile tile) -> tile.block().y())
+                .thenComparingInt(StructureTile::depth)
+                .thenComparingInt(StructureTile::secondary)
+                .thenComparingInt(tile -> Math.abs(tile.index() - visibleCount)));
+        return tiles;
+    }
+
+    private int tileSize(final GuideStructure structure, final int width, final int height) {
+        if (structure.blocks().isEmpty()) {
+            return MIN_TILE_SIZE;
+        }
+        final StructureBounds bounds = this.bounds(structure.blocks(), Math.floorMod(this.viewQuarter, 4));
+        final int horizontalUnits = Math.max(1, bounds.maxX() - bounds.minX() + bounds.maxZ() - bounds.minZ() + 2);
+        final int verticalUnits = Math.max(1, bounds.maxX() + bounds.maxZ() - bounds.minX() - bounds.minZ()
+                + (bounds.maxY() - bounds.minY()) * 2 + 3);
+        final int byWidth = width / Math.max(1, horizontalUnits);
+        final int byHeight = height * 2 / Math.max(2, verticalUnits);
+        return Math.max(MIN_TILE_SIZE, Math.min(MAX_TILE_SIZE, Math.min(byWidth, byHeight)));
+    }
+
+    private StructureBounds bounds(final List<GuideStructure.BlockEntry> blocks, final int view) {
+        if (blocks.isEmpty()) {
+            return new StructureBounds(0, 0, 0, 0, 0, 0);
+        }
         int minX = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
         int minY = Integer.MAX_VALUE;
@@ -437,44 +467,19 @@ final class GuideStructurePonderView {
             minZ = Math.min(minZ, viewZ);
             maxZ = Math.max(maxZ, viewZ);
         }
-        final int horizontalUnits = Math.max(1, maxX - minX + maxZ - minZ);
-        final int verticalUnits = Math.max(1, maxX + maxZ - minX - minZ + (maxY - minY) * 2);
-        final int stepX = this.previewStep(width - ICON_SIZE, horizontalUnits, 8, 24);
-        final int stepY = this.previewStep(height - ICON_SIZE, verticalUnits, 3, 10);
-        final int layerStep = stepY * 2;
-        final List<StructureTile> tiles = new ArrayList<>(blocks.size());
-        for (int index = 0; index < blocks.size(); index++) {
-            final GuideStructure.BlockEntry block = blocks.get(index);
-            final int viewX = this.viewX(block, view);
-            final int viewZ = this.viewZ(block, view);
-            tiles.add(new StructureTile(
-                    block,
-                    (viewX - viewZ) * stepX,
-                    (viewX + viewZ) * stepY - (block.y() - minY) * layerStep,
-                    viewX + viewZ,
-                    viewX,
-                    index
-            ));
-        }
-        tiles.sort(Comparator.comparingInt((StructureTile tile) -> tile.block().y())
-                .thenComparingInt(StructureTile::depth)
-                .thenComparingInt(StructureTile::secondary)
-                .thenComparingInt(tile -> Math.abs(tile.index() - visibleCount)));
-        return tiles;
+        return new StructureBounds(minX, maxX, minY, maxY, minZ, maxZ);
     }
 
     private boolean selectControlAt(
             final double mouseX,
             final double mouseY,
-            final int panelX,
-            final int panelY,
-            final int panelWidth,
-            final int panelHeight,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
             final GuideStructure structure
     ) {
-        final int controlsX = panelX + panelWidth - PANEL_PADDING - STORY_PADDING - this.controlsWidth();
-        final int controlsY = this.storyY(panelY, panelHeight) + STORY_PADDING;
-        for (final StructureControl control : this.controls(controlsX, controlsY)) {
+        for (final StructureControl control : this.controls(this.controlsX(x, width), this.controlsY(y, height))) {
             if (!this.isInside((int) mouseX, (int) mouseY, control.x(), control.y(), control.width(), control.height())) {
                 continue;
             }
@@ -487,20 +492,23 @@ final class GuideStructurePonderView {
     private boolean selectTimelineAt(
             final double mouseX,
             final double mouseY,
-            final int panelX,
-            final int panelY,
-            final int panelWidth,
-            final int panelHeight,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
             final GuideStructure structure
     ) {
-        final int x = panelX + PANEL_PADDING + STORY_PADDING;
-        final int y = this.storyY(panelY, panelHeight) + this.storyHeight(panelY, panelHeight) - 18;
-        final int width = panelWidth - PANEL_PADDING * 2 - STORY_PADDING * 2;
-        if (!this.isInside((int) mouseX, (int) mouseY, x, y - 4, width, TIMELINE_HEIGHT + 8)) {
+        if (structure.blocks().isEmpty()) {
+            return false;
+        }
+        final int timelineX = this.timelineX(x);
+        final int timelineY = this.timelineY(y, height);
+        final int timelineWidth = this.timelineWidth(width);
+        if (!this.isInside((int) mouseX, (int) mouseY, timelineX, timelineY - 4, timelineWidth, TIMELINE_HEIGHT + 8)) {
             return false;
         }
         final int totalBlocks = structure.blocks().size();
-        final int selected = Math.max(1, Math.min(totalBlocks, 1 + (int) ((mouseX - x) * totalBlocks / Math.max(1, width))));
+        final int selected = Math.max(1, Math.min(totalBlocks, 1 + (int) ((mouseX - timelineX) * totalBlocks / Math.max(1, timelineWidth))));
         this.manualStep = selected;
         this.paused = true;
         return true;
@@ -602,19 +610,36 @@ final class GuideStructurePonderView {
         return new StructureControl(x, y, width, CONTROL_HEIGHT, Component.literal(label), Component.translatable(tooltipKey), action);
     }
 
+    private int backButtonX(final int x) {
+        return x + EDGE_PADDING;
+    }
+
+    private int backButtonY(final int y) {
+        return y + 4;
+    }
+
+    private int controlsX(final int x, final int width) {
+        return x + Math.max(EDGE_PADDING, (width - this.controlsWidth()) / 2);
+    }
+
+    private int controlsY(final int y, final int height) {
+        return y + height - BOTTOM_BAR_HEIGHT + 8;
+    }
+
+    private int timelineX(final int x) {
+        return x + EDGE_PADDING;
+    }
+
+    private int timelineY(final int y, final int height) {
+        return y + height - 12;
+    }
+
+    private int timelineWidth(final int width) {
+        return Math.max(0, width - EDGE_PADDING * 2);
+    }
+
     private int controlsWidth() {
         return VIEW_CONTROL_WIDTH * 2 + CONTROL_WIDTH * 4 + CONTROL_GAP * 5;
-    }
-
-    private int storyY(final int panelY, final int panelHeight) {
-        final int contentBottom = panelY + panelHeight - FOOTER_HEIGHT;
-        return contentBottom - this.storyHeight(panelY, panelHeight);
-    }
-
-    private int storyHeight(final int panelY, final int panelHeight) {
-        final int contentY = panelY + HEADER_SPACE;
-        final int contentBottom = panelY + panelHeight - FOOTER_HEIGHT;
-        return Math.max(44, Math.min(STORY_HEIGHT, contentBottom - contentY - 72));
     }
 
     private int viewX(final GuideStructure.BlockEntry block, final int viewQuarter) {
@@ -633,10 +658,6 @@ final class GuideStructurePonderView {
             case 3 -> block.x();
             default -> block.z();
         };
-    }
-
-    private int previewStep(final int available, final int units, final int min, final int max) {
-        return Math.max(min, Math.min(max, Math.max(1, available / Math.max(1, units))));
     }
 
     private Component blockTooltip(final GuideStructure.BlockEntry block, final ItemStack icon) {
@@ -682,6 +703,12 @@ final class GuideStructurePonderView {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
+    enum ClickResult {
+        NONE,
+        HANDLED,
+        BACK
+    }
+
     private enum StructureControlAction {
         VIEW_LEFT,
         PREVIOUS_STEP,
@@ -702,13 +729,24 @@ final class GuideStructurePonderView {
     ) {
     }
 
+    private record StructureBounds(
+            int minX,
+            int maxX,
+            int minY,
+            int maxY,
+            int minZ,
+            int maxZ
+    ) {
+    }
+
     private record StructureTile(
             GuideStructure.BlockEntry block,
             int x,
             int y,
             int depth,
             int secondary,
-            int index
+            int index,
+            int size
     ) {
     }
 }

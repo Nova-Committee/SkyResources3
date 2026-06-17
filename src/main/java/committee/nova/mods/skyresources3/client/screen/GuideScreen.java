@@ -146,6 +146,21 @@ public final class GuideScreen extends Screen {
         this.renderTransparentBackground(guiGraphics);
         guiGraphics.fill(0, 0, this.width, this.height, BACKGROUND_COLOR);
 
+        if (this.currentStructure != null) {
+            this.structurePonderView.render(
+                    guiGraphics,
+                    this.font,
+                    mouseX,
+                    mouseY,
+                    0,
+                    0,
+                    this.width,
+                    this.height,
+                    this.currentStructure
+            );
+            return;
+        }
+
         final int panelX = this.panelX();
         final int panelY = this.panelY();
         final int panelWidth = this.panelWidth();
@@ -168,14 +183,34 @@ public final class GuideScreen extends Screen {
 
     @Override
     public boolean mouseClicked(final MouseButtonEvent event, final boolean doubleClick) {
+        if (this.currentStructure != null) {
+            if (event.button() != 0) {
+                return false;
+            }
+            return switch (this.structurePonderView.mouseClicked(
+                    event.x(),
+                    event.y(),
+                    0,
+                    0,
+                    this.width,
+                    this.height,
+                    this.currentStructure
+            )) {
+                case BACK -> {
+                    this.clearTransientView();
+                    yield true;
+                }
+                case HANDLED -> true;
+                case NONE -> false;
+            };
+        }
         if (super.mouseClicked(event, doubleClick)) {
             return true;
         }
         if (event.button() != 0) {
             return false;
         }
-        return this.selectStructurePonderAt(event.x(), event.y())
-                || this.selectInlineActionAt(event.x(), event.y())
+        return this.selectInlineActionAt(event.x(), event.y())
                 || this.selectActionAt(event.x(), event.y())
                 || this.selectResultAt(event.x(), event.y());
     }
@@ -187,14 +222,27 @@ public final class GuideScreen extends Screen {
             final double scrollX,
             final double scrollY
     ) {
+        if (this.currentStructure != null) {
+            if (scrollY == 0.0D) {
+                return false;
+            }
+            return this.structurePonderView.mouseScrolled(
+                    mouseX,
+                    mouseY,
+                    scrollY,
+                    0,
+                    0,
+                    this.width,
+                    this.height
+            );
+        }
         if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
             return true;
         }
         if (scrollY == 0.0D) {
             return false;
         }
-        return this.scrollStructurePonderAt(mouseX, mouseY, scrollY)
-                || this.scrollActionListAt(mouseX, mouseY, scrollY)
+        return this.scrollActionListAt(mouseX, mouseY, scrollY)
                 || this.scrollGuideBodyAt(mouseX, mouseY, scrollY)
                 || this.scrollResultIndexAt(mouseX, mouseY, scrollY);
     }
@@ -234,11 +282,6 @@ public final class GuideScreen extends Screen {
                     panelY + panelHeight / 2 - this.font.lineHeight,
                     MUTED_TEXT_COLOR
             );
-            return;
-        }
-
-        if (this.currentStructure != null) {
-            this.renderStructurePreview(guiGraphics, mouseX, mouseY, panelX, panelY, panelWidth, panelHeight);
             return;
         }
 
@@ -877,28 +920,6 @@ public final class GuideScreen extends Screen {
         }
     }
 
-    private void renderStructurePreview(
-            final GuiGraphics guiGraphics,
-            final int mouseX,
-            final int mouseY,
-            final int panelX,
-            final int panelY,
-            final int panelWidth,
-            final int panelHeight
-    ) {
-        this.structurePonderView.render(
-                guiGraphics,
-                this.font,
-                mouseX,
-                mouseY,
-                panelX,
-                panelY,
-                panelWidth,
-                panelHeight,
-                this.currentStructure
-        );
-    }
-
     private List<GuidePage> currentCategoryPages() {
         final List<String> categories = GuidePages.categories();
         if (categories.isEmpty()) {
@@ -1011,21 +1032,6 @@ public final class GuideScreen extends Screen {
 
     private int contentTop(final int panelWidth, final int panelY) {
         return this.hasWideIndex(panelWidth) ? panelY + 54 : panelY + 70;
-    }
-
-    private boolean selectStructurePonderAt(final double mouseX, final double mouseY) {
-        if (this.currentStructure == null) {
-            return false;
-        }
-        return this.structurePonderView.mouseClicked(
-                mouseX,
-                mouseY,
-                this.panelX(),
-                this.panelY(),
-                this.panelWidth(),
-                this.panelHeight(),
-                this.currentStructure
-        );
     }
 
     private boolean selectInlineActionAt(final double mouseX, final double mouseY) {
@@ -1189,21 +1195,6 @@ public final class GuideScreen extends Screen {
         final int oldOffset = this.bodyScrollOffset;
         this.bodyScrollOffset = this.scrollOffset(this.bodyScrollOffset, totalRows, visibleRows, scrollY);
         return oldOffset != this.bodyScrollOffset;
-    }
-
-    private boolean scrollStructurePonderAt(final double mouseX, final double mouseY, final double scrollY) {
-        if (this.currentStructure == null) {
-            return false;
-        }
-        return this.structurePonderView.mouseScrolled(
-                mouseX,
-                mouseY,
-                scrollY,
-                this.panelX(),
-                this.panelY(),
-                this.panelWidth(),
-                this.panelHeight()
-        );
     }
 
     private boolean handleAction(final GuideAction action) {

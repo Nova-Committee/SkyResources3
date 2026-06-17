@@ -133,6 +133,7 @@
   "screen.skyresources.guide.structure_timeline_tooltip": "Click to jump to a build step.",
   "screen.skyresources.guide.structure_close_hint": "Done closes this setup.",
   "screen.skyresources.guide.structure_position": "(%s)",
+  "button.skyresources.guide.structure_back": "Back",
   "button.skyresources.guide.structure_view_left": "Rotate view left",
   "button.skyresources.guide.structure_view_right": "Rotate view right",
   "button.skyresources.guide.structure_prev_step": "Pause and show previous block",
