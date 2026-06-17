@@ -216,6 +216,22 @@ public final class GuideScreen extends Screen {
     }
 
     @Override
+    public boolean mouseReleased(final MouseButtonEvent event) {
+        if (this.currentStructure != null) {
+            return this.structurePonderView.mouseReleased(event.button());
+        }
+        return super.mouseReleased(event);
+    }
+
+    @Override
+    public boolean mouseDragged(final MouseButtonEvent event, final double mouseX, final double mouseY) {
+        if (this.currentStructure != null) {
+            return this.structurePonderView.mouseDragged(mouseX, mouseY);
+        }
+        return super.mouseDragged(event, mouseX, mouseY);
+    }
+
+    @Override
     public boolean mouseScrolled(
             final double mouseX,
             final double mouseY,
@@ -229,7 +245,6 @@ public final class GuideScreen extends Screen {
             return this.structurePonderView.mouseScrolled(
                     mouseX,
                     mouseY,
-                    scrollY,
                     0,
                     0,
                     this.width,

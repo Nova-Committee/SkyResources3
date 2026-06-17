@@ -2,6 +2,8 @@ package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.client.model.*;
+import committee.nova.mods.skyresources3.client.render.GuideStructurePictureRenderer;
+import committee.nova.mods.skyresources3.client.render.GuideStructureRenderState;
 import committee.nova.mods.skyresources3.client.render.MachineCasingBlockEntityRenderer;
 import committee.nova.mods.skyresources3.client.render.StandaloneMachineBlockEntityRenderer;
 import committee.nova.mods.skyresources3.client.screen.*;
@@ -26,6 +28,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -90,6 +93,11 @@ public final class SkyResources3Client {
         event.register(ModMenuTypes.LIFE_INJECTOR.get(), LifeInjectorScreen::new);
         event.register(ModMenuTypes.COMBUSTION_COLLECTOR.get(), CombustionCollectorScreen::new);
         event.register(ModMenuTypes.COMBUSTION_CONTROLLER.get(), CombustionControllerScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerPictureInPictureRenderers(final RegisterPictureInPictureRenderersEvent event) {
+        event.register(GuideStructureRenderState.class, GuideStructurePictureRenderer::new);
     }
 
     @SubscribeEvent
