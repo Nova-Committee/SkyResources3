@@ -37,6 +37,15 @@ public final class GuideMenuGameTests {
             GuideRecipeTargets.CONDENSER,
             GuideRecipeTargets.HEAT_SOURCES
     );
+    private static final Set<String> STRUCTURE_GUIDE_UI_KEYS = Set.of(
+            "screen.skyresources.guide.structure_scene_layer",
+            "button.skyresources.guide.structure_back",
+            "button.skyresources.guide.structure_prev_step_short",
+            "button.skyresources.guide.structure_next_step_short",
+            "button.skyresources.guide.structure_restart_short",
+            "button.skyresources.guide.structure_pause_short",
+            "button.skyresources.guide.structure_play_short"
+    );
 
     public static void guideDataIntegrity(final GameTestHelper helper) {
         final JsonObject translations = loadTranslations(helper);
@@ -45,6 +54,9 @@ public final class GuideMenuGameTests {
         helper.assertTrue(!GuidePages.categories().isEmpty(), "Guide categories should not be empty");
         for (final String categoryKey : GuidePages.categories()) {
             assertTranslationExists(helper, translations, categoryKey);
+        }
+        for (final String uiKey : STRUCTURE_GUIDE_UI_KEYS) {
+            assertTranslationExists(helper, translations, uiKey);
         }
 
         helper.assertTrue(!GuidePages.pages().isEmpty(), "Guide pages should not be empty");

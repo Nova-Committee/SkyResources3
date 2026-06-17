@@ -28,7 +28,6 @@ final class GuideStructurePonderView {
     private static final int TIMELINE_ACTIVE = 0xFFE4B64A;
     private static final int TIMELINE_KNOB = 0xFFF7E7B1;
     private static final int STEP_MILLIS = 850;
-    private static final int RESTART_HOLD_MILLIS = 500;
     private static final float DEFAULT_YAW = -35.0F;
     private static final float DEFAULT_PITCH = 28.0F;
     private static final float DRAG_YAW_SPEED = 0.55F;
@@ -45,7 +44,7 @@ final class GuideStructurePonderView {
 
     void open() {
         this.paused = false;
-        this.manualStep = 0;
+        this.manualStep = 1;
         this.startedAtMillis = System.currentTimeMillis();
         this.viewYaw = DEFAULT_YAW;
         this.viewPitch = DEFAULT_PITCH;
@@ -54,14 +53,14 @@ final class GuideStructurePonderView {
 
     void clear() {
         this.paused = false;
-        this.manualStep = 0;
+        this.manualStep = 1;
         this.startedAtMillis = 0L;
         this.dragging = false;
     }
 
     void render(final GuiGraphics guiGraphics, final Font font, final int mouseX, final int mouseY,
                 final int x, final int y, final int width, final int height, final GuideStructure structure) {
-        final int maxStep = Math.max(0, structure.blocks().size());
+        final int maxStep = this.layerCount(structure);
         final int currentStep = this.currentStep(maxStep);
         this.renderScene(guiGraphics, structure, x, y, width, height, currentStep);
         this.renderTopOverlay(guiGraphics, font, structure, mouseX, mouseY, x, y, width, currentStep, maxStep);
@@ -76,11 +75,11 @@ final class GuideStructurePonderView {
 
         final StructureControlAction control = this.selectControlAt(mouseX, mouseY, x, y, width, height);
         if (control != null) {
-            this.handleControl(control, structure.blocks().size());
+            this.handleControl(control, this.layerCount(structure));
             return ClickResult.HANDLED;
         }
 
-        final Integer timelineStep = this.selectTimelineAt(mouseX, mouseY, x, y, width, height, structure.blocks().size());
+        final Integer timelineStep = this.selectTimelineAt(mouseX, mouseY, x, y, width, height, this.layerCount(structure));
         if (timelineStep != null) {
             this.paused = true;
             this.manualStep = timelineStep;
@@ -148,12 +147,13 @@ final class GuideStructurePonderView {
         guiGraphics.fill(x, y, x + width, y + TOP_OVERLAY_HEIGHT, OVERLAY_BACKGROUND);
         final int buttonX = x + EDGE_PADDING;
         final int buttonY = y + 13;
-        this.drawButton(guiGraphics, font, buttonX, buttonY, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, "<",
+        this.drawButton(guiGraphics, font, buttonX, buttonY, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT,
+                Component.translatable("button.skyresources.guide.structure_back"),
                 isInside(mouseX, mouseY, buttonX, buttonY, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT));
 
         final Component title = Component.translatable(structure.titleKey());
         guiGraphics.drawCenteredString(font, title, x + width / 2, y + 10, CONTROL_TEXT);
-        final Component step = Component.translatable("guide.skyresources.structure.step", currentStep, maxStep);
+        final Component step = Component.translatable("screen.skyresources.guide.structure_scene_layer", currentStep, maxStep);
         guiGraphics.drawCenteredString(font, step, x + width / 2, y + 28, 0xFFB8C0C8);
     }
 
@@ -172,23 +172,32 @@ final class GuideStructurePonderView {
         final int timelineW = width - (timelineX - x) * 2;
         final int timelineY = y + height - 16;
         guiGraphics.fill(timelineX, timelineY, timelineX + timelineW, timelineY + TIMELINE_HEIGHT, TIMELINE_TRACK);
-        final int activeW = maxStep <= 0 ? 0 : Math.round((currentStep / (float) maxStep) * timelineW);
+        final int activeW = maxStep <= 0
+                ? 0
+                : maxStep == 1 ? timelineW : Math.round(((currentStep - 1) / (float) (maxStep - 1)) * timelineW);
         guiGraphics.fill(timelineX, timelineY, timelineX + activeW, timelineY + TIMELINE_HEIGHT, TIMELINE_ACTIVE);
         final int knobX = timelineX + activeW;
         guiGraphics.fill(knobX - 2, timelineY - 3, knobX + 2, timelineY + TIMELINE_HEIGHT + 3, TIMELINE_KNOB);
     }
 
     private void drawButton(final GuiGraphics guiGraphics, final Font font, final int x, final int y, final int width,
-                            final int height, final String label, final boolean hovered) {
+                            final int height, final Component label, final boolean hovered) {
         guiGraphics.fill(x, y, x + width, y + height, hovered ? CONTROL_HOVERED : CONTROL_BACKGROUND);
         guiGraphics.drawCenteredString(font, label, x + width / 2, y + 7, CONTROL_TEXT);
     }
 
     private List<GuideStructureRenderState.StructureBlock> visibleStructureBlocks(final GuideStructure structure,
-                                                                                  final int visibleCount) {
+                                                                                  final int visibleStep) {
         final List<GuideStructureRenderState.StructureBlock> blocks = new ArrayList<>();
-        for (int i = 0; i < Math.min(visibleCount, structure.blocks().size()); i++) {
+        if (visibleStep <= 0 || structure.blocks().isEmpty()) {
+            return blocks;
+        }
+        final int visibleLayer = StructureBounds.from(structure).minY() + visibleStep - 1;
+        for (int i = 0; i < structure.blocks().size(); i++) {
             final GuideStructure.BlockEntry entry = structure.blocks().get(i);
+            if (entry.y() > visibleLayer) {
+                continue;
+            }
             final ItemStack icon = entry.icon();
             if (icon.getItem() instanceof final BlockItem blockItem) {
                 blocks.add(new GuideStructureRenderState.StructureBlock(
@@ -215,19 +224,22 @@ final class GuideStructurePonderView {
         return clamp(Math.min(scaleByWidth, scaleByHeight), 8.0F, 42.0F);
     }
 
+    private int layerCount(final GuideStructure structure) {
+        if (structure.blocks().isEmpty()) {
+            return 0;
+        }
+        return StructureBounds.from(structure).layerCount();
+    }
+
     private int currentStep(final int maxStep) {
         if (maxStep <= 0) {
             return 0;
         }
         if (this.paused) {
-            return Math.min(this.manualStep, maxStep);
+            return Math.max(1, Math.min(this.manualStep, maxStep));
         }
         final long elapsed = Math.max(0L, System.currentTimeMillis() - this.startedAtMillis);
-        final int step = (int) ((elapsed / STEP_MILLIS) % (maxStep + 1));
-        if (step == 0 && elapsed > RESTART_HOLD_MILLIS) {
-            return Math.min(1, maxStep);
-        }
-        return step;
+        return (int) ((elapsed / STEP_MILLIS) % maxStep) + 1;
     }
 
     private StructureControlAction selectControlAt(final double mouseX, final double mouseY,
@@ -252,7 +264,10 @@ final class GuideStructurePonderView {
             return null;
         }
         final float progress = (float) ((mouseX - timelineX) / Math.max(1.0D, timelineW));
-        return Math.round(clamp(progress, 0.0F, 1.0F) * maxStep);
+        if (maxStep == 1) {
+            return 1;
+        }
+        return Math.round(clamp(progress, 0.0F, 1.0F) * (maxStep - 1)) + 1;
     }
 
     private void handleControl(final StructureControlAction action, final int maxStep) {
@@ -260,14 +275,14 @@ final class GuideStructurePonderView {
             case PREVIOUS -> {
                 final int step = this.currentStep(maxStep);
                 this.paused = true;
-                this.manualStep = Math.max(0, step - 1);
+                this.manualStep = Math.max(1, step - 1);
             }
             case RESTART -> this.open();
             case TOGGLE -> {
                 final int step = this.currentStep(maxStep);
                 if (this.paused) {
                     this.paused = false;
-                    this.startedAtMillis = System.currentTimeMillis() - (long) Math.max(0, step) * STEP_MILLIS;
+                    this.startedAtMillis = System.currentTimeMillis() - (long) Math.max(0, step - 1) * STEP_MILLIS;
                 } else {
                     this.paused = true;
                     this.manualStep = step;
@@ -287,13 +302,43 @@ final class GuideStructurePonderView {
         final int controlsWidth = CONTROL_WIDTH * controlCount + CONTROL_GAP * (controlCount - 1);
         int controlX = x + (width - controlsWidth) / 2;
         final int controlY = y + height - BOTTOM_OVERLAY_HEIGHT + 14;
-        controls.add(new StructureControl(controlX, controlY, CONTROL_WIDTH, CONTROL_HEIGHT, "<", StructureControlAction.PREVIOUS));
+        controls.add(new StructureControl(
+                controlX,
+                controlY,
+                CONTROL_WIDTH,
+                CONTROL_HEIGHT,
+                Component.translatable("button.skyresources.guide.structure_prev_step_short"),
+                StructureControlAction.PREVIOUS
+        ));
         controlX += CONTROL_WIDTH + CONTROL_GAP;
-        controls.add(new StructureControl(controlX, controlY, CONTROL_WIDTH, CONTROL_HEIGHT, "S", StructureControlAction.RESTART));
+        controls.add(new StructureControl(
+                controlX,
+                controlY,
+                CONTROL_WIDTH,
+                CONTROL_HEIGHT,
+                Component.translatable("button.skyresources.guide.structure_restart_short"),
+                StructureControlAction.RESTART
+        ));
         controlX += CONTROL_WIDTH + CONTROL_GAP;
-        controls.add(new StructureControl(controlX, controlY, CONTROL_WIDTH, CONTROL_HEIGHT, this.paused ? ">" : "||", StructureControlAction.TOGGLE));
+        controls.add(new StructureControl(
+                controlX,
+                controlY,
+                CONTROL_WIDTH,
+                CONTROL_HEIGHT,
+                Component.translatable(this.paused
+                        ? "button.skyresources.guide.structure_play_short"
+                        : "button.skyresources.guide.structure_pause_short"),
+                StructureControlAction.TOGGLE
+        ));
         controlX += CONTROL_WIDTH + CONTROL_GAP;
-        controls.add(new StructureControl(controlX, controlY, CONTROL_WIDTH, CONTROL_HEIGHT, ">", StructureControlAction.NEXT));
+        controls.add(new StructureControl(
+                controlX,
+                controlY,
+                CONTROL_WIDTH,
+                CONTROL_HEIGHT,
+                Component.translatable("button.skyresources.guide.structure_next_step_short"),
+                StructureControlAction.NEXT
+        ));
         return controls;
     }
 
@@ -335,7 +380,7 @@ final class GuideStructurePonderView {
         NEXT
     }
 
-    private record StructureControl(int x, int y, int width, int height, String label, StructureControlAction action) {
+    private record StructureControl(int x, int y, int width, int height, Component label, StructureControlAction action) {
     }
 
     private record StructureBounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
@@ -358,6 +403,10 @@ final class GuideStructurePonderView {
                 maxZ = Math.max(maxZ, entry.z());
             }
             return new StructureBounds(minX, minY, minZ, maxX, maxY, maxZ);
+        }
+
+        int layerCount() {
+            return this.maxY - this.minY + 1;
         }
     }
 }
