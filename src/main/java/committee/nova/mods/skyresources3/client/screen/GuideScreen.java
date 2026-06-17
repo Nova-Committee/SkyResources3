@@ -20,20 +20,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public final class GuideScreen extends Screen {
-    private static final int PANEL_MAX_WIDTH = 520;
-    private static final int PANEL_MAX_HEIGHT = 260;
-    private static final int PANEL_PADDING = 16;
-    private static final int FOOTER_HEIGHT = 36;
+    private static final int PANEL_MAX_WIDTH = 680;
+    private static final int PANEL_MAX_HEIGHT = 380;
+    private static final int PANEL_PADDING = 14;
+    private static final int FOOTER_HEIGHT = 34;
     private static final int BUTTON_SIZE = 20;
     private static final int SMALL_BUTTON_WIDTH = 24;
     private static final int CLOSE_BUTTON_WIDTH = 60;
     private static final int SEARCH_HEIGHT = 18;
-    private static final int INDEX_MIN_WIDTH = 120;
-    private static final int INDEX_MAX_WIDTH = 148;
+    private static final int INDEX_MIN_WIDTH = 132;
+    private static final int INDEX_MAX_WIDTH = 176;
     private static final int INDEX_GAP = 12;
-    private static final int RESULT_ROW_HEIGHT = 18;
+    private static final int RESULT_ROW_HEIGHT = 22;
     private static final int ACTION_MAX_ROWS = 4;
-    private static final int ACTION_ROW_HEIGHT = 20;
+    private static final int ACTION_ROW_HEIGHT = 22;
     private static final int ACTION_GAP = 6;
     private static final int INLINE_ACTION_GAP = 4;
     private static final int STRUCTURE_ROW_HEIGHT = 18;
@@ -41,18 +41,27 @@ public final class GuideScreen extends Screen {
     private static final int STRUCTURE_PREVIEW_GAP = 6;
     private static final int ICON_SIZE = 16;
     private static final int BACKGROUND_COLOR = 0xC0101010;
-    private static final int PANEL_COLOR = 0xF0E7D8BD;
-    private static final int BORDER_COLOR = 0xFF6B5A44;
-    private static final int SELECTED_ROW_COLOR = 0x50FFFFFF;
-    private static final int HOVERED_ROW_COLOR = 0x30FFFFFF;
-    private static final int ACTION_ROW_COLOR = 0x20FFFFFF;
-    private static final int TEXT_COLOR = 0xFF2F261C;
-    private static final int MUTED_TEXT_COLOR = 0xFF5D5142;
+    private static final int PANEL_COLOR = 0xF0181B21;
+    private static final int HEADER_COLOR = 0xF02A3038;
+    private static final int SIDEBAR_COLOR = 0xE0212730;
+    private static final int CONTENT_COLOR = 0xF0E9DDC4;
+    private static final int BORDER_COLOR = 0xFF6E7E89;
+    private static final int SELECTED_ROW_COLOR = 0x703E6F78;
+    private static final int HOVERED_ROW_COLOR = 0x503E6F78;
+    private static final int ACTION_ROW_COLOR = 0x305C465F;
+    private static final int TEXT_COLOR = 0xFF2B241A;
+    private static final int HEADER_TEXT_COLOR = 0xFFEFE5CF;
+    private static final int MUTED_TEXT_COLOR = 0xFF675E52;
+    private static final int SIDEBAR_TEXT_COLOR = 0xFFE5DAC6;
+    private static final int SIDEBAR_MUTED_TEXT_COLOR = 0xFFB6C7C2;
+    private static final int SCROLL_TRACK_COLOR = 0x303E6F78;
+    private static final int SCROLL_THUMB_COLOR = 0xB05B8A8F;
 
     private int selectedCategoryIndex;
     private int selectedPageIndex;
     private int resultScrollOffset;
     private int actionScrollOffset;
+    private int bodyScrollOffset;
     private int structureScrollOffset;
     private String searchText = "";
     private EditBox searchBox;
@@ -70,13 +79,17 @@ public final class GuideScreen extends Screen {
         final int panelY = this.panelY();
         final int panelWidth = this.panelWidth();
         final int footerY = panelY + this.panelHeight() - 28;
+        final boolean wideIndex = this.hasWideIndex(panelWidth);
+        final int searchX = panelX + PANEL_PADDING;
+        final int searchY = panelY + 32;
+        final int searchWidth = wideIndex ? this.indexWidth(panelWidth) : panelWidth - PANEL_PADDING * 2;
         final String currentSearch = this.searchBox == null ? this.searchText : this.searchBox.getValue();
 
         this.searchBox = new EditBox(
                 this.font,
-                panelX + PANEL_PADDING,
-                panelY + 24,
-                panelWidth - PANEL_PADDING * 2,
+                searchX,
+                searchY,
+                searchWidth,
                 SEARCH_HEIGHT,
                 Component.translatable("screen.skyresources.guide.search")
         );
@@ -88,6 +101,7 @@ public final class GuideScreen extends Screen {
             this.selectedPageIndex = 0;
             this.resultScrollOffset = 0;
             this.actionScrollOffset = 0;
+            this.bodyScrollOffset = 0;
             this.structureScrollOffset = 0;
             this.clearTransientView();
             this.clampSelection();
@@ -143,7 +157,15 @@ public final class GuideScreen extends Screen {
         final int panelHeight = this.panelHeight();
         guiGraphics.fill(panelX, panelY, panelX + panelWidth, panelY + panelHeight, PANEL_COLOR);
         guiGraphics.renderOutline(panelX, panelY, panelWidth, panelHeight, BORDER_COLOR);
-        this.drawCenteredString(guiGraphics, this.title, panelX + panelWidth / 2, panelY + 8, TEXT_COLOR);
+        guiGraphics.fill(panelX + 1, panelY + 1, panelX + panelWidth - 1, panelY + 26, HEADER_COLOR);
+        this.drawCenteredTruncatedString(
+                guiGraphics,
+                this.title,
+                panelX + panelWidth / 2,
+                panelY + 8,
+                panelWidth - PANEL_PADDING * 2,
+                HEADER_TEXT_COLOR
+        );
 
         this.renderPage(guiGraphics, mouseX, mouseY, panelX, panelY, panelWidth, panelHeight);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -177,6 +199,7 @@ public final class GuideScreen extends Screen {
         }
         return this.scrollStructureAt(mouseX, mouseY, scrollY)
                 || this.scrollActionListAt(mouseX, mouseY, scrollY)
+                || this.scrollGuideBodyAt(mouseX, mouseY, scrollY)
                 || this.scrollResultIndexAt(mouseX, mouseY, scrollY);
     }
 
@@ -257,10 +280,19 @@ public final class GuideScreen extends Screen {
         final int contentX = wideIndex
                 ? panelX + PANEL_PADDING + this.indexWidth(panelWidth) + INDEX_GAP
                 : panelX + PANEL_PADDING;
-        final int contentY = panelY + 58;
+        final int contentY = this.contentTop(panelWidth, panelY);
         final int contentWidth = wideIndex
                 ? panelWidth - PANEL_PADDING * 2 - this.indexWidth(panelWidth) - INDEX_GAP
                 : panelWidth - PANEL_PADDING * 2;
+        final int contentBottom = panelY + panelHeight - FOOTER_HEIGHT;
+        guiGraphics.fill(
+                contentX - 6,
+                contentY - 6,
+                contentX + contentWidth + 6,
+                contentBottom,
+                CONTENT_COLOR
+        );
+        guiGraphics.renderOutline(contentX - 6, contentY - 6, contentWidth + 12, contentBottom - contentY + 6, BORDER_COLOR);
         final Component category = Component.translatable(
                 "screen.skyresources.guide.category_counter",
                 page.category(),
@@ -273,17 +305,25 @@ public final class GuideScreen extends Screen {
                 pages.size()
         );
 
-        guiGraphics.drawString(this.font, category, contentX, contentY, MUTED_TEXT_COLOR, false);
+        final String fittedPageCounter = this.truncate(pageCounter.getString(), Math.max(24, contentWidth / 3));
         guiGraphics.drawString(
                 this.font,
-                pageCounter,
-                contentX + contentWidth - this.font.width(pageCounter),
+                this.truncate(category.getString(), Math.max(24, contentWidth - this.font.width(fittedPageCounter) - 8)),
+                contentX,
+                contentY,
+                MUTED_TEXT_COLOR,
+                false
+        );
+        guiGraphics.drawString(
+                this.font,
+                fittedPageCounter,
+                contentX + contentWidth - this.font.width(fittedPageCounter),
                 contentY,
                 MUTED_TEXT_COLOR,
                 false
         );
 
-        final int iconY = contentY + 24;
+        final int iconY = contentY + 20;
         final ItemStack icon = page.icon();
         if (!icon.isEmpty()) {
             guiGraphics.renderFakeItem(icon, contentX, iconY);
@@ -293,18 +333,17 @@ public final class GuideScreen extends Screen {
             }
         }
 
-        guiGraphics.drawWordWrap(
+        guiGraphics.drawString(
                 this.font,
-                page.title(),
+                this.truncate(page.title().getString(), contentWidth - ICON_SIZE - 8),
                 contentX + ICON_SIZE + 8,
-                iconY + 3,
-                contentWidth - ICON_SIZE - 8,
+                iconY + 4,
                 TEXT_COLOR,
                 false
         );
 
-        final int bodyY = iconY + 30;
-        final int bodyBottom = panelY + panelHeight - FOOTER_HEIGHT;
+        final int bodyY = iconY + 26;
+        final int bodyBottom = contentBottom - 4;
         if (bodyBottom <= bodyY) {
             return;
         }
@@ -324,7 +363,21 @@ public final class GuideScreen extends Screen {
             );
         }
         if (textBottom > bodyY) {
-            this.renderGuideBody(guiGraphics, mouseX, mouseY, page, contentX, bodyY, contentWidth, textBottom);
+            final int bodyWidth = Math.max(24, contentWidth - 8);
+            final int visibleRows = this.visibleBodyRows(bodyY, textBottom);
+            final int totalRows = this.measureGuideBodyRows(page, bodyWidth);
+            this.bodyScrollOffset = this.clampScrollOffset(this.bodyScrollOffset, totalRows, visibleRows);
+            this.renderGuideBody(guiGraphics, mouseX, mouseY, page, contentX, bodyY, bodyWidth, textBottom);
+            this.renderScrollBar(
+                    guiGraphics,
+                    contentX + contentWidth - 4,
+                    bodyY,
+                    3,
+                    textBottom - bodyY,
+                    totalRows,
+                    visibleRows,
+                    this.bodyScrollOffset
+            );
         }
         if (actionRows > 0) {
             this.renderActions(guiGraphics, mouseX, mouseY, page.actions(), contentX, actionTop, contentWidth, actionRows);
@@ -344,12 +397,23 @@ public final class GuideScreen extends Screen {
     ) {
         final int x = panelX + PANEL_PADDING;
         final int y = panelY + 48;
+        final int sidebarBottom = panelY + panelHeight - FOOTER_HEIGHT;
+        final int sidebarWidth = this.hasWideIndex(panelWidth) ? this.indexWidth(panelWidth) : panelWidth - PANEL_PADDING * 2;
+        guiGraphics.fill(x - 6, y - 4, x + sidebarWidth + 6, sidebarBottom, SIDEBAR_COLOR);
+        guiGraphics.renderOutline(x - 6, y - 4, sidebarWidth + 12, sidebarBottom - y + 4, 0x80515F66);
         final Component resultCount = Component.translatable(
                 "screen.skyresources.guide.result_count",
                 pages.size(),
                 categoryPageCount
         );
-        guiGraphics.drawString(this.font, resultCount, x, y, MUTED_TEXT_COLOR, false);
+        guiGraphics.drawString(
+                this.font,
+                this.truncate(resultCount.getString(), sidebarWidth),
+                x,
+                y,
+                SIDEBAR_MUTED_TEXT_COLOR,
+                false
+        );
 
         if (!this.hasWideIndex(panelWidth)) {
             return;
@@ -379,6 +443,16 @@ public final class GuideScreen extends Screen {
             );
         }
         guiGraphics.disableScissor();
+        this.renderScrollBar(
+                guiGraphics,
+                listX + listWidth - 4,
+                listY,
+                3,
+                listBottom - listY,
+                pages.size(),
+                visibleRows,
+                this.resultScrollOffset
+        );
     }
 
     private void renderResultRow(
@@ -412,7 +486,7 @@ public final class GuideScreen extends Screen {
                     this.truncate(page.title().getString(), titleWidth),
                     titleX,
                     rowY + 1,
-                    TEXT_COLOR,
+                    SIDEBAR_TEXT_COLOR,
                     false
             );
             guiGraphics.drawString(
@@ -420,7 +494,7 @@ public final class GuideScreen extends Screen {
                     this.truncate(page.category().getString(), titleWidth),
                     titleX,
                     rowY + 9,
-                    MUTED_TEXT_COLOR,
+                    SIDEBAR_MUTED_TEXT_COLOR,
                     false
             );
         } else {
@@ -429,7 +503,7 @@ public final class GuideScreen extends Screen {
                     this.truncate(page.title().getString(), titleWidth),
                     titleX,
                     rowY + 5,
-                    TEXT_COLOR,
+                    SIDEBAR_TEXT_COLOR,
                     false
             );
         }
@@ -470,7 +544,7 @@ public final class GuideScreen extends Screen {
             final int width,
             final int bottom
     ) {
-        final BodyCursor cursor = new BodyCursor(x, y, width, bottom);
+        final BodyCursor cursor = new BodyCursor(x, y - this.bodyScrollOffset * ACTION_ROW_HEIGHT, width, y, bottom);
         final String text = page.text().getString();
         int index = 0;
         guiGraphics.enableScissor(x, y, x + width, bottom);
@@ -509,6 +583,42 @@ public final class GuideScreen extends Screen {
         guiGraphics.disableScissor();
     }
 
+    private int measureGuideBodyRows(final GuidePage page, final int width) {
+        final BodyCursor cursor = new BodyCursor(0, 0, width, 0, Integer.MAX_VALUE / 2);
+        final String text = page.text().getString();
+        int index = 0;
+        while (index < text.length()) {
+            if (text.charAt(index) == '\n') {
+                cursor.newLine();
+                index++;
+            } else if (text.startsWith("{action:", index)) {
+                final int markerEnd = text.indexOf('}', index);
+                if (markerEnd > index) {
+                    final boolean measured = this.measureInlineActionMarker(
+                            page,
+                            text.substring(index + 8, markerEnd),
+                            cursor
+                    );
+                    if (!measured) {
+                        this.measureInlineText(text.substring(index, markerEnd + 1), cursor);
+                    }
+                    index = markerEnd + 1;
+                } else {
+                    this.measureInlineText(String.valueOf(text.charAt(index)), cursor);
+                    index++;
+                }
+            } else if (Character.isWhitespace(text.charAt(index))) {
+                this.measureInlineText(" ", cursor);
+                index++;
+            } else {
+                final int tokenEnd = this.nextInlineTokenEnd(text, index);
+                this.measureInlineText(text.substring(index, tokenEnd), cursor);
+                index = tokenEnd;
+            }
+        }
+        return Math.max(1, (cursor.y / ACTION_ROW_HEIGHT) + 1);
+    }
+
     private void drawCenteredString(
             final GuiGraphics guiGraphics,
             final Component text,
@@ -517,6 +627,36 @@ public final class GuideScreen extends Screen {
             final int color
     ) {
         guiGraphics.drawString(this.font, text, centerX - this.font.width(text) / 2, y, color, false);
+    }
+
+    private void drawCenteredTruncatedString(
+            final GuiGraphics guiGraphics,
+            final Component text,
+            final int centerX,
+            final int y,
+            final int width,
+            final int color
+    ) {
+        final String fitted = this.truncate(text.getString(), width);
+        guiGraphics.drawString(this.font, fitted, centerX - this.font.width(fitted) / 2, y, color, false);
+    }
+
+    private boolean measureInlineActionMarker(
+            final GuidePage page,
+            final String markerIndex,
+            final BodyCursor cursor
+    ) {
+        final int actionIndex;
+        try {
+            actionIndex = Integer.parseInt(markerIndex.trim()) - 1;
+        } catch (final NumberFormatException ignored) {
+            return false;
+        }
+        if (actionIndex < 0 || actionIndex >= page.actions().size()) {
+            return false;
+        }
+        this.measureInlineAction(page.actions().get(actionIndex), cursor);
+        return true;
     }
 
     private boolean renderInlineActionMarker(
@@ -538,6 +678,36 @@ public final class GuideScreen extends Screen {
         }
         this.renderInlineAction(guiGraphics, mouseX, mouseY, page.actions().get(actionIndex), cursor);
         return true;
+    }
+
+    private void measureInlineText(final String text, final BodyCursor cursor) {
+        if (text.isBlank() && cursor.x == cursor.startX) {
+            return;
+        }
+        String remaining = text;
+        while (!remaining.isEmpty()) {
+            final int textWidth = this.font.width(remaining);
+            if (cursor.x > cursor.startX && cursor.x + textWidth > cursor.rightX()) {
+                cursor.newLine();
+                if (remaining.isBlank()) {
+                    return;
+                }
+                continue;
+            }
+            final int availableWidth = cursor.rightX() - cursor.x;
+            if (textWidth <= availableWidth) {
+                cursor.x += textWidth;
+                return;
+            }
+
+            String line = this.font.plainSubstrByWidth(remaining, Math.max(1, availableWidth));
+            if (line.isEmpty()) {
+                line = remaining.substring(0, remaining.offsetByCodePoints(0, 1));
+            }
+            cursor.x += this.font.width(line);
+            remaining = remaining.substring(line.length());
+            cursor.newLine();
+        }
     }
 
     private void renderInlineText(final GuiGraphics guiGraphics, final String text, final BodyCursor cursor) {
@@ -589,10 +759,7 @@ public final class GuideScreen extends Screen {
     ) {
         final Component label = action.label();
         final int maxLabelWidth = Math.max(16, cursor.width - ICON_SIZE - 14);
-        final int chipWidth = Math.min(
-                cursor.width,
-                ICON_SIZE + 10 + this.font.width(this.truncate(label.getString(), maxLabelWidth))
-        );
+        final int chipWidth = this.inlineActionWidth(label, cursor.width, maxLabelWidth);
         if (cursor.x > cursor.startX && cursor.x + chipWidth > cursor.rightX()) {
             cursor.newLine();
         }
@@ -620,11 +787,30 @@ public final class GuideScreen extends Screen {
                 TEXT_COLOR,
                 false
         );
-        this.inlineActionRegions.add(new InlineActionRegion(cursor.x, cursor.y, chipWidth, ACTION_ROW_HEIGHT - 1, action));
-        if (hovered) {
+        if (cursor.isVisible()) {
+            this.inlineActionRegions.add(new InlineActionRegion(cursor.x, cursor.y, chipWidth, ACTION_ROW_HEIGHT - 1, action));
+        }
+        if (hovered && cursor.isVisible()) {
             guiGraphics.setTooltipForNextFrame(this.font, this.actionTooltip(action), mouseX, mouseY);
         }
         cursor.x += chipWidth + INLINE_ACTION_GAP;
+    }
+
+    private void measureInlineAction(final GuideAction action, final BodyCursor cursor) {
+        final Component label = action.label();
+        final int maxLabelWidth = Math.max(16, cursor.width - ICON_SIZE - 14);
+        final int chipWidth = this.inlineActionWidth(label, cursor.width, maxLabelWidth);
+        if (cursor.x > cursor.startX && cursor.x + chipWidth > cursor.rightX()) {
+            cursor.newLine();
+        }
+        cursor.x += chipWidth + INLINE_ACTION_GAP;
+    }
+
+    private int inlineActionWidth(final Component label, final int width, final int maxLabelWidth) {
+        return Math.min(
+                width,
+                ICON_SIZE + 10 + this.font.width(this.truncate(label.getString(), maxLabelWidth))
+        );
     }
 
     private void renderActions(
@@ -709,10 +895,22 @@ public final class GuideScreen extends Screen {
         final int contentY = panelY + 48;
         final int contentWidth = panelWidth - PANEL_PADDING * 2;
         final int contentBottom = panelY + panelHeight - FOOTER_HEIGHT;
-        guiGraphics.drawString(this.font, structure.title(), contentX, contentY, TEXT_COLOR, false);
+        guiGraphics.fill(contentX - 6, contentY - 6, contentX + contentWidth + 6, contentBottom, CONTENT_COLOR);
+        guiGraphics.renderOutline(contentX - 6, contentY - 6, contentWidth + 12, contentBottom - contentY + 6, BORDER_COLOR);
         guiGraphics.drawString(
                 this.font,
-                Component.translatable("screen.skyresources.guide.structure_count", structure.blocks().size()),
+                this.truncate(structure.title().getString(), contentWidth),
+                contentX,
+                contentY,
+                TEXT_COLOR,
+                false
+        );
+        guiGraphics.drawString(
+                this.font,
+                this.truncate(
+                        Component.translatable("screen.skyresources.guide.structure_count", structure.blocks().size()).getString(),
+                        contentWidth
+                ),
                 contentX,
                 contentY + 14,
                 MUTED_TEXT_COLOR,
@@ -720,7 +918,7 @@ public final class GuideScreen extends Screen {
         );
         guiGraphics.drawString(
                 this.font,
-                Component.translatable("screen.skyresources.guide.structure_close_hint"),
+                this.truncate(Component.translatable("screen.skyresources.guide.structure_close_hint").getString(), contentWidth),
                 contentX,
                 contentBottom - this.font.lineHeight,
                 MUTED_TEXT_COLOR,
@@ -865,11 +1063,13 @@ public final class GuideScreen extends Screen {
                 "screen.skyresources.guide.structure_position",
                 block.position()
         );
-        final int positionWidth = this.font.width(position);
-        guiGraphics.drawString(this.font, position, x + ICON_SIZE + 6, rowY + 5, MUTED_TEXT_COLOR, false);
+        final int maxPositionWidth = Math.max(24, width / 3);
+        final String fittedPosition = this.truncate(position.getString(), maxPositionWidth);
+        final int positionWidth = this.font.width(fittedPosition);
+        guiGraphics.drawString(this.font, fittedPosition, x + ICON_SIZE + 6, rowY + 5, MUTED_TEXT_COLOR, false);
         guiGraphics.drawString(
                 this.font,
-                this.truncate(icon.getHoverName().getString(), width - ICON_SIZE - positionWidth - 18),
+                this.truncate(icon.getHoverName().getString(), Math.max(16, width - ICON_SIZE - positionWidth - 18)),
                 x + ICON_SIZE + positionWidth + 10,
                 rowY + 5,
                 TEXT_COLOR,
@@ -917,6 +1117,7 @@ public final class GuideScreen extends Screen {
         this.selectedPageIndex = 0;
         this.resultScrollOffset = 0;
         this.actionScrollOffset = 0;
+        this.bodyScrollOffset = 0;
         this.clampSelection();
     }
 
@@ -928,6 +1129,7 @@ public final class GuideScreen extends Screen {
         this.clearTransientView();
         this.selectedPageIndex = Math.floorMod(this.selectedPageIndex + direction, pages.size());
         this.actionScrollOffset = 0;
+        this.bodyScrollOffset = 0;
         this.clampSelection();
         this.keepSelectedResultVisible();
     }
@@ -939,6 +1141,7 @@ public final class GuideScreen extends Screen {
             this.selectedPageIndex = 0;
             this.resultScrollOffset = 0;
             this.actionScrollOffset = 0;
+            this.bodyScrollOffset = 0;
             this.structureScrollOffset = 0;
             return;
         }
@@ -957,6 +1160,19 @@ public final class GuideScreen extends Screen {
                 : this.visibleActionRows(page.actions(), this.actionAvailableHeight(panelY, panelHeight));
         final int actionCount = page == null ? 0 : page.actions().size();
         this.actionScrollOffset = this.clampScrollOffset(this.actionScrollOffset, actionCount, actionRows);
+        if (page == null) {
+            this.bodyScrollOffset = 0;
+        } else {
+            final int panelWidth = this.panelWidth();
+            final int contentWidth = this.hasWideIndex(panelWidth)
+                    ? panelWidth - PANEL_PADDING * 2 - this.indexWidth(panelWidth) - INDEX_GAP
+                    : panelWidth - PANEL_PADDING * 2;
+            final int bodyY = this.contentTop(panelWidth, panelY) + 20 + 26;
+            final int bodyBottom = this.bodyBottomFor(page, panelY, panelHeight);
+            final int visibleRows = this.visibleBodyRows(bodyY, bodyBottom);
+            final int totalRows = this.measureGuideBodyRows(page, Math.max(24, contentWidth - 8));
+            this.bodyScrollOffset = this.clampScrollOffset(this.bodyScrollOffset, totalRows, visibleRows);
+        }
 
         final int structureCount = this.currentStructure == null ? 0 : this.currentStructure.blocks().size();
         this.structureScrollOffset = this.clampScrollOffset(
@@ -980,6 +1196,10 @@ public final class GuideScreen extends Screen {
 
     private int panelHeight() {
         return Math.min(PANEL_MAX_HEIGHT, Math.max(140, this.height - 36));
+    }
+
+    private int contentTop(final int panelWidth, final int panelY) {
+        return this.hasWideIndex(panelWidth) ? panelY + 54 : panelY + 70;
     }
 
     private boolean selectInlineActionAt(final double mouseX, final double mouseY) {
@@ -1017,6 +1237,7 @@ public final class GuideScreen extends Screen {
         this.clearTransientView();
         this.selectedPageIndex = pageIndex;
         this.actionScrollOffset = 0;
+        this.bodyScrollOffset = 0;
         return true;
     }
 
@@ -1111,6 +1332,39 @@ public final class GuideScreen extends Screen {
         return oldOffset != this.actionScrollOffset;
     }
 
+    private boolean scrollGuideBodyAt(final double mouseX, final double mouseY, final double scrollY) {
+        if (this.currentStructure != null) {
+            return false;
+        }
+        final GuidePage page = this.selectedPage();
+        if (page == null) {
+            return false;
+        }
+
+        final int panelX = this.panelX();
+        final int panelY = this.panelY();
+        final int panelWidth = this.panelWidth();
+        final int panelHeight = this.panelHeight();
+        final boolean wideIndex = this.hasWideIndex(panelWidth);
+        final int contentX = wideIndex
+                ? panelX + PANEL_PADDING + this.indexWidth(panelWidth) + INDEX_GAP
+                : panelX + PANEL_PADDING;
+        final int contentWidth = wideIndex
+                ? panelWidth - PANEL_PADDING * 2 - this.indexWidth(panelWidth) - INDEX_GAP
+                : panelWidth - PANEL_PADDING * 2;
+        final int bodyY = this.contentTop(panelWidth, panelY) + 20 + 26;
+        final int bodyBottom = this.bodyBottomFor(page, panelY, panelHeight);
+        if (bodyBottom <= bodyY || !this.isInside((int) mouseX, (int) mouseY, contentX, bodyY, contentWidth, bodyBottom - bodyY)) {
+            return false;
+        }
+
+        final int visibleRows = this.visibleBodyRows(bodyY, bodyBottom);
+        final int totalRows = this.measureGuideBodyRows(page, Math.max(24, contentWidth - 8));
+        final int oldOffset = this.bodyScrollOffset;
+        this.bodyScrollOffset = this.scrollOffset(this.bodyScrollOffset, totalRows, visibleRows, scrollY);
+        return oldOffset != this.bodyScrollOffset;
+    }
+
     private boolean scrollStructureAt(final double mouseX, final double mouseY, final double scrollY) {
         if (this.currentStructure == null) {
             return false;
@@ -1169,6 +1423,7 @@ public final class GuideScreen extends Screen {
         this.searchText = "";
         this.resultScrollOffset = 0;
         this.actionScrollOffset = 0;
+        this.bodyScrollOffset = 0;
         this.structureScrollOffset = 0;
         if (this.searchBox != null) {
             this.searchBox.setValue("");
@@ -1183,6 +1438,7 @@ public final class GuideScreen extends Screen {
 
     private boolean openStructure(final String structureId) {
         this.currentStructure = GuideStructures.find(structureId).orElse(null);
+        this.bodyScrollOffset = 0;
         this.structureScrollOffset = 0;
         if (this.currentStructure == null) {
             this.feedbackMessage = Component.translatable("screen.skyresources.guide.missing_structure", structureId);
@@ -1205,14 +1461,30 @@ public final class GuideScreen extends Screen {
     }
 
     private int actionAvailableHeight(final int panelY, final int panelHeight) {
-        final int iconY = panelY + 58 + 24;
-        final int bodyY = iconY + 30;
+        final int iconY = this.contentTop(this.panelWidth(), panelY) + 20;
+        final int bodyY = iconY + 26;
         final int bodyBottom = panelY + panelHeight - FOOTER_HEIGHT;
         return bodyBottom - bodyY;
     }
 
     private int actionTop(final int panelY, final int panelHeight, final int visibleRows) {
         return panelY + panelHeight - FOOTER_HEIGHT - visibleRows * ACTION_ROW_HEIGHT;
+    }
+
+    private int bodyBottomFor(final GuidePage page, final int panelY, final int panelHeight) {
+        final int bodyY = this.contentTop(this.panelWidth(), panelY) + 20 + 26;
+        final int bodyBottom = panelY + panelHeight - FOOTER_HEIGHT - 4;
+        final int actionRows = this.visibleActionRows(page.actions(), this.actionAvailableHeight(panelY, panelHeight));
+        final int actionTop = actionRows == 0 ? bodyBottom : this.actionTop(panelY, panelHeight, actionRows);
+        int textBottom = actionRows == 0 ? bodyBottom : actionTop - ACTION_GAP;
+        if (this.feedbackMessage != null && textBottom - bodyY > this.font.lineHeight + 2) {
+            textBottom -= this.font.lineHeight + 2;
+        }
+        return textBottom;
+    }
+
+    private int visibleBodyRows(final int top, final int bottom) {
+        return Math.max(0, (bottom - top) / ACTION_ROW_HEIGHT);
     }
 
     private int structurePreviewY(final int panelY) {
@@ -1240,6 +1512,27 @@ public final class GuideScreen extends Screen {
 
     private int previewStep(final int available, final int units, final int min, final int max) {
         return Math.max(min, Math.min(max, Math.max(1, available / Math.max(1, units))));
+    }
+
+    private void renderScrollBar(
+            final GuiGraphics guiGraphics,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
+            final int totalRows,
+            final int visibleRows,
+            final int offset
+    ) {
+        if (height <= 0 || visibleRows <= 0 || totalRows <= visibleRows) {
+            return;
+        }
+        guiGraphics.fill(x, y, x + width, y + height, SCROLL_TRACK_COLOR);
+        final int thumbHeight = Math.max(10, height * visibleRows / totalRows);
+        final int maxOffset = Math.max(1, totalRows - visibleRows);
+        final int maxThumbTravel = Math.max(0, height - thumbHeight);
+        final int thumbY = y + maxThumbTravel * Math.max(0, Math.min(offset, maxOffset)) / maxOffset;
+        guiGraphics.fill(x, thumbY, x + width, thumbY + thumbHeight, SCROLL_THUMB_COLOR);
     }
 
     private Component structureBlockTooltip(final GuideStructure.BlockEntry block, final ItemStack icon) {
@@ -1394,13 +1687,15 @@ public final class GuideScreen extends Screen {
     private static final class BodyCursor {
         private final int startX;
         private final int width;
+        private final int top;
         private final int bottom;
         private int x;
         private int y;
 
-        private BodyCursor(final int x, final int y, final int width, final int bottom) {
+        private BodyCursor(final int x, final int y, final int width, final int top, final int bottom) {
             this.startX = x;
             this.width = width;
+            this.top = top;
             this.bottom = bottom;
             this.x = x;
             this.y = y;
@@ -1411,7 +1706,11 @@ public final class GuideScreen extends Screen {
         }
 
         private boolean canRender() {
-            return this.y + ACTION_ROW_HEIGHT <= this.bottom;
+            return this.y < this.bottom;
+        }
+
+        private boolean isVisible() {
+            return this.y + ACTION_ROW_HEIGHT > this.top && this.y < this.bottom;
         }
 
         private void newLine() {

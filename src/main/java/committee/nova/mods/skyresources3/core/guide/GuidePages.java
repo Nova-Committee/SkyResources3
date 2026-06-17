@@ -45,12 +45,20 @@ public final class GuidePages {
                     link("grassIsland", stack(Items.GRASS_BLOCK)),
                     link("magmaIsland", stack(() -> ModItems.PETRIFIED_WOOD.get()))
             ),
-            page("sandIsland", STAGE_1, stack(Items.SAND)),
+            page(
+                    "sandIsland",
+                    STAGE_1,
+                    stack(Items.SAND),
+                    link("knife", stack(() -> ModItems.CACTUS_CUTTING_KNIFE.get())),
+                    link("lifeInfusion", stack(() -> ModItems.RED_SANDSTONE_INFUSION_STONE.get())),
+                    link("stage2", stack(Items.OAK_LOG))
+            ),
             page(
                     "lifeInfusion",
                     STAGE_1,
                     stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get()),
-                    recipe(GuideRecipeTargets.PROCESS_INFUSION, stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get()))
+                    recipe(GuideRecipeTargets.PROCESS_INFUSION, stack(() -> ModItems.ALCHEMICAL_INFUSION_STONE.get())),
+                    link("lifeInfuser", stack(() -> ModItems.LIFE_INFUSER.get()))
             ),
             page(
                     "knife",
@@ -58,7 +66,14 @@ public final class GuidePages {
                     stack(() -> ModItems.CACTUS_CUTTING_KNIFE.get()),
                     recipe(GuideRecipeTargets.PROCESS_KNIFE, stack(() -> ModItems.CACTUS_CUTTING_KNIFE.get()))
             ),
-            page("snowIsland", STAGE_1, stack(Blocks.SNOW)),
+            page(
+                    "snowIsland",
+                    STAGE_1,
+                    stack(Blocks.SNOW),
+                    link("freezer", stack(() -> ModItems.MINI_FREEZER.get())),
+                    link("heavySnowball", stack(() -> ModItems.HEAVY_SNOWBALL.get())),
+                    link("stage2", stack(Items.OAK_LOG))
+            ),
             page(
                     "freezer",
                     STAGE_1,
@@ -69,10 +84,30 @@ public final class GuidePages {
                     image("ironFreezer", stack(() -> ModItems.IRON_FREEZER.get()))
             ),
             page("heavySnowball", STAGE_1, stack(() -> ModItems.HEAVY_SNOWBALL.get())),
-            page("woodIsland", STAGE_1, stack(Items.OAK_PLANKS)),
+            page(
+                    "woodIsland",
+                    STAGE_1,
+                    stack(Items.OAK_PLANKS),
+                    link("survFish", stack(() -> ModItems.SURVIVALIST_FISHING_ROD.get())),
+                    link("stage2", stack(Items.OAK_LOG))
+            ),
             page("survFish", STAGE_1, stack(() -> ModItems.SURVIVALIST_FISHING_ROD.get())),
-            page("grassIsland", STAGE_1, stack(Items.GRASS_BLOCK)),
-            page("magmaIsland", STAGE_1, stack(() -> ModItems.PETRIFIED_WOOD.get())),
+            page(
+                    "grassIsland",
+                    STAGE_1,
+                    stack(Items.GRASS_BLOCK),
+                    link("stage2", stack(Items.OAK_LOG))
+            ),
+            page(
+                    "magmaIsland",
+                    STAGE_1,
+                    stack(() -> ModItems.PETRIFIED_WOOD.get()),
+                    link("stage2", stack(Items.OAK_LOG)),
+                    link("knife", stack(() -> ModItems.STONE_CUTTING_KNIFE.get())),
+                    link("magmaStone", stack(() -> ModItems.MAGMAFIED_STONE.get())),
+                    link("combustionHeater", GuidePages::woodenCombustionHeater),
+                    link("fusionTable", stack(() -> ModItems.FUSION_TABLE.get()))
+            ),
             page("magmaStone", STAGE_1, stack(() -> ModItems.MAGMAFIED_STONE.get())),
             page("stage2", STAGE_2, stack(Items.OAK_LOG)),
             page("seeds", STAGE_2, stack(Items.PUMPKIN_SEEDS)),
@@ -113,6 +148,8 @@ public final class GuidePages {
                     "heatProvider",
                     STAGE_2,
                     GuidePages::woodenHeatProvider,
+                    link("casing", () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN)),
+                    link("heatSources", stack(Items.TORCH)),
                     recipe(GuideRecipeTargets.HEAT_SOURCES, GuidePages::woodenHeatProvider)
             ),
             page(
@@ -148,6 +185,7 @@ public final class GuidePages {
                     "condenser",
                     STAGE_2,
                     GuidePages::woodenCondenser,
+                    link("casing", () -> MachineCasingItem.forType(ModDataPackRegistries.WOODEN)),
                     recipe(GuideRecipeTargets.CONDENSER, GuidePages::woodenCondenser)
             ),
             page("crucibleInserter", STAGE_2, stack(() -> ModItems.CRUCIBLE_INSERTER.get())),
@@ -184,6 +222,7 @@ public final class GuidePages {
                     "combustionController",
                     STAGE_3,
                     stack(() -> ModItems.COMBUSTION_CONTROLLER.get()),
+                    link("combustionCollector", stack(() -> ModItems.COMBUSTION_COLLECTOR.get())),
                     recipe(GuideRecipeTargets.PROCESS_COMBUSTION, stack(() -> ModItems.ALCHEMICAL_COAL.get()))
             ),
             page("aqueous", STAGE_3, stack(() -> ModItems.AQUEOUS_CONCENTRATOR.get())),
