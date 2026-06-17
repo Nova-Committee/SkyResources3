@@ -6,7 +6,6 @@ import committee.nova.mods.skyresources3.common.block.entity.FusionTableBlockEnt
 import committee.nova.mods.skyresources3.common.menu.FusionTableMenu;
 import committee.nova.mods.skyresources3.common.network.FusionTableDumpPayload;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -42,13 +41,16 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
     @Override
     protected void init() {
         super.init();
-        this.addRenderableWidget(Button.builder(
-                        Component.translatable("button.skyresources.dump.short"),
-                        button -> ClientPacketDistributor.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos()))
-                )
-                .bounds(this.leftPos + 153, this.topPos + 73, 18, 18)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources.dump")))
-                .build());
+        this.addRenderableWidget(SkyResourcesButton.create(
+                Component.translatable("button.skyresources.dump.short"),
+                button -> ClientPacketDistributor.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos())),
+                this.leftPos + 153,
+                this.topPos + 73,
+                18,
+                18,
+                Tooltip.create(Component.translatable("button.skyresources.dump")),
+                SkyResourcesButton.Tone.DEFAULT
+        ));
     }
 
     @Override

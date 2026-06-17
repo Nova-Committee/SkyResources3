@@ -5,7 +5,6 @@ import committee.nova.mods.skyresources3.common.network.IslandGuiRequestPayload;
 import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -118,7 +117,7 @@ public final class IslandGuiScreen extends Screen {
                 28,
                 button -> this.changeTemplate(-1),
                 this.state.enabled() && !this.state.templates().isEmpty(),
-                ButtonTone.QUIET
+                SkyResourcesButton.Tone.QUIET
         );
         this.addButton("button.skyresources.island.next_template",
                 "tooltip.skyresources.island.next_template",
@@ -127,7 +126,7 @@ public final class IslandGuiScreen extends Screen {
                 28,
                 button -> this.changeTemplate(1),
                 this.state.enabled() && !this.state.templates().isEmpty(),
-                ButtonTone.QUIET
+                SkyResourcesButton.Tone.QUIET
         );
         y += 42;
 
@@ -157,7 +156,7 @@ public final class IslandGuiScreen extends Screen {
                 compactButtonWidth,
                 button -> this.send(IslandGuiActionPayload.Action.CREATE, this.selectedTemplate()),
                 this.state.enabled() && !this.state.hasIsland(),
-                ButtonTone.PRIMARY
+                SkyResourcesButton.Tone.PRIMARY
         );
         this.addButton(this.confirmLabel("reset", "button.skyresources.island.reset"),
                 "tooltip.skyresources.island.reset",
@@ -250,7 +249,7 @@ public final class IslandGuiScreen extends Screen {
                 compactButtonWidth,
                 button -> this.send(IslandGuiActionPayload.Action.REFRESH),
                 true,
-                ButtonTone.QUIET
+                SkyResourcesButton.Tone.QUIET
         );
 
         final int dangerY = panelY + panelHeight - PANEL_PADDING - BUTTON_HEIGHT;
@@ -261,7 +260,7 @@ public final class IslandGuiScreen extends Screen {
                 buttonWidth,
                 button -> this.confirmOrSend("leave", IslandGuiActionPayload.Action.LEAVE, ""),
                 this.state.enabled() && this.state.member(),
-                ButtonTone.DANGER
+                SkyResourcesButton.Tone.DANGER
         );
         this.addButton(this.confirmLabel("disband", "button.skyresources.island.disband"),
                 "tooltip.skyresources.island.disband",
@@ -270,7 +269,7 @@ public final class IslandGuiScreen extends Screen {
                 buttonWidth,
                 button -> this.confirmOrSend("disband", IslandGuiActionPayload.Action.DISBAND, ""),
                 this.state.enabled() && this.state.owner(),
-                ButtonTone.DANGER
+                SkyResourcesButton.Tone.DANGER
         );
     }
 
@@ -537,7 +536,7 @@ public final class IslandGuiScreen extends Screen {
             final Button.OnPress onPress,
             final boolean active
     ) {
-        return this.addButton(Component.translatable(labelKey), tooltipKey, x, y, width, onPress, active, ButtonTone.DEFAULT);
+        return this.addButton(Component.translatable(labelKey), tooltipKey, x, y, width, onPress, active, SkyResourcesButton.Tone.DEFAULT);
     }
 
     private Button addButton(
@@ -548,7 +547,7 @@ public final class IslandGuiScreen extends Screen {
             final int width,
             final Button.OnPress onPress,
             final boolean active,
-            final ButtonTone tone
+            final SkyResourcesButton.Tone tone
     ) {
         return this.addButton(Component.translatable(labelKey), tooltipKey, x, y, width, onPress, active, tone);
     }
@@ -562,7 +561,7 @@ public final class IslandGuiScreen extends Screen {
             final Button.OnPress onPress,
             final boolean active
     ) {
-        return this.addButton(label, tooltipKey, x, y, width, onPress, active, ButtonTone.DEFAULT);
+        return this.addButton(label, tooltipKey, x, y, width, onPress, active, SkyResourcesButton.Tone.DEFAULT);
     }
 
     private Button addButton(
@@ -573,12 +572,18 @@ public final class IslandGuiScreen extends Screen {
             final int width,
             final Button.OnPress onPress,
             final boolean active,
-            final ButtonTone tone
+            final SkyResourcesButton.Tone tone
     ) {
-        final Button button = Button.builder(label, onPress)
-                .bounds(x, y, width, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.translatable(tooltipKey)))
-                .build(builder -> new IslandButton(builder, tone));
+        final Button button = SkyResourcesButton.create(
+                label,
+                onPress,
+                x,
+                y,
+                width,
+                BUTTON_HEIGHT,
+                Tooltip.create(Component.translatable(tooltipKey)),
+                tone
+        );
         button.active = active;
         return this.addRenderableWidget(button);
     }
@@ -676,77 +681,5 @@ public final class IslandGuiScreen extends Screen {
         final String currentType = state.islandType();
         final int index = state.templates().indexOf(currentType);
         return index < 0 ? 0 : index;
-    }
-
-    private enum ButtonTone {
-        DEFAULT(0xDD30363A, 0xEE3B4544, 0xFF7C896D, TEXT_COLOR),
-        PRIMARY(0xDD385635, 0xEE486C43, 0xFFB7D66E, TEXT_COLOR),
-        DANGER(0xDD5B241F, 0xEE743127, 0xFFFF826F, 0xFFFFE1D8),
-        QUIET(0xCC242A2F, 0xDD30383D, 0xFF68766A, MUTED_TEXT_COLOR);
-
-        private final int fillColor;
-        private final int hoverFillColor;
-        private final int borderColor;
-        private final int textColor;
-
-        ButtonTone(final int fillColor, final int hoverFillColor, final int borderColor, final int textColor) {
-            this.fillColor = fillColor;
-            this.hoverFillColor = hoverFillColor;
-            this.borderColor = borderColor;
-            this.textColor = textColor;
-        }
-    }
-
-    private static final class IslandButton extends Button {
-        private final ButtonTone tone;
-
-        private IslandButton(final Builder builder, final ButtonTone tone) {
-            super(builder);
-            this.tone = tone;
-        }
-
-        @Override
-        protected void renderContents(
-                final GuiGraphics guiGraphics,
-                final int mouseX,
-                final int mouseY,
-                final float partialTick
-        ) {
-            final boolean hovered = this.isHoveredOrFocused();
-            final int fillColor = this.active
-                    ? (hovered ? this.tone.hoverFillColor : this.tone.fillColor)
-                    : 0xAA20242A;
-            final int borderColor = this.active
-                    ? (hovered ? GOLD_COLOR : this.tone.borderColor)
-                    : 0x665C6266;
-
-            guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), withAlpha(fillColor, this.alpha));
-            guiGraphics.renderOutline(this.getX(), this.getY(), this.getWidth(), this.getHeight(), withAlpha(borderColor, this.alpha));
-            guiGraphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + 2, withAlpha(0x33FFFFFF, this.alpha));
-            guiGraphics.fill(this.getX() + 1, this.getY() + this.getHeight() - 2, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, withAlpha(0x66000000, this.alpha));
-            if (hovered && this.active) {
-                guiGraphics.fill(this.getX() + 2, this.getY() + this.getHeight() - 4, this.getX() + this.getWidth() - 2, this.getY() + this.getHeight() - 3, withAlpha(GOLD_COLOR, this.alpha));
-            }
-
-            final Font font = Minecraft.getInstance().font;
-            final Component message = this.getMessage();
-            final int textWidth = font.width(message);
-            final int textX = this.getX() + Math.max(2, (this.getWidth() - textWidth) / 2);
-            final int textY = this.getY() + (this.getHeight() - 8) / 2;
-            final int textColor = withAlpha(this.active ? this.tone.textColor : 0xFF858585, this.alpha);
-            guiGraphics.enableScissor(
-                    this.getX() + 2,
-                    this.getY(),
-                    this.getX() + this.getWidth() - 2,
-                    this.getY() + this.getHeight()
-            );
-            guiGraphics.drawString(font, message, textX, textY, textColor, false);
-            guiGraphics.disableScissor();
-        }
-
-        private static int withAlpha(final int color, final float alpha) {
-            final int baseAlpha = color >>> 24;
-            return (color & 0x00FFFFFF) | ((int) Math.ceil(baseAlpha * alpha) << 24);
-        }
     }
 }

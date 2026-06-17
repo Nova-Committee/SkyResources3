@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -44,7 +43,6 @@ public final class GuideScreen extends Screen {
     private static final int BORDER_COLOR = 0xFF6E7E89;
     private static final int SELECTED_ROW_COLOR = 0x703E6F78;
     private static final int HOVERED_ROW_COLOR = 0x503E6F78;
-    private static final int ACTION_ROW_COLOR = 0x305C465F;
     private static final int TEXT_COLOR = 0xFF2B241A;
     private static final int HEADER_TEXT_COLOR = 0xFFEFE5CF;
     private static final int MUTED_TEXT_COLOR = 0xFF675E52;
@@ -105,40 +103,56 @@ public final class GuideScreen extends Screen {
         this.searchBox.setFocused(true);
         this.setFocused(this.searchBox);
 
-        this.addRenderableWidget(Button.builder(
-                        Component.literal("<"),
-                        button -> this.changeCategory(-1)
-                )
-                .bounds(panelX + PANEL_PADDING, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.previous_category")))
-                .build());
-        this.addRenderableWidget(Button.builder(
-                        Component.literal(">"),
-                        button -> this.changeCategory(1)
-                )
-                .bounds(panelX + PANEL_PADDING + SMALL_BUTTON_WIDTH + 4, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.next_category")))
-                .build());
-        this.addRenderableWidget(Button.builder(
-                        Component.literal("<"),
-                        button -> this.changePage(-1)
-                )
-                .bounds(panelX + 84, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.previous_page")))
-                .build());
-        this.addRenderableWidget(Button.builder(
-                        Component.literal(">"),
-                        button -> this.changePage(1)
-                )
-                .bounds(panelX + 84 + SMALL_BUTTON_WIDTH + 4, footerY, SMALL_BUTTON_WIDTH, BUTTON_SIZE)
-                .tooltip(Tooltip.create(Component.translatable("button.skyresources.guide.next_page")))
-                .build());
-        this.addRenderableWidget(Button.builder(
-                        Component.translatable("gui.done"),
-                        button -> this.closeCurrentView()
-                )
-                .bounds(panelX + panelWidth - PANEL_PADDING - CLOSE_BUTTON_WIDTH, footerY, CLOSE_BUTTON_WIDTH, BUTTON_SIZE)
-                .build());
+        this.addRenderableWidget(SkyResourcesButton.create(
+                Component.literal("<"),
+                button -> this.changeCategory(-1),
+                panelX + PANEL_PADDING,
+                footerY,
+                SMALL_BUTTON_WIDTH,
+                BUTTON_SIZE,
+                Tooltip.create(Component.translatable("button.skyresources.guide.previous_category")),
+                SkyResourcesButton.Tone.QUIET
+        ));
+        this.addRenderableWidget(SkyResourcesButton.create(
+                Component.literal(">"),
+                button -> this.changeCategory(1),
+                panelX + PANEL_PADDING + SMALL_BUTTON_WIDTH + 4,
+                footerY,
+                SMALL_BUTTON_WIDTH,
+                BUTTON_SIZE,
+                Tooltip.create(Component.translatable("button.skyresources.guide.next_category")),
+                SkyResourcesButton.Tone.QUIET
+        ));
+        this.addRenderableWidget(SkyResourcesButton.create(
+                Component.literal("<"),
+                button -> this.changePage(-1),
+                panelX + 84,
+                footerY,
+                SMALL_BUTTON_WIDTH,
+                BUTTON_SIZE,
+                Tooltip.create(Component.translatable("button.skyresources.guide.previous_page")),
+                SkyResourcesButton.Tone.QUIET
+        ));
+        this.addRenderableWidget(SkyResourcesButton.create(
+                Component.literal(">"),
+                button -> this.changePage(1),
+                panelX + 84 + SMALL_BUTTON_WIDTH + 4,
+                footerY,
+                SMALL_BUTTON_WIDTH,
+                BUTTON_SIZE,
+                Tooltip.create(Component.translatable("button.skyresources.guide.next_page")),
+                SkyResourcesButton.Tone.QUIET
+        ));
+        this.addRenderableWidget(SkyResourcesButton.create(
+                Component.translatable("gui.done"),
+                button -> this.closeCurrentView(),
+                panelX + panelWidth - PANEL_PADDING - CLOSE_BUTTON_WIDTH,
+                footerY,
+                CLOSE_BUTTON_WIDTH,
+                BUTTON_SIZE,
+                null,
+                SkyResourcesButton.Tone.DEFAULT
+        ));
     }
 
     @Override
@@ -822,23 +836,27 @@ public final class GuideScreen extends Screen {
         }
 
         final boolean hovered = this.isInside(mouseX, mouseY, cursor.x, cursor.y, chipWidth, ACTION_ROW_HEIGHT - 1);
-        guiGraphics.fill(
+        SkyResourcesButton.renderFrame(
+                guiGraphics,
                 cursor.x,
                 cursor.y,
-                cursor.x + chipWidth,
-                cursor.y + ACTION_ROW_HEIGHT - 1,
-                hovered ? HOVERED_ROW_COLOR : ACTION_ROW_COLOR
+                chipWidth,
+                ACTION_ROW_HEIGHT - 1,
+                true,
+                hovered,
+                1.0F,
+                SkyResourcesButton.Tone.DEFAULT
         );
         final ItemStack icon = action.icon();
         if (!icon.isEmpty()) {
-            guiGraphics.renderFakeItem(icon, cursor.x + 1, cursor.y + 1);
+            guiGraphics.renderFakeItem(icon, cursor.x + 2, cursor.y + 2);
         }
         guiGraphics.drawString(
                 this.font,
                 this.truncate(label.getString(), maxLabelWidth),
                 cursor.x + ICON_SIZE + 6,
                 cursor.y + 6,
-                TEXT_COLOR,
+                SkyResourcesButton.textColor(SkyResourcesButton.Tone.DEFAULT, true, 1.0F),
                 false
         );
         if (cursor.isVisible()) {
@@ -902,10 +920,20 @@ public final class GuideScreen extends Screen {
             final int width
     ) {
         final boolean hovered = this.isInside(mouseX, mouseY, x, y, width, ACTION_ROW_HEIGHT - 1);
-        guiGraphics.fill(x, y, x + width, y + ACTION_ROW_HEIGHT - 1, hovered ? HOVERED_ROW_COLOR : ACTION_ROW_COLOR);
+        SkyResourcesButton.renderFrame(
+                guiGraphics,
+                x,
+                y,
+                width,
+                ACTION_ROW_HEIGHT - 1,
+                true,
+                hovered,
+                1.0F,
+                SkyResourcesButton.Tone.DEFAULT
+        );
         final ItemStack icon = action.icon();
         if (!icon.isEmpty()) {
-            guiGraphics.renderFakeItem(icon, x + 1, y + 1);
+            guiGraphics.renderFakeItem(icon, x + 2, y + 2);
         }
 
         final Component type = Component.translatable(
@@ -919,7 +947,7 @@ public final class GuideScreen extends Screen {
                 this.truncate(action.label().getString(), labelWidth),
                 labelX,
                 y + 6,
-                TEXT_COLOR,
+                SkyResourcesButton.textColor(SkyResourcesButton.Tone.DEFAULT, true, 1.0F),
                 false
         );
         guiGraphics.drawString(
@@ -927,7 +955,7 @@ public final class GuideScreen extends Screen {
                 type,
                 x + width - typeWidth - 4,
                 y + 6,
-                MUTED_TEXT_COLOR,
+                SkyResourcesButton.mutedTextColor(1.0F),
                 false
         );
         if (hovered) {

@@ -25,8 +25,6 @@ final class GuideStructurePonderView {
     private static final int CONTROL_HEIGHT = 22;
     private static final int CONTROL_GAP = 8;
     private static final int TIMELINE_HEIGHT = 4;
-    private static final int CONTROL_BACKGROUND = 0xCC101318;
-    private static final int CONTROL_HOVERED = 0xDD27303A;
     private static final int CONTROL_TEXT = 0xFFE9EEF2;
     private static final int OVERLAY_BACKGROUND = 0x9A0C1014;
     private static final int TIMELINE_TRACK = 0x772E3742;
@@ -154,7 +152,8 @@ final class GuideStructurePonderView {
         final int buttonY = y + 13;
         this.drawButton(guiGraphics, font, buttonX, buttonY, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT,
                 Component.translatable("button.skyresources.guide.structure_back"),
-                isInside(mouseX, mouseY, buttonX, buttonY, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT));
+                isInside(mouseX, mouseY, buttonX, buttonY, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT),
+                SkyResourcesButton.Tone.DEFAULT);
 
         final Component title = Component.translatable(structure.titleKey());
         guiGraphics.drawCenteredString(font, title, x + width / 2, y + 10, CONTROL_TEXT);
@@ -170,7 +169,8 @@ final class GuideStructurePonderView {
 
         for (final StructureControl control : this.controls(x, y, width, height)) {
             this.drawButton(guiGraphics, font, control.x(), control.y(), control.width(), control.height(), control.label(),
-                    isInside(mouseX, mouseY, control.x(), control.y(), control.width(), control.height()));
+                    isInside(mouseX, mouseY, control.x(), control.y(), control.width(), control.height()),
+                    SkyResourcesButton.Tone.QUIET);
         }
 
         final int timelineX = x + Math.max(EDGE_PADDING, width / 5);
@@ -186,9 +186,10 @@ final class GuideStructurePonderView {
     }
 
     private void drawButton(final GuiGraphics guiGraphics, final Font font, final int x, final int y, final int width,
-                            final int height, final Component label, final boolean hovered) {
-        guiGraphics.fill(x, y, x + width, y + height, hovered ? CONTROL_HOVERED : CONTROL_BACKGROUND);
-        guiGraphics.drawCenteredString(font, label, x + width / 2, y + 7, CONTROL_TEXT);
+                            final int height, final Component label, final boolean hovered,
+                            final SkyResourcesButton.Tone tone) {
+        SkyResourcesButton.renderFrame(guiGraphics, x, y, width, height, true, hovered, 1.0F, tone);
+        SkyResourcesButton.renderLabel(guiGraphics, font, label, x, y, width, height, true, 1.0F, tone);
     }
 
     private List<GuideStructureRenderState.StructureBlock> visibleStructureBlocks(final GuideStructure structure,
