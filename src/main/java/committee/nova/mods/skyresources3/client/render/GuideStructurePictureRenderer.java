@@ -9,8 +9,12 @@ import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
 
 public final class GuideStructurePictureRenderer extends PictureInPictureRenderer<GuideStructureRenderState> {
@@ -34,6 +38,8 @@ public final class GuideStructurePictureRenderer extends PictureInPictureRendere
 
         final Minecraft minecraft = Minecraft.getInstance();
         final BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+        final ItemModelResolver itemModelResolver = minecraft.getItemModelResolver();
+        final FeatureRenderDispatcher featureDispatcher = minecraft.gameRenderer.getFeatureRenderDispatcher();
         minecraft.gameRenderer.getLighting().setupFor(Lighting.Entry.ITEMS_3D);
 
         final StructureBounds bounds = StructureBounds.from(blocks);
@@ -46,19 +52,46 @@ public final class GuideStructurePictureRenderer extends PictureInPictureRendere
         poseStack.translate(-centerX, -centerY, -centerZ);
 
         for (final GuideStructureRenderState.StructureBlock block : blocks) {
+            if (block.state() != null) {
+                poseStack.pushPose();
+                poseStack.translate(block.x(), block.y(), block.z());
+                blockRenderer.renderSingleBlock(
+                        block.state(),
+                        poseStack,
+                        this.bufferSource,
+                        PACKED_LIGHT,
+                        OverlayTexture.NO_OVERLAY,
+                        EmptyBlockAndTintGetter.INSTANCE,
+                        BlockPos.ZERO
+                );
+                poseStack.popPose();
+                continue;
+            }
+
+            final ItemStackRenderState itemState = new ItemStackRenderState();
+            itemModelResolver.updateForTopItem(
+                    itemState,
+                    block.stack(),
+                    ItemDisplayContext.NONE,
+                    minecraft.level,
+                    null,
+                    block.index()
+            );
+            if (itemState.isEmpty()) {
+                continue;
+            }
             poseStack.pushPose();
-            poseStack.translate(block.x(), block.y(), block.z());
-            blockRenderer.renderSingleBlock(
-                    block.state(),
+            poseStack.translate(block.x() + 0.5F, block.y() + 0.5F, block.z() + 0.5F);
+            itemState.submit(
                     poseStack,
-                    this.bufferSource,
+                    featureDispatcher.getSubmitNodeStorage(),
                     PACKED_LIGHT,
                     OverlayTexture.NO_OVERLAY,
-                    EmptyBlockAndTintGetter.INSTANCE,
-                    BlockPos.ZERO
+                    0
             );
             poseStack.popPose();
         }
+        featureDispatcher.renderAllFeatures();
     }
 
     @Override

@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.client.render;
 import java.util.List;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -31,6 +32,9 @@ public record GuideStructureRenderState(
                 PictureInPictureRenderState.getBounds(x0, y0, x1, y1, scissorArea));
     }
 
-    public record StructureBlock(BlockState state, int x, int y, int z, int index) {
+    public record StructureBlock(@Nullable BlockState state, ItemStack stack, int x, int y, int z, int index) {
+        public StructureBlock {
+            stack = stack.copy();
+        }
     }
 }

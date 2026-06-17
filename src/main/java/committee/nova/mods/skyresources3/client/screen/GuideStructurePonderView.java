@@ -1,6 +1,10 @@
 package committee.nova.mods.skyresources3.client.screen;
 
 import committee.nova.mods.skyresources3.client.render.GuideStructureRenderState;
+import committee.nova.mods.skyresources3.common.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.common.item.CondenserItem;
+import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
+import committee.nova.mods.skyresources3.common.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.core.guide.GuideStructure;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 final class GuideStructurePonderView {
     private static final int EDGE_PADDING = 20;
@@ -199,9 +204,11 @@ final class GuideStructurePonderView {
                 continue;
             }
             final ItemStack icon = entry.icon();
-            if (icon.getItem() instanceof final BlockItem blockItem) {
+            if (!icon.isEmpty()) {
+                final BlockState state = this.blockStateFor(icon);
                 blocks.add(new GuideStructureRenderState.StructureBlock(
-                        blockItem.getBlock().defaultBlockState(),
+                        state,
+                        icon,
                         entry.x(),
                         entry.y(),
                         entry.z(),
@@ -210,6 +217,20 @@ final class GuideStructurePonderView {
             }
         }
         return blocks;
+    }
+
+    private BlockState blockStateFor(final ItemStack icon) {
+        if (usesItemModel(icon) || !(icon.getItem() instanceof final BlockItem blockItem)) {
+            return null;
+        }
+        return blockItem.getBlock().defaultBlockState();
+    }
+
+    private static boolean usesItemModel(final ItemStack icon) {
+        return icon.getItem() instanceof MachineCasingItem
+                || icon.getItem() instanceof CombustionHeaterItem
+                || icon.getItem() instanceof HeatProviderItem
+                || icon.getItem() instanceof CondenserItem;
     }
 
     private float sceneScale(final GuideStructure structure, final int width, final int height) {
