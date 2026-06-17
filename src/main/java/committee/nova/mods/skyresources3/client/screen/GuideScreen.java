@@ -75,7 +75,7 @@ public final class GuideScreen extends Screen {
         final int footerY = panelY + this.panelHeight() - 28;
         final boolean wideIndex = this.hasWideIndex(panelWidth);
         final int searchX = panelX + PANEL_PADDING;
-        final int searchY = panelY + 32;
+        final int searchY = panelY + 26;
         final int searchWidth = wideIndex ? this.indexWidth(panelWidth) : panelWidth - PANEL_PADDING * 2;
         final String currentSearch = this.searchBox == null ? this.searchText : this.searchBox.getValue();
 
