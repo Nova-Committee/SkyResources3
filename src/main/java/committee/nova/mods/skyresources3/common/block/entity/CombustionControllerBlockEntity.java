@@ -7,11 +7,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.EmptyResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.transfer.EmptyResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 
 public final class CombustionControllerBlockEntity extends AbstractCombustionInventoryBlockEntity {
     private static final String COOLDOWN_KEY = "cooldown";
@@ -24,14 +24,16 @@ public final class CombustionControllerBlockEntity extends AbstractCombustionInv
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
         this.cooldownTicks = input.getIntOr(COOLDOWN_KEY, 0);
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
         output.putInt(COOLDOWN_KEY, this.cooldownTicks);
     }
 

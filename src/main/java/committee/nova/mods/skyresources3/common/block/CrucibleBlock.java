@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 
 public final class CrucibleBlock extends Block implements EntityBlock {
     private static final VoxelShape SHAPE = Shapes.or(
@@ -59,7 +60,7 @@ public final class CrucibleBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -69,14 +70,14 @@ public final class CrucibleBlock extends Block implements EntityBlock {
             final BlockHitResult hitResult
     ) {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         return FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection())
-                ? InteractionResult.SUCCESS_SERVER
-                : InteractionResult.PASS;
+                ? ItemInteractionResult.SUCCESS
+                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
@@ -99,8 +100,7 @@ public final class CrucibleBlock extends Block implements EntityBlock {
     protected int getAnalogOutputSignal(
             final BlockState state,
             final Level level,
-            final BlockPos pos,
-            final Direction direction
+            final BlockPos pos
     ) {
         if (level.getBlockEntity(pos) instanceof CrucibleBlockEntity crucible) {
             return crucible.getComparatorSignal();

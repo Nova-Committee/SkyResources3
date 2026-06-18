@@ -5,7 +5,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -14,13 +14,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
-import net.minecraft.world.level.storage.LevelData;
 
 public final class VoidIslandWorld {
     public static final int ISLAND_Y = 192;
     public static final ResourceKey<Level> LEVEL = ResourceKey.create(
             Registries.DIMENSION,
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "void_island")
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "void_island")
     );
 
     private static final BlockPos SPAWN_PLATFORM_CENTER = new BlockPos(0, ISLAND_Y, 0);
@@ -60,7 +59,7 @@ public final class VoidIslandWorld {
 
     public static void ensureInitialSpawnPlatform(final ServerLevel level) {
         ensureSpawnPlatform(level, Blocks.BEDROCK.defaultBlockState());
-        level.setRespawnData(LevelData.RespawnData.of(level.dimension(), spawnHome(), 0.0F, 0.0F));
+        level.setDefaultSpawnPos(spawnHome(), 0.0F);
     }
 
     public static void ensureSpawnPlatform(final ServerLevel level) {

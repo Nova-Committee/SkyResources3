@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -50,7 +51,7 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return this.openMenu(level, pos, player, hitResult, stack);
+        return BlockInteractionResults.item(this.openMenu(level, pos, player, hitResult, stack));
     }
 
     @Override
@@ -114,6 +115,6 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
                 ),
                 buffer -> CrucibleInserterMenu.writeClientSideData(buffer, pos)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

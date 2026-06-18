@@ -12,13 +12,12 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 @EventBusSubscriber(modid = Skyresources3.MODID)
 public final class SkyResources3Data {
     @SubscribeEvent
-    public static void gatherData(final GatherDataEvent.Client event) {
+    public static void gatherData(final GatherDataEvent event) {
         event.createProvider(SkyResources3DataMapProvider::new);
         event.createProvider(SkyResources3MaterialTypeProvider::new);
-        event.createProvider(SkyResources3RecipeProvider.Runner::new);
+        event.createProvider(SkyResources3RecipeProvider::new);
         event.createProvider(SkyResources3IntegrationRecipeProvider::new);
-        event.createProvider(SkyResources3BlockTagsProvider::new);
-        event.createProvider(SkyResources3ItemTagsProvider::new);
+        event.createBlockAndItemTags(SkyResources3BlockTagsProvider::new, SkyResources3ItemTagsProvider::new);
         event.createProvider((output, lookupProvider) -> new LootTableProvider(
                 output,
                 Set.of(),

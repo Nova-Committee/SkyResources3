@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.common.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -64,8 +65,8 @@ public record ProcessIngredient(Ingredient ingredient, Optional<ItemStack> exact
     public List<ItemStack> displayStacks() {
         return this.exactStack
                 .map(expected -> List.of(expected.copyWithCount(this.count)))
-                .orElseGet(() -> this.ingredient.items()
-                        .map(holder -> new ItemStack(holder.value(), this.count))
+                .orElseGet(() -> Arrays.stream(this.ingredient.getItems())
+                        .map(stack -> stack.copyWithCount(this.count))
                         .filter(stack -> !stack.isEmpty())
                         .toList());
     }

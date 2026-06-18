@@ -3,7 +3,7 @@ package committee.nova.mods.skyresources3.common.item;
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.common.recipe.WaterExtractorRecipes;
 import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
-import java.util.function.Consumer;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -12,14 +12,14 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -35,8 +35,8 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 
 public final class WaterExtractorItem extends Item {
     public static final int DEFAULT_CAPACITY = 4000;
@@ -50,9 +50,10 @@ public final class WaterExtractorItem extends Item {
     }
 
     @Override
-    public InteractionResult use(final Level level, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
+        final ItemStack stack = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        return InteractionResult.CONSUME;
+        return InteractionResultHolder.consume(stack);
     }
 
     @Override
@@ -75,12 +76,12 @@ public final class WaterExtractorItem extends Item {
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ItemUseAnimation getUseAnimation(final ItemStack stack) {
-        return ItemUseAnimation.BOW;
+    public UseAnim getUseAnimation(final ItemStack stack) {
+        return UseAnim.BOW;
     }
 
     @Override
@@ -89,29 +90,28 @@ public final class WaterExtractorItem extends Item {
     }
 
     @Override
-    public boolean releaseUsing(
+    public void releaseUsing(
             final ItemStack stack,
             final Level level,
             final LivingEntity entity,
             final int timeLeft
     ) {
         if (!(entity instanceof Player player)) {
-            return false;
+            return;
         }
 
         if (this.getUseDuration(stack, entity) - timeLeft < MIN_EXTRACTION_USE_TICKS) {
-            return false;
+            return;
         }
 
         if (level.isClientSide()) {
-            return true;
+            return;
         }
 
         final boolean changed = tryExtractRecipeWater(stack, level, player) || tryPickupWaterSource(stack, level, player);
         if (changed) {
             player.awardStat(Stats.ITEM_USED.get(this));
         }
-        return changed;
     }
 
     @Override
@@ -119,11 +119,10 @@ public final class WaterExtractorItem extends Item {
     public void appendHoverText(
             final ItemStack stack,
             final TooltipContext context,
-            final TooltipDisplay tooltipDisplay,
-            final Consumer<Component> tooltipAdder,
+            final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
-        tooltipAdder.accept(Component.translatable(
+        tooltipComponents.add(Component.translatable(
                 "item.skyresources.water_extractor.water",
                 getWaterAmount(stack),
                 getCapacity()

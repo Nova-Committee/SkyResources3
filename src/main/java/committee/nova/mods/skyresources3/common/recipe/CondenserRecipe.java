@@ -10,16 +10,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
 public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     private final String group;
@@ -27,7 +23,6 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     private final Source source;
     private final ItemStack output;
     private final float parameter;
-    private @Nullable PlacementInfo placementInfo;
 
     public CondenserRecipe(
             final String group,
@@ -64,9 +59,23 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
         return true;
     }
 
-    @Override
     public String group() {
         return this.group;
+    }
+
+    @Override
+    public String getGroup() {
+        return this.group;
+    }
+
+    @Override
+    public ItemStack getResultItem(final HolderLookup.Provider registries) {
+        return this.output.copy();
+    }
+
+    @Override
+    public boolean canCraftInDimensions(final int width, final int height) {
+        return true;
     }
 
     @Override
@@ -77,19 +86,6 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     @Override
     public RecipeType<? extends Recipe<CondenserRecipeInput>> getType() {
         return ModRecipeTypes.CONDENSER_TYPE.get();
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        if (this.placementInfo == null) {
-            this.placementInfo = PlacementInfo.create(this.catalyst.ingredient());
-        }
-        return this.placementInfo;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public ProcessIngredient catalyst() {
@@ -124,9 +120,9 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
         );
     }
 
-    public record Source(SourceType type, Identifier id) {
-        private static final Codec<Identifier> IDENTIFIER_CODEC =
-                Codec.STRING.xmap(Identifier::parse, Identifier::toString);
+    public record Source(SourceType type, ResourceLocation id) {
+        private static final Codec<ResourceLocation> IDENTIFIER_CODEC =
+                Codec.STRING.xmap(ResourceLocation::parse, ResourceLocation::toString);
         private static final Codec<Source> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 SourceType.CODEC.fieldOf("type").forGetter(Source::type),
                 IDENTIFIER_CODEC.fieldOf("id").forGetter(Source::id)
@@ -136,14 +132,14 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
                 source -> source.type().id(),
                 ByteBufCodecs.STRING_UTF8,
                 source -> source.id().toString(),
-                (type, id) -> new Source(SourceType.byId(type), Identifier.parse(id))
+                (type, id) -> new Source(SourceType.byId(type), ResourceLocation.parse(id))
         );
 
-        public static Source fluid(final Identifier id) {
+        public static Source fluid(final ResourceLocation id) {
             return new Source(SourceType.FLUID, id);
         }
 
-        public static Source block(final Identifier id) {
+        public static Source block(final ResourceLocation id) {
             return new Source(SourceType.BLOCK, id);
         }
     }

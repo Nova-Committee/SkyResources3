@@ -21,7 +21,7 @@ public final class InfusionStoneItem extends Item {
     public InfusionStoneItem(final Properties properties, final int durability) {
         super(properties
                 .durability(durability)
-                .setNoCombineRepair()
+                .setNoRepair()
                 .stacksTo(1));
     }
 
@@ -46,7 +46,7 @@ public final class InfusionStoneItem extends Item {
                 InfusionRecipes.find(serverLevel, level.getBlockState(pos), player.getOffhandItem());
         if (recipe.isPresent()) {
             tryInfuse(context, player, recipe.get());
-            return InteractionResult.SUCCESS_SERVER;
+            return InteractionResult.SUCCESS;
         }
 
         if (!Config.infusionStoneBonemealCapability || !BonemealGrowth.isValidTarget(level, pos)) {
@@ -54,9 +54,9 @@ public final class InfusionStoneItem extends Item {
         }
         BonemealGrowth.growUntilStable(serverLevel, pos);
         hurtStoneAndPlayer(context, player, BONEMEAL_HEALTH_COST);
-        context.getItemInHand().causeUseVibration(player, GameEvent.ITEM_INTERACT_FINISH);
+        level.gameEvent(player, GameEvent.ITEM_INTERACT_FINISH, pos);
         level.levelEvent(1505, pos, 15);
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 
     private static InteractionResult clientInteractionResult(final Level level, final BlockPos pos, final Player player) {
@@ -98,7 +98,7 @@ public final class InfusionStoneItem extends Item {
     private static void hurtStoneAndPlayer(final UseOnContext context, final Player player, final int healthCost) {
         context.getItemInHand().hurtAndBreak(1, player, slotForHand(context.getHand()));
         if (context.getLevel() instanceof ServerLevel serverLevel) {
-            player.hurtServer(serverLevel, serverLevel.damageSources().magic(), (float) healthCost);
+            player.hurt(serverLevel.damageSources().magic(), (float) healthCost);
         }
     }
 

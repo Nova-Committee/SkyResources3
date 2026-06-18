@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class FusionTableScreen extends AbstractContainerScreen<FusionTableMenu> {
     private static final int PROGRESS_X = 7;
@@ -43,7 +43,7 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
         super.init();
         this.addRenderableWidget(SkyResourcesButton.create(
                 Component.translatable("button.skyresources.dump.short"),
-                button -> ClientPacketDistributor.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos())),
+                button -> PacketDistributor.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos())),
                 this.leftPos + 153,
                 this.topPos + 73,
                 18,

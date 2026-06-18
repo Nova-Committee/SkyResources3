@@ -12,25 +12,24 @@ import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 
 public final class StandaloneMachineBlockEntity extends BlockEntity {
     private static final String TYPE_KEY = "machine_type";
 
-    private Identifier typeId;
+    private ResourceLocation typeId;
 
     public StandaloneMachineBlockEntity(final BlockPos pos, final BlockState blockState) {
         super(ModBlockEntityTypes.STANDALONE_MACHINE.get(), pos, blockState);
@@ -38,19 +37,21 @@ public final class StandaloneMachineBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
-        this.typeId = input.read(TYPE_KEY, Identifier.CODEC).orElse(this.kind().defaultTypeId());
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
+        this.typeId = input.read(TYPE_KEY, ResourceLocation.CODEC).orElse(this.kind().defaultTypeId());
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
-        output.store(TYPE_KEY, Identifier.CODEC, this.typeId);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
+        output.store(TYPE_KEY, ResourceLocation.CODEC, this.typeId);
     }
 
     @Override
-    protected void applyImplicitComponents(final DataComponentGetter componentInput) {
+    protected void applyImplicitComponents(final BlockEntity.DataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         this.typeId = this.kind().typeId(componentInput);
     }
@@ -71,7 +72,6 @@ public final class StandaloneMachineBlockEntity extends BlockEntity {
         return this.saveCustomOnly(registries);
     }
 
-    @Override
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {
         if (this.level == null || this.level.isClientSide()) {
             return;
@@ -92,11 +92,11 @@ public final class StandaloneMachineBlockEntity extends BlockEntity {
         return MachineKind.COMBUSTION_HEATER;
     }
 
-    public Identifier typeId() {
+    public ResourceLocation typeId() {
         return this.typeId;
     }
 
-    public void setTypeId(final Identifier typeId) {
+    public void setTypeId(final ResourceLocation typeId) {
         if (this.typeId.equals(typeId)) {
             return;
         }
@@ -159,74 +159,74 @@ public final class StandaloneMachineBlockEntity extends BlockEntity {
     public enum MachineKind {
         COMBUSTION_HEATER {
             @Override
-            Identifier defaultTypeId() {
+            ResourceLocation defaultTypeId() {
                 return ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.IRON_COMBUSTION_HEATER);
             }
 
             @Override
-            Identifier typeId(final DataComponentGetter componentInput) {
+            ResourceLocation typeId(final BlockEntity.DataComponentInput componentInput) {
                 return componentInput.getOrDefault(ModDataComponents.COMBUSTION_HEATER_TYPE.get(), this.defaultTypeId());
             }
 
             @Override
-            void writeType(final DataComponentMap.Builder components, final Identifier typeId) {
+            void writeType(final DataComponentMap.Builder components, final ResourceLocation typeId) {
                 components.set(ModDataComponents.COMBUSTION_HEATER_TYPE.get(), typeId);
             }
 
             @Override
-            ItemStack stack(final Identifier typeId) {
+            ItemStack stack(final ResourceLocation typeId) {
                 return CombustionHeaterItem.forType(typeId);
             }
         },
         HEAT_PROVIDER {
             @Override
-            Identifier defaultTypeId() {
+            ResourceLocation defaultTypeId() {
                 return ModDataPackRegistries.heatProviderTypeId(ModDataPackRegistries.IRON_HEAT_PROVIDER);
             }
 
             @Override
-            Identifier typeId(final DataComponentGetter componentInput) {
+            ResourceLocation typeId(final BlockEntity.DataComponentInput componentInput) {
                 return componentInput.getOrDefault(ModDataComponents.HEAT_PROVIDER_TYPE.get(), this.defaultTypeId());
             }
 
             @Override
-            void writeType(final DataComponentMap.Builder components, final Identifier typeId) {
+            void writeType(final DataComponentMap.Builder components, final ResourceLocation typeId) {
                 components.set(ModDataComponents.HEAT_PROVIDER_TYPE.get(), typeId);
             }
 
             @Override
-            ItemStack stack(final Identifier typeId) {
+            ItemStack stack(final ResourceLocation typeId) {
                 return HeatProviderItem.forType(typeId);
             }
         },
         CONDENSER {
             @Override
-            Identifier defaultTypeId() {
+            ResourceLocation defaultTypeId() {
                 return ModDataPackRegistries.condenserTypeId(ModDataPackRegistries.IRON_CONDENSER);
             }
 
             @Override
-            Identifier typeId(final DataComponentGetter componentInput) {
+            ResourceLocation typeId(final BlockEntity.DataComponentInput componentInput) {
                 return componentInput.getOrDefault(ModDataComponents.CONDENSER_TYPE.get(), this.defaultTypeId());
             }
 
             @Override
-            void writeType(final DataComponentMap.Builder components, final Identifier typeId) {
+            void writeType(final DataComponentMap.Builder components, final ResourceLocation typeId) {
                 components.set(ModDataComponents.CONDENSER_TYPE.get(), typeId);
             }
 
             @Override
-            ItemStack stack(final Identifier typeId) {
+            ItemStack stack(final ResourceLocation typeId) {
                 return CondenserItem.forType(typeId);
             }
         };
 
-        abstract Identifier defaultTypeId();
+        abstract ResourceLocation defaultTypeId();
 
-        abstract Identifier typeId(DataComponentGetter componentInput);
+        abstract ResourceLocation typeId(BlockEntity.DataComponentInput componentInput);
 
-        abstract void writeType(DataComponentMap.Builder components, Identifier typeId);
+        abstract void writeType(DataComponentMap.Builder components, ResourceLocation typeId);
 
-        abstract ItemStack stack(Identifier typeId);
+        abstract ItemStack stack(ResourceLocation typeId);
     }
 }

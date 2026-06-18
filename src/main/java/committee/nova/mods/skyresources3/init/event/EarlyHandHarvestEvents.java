@@ -61,7 +61,7 @@ public final class EarlyHandHarvestEvents {
 
     private static void harvestCactusNeedle(final ServerLevel level, final Player player) {
         Block.popResource(level, player.blockPosition(), new ItemStack(ModItems.CACTUS_NEEDLE.get()));
-        player.hurtServer(level, level.damageSources().cactus(), 2.0F);
+        player.hurt(level.damageSources().cactus(), 2.0F);
     }
 
     private static void harvestSnowLayer(
@@ -86,7 +86,7 @@ public final class EarlyHandHarvestEvents {
 
     private static void popSnowballAndFatigue(final ServerLevel level, final Player player, final BlockPos pos) {
         Block.popResource(level, pos, new ItemStack(Items.SNOWBALL));
-        player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, level.random.nextInt(80) + 20, 1));
+        player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, level.random.nextInt(80) + 20, 1));
     }
 
     private EarlyHandHarvestEvents() {

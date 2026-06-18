@@ -6,16 +6,16 @@ import committee.nova.mods.skyresources3.common.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModRecipeTypes {
-    private static final Identifier PROCESS_ID = Identifier.fromNamespaceAndPath(Skyresources3.MODID, "process");
-    private static final Identifier CRUCIBLE_ID = Identifier.fromNamespaceAndPath(Skyresources3.MODID, "crucible");
-    private static final Identifier CONDENSER_ID = Identifier.fromNamespaceAndPath(Skyresources3.MODID, "condenser");
+    private static final ResourceLocation PROCESS_ID = ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "process");
+    private static final ResourceLocation CRUCIBLE_ID = ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "crucible");
+    private static final ResourceLocation CONDENSER_ID = ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "condenser");
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
             DeferredRegister.create(Registries.RECIPE_TYPE, Skyresources3.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =

@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +52,7 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -61,27 +62,27 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
             final BlockHitResult hitResult
     ) {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide()) {
             return player.isShiftKeyDown() || stack.getItem() instanceof HealthGemItem
-                    ? InteractionResult.SUCCESS
-                    : InteractionResult.PASS;
+                    ? ItemInteractionResult.SUCCESS
+                    : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!(level.getBlockEntity(pos) instanceof LifeInjectorBlockEntity lifeInjector)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (player.isShiftKeyDown() && lifeInjector.hasGem()) {
-            return returnGemToPlayer(level, pos, player, lifeInjector);
+            return BlockInteractionResults.item(returnGemToPlayer(level, pos, player, lifeInjector));
         }
         if (!lifeInjector.canInsertGem(stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         lifeInjector.insertGem(stack);
         if (!player.isCreative()) {
             stack.shrink(1);
         }
-        return InteractionResult.SUCCESS_SERVER;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
@@ -132,7 +133,7 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
         if (!player.addItem(removed)) {
             Block.popResource(level, pos.above(), removed);
         }
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 
     private InteractionResult openMenu(
@@ -151,6 +152,6 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
                 ),
                 buffer -> LifeInjectorMenu.writeClientSideData(buffer, pos)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

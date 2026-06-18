@@ -12,7 +12,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class IslandGuiScreen extends Screen {
     private static final int PANEL_MAX_WIDTH = 640;
@@ -58,7 +58,7 @@ public final class IslandGuiScreen extends Screen {
     }
 
     public static void requestOpen() {
-        ClientPacketDistributor.sendToServer(new IslandGuiRequestPayload());
+        PacketDistributor.sendToServer(new IslandGuiRequestPayload());
     }
 
     @Override
@@ -524,7 +524,7 @@ public final class IslandGuiScreen extends Screen {
 
     private void send(final IslandGuiActionPayload.Action action, final String value) {
         this.confirmAction = "";
-        ClientPacketDistributor.sendToServer(new IslandGuiActionPayload(action, value));
+        PacketDistributor.sendToServer(new IslandGuiActionPayload(action, value));
     }
 
     private Button addButton(

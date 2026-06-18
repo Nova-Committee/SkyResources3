@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 
 public final class GuideMenuGameTests {
@@ -355,7 +355,7 @@ public final class GuideMenuGameTests {
             final String path,
             final MenuType<?> menuType
     ) {
-        final Identifier id = BuiltInRegistries.MENU.getKey(menuType);
+        final ResourceLocation id = BuiltInRegistries.MENU.getKey(menuType);
         helper.assertTrue(id != null, "Menu type should be registered: " + path);
         helper.assertValueEqual(Skyresources3.MODID, id.getNamespace(), "Menu namespace should match");
         helper.assertValueEqual(path, id.getPath(), "Menu path should match");

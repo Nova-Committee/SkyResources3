@@ -33,8 +33,9 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -51,13 +52,24 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public final class SkyResources3RecipeProvider extends RecipeProvider {
-    private SkyResources3RecipeProvider(final HolderLookup.Provider lookupProvider, final RecipeOutput output) {
-        super(lookupProvider, output);
+    private RecipeOutput output;
+
+    public SkyResources3RecipeProvider(
+            final PackOutput output,
+            final CompletableFuture<HolderLookup.Provider> lookupProvider
+    ) {
+        super(output, lookupProvider);
     }
 
     @Override
-    protected void buildRecipes() {
-        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COMPRESSED_COAL_BLOCK.get())
+    protected void buildRecipes(final RecipeOutput output) {
+        this.output = output;
+        this.buildSkyResourcesRecipes();
+        this.output = null;
+    }
+
+    private void buildSkyResourcesRecipes() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COMPRESSED_COAL_BLOCK.get())
                 .define('C', Blocks.COAL_BLOCK)
                 .define('X', Items.COAL)
                 .pattern("CCC")
@@ -66,7 +78,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_coal_block", has(Blocks.COAL_BLOCK))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SANDY_NETHERRACK.get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SANDY_NETHERRACK.get(), 4)
                 .define('S', Blocks.SAND)
                 .define('W', Items.NETHER_WART)
                 .define('N', Blocks.NETHERRACK)
@@ -75,12 +87,12 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_netherrack", has(Blocks.NETHERRACK))
                 .save(this.output);
 
-        this.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.PETRIFIED_PLANKS.get(), 4)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.PETRIFIED_PLANKS.get(), 4)
                 .requires(ModBlocks.PETRIFIED_WOOD.get())
                 .unlockedBy("has_petrified_wood", has(ModBlocks.PETRIFIED_WOOD.get()))
                 .save(this.output, "skyresources:petrified_planks_from_petrified_wood");
 
-        this.shaped(RecipeCategory.MISC, ModItems.PLANT_MATTER.get(), 3)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PLANT_MATTER.get(), 3)
                 .define('X', ModItems.CACTUS_FRUIT.get())
                 .pattern(" X ")
                 .pattern("XXX")
@@ -88,7 +100,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_cactus_fruit", has(ModItems.CACTUS_FRUIT.get()))
                 .save(this.output, "skyresources:plant_matter_from_cactus_fruit");
 
-        this.shaped(RecipeCategory.FOOD, ModItems.FLESHY_SNOW_NUGGET.get(), 3)
+        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ModItems.FLESHY_SNOW_NUGGET.get(), 3)
                 .define('S', Items.SNOWBALL)
                 .define('F', Items.ROTTEN_FLESH)
                 .pattern("SS")
@@ -96,7 +108,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_rotten_flesh", has(Items.ROTTEN_FLESH))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.TOOLS, ModItems.SURVIVALIST_FISHING_ROD.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.SURVIVALIST_FISHING_ROD.get())
                 .define('X', Items.STICK)
                 .define('Y', Items.STRING)
                 .pattern(" X")
@@ -104,14 +116,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_string", has(Items.STRING))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.TOOLS, ModItems.WATER_EXTRACTOR.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.WATER_EXTRACTOR.get())
                 .define('X', ItemTags.PLANKS)
                 .pattern("XXX")
                 .pattern(" XX")
                 .unlockedBy("has_planks", has(ItemTags.PLANKS))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.MISC, ModItems.WOODEN_HEAT_COMPONENT.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WOODEN_HEAT_COMPONENT.get())
                 .define('X', ItemTags.PLANKS)
                 .define('Y', ModItems.SAWDUST.get())
                 .pattern("XXX")
@@ -120,7 +132,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_sawdust", has(ModItems.SAWDUST.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.MISC, ModItems.STONE_ALCHEMY_COMPONENT.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STONE_ALCHEMY_COMPONENT.get())
                 .define('X', Blocks.STONE)
                 .define('Y', ModItems.PRIMUS_ALCHEMICAL_DUST.get())
                 .pattern("XXX")
@@ -129,7 +141,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_primus_alchemical_dust", has(ModItems.PRIMUS_ALCHEMICAL_DUST.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.DIRT_FURNACE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.DIRT_FURNACE.get())
                 .define('X', ItemTags.DIRT)
                 .define('Y', ModItems.WOODEN_HEAT_COMPONENT.get())
                 .pattern("X")
@@ -137,7 +149,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_wooden_heat_component", has(ModItems.WOODEN_HEAT_COMPONENT.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.FUSION_TABLE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.FUSION_TABLE.get())
                 .define('X', ItemTags.PLANKS)
                 .define('Y', ModItems.STONE_ALCHEMY_COMPONENT.get())
                 .define('Z', ModItems.PRIMUS_ALCHEMICAL_DUST.get())
@@ -147,7 +159,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_stone_alchemy_component", has(ModItems.STONE_ALCHEMY_COMPONENT.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.QUICK_DROPPER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.QUICK_DROPPER.get())
                 .define('X', Items.IRON_INGOT)
                 .define('Y', Blocks.DROPPER)
                 .define('Z', Blocks.GLOWSTONE)
@@ -157,7 +169,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dropper", has(Blocks.DROPPER))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.DARK_MATTER_WARPER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.DARK_MATTER_WARPER.get())
                 .define('X', Blocks.OBSIDIAN)
                 .define('Y', ModItems.DARK_MATTER.get())
                 .pattern("XXX")
@@ -166,7 +178,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dark_matter", has(ModItems.DARK_MATTER.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.SILVERFISH_DISRUPTOR.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.SILVERFISH_DISRUPTOR.get())
                 .define('X', ModItems.DARK_MATTER.get())
                 .define('Y', Items.ENDER_EYE)
                 .define('Z', ModItems.LIGHT_MATTER.get())
@@ -176,7 +188,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_light_matter", has(ModItems.LIGHT_MATTER.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.END_PORTAL_CORE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.END_PORTAL_CORE.get())
                 .define('X', ModBlocks.DARK_MATTER_BLOCK.get())
                 .define('Y', Items.ENDER_EYE)
                 .define('Z', ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get())
@@ -188,7 +200,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_quartz_amplification_component", has(ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.FLUID_DROPPER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.FLUID_DROPPER.get())
                 .define('X', Blocks.COBBLESTONE)
                 .pattern("XXX")
                 .pattern("X X")
@@ -196,7 +208,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_cobblestone", has(Blocks.COBBLESTONE))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.CRUCIBLE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.CRUCIBLE.get())
                 .define('X', Items.BRICK)
                 .pattern("X X")
                 .pattern("X X")
@@ -204,7 +216,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_brick", has(Items.BRICK))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.CRUCIBLE_INSERTER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.CRUCIBLE_INSERTER.get())
                 .define('X', Items.IRON_INGOT)
                 .define('Y', Blocks.DROPPER)
                 .pattern("XYX")
@@ -213,7 +225,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dropper", has(Blocks.DROPPER))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.ROCK_CRUSHER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.ROCK_CRUSHER.get())
                 .define('X', Items.IRON_INGOT)
                 .define('Y', ModItems.DIAMOND_GRINDER.get())
                 .define('Z', ModItems.ADVANCED_POWER_COMPONENT.get())
@@ -223,7 +235,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_diamond_grinder", has(ModItems.DIAMOND_GRINDER.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.ROCK_CLEANER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.ROCK_CLEANER.get())
                 .define('X', Items.IRON_INGOT)
                 .define('Y', Blocks.CAULDRON)
                 .define('Z', ModItems.ADVANCED_POWER_COMPONENT.get())
@@ -233,7 +245,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_advanced_power_component", has(ModItems.ADVANCED_POWER_COMPONENT.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.AQUEOUS_CONCENTRATOR.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.AQUEOUS_CONCENTRATOR.get())
                 .define('X', Items.IRON_INGOT)
                 .define('A', Blocks.SNOW)
                 .define('Y', ModItems.ADVANCED_POWER_COMPONENT.get())
@@ -244,7 +256,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_water_extractor", has(ModItems.WATER_EXTRACTOR.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.AQUEOUS_DECONCENTRATOR.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.AQUEOUS_DECONCENTRATOR.get())
                 .define('X', Items.IRON_INGOT)
                 .define('A', Blocks.SAND)
                 .define('Y', ModItems.ADVANCED_POWER_COMPONENT.get())
@@ -255,7 +267,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_water_extractor", has(ModItems.WATER_EXTRACTOR.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.WILDLIFE_ATTRACTOR.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.WILDLIFE_ATTRACTOR.get())
                 .define('X', Blocks.HAY_BLOCK)
                 .define('Y', Blocks.CHEST)
                 .define('Z', Items.REDSTONE)
@@ -267,28 +279,28 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
 
         this.buildCombustionMachineRecipes();
 
-        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HEAVY_SNOW.get())
                 .define('X', ModItems.HEAVY_SNOWBALL.get())
                 .pattern("XX")
                 .pattern("XX")
                 .unlockedBy("has_heavy_snowball", has(ModItems.HEAVY_SNOWBALL.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.BLAZE_POWDER_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.BLAZE_POWDER_BLOCK.get())
                 .define('X', Items.BLAZE_POWDER)
                 .pattern("XX")
                 .pattern("XX")
                 .unlockedBy("has_blaze_powder", has(Items.BLAZE_POWDER))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.MINI_FREEZER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.MINI_FREEZER.get())
                 .define('X', Blocks.SNOW)
                 .pattern("X")
                 .pattern("X")
                 .unlockedBy("has_snow", has(Blocks.SNOW))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.IRON_FREEZER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.IRON_FREEZER.get())
                 .define('X', ModItems.FROZEN_IRON_INGOT.get())
                 .define('Z', ModBlocks.MINI_FREEZER.get())
                 .pattern("XXX")
@@ -297,7 +309,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_frozen_iron_ingot", has(ModItems.FROZEN_IRON_INGOT.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIGHT_FREEZER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIGHT_FREEZER.get())
                 .define('X', ModItems.LIGHT_MATTER.get())
                 .define('Z', ModBlocks.IRON_FREEZER.get())
                 .pattern("XXX")
@@ -306,7 +318,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_light_matter", has(ModItems.LIGHT_MATTER.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COAL_INFUSED_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COAL_INFUSED_BLOCK.get())
                 .define('X', ModItems.ALCHEMICAL_COAL.get())
                 .pattern("XXX")
                 .pattern("XXX")
@@ -314,12 +326,12 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_alchemical_coal", has(ModItems.ALCHEMICAL_COAL.get()))
                 .save(this.output);
 
-        this.shapeless(RecipeCategory.MISC, ModItems.ALCHEMICAL_COAL.get(), 9)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.ALCHEMICAL_COAL.get(), 9)
                 .requires(ModBlocks.COAL_INFUSED_BLOCK.get())
                 .unlockedBy("has_coal_infused_block", has(ModBlocks.COAL_INFUSED_BLOCK.get()))
                 .save(this.output, "skyresources:alchemical_coal_from_block");
 
-        this.shapeless(RecipeCategory.MISC, ModItems.HEAVY_EXPLOSIVE_SNOWBALL.get(), 3)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.HEAVY_EXPLOSIVE_SNOWBALL.get(), 3)
                 .requires(ModItems.HEAVY_SNOWBALL.get())
                 .requires(ModItems.HEAVY_SNOWBALL.get())
                 .requires(ModItems.HEAVY_SNOWBALL.get())
@@ -327,14 +339,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_heavy_snowball", has(ModItems.HEAVY_SNOWBALL.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.TOOLS, ModItems.CACTUS_CUTTING_KNIFE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.CACTUS_CUTTING_KNIFE.get())
                 .define('#', ModItems.CACTUS_NEEDLE.get())
                 .pattern(" #")
                 .pattern("# ")
                 .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.CACTUS_FRUIT_NEEDLE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.CACTUS_FRUIT_NEEDLE.get())
                 .define('X', ModItems.CACTUS_FRUIT.get())
                 .define('Y', ModItems.CACTUS_NEEDLE.get())
                 .pattern("X")
@@ -349,7 +361,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.grinder(ModItems.IRON_GRINDER.get(), Items.IRON_INGOT, "has_iron_ingot");
         this.grinder(ModItems.DIAMOND_GRINDER.get(), Items.DIAMOND, "has_diamond");
 
-        this.shaped(RecipeCategory.MISC, ModItems.SANDSTONE_INFUSION_STONE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SANDSTONE_INFUSION_STONE.get())
                 .define('X', ModItems.CACTUS_NEEDLE.get())
                 .define('Y', Blocks.SANDSTONE)
                 .pattern("X")
@@ -357,7 +369,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.MISC, ModItems.RED_SANDSTONE_INFUSION_STONE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RED_SANDSTONE_INFUSION_STONE.get())
                 .define('X', ModItems.CACTUS_NEEDLE.get())
                 .define('Y', Blocks.RED_SANDSTONE)
                 .pattern("X")
@@ -365,14 +377,14 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_cactus_needle", has(ModItems.CACTUS_NEEDLE.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.MISC, ModItems.ALCHEMICAL_GOLD_NEEDLE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ALCHEMICAL_GOLD_NEEDLE.get())
                 .define('X', ModItems.ALCHEMICAL_GOLD_INGOT.get())
                 .pattern("X")
                 .pattern("X")
                 .unlockedBy("has_alchemical_gold_ingot", has(ModItems.ALCHEMICAL_GOLD_INGOT.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.MISC, ModItems.ALCHEMICAL_INFUSION_STONE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ALCHEMICAL_INFUSION_STONE.get())
                 .define('X', ModItems.ALCHEMICAL_GOLD_NEEDLE.get())
                 .define('Y', ModItems.ALCHEMICAL_DIAMOND.get())
                 .pattern("X")
@@ -380,7 +392,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_alchemical_gold_needle", has(ModItems.ALCHEMICAL_GOLD_NEEDLE.get()))
                 .save(this.output);
 
-        this.shapeless(RecipeCategory.MISC, ModItems.ENRICHED_BONEMEAL.get(), 4)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.ENRICHED_BONEMEAL.get(), 4)
                 .requires(Items.ROTTEN_FLESH)
                 .requires(Items.BONE_MEAL)
                 .requires(Items.BONE_MEAL)
@@ -388,7 +400,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_rotten_flesh", has(Items.ROTTEN_FLESH))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.MISC, ModItems.FROZEN_IRON_COOLING_COMPONENT.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FROZEN_IRON_COOLING_COMPONENT.get())
                 .define('X', ModItems.FROZEN_IRON_INGOT.get())
                 .define('Y', Items.GLOWSTONE_DUST)
                 .define('Z', Items.LAPIS_LAZULI)
@@ -398,7 +410,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_frozen_iron_ingot", has(ModItems.FROZEN_IRON_INGOT.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.MISC, ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get())
                 .define('X', Items.QUARTZ)
                 .define('Y', Items.LAPIS_LAZULI)
                 .define('Z', Items.GLOWSTONE_DUST)
@@ -408,7 +420,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_quartz", has(Items.QUARTZ))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_MATTER_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_MATTER_BLOCK.get())
                 .define('X', ModItems.DARK_MATTER.get())
                 .pattern("XXX")
                 .pattern("XXX")
@@ -416,12 +428,12 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_dark_matter", has(ModItems.DARK_MATTER.get()))
                 .save(this.output);
 
-        this.shapeless(RecipeCategory.MISC, ModItems.DARK_MATTER.get(), 9)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.DARK_MATTER.get(), 9)
                 .requires(ModBlocks.DARK_MATTER_BLOCK.get())
                 .unlockedBy("has_dark_matter_block", has(ModBlocks.DARK_MATTER_BLOCK.get()))
                 .save(this.output, "skyresources:dark_matter_from_block");
 
-        this.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LIGHT_MATTER_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LIGHT_MATTER_BLOCK.get())
                 .define('X', ModItems.LIGHT_MATTER.get())
                 .pattern("XXX")
                 .pattern("XXX")
@@ -429,12 +441,12 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_light_matter", has(ModItems.LIGHT_MATTER.get()))
                 .save(this.output);
 
-        this.shapeless(RecipeCategory.MISC, ModItems.LIGHT_MATTER.get(), 9)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.LIGHT_MATTER.get(), 9)
                 .requires(ModBlocks.LIGHT_MATTER_BLOCK.get())
                 .unlockedBy("has_light_matter_block", has(ModBlocks.LIGHT_MATTER_BLOCK.get()))
                 .save(this.output, "skyresources:light_matter_from_block");
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIFE_INFUSER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIFE_INFUSER.get())
                 .define('X', ItemTags.LOGS)
                 .define('Y', ModItems.ALCHEMICAL_INFUSION_STONE.get())
                 .pattern("XXX")
@@ -443,7 +455,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .unlockedBy("has_alchemical_infusion_stone", has(ModItems.ALCHEMICAL_INFUSION_STONE.get()))
                 .save(this.output);
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIFE_INJECTOR.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.LIFE_INJECTOR.get())
                 .define('X', ItemTags.LOGS)
                 .define('Y', Items.DIAMOND_SWORD)
                 .pattern(" Y ")
@@ -488,7 +500,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void cuttingKnife(final ItemLike result, final ItemLike material, final String unlockName) {
-        this.shaped(RecipeCategory.TOOLS, result)
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result)
                 .define('#', material)
                 .define('X', Items.STICK)
                 .pattern("#  ")
@@ -499,7 +511,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void grinder(final ItemLike result, final ItemLike material, final String unlockName) {
-        this.shaped(RecipeCategory.TOOLS, result)
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result)
                 .define('#', material)
                 .define('X', Items.STICK)
                 .pattern("#  ")
@@ -510,7 +522,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void buildCombustionMachineRecipes() {
-        this.casingRecipe(ModDataPackRegistries.WOODEN, this.tag(ItemTags.PLANKS), "has_planks", has(ItemTags.PLANKS));
+        this.casingRecipe(ModDataPackRegistries.WOODEN, Ingredient.of(ItemTags.PLANKS), "has_planks", has(ItemTags.PLANKS));
         this.casingRecipe(ModDataPackRegistries.STONE, Ingredient.of(Blocks.COBBLESTONE), "has_cobblestone", has(Blocks.COBBLESTONE));
         this.casingRecipe(ModDataPackRegistries.IRON, Ingredient.of(Items.IRON_INGOT), "has_iron_ingot", has(Items.IRON_INGOT));
         this.casingRecipe(ModDataPackRegistries.NETHER_BRICK, Ingredient.of(Blocks.NETHER_BRICKS), "has_nether_bricks", has(Blocks.NETHER_BRICKS));
@@ -518,21 +530,21 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.casingRecipe(ModDataPackRegistries.DARK_MATTER, Ingredient.of(ModItems.DARK_MATTER.get()), "has_dark_matter", has(ModItems.DARK_MATTER.get()));
         this.casingRecipe(ModDataPackRegistries.LIGHT_MATTER, Ingredient.of(ModItems.LIGHT_MATTER.get()), "has_light_matter", has(ModItems.LIGHT_MATTER.get()));
 
-        this.combustionHeaterRecipe(ModDataPackRegistries.WOODEN_COMBUSTION_HEATER, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.combustionHeaterRecipe(ModDataPackRegistries.WOODEN_COMBUSTION_HEATER, Ingredient.of(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
         this.combustionHeaterRecipe(ModDataPackRegistries.STONE_COMBUSTION_HEATER, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
         this.combustionHeaterRecipe(ModDataPackRegistries.IRON_COMBUSTION_HEATER, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
         this.combustionHeaterRecipe(ModDataPackRegistries.NETHER_BRICK_COMBUSTION_HEATER, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
         this.combustionHeaterRecipe(ModDataPackRegistries.END_STONE_COMBUSTION_HEATER, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
         this.combustionHeaterRecipe(ModDataPackRegistries.DARK_MATTER_COMBUSTION_HEATER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
         this.combustionHeaterRecipe(ModDataPackRegistries.LIGHT_MATTER_COMBUSTION_HEATER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
-        this.heatProviderRecipe(ModDataPackRegistries.WOODEN_HEAT_PROVIDER, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.heatProviderRecipe(ModDataPackRegistries.WOODEN_HEAT_PROVIDER, Ingredient.of(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
         this.heatProviderRecipe(ModDataPackRegistries.STONE_HEAT_PROVIDER, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
         this.heatProviderRecipe(ModDataPackRegistries.IRON_HEAT_PROVIDER, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
         this.heatProviderRecipe(ModDataPackRegistries.NETHER_BRICK_HEAT_PROVIDER, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
         this.heatProviderRecipe(ModDataPackRegistries.END_STONE_HEAT_PROVIDER, Ingredient.of(Blocks.END_STONE), Items.ENDER_PEARL, "has_ender_pearl");
         this.heatProviderRecipe(ModDataPackRegistries.DARK_MATTER_HEAT_PROVIDER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
         this.heatProviderRecipe(ModDataPackRegistries.LIGHT_MATTER_HEAT_PROVIDER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
-        this.condenserRecipe(ModDataPackRegistries.WOODEN_CONDENSER, this.tag(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
+        this.condenserRecipe(ModDataPackRegistries.WOODEN_CONDENSER, Ingredient.of(ItemTags.PLANKS), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_wooden_heat_component");
         this.condenserRecipe(ModDataPackRegistries.STONE_CONDENSER, Ingredient.of(Blocks.COBBLESTONE), ModItems.WOODEN_HEAT_COMPONENT.get(), "has_cobblestone");
         this.condenserRecipe(ModDataPackRegistries.IRON_CONDENSER, Ingredient.of(Items.IRON_INGOT), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_advanced_power_component");
         this.condenserRecipe(ModDataPackRegistries.NETHER_BRICK_CONDENSER, Ingredient.of(Blocks.NETHER_BRICKS), Items.BLAZE_POWDER, "has_blaze_powder");
@@ -540,7 +552,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.condenserRecipe(ModDataPackRegistries.DARK_MATTER_CONDENSER, Ingredient.of(ModItems.DARK_MATTER.get()), ModItems.ADVANCED_POWER_COMPONENT.get(), "has_dark_matter");
         this.condenserRecipe(ModDataPackRegistries.LIGHT_MATTER_CONDENSER, Ingredient.of(ModItems.LIGHT_MATTER.get()), ModItems.QUARTZ_AMPLIFICATION_COMPONENT.get(), "has_light_matter");
 
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_COLLECTOR.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_COLLECTOR.get())
                 .define('X', Items.IRON_INGOT)
                 .define('Y', Blocks.HOPPER)
                 .pattern("XXX")
@@ -548,7 +560,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 .pattern("XXX")
                 .unlockedBy("has_hopper", has(Blocks.HOPPER))
                 .save(this.output);
-        this.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_CONTROLLER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.COMBUSTION_CONTROLLER.get())
                 .define('X', Items.IRON_INGOT)
                 .define('Y', Items.REDSTONE_BLOCK)
                 .pattern("XXX")
@@ -564,7 +576,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final String unlockName,
             final Criterion<?> criterion
     ) {
-        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, MachineCasingItem.forType(casingType))
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, MachineCasingItem.forType(casingType))
                 .define('X', material)
                 .pattern("XXX")
                 .pattern("X X")
@@ -579,7 +591,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemLike component,
             final String unlockName
     ) {
-        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, CombustionHeaterItem.forType(heaterType))
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CombustionHeaterItem.forType(heaterType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XXX")
@@ -596,7 +608,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemLike component,
             final String unlockName
     ) {
-        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, HeatProviderItem.forType(providerType))
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HeatProviderItem.forType(providerType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XYX")
@@ -613,7 +625,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemLike component,
             final String unlockName
     ) {
-        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, CondenserItem.forType(condenserType))
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CondenserItem.forType(condenserType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XYX")
@@ -1417,7 +1429,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private ProcessIngredient input(final TagKey<Item> tag, final int count) {
-        return new ProcessIngredient(this.tag(tag), count);
+        return new ProcessIngredient(Ingredient.of(tag), count);
     }
 
     private static float condenserFluidParameter(final int rarity) {
@@ -1433,36 +1445,15 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private static String oreAlchemyDustRecipeName(final ResourceKey<OreAlchemyDustType> dust) {
-        return dust.identifier().getPath() + "_ore_alchemical_dust";
+        return dust.location().getPath() + "_ore_alchemical_dust";
     }
 
     private static String dirtyGemRecipeName(final ResourceKey<DirtyGemType> gem) {
-        return gem.identifier().getPath() + "_dirty_gem";
+        return gem.location().getPath() + "_dirty_gem";
     }
 
-    private static ResourceKey<Recipe<?>> id(final String path) {
-        return ResourceKey.create(
-                Registries.RECIPE,
-                Identifier.fromNamespaceAndPath(Skyresources3.MODID, path)
-        );
+    private static ResourceLocation id(final String path) {
+        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
     }
 
-    public static final class Runner extends RecipeProvider.Runner {
-        public Runner(final PackOutput output, final CompletableFuture<HolderLookup.Provider> lookupProvider) {
-            super(output, lookupProvider);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(
-                final HolderLookup.Provider lookupProvider,
-                final RecipeOutput output
-        ) {
-            return new SkyResources3RecipeProvider(lookupProvider, output);
-        }
-
-        @Override
-        public String getName() {
-            return "SkyResources3 Recipes";
-        }
-    }
 }

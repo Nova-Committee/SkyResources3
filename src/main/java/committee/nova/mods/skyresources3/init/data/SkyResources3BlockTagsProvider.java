@@ -13,7 +13,7 @@ public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
             final PackOutput output,
             final CompletableFuture<HolderLookup.Provider> lookupProvider
     ) {
-        super(output, lookupProvider, Skyresources3.MODID);
+        super(output, lookupProvider, Skyresources3.MODID, null);
     }
 
     @Override

@@ -7,11 +7,11 @@ import committee.nova.mods.skyresources3.common.menu.LifeInfuserMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class LifeInfuserScreen extends AbstractContainerScreen<LifeInfuserMenu> {
-    private static final Identifier HEART = Identifier.withDefaultNamespace("hud/heart/full");
+    private static final ResourceLocation HEART = ResourceLocation.withDefaultNamespace("hud/heart/full");
     private static final int STATUS_X = 95;
     private static final int STATUS_Y = 48;
     private static final int STATUS_WIDTH = 70;

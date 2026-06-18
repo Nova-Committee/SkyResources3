@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class MachineCasingMenu extends AbstractContainerMenu {
+public final class MachineCasingMenu extends SkyResourcesMenu {
     public static final int FUEL_SLOT_X = 80;
     public static final int FUEL_SLOT_Y = 43;
     private static final int RATIO_SCALE = 1_000;

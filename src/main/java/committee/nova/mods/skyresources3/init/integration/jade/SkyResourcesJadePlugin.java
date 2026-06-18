@@ -1,7 +1,7 @@
 package committee.nova.mods.skyresources3.init.integration.jade;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
@@ -10,7 +10,7 @@ import snownee.jade.api.WailaPlugin;
 
 @WailaPlugin
 public final class SkyResourcesJadePlugin implements IWailaPlugin {
-    static final Identifier PROBE_DATA = id("probe_data");
+    static final ResourceLocation PROBE_DATA = id("probe_data");
 
     @Override
     public void register(final IWailaCommonRegistration registration) {
@@ -23,7 +23,7 @@ public final class SkyResourcesJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(SkyResourcesProbeComponentProvider.INSTANCE, Block.class);
     }
 
-    private static Identifier id(final String path) {
-        return Identifier.fromNamespaceAndPath(Skyresources3.MODID, path);
+    private static ResourceLocation id(final String path) {
+        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
     }
 }

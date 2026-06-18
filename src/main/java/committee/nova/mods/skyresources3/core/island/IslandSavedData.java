@@ -10,13 +10,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
 
 public final class IslandSavedData extends SavedData {
     private static final String DATA_ID = Skyresources3.MODID + "_islands";
@@ -27,11 +29,7 @@ public final class IslandSavedData extends SavedData {
             .optionalFieldOf("islands", Map.of())
             .xmap(IslandSavedData::new, data -> Map.copyOf(data.islands))
             .codec();
-    private static final SavedDataType<IslandSavedData> TYPE = new SavedDataType<>(
-            DATA_ID,
-            IslandSavedData::new,
-            CODEC
-    );
+    private static final Factory<IslandSavedData> FACTORY = new Factory<>(IslandSavedData::new, IslandSavedData::load);
 
     private final Map<UUID, IslandRecord> islands;
 
@@ -44,7 +42,23 @@ public final class IslandSavedData extends SavedData {
     }
 
     public static IslandSavedData get(final ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(TYPE);
+        return level.getDataStorage().computeIfAbsent(FACTORY, DATA_ID);
+    }
+
+    @Override
+    public CompoundTag save(final CompoundTag tag, final HolderLookup.Provider registries) {
+        CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+                .result()
+                .filter(CompoundTag.class::isInstance)
+                .map(CompoundTag.class::cast)
+                .ifPresent(tag::merge);
+        return tag;
+    }
+
+    private static IslandSavedData load(final CompoundTag tag, final HolderLookup.Provider registries) {
+        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag)
+                .result()
+                .orElseGet(IslandSavedData::new);
     }
 
     public Optional<IslandRecord> getIsland(final UUID owner) {

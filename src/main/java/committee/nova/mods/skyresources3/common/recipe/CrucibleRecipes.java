@@ -12,7 +12,7 @@ public final class CrucibleRecipes {
         if (input.isEmpty()) {
             return Optional.empty();
         }
-        return level.recipeAccess().getRecipeFor(
+        return level.getRecipeManager().getRecipeFor(
                 ModRecipeTypes.CRUCIBLE_TYPE.get(),
                 new SingleRecipeInput(input.copy()),
                 level

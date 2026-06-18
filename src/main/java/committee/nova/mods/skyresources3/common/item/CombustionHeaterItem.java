@@ -5,16 +5,15 @@ import committee.nova.mods.skyresources3.core.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
-import java.util.function.Consumer;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 public final class CombustionHeaterItem extends BlockItem {
@@ -26,13 +25,13 @@ public final class CombustionHeaterItem extends BlockItem {
         return forType(ModDataPackRegistries.combustionHeaterTypeId(typeKey));
     }
 
-    public static ItemStack forType(final Identifier typeId) {
+    public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.COMBUSTION_HEATER.get());
         stack.set(ModDataComponents.COMBUSTION_HEATER_TYPE.get(), typeId);
         return stack;
     }
 
-    public static Identifier combustionHeaterTypeId(final ItemStack stack) {
+    public static ResourceLocation combustionHeaterTypeId(final ItemStack stack) {
         return stack.getOrDefault(
                 ModDataComponents.COMBUSTION_HEATER_TYPE.get(),
                 ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.IRON_COMBUSTION_HEATER)
@@ -49,31 +48,30 @@ public final class CombustionHeaterItem extends BlockItem {
     public void appendHoverText(
             final ItemStack stack,
             final TooltipContext context,
-            final TooltipDisplay tooltipDisplay,
-            final Consumer<Component> tooltipAdder,
+            final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
         final HolderLookup.Provider registries = context.registries();
         if (registries == null) {
             return;
         }
-        final Identifier typeId = combustionHeaterTypeId(stack);
+        final ResourceLocation typeId = combustionHeaterTypeId(stack);
         registries.lookup(ModDataPackRegistries.COMBUSTION_HEATER_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.combustionHeaterTypeKey(typeId)))
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
-                    tooltipAdder.accept(Component.translatable(
+                    tooltipComponents.add(Component.translatable(
                             "item.skyresources.combustion_heater.speed",
                             Math.round(type.speed() * 100.0F)
                     ).withStyle(ChatFormatting.BLUE));
-                    tooltipAdder.accept(Component.translatable(
+                    tooltipComponents.add(Component.translatable(
                             "item.skyresources.combustion_heater.efficiency",
                             Math.round(type.efficiency() * 100.0F)
                     ).withStyle(ChatFormatting.GREEN));
                 });
     }
 
-    public static String translationKey(final Identifier typeId) {
+    public static String translationKey(final ResourceLocation typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
             return "block.skyresources.combustion_heater." + typeId.getPath();
         }

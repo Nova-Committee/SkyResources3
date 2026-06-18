@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -41,7 +41,7 @@ public record IslandGuiStatePayload(
     };
 
     public static final Type<IslandGuiStatePayload> TYPE = new Type<>(
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_state")
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_state")
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, IslandGuiStatePayload> STREAM_CODEC = StreamCodec.of(
             IslandGuiStatePayload::encode,
@@ -129,7 +129,7 @@ public record IslandGuiStatePayload(
                 pendingInvite == null ? "" : pendingInvite.ownerName(),
                 island.ownerName(),
                 island.type(),
-                island.dimension().identifier().toString(),
+                island.dimension().location().toString(),
                 formatPosition(island.home()),
                 players,
                 invites,

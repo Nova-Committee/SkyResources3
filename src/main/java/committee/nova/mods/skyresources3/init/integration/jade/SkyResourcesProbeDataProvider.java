@@ -12,12 +12,12 @@ import committee.nova.mods.skyresources3.util.HeatSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.StreamServerDataProvider;
 
@@ -79,7 +79,7 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return SkyResourcesJadePlugin.PROBE_DATA;
     }
 

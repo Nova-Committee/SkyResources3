@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 import org.jetbrains.annotations.Nullable;
 
 public final class RockCleanerBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -87,7 +88,7 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -97,18 +98,18 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
             final BlockHitResult hitResult
     ) {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!(level.getBlockEntity(pos) instanceof RockCleanerBlockEntity cleaner)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection())) {
-            return InteractionResult.SUCCESS_SERVER;
+            return ItemInteractionResult.SUCCESS;
         }
-        return this.openMenu(pos, player, cleaner);
+        return BlockInteractionResults.item(this.openMenu(pos, player, cleaner));
     }
 
     @Override
@@ -144,6 +145,6 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
                 ),
                 buffer -> RockCleanerMenu.writeClientSideData(buffer, pos)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

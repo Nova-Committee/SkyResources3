@@ -6,19 +6,22 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.data.ItemTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 
 public final class SkyResources3ItemTagsProvider extends ItemTagsProvider {
     public SkyResources3ItemTagsProvider(
             final PackOutput output,
-            final CompletableFuture<HolderLookup.Provider> lookupProvider
+            final CompletableFuture<HolderLookup.Provider> lookupProvider,
+            final CompletableFuture<TagsProvider.TagLookup<Block>> blockTags
     ) {
-        super(output, lookupProvider, Skyresources3.MODID);
+        super(output, lookupProvider, blockTags, Skyresources3.MODID, null);
     }
 
     @Override
@@ -34,6 +37,6 @@ public final class SkyResources3ItemTagsProvider extends ItemTagsProvider {
     }
 
     private static TagKey<Item> commonItemTag(final String path) {
-        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", path));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path));
     }
 }

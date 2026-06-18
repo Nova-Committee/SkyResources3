@@ -9,22 +9,17 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jspecify.annotations.Nullable;
 
 public final class CrucibleRecipe implements Recipe<SingleRecipeInput> {
     private final String group;
     private final ProcessIngredient input;
     private final FluidStack output;
-    private @Nullable PlacementInfo placementInfo;
 
     public CrucibleRecipe(final String group, final ProcessIngredient input, final FluidStack output) {
         if (output.isEmpty()) {
@@ -50,9 +45,23 @@ public final class CrucibleRecipe implements Recipe<SingleRecipeInput> {
         return true;
     }
 
-    @Override
     public String group() {
         return this.group;
+    }
+
+    @Override
+    public String getGroup() {
+        return this.group;
+    }
+
+    @Override
+    public ItemStack getResultItem(final HolderLookup.Provider registries) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(final int width, final int height) {
+        return true;
     }
 
     @Override
@@ -63,19 +72,6 @@ public final class CrucibleRecipe implements Recipe<SingleRecipeInput> {
     @Override
     public RecipeType<? extends Recipe<SingleRecipeInput>> getType() {
         return ModRecipeTypes.CRUCIBLE_TYPE.get();
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        if (this.placementInfo == null) {
-            this.placementInfo = PlacementInfo.create(this.input.ingredient());
-        }
-        return this.placementInfo;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public ProcessIngredient input() {

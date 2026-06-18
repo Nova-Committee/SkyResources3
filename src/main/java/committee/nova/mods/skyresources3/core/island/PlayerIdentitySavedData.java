@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
 
 public final class PlayerIdentitySavedData extends SavedData {
     private static final String DATA_ID = Skyresources3.MODID + "_player_identities";
@@ -21,11 +23,8 @@ public final class PlayerIdentitySavedData extends SavedData {
             .optionalFieldOf("players", Map.of())
             .xmap(PlayerIdentitySavedData::new, data -> Map.copyOf(data.players))
             .codec();
-    private static final SavedDataType<PlayerIdentitySavedData> TYPE = new SavedDataType<>(
-            DATA_ID,
-            PlayerIdentitySavedData::new,
-            CODEC
-    );
+    private static final Factory<PlayerIdentitySavedData> FACTORY =
+            new Factory<>(PlayerIdentitySavedData::new, PlayerIdentitySavedData::load);
 
     private final Map<UUID, String> players;
 
@@ -38,7 +37,23 @@ public final class PlayerIdentitySavedData extends SavedData {
     }
 
     public static PlayerIdentitySavedData get(final ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(TYPE);
+        return level.getDataStorage().computeIfAbsent(FACTORY, DATA_ID);
+    }
+
+    @Override
+    public CompoundTag save(final CompoundTag tag, final HolderLookup.Provider registries) {
+        CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+                .result()
+                .filter(CompoundTag.class::isInstance)
+                .map(CompoundTag.class::cast)
+                .ifPresent(tag::merge);
+        return tag;
+    }
+
+    private static PlayerIdentitySavedData load(final CompoundTag tag, final HolderLookup.Provider registries) {
+        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag)
+                .result()
+                .orElseGet(PlayerIdentitySavedData::new);
     }
 
     public void remember(final ServerPlayer player) {

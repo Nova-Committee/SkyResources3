@@ -15,14 +15,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.energy.EnergyHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.energy.SimpleEnergyHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
 
 public final class RockCrusherBlockEntity extends BlockEntity {
     public static final int INPUT_SLOT = 0;
@@ -50,8 +50,9 @@ public final class RockCrusherBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
         input.readChild(ITEMS_KEY, this.items);
         input.readChild(ENERGY_KEY, this.energy);
         this.progress = input.getFloatOr(PROGRESS_KEY, 0.0F);
@@ -65,8 +66,9 @@ public final class RockCrusherBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
         output.putChild(ITEMS_KEY, this.items);
         output.putChild(ENERGY_KEY, this.energy);
         output.putFloat(PROGRESS_KEY, this.progress);
@@ -76,7 +78,6 @@ public final class RockCrusherBlockEntity extends BlockEntity {
                 .toList());
     }
 
-    @Override
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {
         this.dropContents();
     }

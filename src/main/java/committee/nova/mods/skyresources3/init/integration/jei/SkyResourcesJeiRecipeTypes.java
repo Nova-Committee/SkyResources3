@@ -6,25 +6,25 @@ import committee.nova.mods.skyresources3.common.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.common.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
 import java.util.List;
-import mezz.jei.api.recipe.types.IRecipeType;
-import net.minecraft.resources.Identifier;
+import mezz.jei.api.recipe.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 final class SkyResourcesJeiRecipeTypes {
-    static final IRecipeType<SkyResourcesProcessRecipe> PROCESS_COMBUSTION = process("combustion");
-    static final IRecipeType<SkyResourcesProcessRecipe> PROCESS_FREEZER = process("freezer");
-    static final IRecipeType<SkyResourcesProcessRecipe> PROCESS_FUSION = process("fusion");
-    static final IRecipeType<SkyResourcesProcessRecipe> PROCESS_INFUSION = process("infusion");
-    static final IRecipeType<SkyResourcesProcessRecipe> PROCESS_KNIFE = process("knife");
-    static final IRecipeType<SkyResourcesProcessRecipe> PROCESS_ROCK_GRINDER = process("rockgrinder");
-    static final IRecipeType<SkyResourcesProcessRecipe> PROCESS_CAULDRON_CLEAN = process("cauldronclean");
-    static final IRecipeType<CrucibleRecipe> CRUCIBLE =
-            IRecipeType.create(id("crucible"), CrucibleRecipe.class);
-    static final IRecipeType<CondenserRecipe> CONDENSER =
-            IRecipeType.create(id("condenser"), CondenserRecipe.class);
-    static final IRecipeType<HeatSourceJeiRecipe> HEAT_SOURCES =
-            IRecipeType.create(id("heat_sources"), HeatSourceJeiRecipe.class);
+    static final RecipeType<SkyResourcesProcessRecipe> PROCESS_COMBUSTION = process("combustion");
+    static final RecipeType<SkyResourcesProcessRecipe> PROCESS_FREEZER = process("freezer");
+    static final RecipeType<SkyResourcesProcessRecipe> PROCESS_FUSION = process("fusion");
+    static final RecipeType<SkyResourcesProcessRecipe> PROCESS_INFUSION = process("infusion");
+    static final RecipeType<SkyResourcesProcessRecipe> PROCESS_KNIFE = process("knife");
+    static final RecipeType<SkyResourcesProcessRecipe> PROCESS_ROCK_GRINDER = process("rockgrinder");
+    static final RecipeType<SkyResourcesProcessRecipe> PROCESS_CAULDRON_CLEAN = process("cauldronclean");
+    static final RecipeType<CrucibleRecipe> CRUCIBLE =
+            new RecipeType<>(id("crucible"), CrucibleRecipe.class);
+    static final RecipeType<CondenserRecipe> CONDENSER =
+            new RecipeType<>(id("condenser"), CondenserRecipe.class);
+    static final RecipeType<HeatSourceJeiRecipe> HEAT_SOURCES =
+            new RecipeType<>(id("heat_sources"), HeatSourceJeiRecipe.class);
 
-    static List<IRecipeType<?>> byGuideTarget(final String target) {
+    static List<RecipeType<?>> byGuideTarget(final String target) {
         return switch (target) {
             case GuideRecipeTargets.PROCESS_COMBUSTION -> List.of(PROCESS_COMBUSTION);
             case GuideRecipeTargets.PROCESS_FREEZER -> List.of(PROCESS_FREEZER);
@@ -40,12 +40,12 @@ final class SkyResourcesJeiRecipeTypes {
         };
     }
 
-    private static IRecipeType<SkyResourcesProcessRecipe> process(final String process) {
-        return IRecipeType.create(id("process/" + process), SkyResourcesProcessRecipe.class);
+    private static RecipeType<SkyResourcesProcessRecipe> process(final String process) {
+        return new RecipeType<>(id("process/" + process), SkyResourcesProcessRecipe.class);
     }
 
-    private static Identifier id(final String path) {
-        return Identifier.fromNamespaceAndPath(Skyresources3.MODID, path);
+    private static ResourceLocation id(final String path) {
+        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
     }
 
     private SkyResourcesJeiRecipeTypes() {

@@ -1,9 +1,6 @@
 package committee.nova.mods.skyresources3.client;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.client.model.*;
-import committee.nova.mods.skyresources3.client.render.GuideStructurePictureRenderer;
-import committee.nova.mods.skyresources3.client.render.GuideStructureRenderState;
 import committee.nova.mods.skyresources3.client.render.MachineCasingBlockEntityRenderer;
 import committee.nova.mods.skyresources3.client.render.StandaloneMachineBlockEntityRenderer;
 import committee.nova.mods.skyresources3.client.screen.*;
@@ -14,12 +11,13 @@ import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModFluidTypes;
+import committee.nova.mods.skyresources3.init.registry.ModItems;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -28,20 +26,16 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
-import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 @EventBusSubscriber(modid = Skyresources3.MODID, value = Dist.CLIENT)
 public final class SkyResources3Client {
-    private static final Identifier CRYSTAL_FLUID_STILL =
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_still");
-    private static final Identifier CRYSTAL_FLUID_FLOW =
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_flow");
-    private static final KeyMapping.Category KEY_CATEGORY =
-            KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Skyresources3.MODID, "guide"));
+    private static final ResourceLocation CRYSTAL_FLUID_STILL =
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_still");
+    private static final ResourceLocation CRYSTAL_FLUID_FLOW =
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_flow");
+    private static final String KEY_CATEGORY = "key.categories.skyresources";
     private static final KeyMapping OPEN_GUIDE = new KeyMapping(
             "key.skyresources.guide",
             InputConstants.Type.KEYSYM,
@@ -96,14 +90,8 @@ public final class SkyResources3Client {
     }
 
     @SubscribeEvent
-    public static void registerPictureInPictureRenderers(final RegisterPictureInPictureRenderersEvent event) {
-        event.register(GuideStructureRenderState.class, GuideStructurePictureRenderer::new);
-    }
-
-    @SubscribeEvent
     public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
         IslandGuiStatePayload.setClientHandler(IslandGuiScreen::open);
-        event.registerCategory(KEY_CATEGORY);
         event.register(OPEN_GUIDE);
         event.register(OPEN_ISLAND);
     }
@@ -124,44 +112,14 @@ public final class SkyResources3Client {
     }
 
     @SubscribeEvent
-    public static void registerRangeSelectItemModelProperties(
-            final RegisterRangeSelectItemModelPropertyEvent event
-    ) {
+    public static void registerItemColors(final RegisterColorHandlersEvent.Item event) {
         event.register(
-                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "water_extractor_level"),
-                WaterExtractorLevelProperty.MAP_CODEC
-        );
-    }
-
-    @SubscribeEvent
-    public static void registerSelectItemModelProperties(final RegisterSelectItemModelPropertyEvent event) {
-        event.register(
-                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "casing_type"),
-                CasingTypeItemModelProperty.TYPE
+                (stack, tintIndex) -> MaterialItemTintSources.oreAlchemyDustColor(stack),
+                ModItems.ORE_ALCHEMICAL_DUST.get()
         );
         event.register(
-                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "combustion_heater_type"),
-                CombustionHeaterTypeItemModelProperty.TYPE
-        );
-        event.register(
-                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "heat_provider_type"),
-                HeatProviderTypeItemModelProperty.TYPE
-        );
-        event.register(
-                Identifier.fromNamespaceAndPath(Skyresources3.MODID, "condenser_type"),
-                CondenserTypeItemModelProperty.TYPE
-        );
-    }
-
-    @SubscribeEvent
-    public static void registerItemTintSources(final RegisterColorHandlersEvent.ItemTintSources event) {
-        event.register(
-                MaterialItemTintSources.ORE_ALCHEMY_DUST,
-                MaterialItemTintSources.OreAlchemyDustColor.MAP_CODEC
-        );
-        event.register(
-                MaterialItemTintSources.DIRTY_GEM,
-                MaterialItemTintSources.DirtyGemColor.MAP_CODEC
+                (stack, tintIndex) -> MaterialItemTintSources.dirtyGemColor(stack),
+                ModItems.DIRTY_GEM.get()
         );
     }
 
@@ -169,12 +127,12 @@ public final class SkyResources3Client {
     public static void registerClientExtensions(final RegisterClientExtensionsEvent event) {
         event.registerFluidType(new IClientFluidTypeExtensions() {
             @Override
-            public Identifier getStillTexture() {
+            public ResourceLocation getStillTexture() {
                 return CRYSTAL_FLUID_STILL;
             }
 
             @Override
-            public Identifier getFlowingTexture() {
+            public ResourceLocation getFlowingTexture() {
                 return CRYSTAL_FLUID_FLOW;
             }
         }, ModFluidTypes.CRYSTAL_FLUID);

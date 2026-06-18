@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 public final class StandaloneMachineBlock extends Block implements EntityBlock {
@@ -42,26 +43,25 @@ public final class StandaloneMachineBlock extends Block implements EntityBlock {
     public ItemStack getCloneItemStack(
             final LevelReader level,
             final BlockPos pos,
-            final BlockState state,
-            final boolean includeData
+            final BlockState state
     ) {
         if (level.getBlockEntity(pos) instanceof StandaloneMachineBlockEntity machine) {
             return machine.asItemStack();
         }
-        return super.getCloneItemStack(level, pos, state, includeData);
+        return super.getCloneItemStack(level, pos, state);
     }
 
     @Override
     public ItemStack getCloneItemStack(
+            final BlockState state,
+            final HitResult target,
             final LevelReader level,
             final BlockPos pos,
-            final BlockState state,
-            final boolean includeData,
             final Player player
     ) {
         if (level.getBlockEntity(pos) instanceof StandaloneMachineBlockEntity machine) {
             return machine.asItemStack();
         }
-        return super.getCloneItemStack(level, pos, state, includeData);
+        return super.getCloneItemStack(state, target, level, pos, player);
     }
 }

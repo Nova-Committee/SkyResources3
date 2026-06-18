@@ -7,7 +7,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ final class CrucibleRecipeJeiCategory implements IRecipeCategory<CrucibleRecipe>
     }
 
     @Override
-    public IRecipeType<CrucibleRecipe> getRecipeType() {
+    public RecipeType<CrucibleRecipe> getRecipeType() {
         return SkyResourcesJeiRecipeTypes.CRUCIBLE;
     }
 
@@ -62,7 +62,7 @@ final class CrucibleRecipeJeiCategory implements IRecipeCategory<CrucibleRecipe>
         builder.addOutputSlot(86, 22)
                 .setOutputSlotBackground()
                 .setFluidRenderer(output.getAmount(), true, 16, 16)
-                .add(output.getFluid(), output.getAmount(), output.getComponentsPatch());
+                .addFluidStack(output.getFluid(), output.getAmount(), output.getComponentsPatch());
     }
 
     @Override

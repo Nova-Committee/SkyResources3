@@ -21,7 +21,7 @@ import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
@@ -43,9 +43,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.transaction.Transaction;
 
 public final class MachineRuntimeGameTests {
     private static final BlockPos CASING_POS = new BlockPos(2, 1, 2);
@@ -255,7 +255,7 @@ public final class MachineRuntimeGameTests {
         casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, catalyst.copyWithCount(2));
 
         final ResourceHandler<ItemResource> casingHandler = helper.getLevel().getCapability(
-                Capabilities.Item.BLOCK,
+                Capabilities.ItemHandler.BLOCK,
                 helper.absolutePos(CASING_POS),
                 Direction.DOWN
         );
@@ -983,8 +983,8 @@ public final class MachineRuntimeGameTests {
             final BlockPos relativePos,
             final Block block,
             final ItemStack placedStack,
-            final Identifier expectedTypeId,
-            final Function<ItemStack, Identifier> typeReader,
+            final ResourceLocation expectedTypeId,
+            final Function<ItemStack, ResourceLocation> typeReader,
             final String label
     ) {
         helper.setBlock(relativePos, block);

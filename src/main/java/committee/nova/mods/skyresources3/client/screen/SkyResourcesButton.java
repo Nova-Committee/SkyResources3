@@ -97,7 +97,7 @@ final class SkyResourcesButton extends Button {
     }
 
     @Override
-    protected void renderContents(
+    protected void renderWidget(
             final GuiGraphics guiGraphics,
             final int mouseX,
             final int mouseY,

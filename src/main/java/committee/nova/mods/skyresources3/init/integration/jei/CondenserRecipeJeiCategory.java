@@ -10,7 +10,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,7 +36,7 @@ final class CondenserRecipeJeiCategory implements IRecipeCategory<CondenserRecip
     }
 
     @Override
-    public IRecipeType<CondenserRecipe> getRecipeType() {
+    public RecipeType<CondenserRecipe> getRecipeType() {
         return SkyResourcesJeiRecipeTypes.CONDENSER;
     }
 
@@ -72,7 +72,7 @@ final class CondenserRecipeJeiCategory implements IRecipeCategory<CondenserRecip
         JeiSourceDescriptions.addCondenserSourceTooltip(sourceSlot, recipe.source());
         final IRecipeSlotBuilder outputSlot = builder.addOutputSlot(116, 22)
                 .setOutputSlotBackground()
-                .add(recipe.output());
+                .addItemStack(recipe.output());
         JeiSourceDescriptions.addCondenserOutputTooltip(outputSlot);
     }
 
@@ -102,13 +102,13 @@ final class CondenserRecipeJeiCategory implements IRecipeCategory<CondenserRecip
             case BLOCK -> BuiltInRegistries.BLOCK.getOptional(source.id())
                     .map(this::sourceStack)
                     .filter(stack -> !stack.isEmpty())
-                    .ifPresent(slot::add);
+                    .ifPresent(slot::addItemStack);
         }
     }
 
     private void addFluidSource(final IRecipeSlotBuilder slot, final Fluid fluid) {
         slot.setFluidRenderer(SOURCE_FLUID_AMOUNT, false, 16, 16)
-                .add(fluid, SOURCE_FLUID_AMOUNT);
+                .addFluidStack(fluid, SOURCE_FLUID_AMOUNT);
     }
 
     private ItemStack sourceStack(final Block block) {

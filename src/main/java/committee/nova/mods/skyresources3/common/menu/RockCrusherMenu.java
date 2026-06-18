@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class RockCrusherMenu extends AbstractContainerMenu {
+public final class RockCrusherMenu extends SkyResourcesMenu {
     public static final int INPUT_SLOT_X = 55;
     public static final int INPUT_SLOT_Y = 53;
     public static final int OUTPUT_SLOT_X = 109;

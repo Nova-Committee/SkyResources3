@@ -5,16 +5,15 @@ import committee.nova.mods.skyresources3.core.machine.HeatProviderType;
 import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
-import java.util.function.Consumer;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 public final class HeatProviderItem extends BlockItem {
@@ -26,13 +25,13 @@ public final class HeatProviderItem extends BlockItem {
         return forType(ModDataPackRegistries.heatProviderTypeId(typeKey));
     }
 
-    public static ItemStack forType(final Identifier typeId) {
+    public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.HEAT_PROVIDER.get());
         stack.set(ModDataComponents.HEAT_PROVIDER_TYPE.get(), typeId);
         return stack;
     }
 
-    public static Identifier heatProviderTypeId(final ItemStack stack) {
+    public static ResourceLocation heatProviderTypeId(final ItemStack stack) {
         return stack.getOrDefault(
                 ModDataComponents.HEAT_PROVIDER_TYPE.get(),
                 ModDataPackRegistries.heatProviderTypeId(ModDataPackRegistries.IRON_HEAT_PROVIDER)
@@ -49,31 +48,30 @@ public final class HeatProviderItem extends BlockItem {
     public void appendHoverText(
             final ItemStack stack,
             final TooltipContext context,
-            final TooltipDisplay tooltipDisplay,
-            final Consumer<Component> tooltipAdder,
+            final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
         final HolderLookup.Provider registries = context.registries();
         if (registries == null) {
             return;
         }
-        final Identifier typeId = heatProviderTypeId(stack);
+        final ResourceLocation typeId = heatProviderTypeId(stack);
         registries.lookup(ModDataPackRegistries.HEAT_PROVIDER_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.heatProviderTypeKey(typeId)))
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
-                    tooltipAdder.accept(Component.translatable(
+                    tooltipComponents.add(Component.translatable(
                             "item.skyresources.heat_provider.heat",
                             Math.round(type.heatPerTick())
                     ).withStyle(ChatFormatting.RED));
-                    tooltipAdder.accept(Component.translatable(
+                    tooltipComponents.add(Component.translatable(
                             "item.skyresources.heat_provider.efficiency",
                             Math.round(type.efficiency() * 100.0F)
                     ).withStyle(ChatFormatting.GREEN));
                 });
     }
 
-    public static String translationKey(final Identifier typeId) {
+    public static String translationKey(final ResourceLocation typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
             return "block.skyresources.heat_provider." + typeId.getPath();
         }

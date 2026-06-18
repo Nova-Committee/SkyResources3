@@ -10,28 +10,28 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.squid.Squid;
-import net.minecraft.world.entity.monster.skeleton.Skeleton;
-import net.minecraft.world.entity.monster.spider.CaveSpider;
-import net.minecraft.world.entity.monster.spider.Spider;
-import net.minecraft.world.entity.monster.zombie.ZombieVillager;
+import net.minecraft.world.entity.animal.Squid;
+import net.minecraft.world.entity.monster.CaveSpider;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
 
 public final class DarkMatterWarperBlockEntity extends BlockEntity {
     public static final int SLOT_COUNT = 1;
@@ -52,20 +52,21 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
         input.readChild(ITEMS_KEY, this.items);
         this.burnTime = Math.max(0, input.getIntOr(BURN_TIME_KEY, 0));
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
         output.putChild(ITEMS_KEY, this.items);
         output.putInt(BURN_TIME_KEY, this.burnTime);
     }
 
-    @Override
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {
         this.dropContents();
     }
@@ -211,7 +212,7 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
             final EntityType<T> entityType,
             final boolean copyEquipment
     ) {
-        final T replacement = entityType.create(level, EntitySpawnReason.CONVERSION);
+        final T replacement = entityType.create(level);
         if (replacement == null) {
             return false;
         }
@@ -221,7 +222,7 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
         replacement.finalizeSpawn(
                 level,
                 level.getCurrentDifficultyAt(replacement.blockPosition()),
-                EntitySpawnReason.CONVERSION,
+                MobSpawnType.CONVERSION,
                 null
         );
         replacement.setHealth(replacement.getMaxHealth());
@@ -236,7 +237,7 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
     }
 
     private static void copyEquipment(final LivingEntity source, final LivingEntity target) {
-        for (final EquipmentSlot slot : EquipmentSlot.VALUES) {
+        for (final EquipmentSlot slot : EquipmentSlot.values()) {
             if (slot == EquipmentSlot.BODY) {
                 continue;
             }
@@ -248,9 +249,9 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
         entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, ticks, amplifier));
         entity.addEffect(new MobEffectInstance(MobEffects.WITHER, ticks, amplifier));
         entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, ticks, amplifier));
-        entity.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, ticks, amplifier));
+        entity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, ticks, amplifier));
         entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, amplifier));
-        entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, amplifier));
+        entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, amplifier));
     }
 
     private static final class WarperItemHandler extends ItemStacksResourceHandler {

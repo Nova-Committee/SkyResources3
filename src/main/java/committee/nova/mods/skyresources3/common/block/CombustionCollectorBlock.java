@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +29,7 @@ public final class CombustionCollectorBlock extends Block implements EntityBlock
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -38,9 +39,9 @@ public final class CombustionCollectorBlock extends Block implements EntityBlock
             final BlockHitResult hitResult
     ) {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        return this.useWithoutItem(state, level, pos, player, hitResult);
+        return BlockInteractionResults.item(this.useWithoutItem(state, level, pos, player, hitResult));
     }
 
     @Override
@@ -68,6 +69,6 @@ public final class CombustionCollectorBlock extends Block implements EntityBlock
                 ),
                 buffer -> CombustionCollectorMenu.writeClientSideData(buffer, pos)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

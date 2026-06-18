@@ -20,7 +20,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
-public final class AqueousMachineMenu extends AbstractContainerMenu {
+public final class AqueousMachineMenu extends SkyResourcesMenu {
     public static final int INPUT_SLOT_X = 55;
     public static final int INPUT_SLOT_Y = 49;
     public static final int OUTPUT_SLOT_X = 109;

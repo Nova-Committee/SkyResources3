@@ -3,7 +3,7 @@ package committee.nova.mods.skyresources3.init.event;
 import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.item.HealthGemItem;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -14,8 +14,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public final class HealthGemEvents {
     private static final int UPDATE_INTERVAL_TICKS = 20;
-    private static final Identifier MAX_HEALTH_MODIFIER_ID =
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "health_gem_max_health");
+    private static final ResourceLocation MAX_HEALTH_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "health_gem_max_health");
 
     public static void onPlayerTick(final PlayerTickEvent.Post event) {
         final Player player = event.getEntity();

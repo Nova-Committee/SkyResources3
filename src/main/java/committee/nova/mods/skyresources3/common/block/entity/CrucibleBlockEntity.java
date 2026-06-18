@@ -14,14 +14,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidStacksResourceHandler;
 
 public final class CrucibleBlockEntity extends BlockEntity {
     public static final int DEFAULT_CAPACITY = FluidType.BUCKET_VOLUME * 4;
@@ -39,8 +39,9 @@ public final class CrucibleBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
         input.readChild(FLUIDS_KEY, this.fluids);
         this.itemIn = input.read(ITEM_KEY, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         this.itemAmount = input.getIntOr(ITEM_AMOUNT_KEY, 0);
@@ -51,8 +52,9 @@ public final class CrucibleBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
         output.putChild(FLUIDS_KEY, this.fluids);
         output.store(ITEM_KEY, ItemStack.OPTIONAL_CODEC, this.itemIn);
         output.putInt(ITEM_AMOUNT_KEY, this.itemAmount);

@@ -9,16 +9,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandlerUtil;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidStacksResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 
 public final class FluidDropperBlockEntity extends BlockEntity {
     public static final int DEFAULT_CAPACITY = FluidType.BUCKET_VOLUME;
@@ -39,14 +40,16 @@ public final class FluidDropperBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
         input.readChild(FLUIDS_KEY, this.fluids);
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
         output.putChild(FLUIDS_KEY, this.fluids);
     }
 
@@ -72,8 +75,8 @@ public final class FluidDropperBlockEntity extends BlockEntity {
             }
 
             final BlockPos neighborPos = this.worldPosition.relative(direction);
-            final ResourceHandler<FluidResource> neighbor = level.getCapability(
-                    Capabilities.Fluid.BLOCK,
+            final IFluidHandler neighbor = level.getCapability(
+                    Capabilities.FluidHandler.BLOCK,
                     neighborPos,
                     direction.getOpposite()
             );

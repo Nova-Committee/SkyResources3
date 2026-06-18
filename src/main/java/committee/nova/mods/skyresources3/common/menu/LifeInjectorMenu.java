@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class LifeInjectorMenu extends AbstractContainerMenu {
+public final class LifeInjectorMenu extends SkyResourcesMenu {
     public static final int GEM_SLOT_X = 80;
     public static final int GEM_SLOT_Y = 53;
     private static final int PLAYER_INVENTORY_Y = 84;

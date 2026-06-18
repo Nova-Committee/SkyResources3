@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class DarkMatterWarperMenu extends AbstractContainerMenu {
+public final class DarkMatterWarperMenu extends SkyResourcesMenu {
     public static final int SLOT_X = 80;
     public static final int SLOT_Y = 53;
     private static final int PLAYER_INVENTORY_Y = 84;

@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
 
-public final class LifeInfuserMenu extends AbstractContainerMenu {
+public final class LifeInfuserMenu extends SkyResourcesMenu {
     public static final int GEM_SLOT_X = 100;
     public static final int GEM_SLOT_Y = 25;
     public static final int INPUT_SLOT_X = 59;

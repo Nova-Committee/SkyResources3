@@ -1,7 +1,7 @@
 package committee.nova.mods.skyresources3.common.item;
 
 import committee.nova.mods.skyresources3.Config;
-import java.util.function.Consumer;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -10,13 +10,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 public final class HealthGemItem extends Item {
@@ -29,20 +29,20 @@ public final class HealthGemItem extends Item {
     }
 
     @Override
-    public InteractionResult use(final Level level, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
         final ItemStack itemStack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown() || !canInject(player, itemStack)) {
-            return InteractionResult.PASS;
+            return InteractionResultHolder.pass(itemStack);
         }
 
         if (level instanceof ServerLevel serverLevel) {
-            player.hurtServer(serverLevel, player.damageSources().generic(), HEALTH_PER_INJECTION);
+            player.hurt(player.damageSources().generic(), HEALTH_PER_INJECTION);
             setHealthInjected(itemStack, getHealthInjected(itemStack) + HEALTH_PER_INJECTION);
-            player.getCooldowns().addCooldown(itemStack, INJECTION_COOLDOWN_TICKS);
+            player.getCooldowns().addCooldown(this, INJECTION_COOLDOWN_TICKS);
             player.awardStat(Stats.ITEM_USED.get(this));
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.success(itemStack);
     }
 
     @Override
@@ -50,23 +50,22 @@ public final class HealthGemItem extends Item {
     public void appendHoverText(
             final ItemStack stack,
             final TooltipContext context,
-            final TooltipDisplay tooltipDisplay,
-            final Consumer<Component> tooltipAdder,
+            final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
         if (!tooltipFlag.hasShiftDown()) {
-            tooltipAdder.accept(Component.translatable("item.skyresources.health_gem.info")
+            tooltipComponents.add(Component.translatable("item.skyresources.health_gem.info")
                     .withStyle(ChatFormatting.GREEN));
             return;
         }
 
-        tooltipAdder.accept(Component.translatable("item.skyresources.health_gem.inject")
+        tooltipComponents.add(Component.translatable("item.skyresources.health_gem.inject")
                 .withStyle(ChatFormatting.GREEN));
-        tooltipAdder.accept(Component.translatable(
+        tooltipComponents.add(Component.translatable(
                 "item.skyresources.health_gem.health_injected",
                 getHealthInjected(stack)
         ).withStyle(ChatFormatting.RED));
-        tooltipAdder.accept(Component.translatable(
+        tooltipComponents.add(Component.translatable(
                 "item.skyresources.health_gem.health_gained",
                 getHealthBoost(stack)
         ).withStyle(ChatFormatting.DARK_RED));
@@ -77,9 +76,8 @@ public final class HealthGemItem extends Item {
     }
 
     public static int getHealthInjected(final ItemStack itemStack) {
-        return itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
-                .copyTag()
-                .getIntOr(HEALTH_KEY, 0);
+        final CompoundTag tag = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        return tag.contains(HEALTH_KEY) ? tag.getInt(HEALTH_KEY) : 0;
     }
 
     public static boolean canReceiveHealth(final ItemStack itemStack, final int health) {
@@ -112,7 +110,7 @@ public final class HealthGemItem extends Item {
 
     private static boolean canInject(final Player player, final ItemStack itemStack) {
         final ItemCooldowns cooldowns = player.getCooldowns();
-        return !cooldowns.isOnCooldown(itemStack)
+        return !cooldowns.isOnCooldown(itemStack.getItem())
                 && getHealthInjected(itemStack) + HEALTH_PER_INJECTION <= Config.healthGemMaxHealth;
     }
 

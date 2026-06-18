@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -82,7 +83,7 @@ public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalB
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -92,18 +93,18 @@ public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalB
             final BlockHitResult hitResult
     ) {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!(level.getBlockEntity(pos) instanceof AqueousMachineBlockEntity machine)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection())) {
-            return InteractionResult.SUCCESS_SERVER;
+            return ItemInteractionResult.SUCCESS;
         }
-        return this.openMenu(pos, player, machine);
+        return BlockInteractionResults.item(this.openMenu(pos, player, machine));
     }
 
     @Override
@@ -140,6 +141,6 @@ public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalB
                 ),
                 buffer -> AqueousMachineMenu.writeClientSideData(buffer, pos, mode)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

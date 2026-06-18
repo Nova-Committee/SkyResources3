@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -90,7 +91,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -99,7 +100,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return this.openMenu(level, state, pos, player, hitResult, stack);
+        return BlockInteractionResults.item(this.openMenu(level, state, pos, player, hitResult, stack));
     }
 
     @Override
@@ -186,7 +187,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
                 ),
                 buffer -> FreezerMenu.writeClientSideData(buffer, controllerPos, freezer)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 
     public enum FreezerPart implements StringRepresentable {

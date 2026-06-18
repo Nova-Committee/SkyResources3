@@ -9,12 +9,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
 
 public final class LifeInjectorBlockEntity extends BlockEntity {
     public static final int GEM_SLOT = 0;
@@ -33,8 +33,9 @@ public final class LifeInjectorBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
         input.readChild(ITEMS_KEY, this.items);
         if (this.items.stack(GEM_SLOT).isEmpty()) {
             input.read(GEM_KEY, ItemStack.OPTIONAL_CODEC)
@@ -45,8 +46,9 @@ public final class LifeInjectorBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
         output.putChild(ITEMS_KEY, this.items);
         output.putInt(COOLDOWN_KEY, this.cooldown);
     }
@@ -153,7 +155,7 @@ public final class LifeInjectorBlockEntity extends BlockEntity {
         if (!HealthGemItem.canReceiveHealth(gem, health)) {
             return false;
         }
-        if (!entity.hurtServer(level, level.damageSources().generic(), health)) {
+        if (!entity.hurt(level.damageSources().generic(), health)) {
             return false;
         }
         return HealthGemItem.addStoredHealth(gem, health);

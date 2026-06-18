@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class LifeInfuserBlock extends Block implements EntityBlock {
@@ -30,7 +30,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -40,34 +40,34 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
             final BlockHitResult hitResult
     ) {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide()) {
-            return !stack.isEmpty() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+            return !stack.isEmpty() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!(level.getBlockEntity(pos) instanceof LifeInfuserBlockEntity lifeInfuser)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (stack.getItem() instanceof HealthGemItem) {
             if (!lifeInfuser.canInsertGem(stack)) {
-                return InteractionResult.PASS;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
             lifeInfuser.insertGem(stack);
             if (!player.isCreative()) {
                 stack.shrink(1);
             }
-            return InteractionResult.SUCCESS_SERVER;
+            return ItemInteractionResult.SUCCESS;
         }
 
         if (!lifeInfuser.canInsertInput(stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         lifeInfuser.insertInput(stack);
         if (!player.isCreative()) {
             stack.setCount(0);
         }
-        return InteractionResult.SUCCESS_SERVER;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
@@ -94,7 +94,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
                 if (!player.addItem(removed)) {
                     Block.popResource(level, pos.above(), removed);
                 }
-                return InteractionResult.SUCCESS_SERVER;
+                return InteractionResult.SUCCESS;
             }
         }
         return this.openMenu(pos, player, lifeInfuser);
@@ -106,7 +106,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
             final Level level,
             final BlockPos pos,
             final Block neighborBlock,
-            final Orientation orientation,
+            final BlockPos neighborPos,
             final boolean movedByPiston
     ) {
         if (!level.isClientSide()
@@ -146,6 +146,6 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
                 ),
                 buffer -> LifeInfuserMenu.writeClientSideData(buffer, pos)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

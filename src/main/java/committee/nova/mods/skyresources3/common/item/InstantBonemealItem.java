@@ -34,7 +34,7 @@ public final class InstantBonemealItem extends Item {
             BonemealGrowth.growUntilStable(serverLevel, target);
             final ItemStack itemStack = context.getItemInHand();
             itemStack.shrink(1);
-            itemStack.causeUseVibration(context.getPlayer(), GameEvent.ITEM_INTERACT_FINISH);
+            level.gameEvent(context.getPlayer(), GameEvent.ITEM_INTERACT_FINISH, target);
             level.levelEvent(1505, target, 15);
         }
 

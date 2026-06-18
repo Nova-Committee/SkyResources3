@@ -95,11 +95,11 @@ public final class ModItems {
 
     public static final DeferredItem<Item> CACTUS_FRUIT = ITEMS.registerSimpleItem(
             "cactus_fruit",
-            () -> new Item.Properties().food(food(3, 0.4F))
+            new Item.Properties().food(food(3, 0.4F))
     );
     public static final DeferredItem<Item> FLESHY_SNOW_NUGGET = ITEMS.registerSimpleItem(
             "fleshy_snow_nugget",
-            () -> new Item.Properties().food(food(4, 0.3F))
+            new Item.Properties().food(food(4, 0.3F))
     );
     public static final DeferredItem<Item> CACTUS_NEEDLE = ITEMS.registerSimpleItem("cactus_needle");
     public static final DeferredItem<Item> CRYSTAL_SHARD = ITEMS.registerSimpleItem("crystal_shard");

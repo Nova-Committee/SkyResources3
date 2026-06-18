@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -86,7 +87,7 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -95,7 +96,7 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return this.openMenu(level, pos, player, hitResult, stack);
+        return BlockInteractionResults.item(this.openMenu(level, pos, player, hitResult, stack));
     }
 
     @Override
@@ -133,6 +134,6 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
                 ),
                 buffer -> RockCrusherMenu.writeClientSideData(buffer, pos)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

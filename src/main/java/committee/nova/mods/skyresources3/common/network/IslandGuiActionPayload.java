@@ -5,7 +5,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
@@ -15,7 +15,7 @@ public record IslandGuiActionPayload(Action action, String value) implements Cus
     private static final int MAX_VALUE_LENGTH = 64;
 
     public static final Type<IslandGuiActionPayload> TYPE = new Type<>(
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_action")
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_action")
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, IslandGuiActionPayload> STREAM_CODEC = StreamCodec.of(
             IslandGuiActionPayload::encode,

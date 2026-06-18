@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractFurnaceMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.crafting.RecipeType;
 
 public final class DirtFurnaceMenu extends AbstractFurnaceMenu {
@@ -23,7 +22,6 @@ public final class DirtFurnaceMenu extends AbstractFurnaceMenu {
         super(
                 ModMenuTypes.DIRT_FURNACE.get(),
                 RecipeType.SMELTING,
-                RecipePropertySet.FURNACE_INPUT,
                 RecipeBookType.FURNACE,
                 containerId,
                 playerInventory
@@ -39,7 +37,6 @@ public final class DirtFurnaceMenu extends AbstractFurnaceMenu {
         super(
                 ModMenuTypes.DIRT_FURNACE.get(),
                 RecipeType.SMELTING,
-                RecipePropertySet.FURNACE_INPUT,
                 RecipeBookType.FURNACE,
                 containerId,
                 playerInventory,

@@ -16,7 +16,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
-public abstract class AbstractCombustionInventoryMenu extends AbstractContainerMenu {
+public abstract class AbstractCombustionInventoryMenu extends SkyResourcesMenu {
     public static final int[] SLOT_X = {44, 62, 80, 98, 116};
     public static final int SLOT_Y = 53;
     private static final int PLAYER_INVENTORY_Y = 84;

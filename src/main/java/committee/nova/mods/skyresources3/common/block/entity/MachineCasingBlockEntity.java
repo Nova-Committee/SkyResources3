@@ -26,7 +26,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +34,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -53,14 +52,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public final class MachineCasingBlockEntity extends BlockEntity {
     public static final int FUEL_SLOT = 0;
@@ -69,7 +68,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     public static final int MACHINE_MODE_COMBUSTION_HEATER = 1;
     public static final int MACHINE_MODE_HEAT_PROVIDER = 2;
     public static final int MACHINE_MODE_CONDENSER = 3;
-    public static final Identifier DEFAULT_CASING_TYPE = ModDataPackRegistries.casingTypeId(ModDataPackRegistries.IRON);
+    public static final ResourceLocation DEFAULT_CASING_TYPE = ModDataPackRegistries.casingTypeId(ModDataPackRegistries.IRON);
     private static final Codec<ItemStack> HEATER_CODEC = ItemStack.OPTIONAL_CODEC;
     private static final String CASING_TYPE_KEY = "casing_type";
     private static final String COMBUSTION_HEATER_TYPE_KEY = "combustion_heater_type";
@@ -89,13 +88,13 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     private static final String CONDENSER_RECIPE_HASH_KEY = "condenser_recipe_hash";
 
     private final FuelItemHandler fuelItems = new FuelItemHandler(this);
-    private Identifier casingTypeId = DEFAULT_CASING_TYPE;
+    private ResourceLocation casingTypeId = DEFAULT_CASING_TYPE;
     @Nullable
-    private Identifier combustionHeaterTypeId;
+    private ResourceLocation combustionHeaterTypeId;
     @Nullable
-    private Identifier heatProviderTypeId;
+    private ResourceLocation heatProviderTypeId;
     @Nullable
-    private Identifier condenserTypeId;
+    private ResourceLocation condenserTypeId;
     private ItemStack heater = ItemStack.EMPTY;
     private float currentHeat;
     private float itemHeat;
@@ -113,12 +112,13 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
-        this.casingTypeId = input.read(CASING_TYPE_KEY, Identifier.CODEC).orElse(DEFAULT_CASING_TYPE);
-        this.combustionHeaterTypeId = input.read(COMBUSTION_HEATER_TYPE_KEY, Identifier.CODEC).orElse(null);
-        this.heatProviderTypeId = input.read(HEAT_PROVIDER_TYPE_KEY, Identifier.CODEC).orElse(null);
-        this.condenserTypeId = input.read(CONDENSER_TYPE_KEY, Identifier.CODEC).orElse(null);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
+        this.casingTypeId = input.read(CASING_TYPE_KEY, ResourceLocation.CODEC).orElse(DEFAULT_CASING_TYPE);
+        this.combustionHeaterTypeId = input.read(COMBUSTION_HEATER_TYPE_KEY, ResourceLocation.CODEC).orElse(null);
+        this.heatProviderTypeId = input.read(HEAT_PROVIDER_TYPE_KEY, ResourceLocation.CODEC).orElse(null);
+        this.condenserTypeId = input.read(CONDENSER_TYPE_KEY, ResourceLocation.CODEC).orElse(null);
         input.readChild(FUEL_KEY, this.fuelItems);
         this.heater = input.read(HEATER_KEY, HEATER_CODEC).orElse(ItemStack.EMPTY);
         this.migrateInstalledMachineStack();
@@ -135,17 +135,18 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
-        output.store(CASING_TYPE_KEY, Identifier.CODEC, this.casingTypeId);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
+        output.store(CASING_TYPE_KEY, ResourceLocation.CODEC, this.casingTypeId);
         if (this.combustionHeaterTypeId != null) {
-            output.store(COMBUSTION_HEATER_TYPE_KEY, Identifier.CODEC, this.combustionHeaterTypeId);
+            output.store(COMBUSTION_HEATER_TYPE_KEY, ResourceLocation.CODEC, this.combustionHeaterTypeId);
         }
         if (this.heatProviderTypeId != null) {
-            output.store(HEAT_PROVIDER_TYPE_KEY, Identifier.CODEC, this.heatProviderTypeId);
+            output.store(HEAT_PROVIDER_TYPE_KEY, ResourceLocation.CODEC, this.heatProviderTypeId);
         }
         if (this.condenserTypeId != null) {
-            output.store(CONDENSER_TYPE_KEY, Identifier.CODEC, this.condenserTypeId);
+            output.store(CONDENSER_TYPE_KEY, ResourceLocation.CODEC, this.condenserTypeId);
         }
         output.putChild(FUEL_KEY, this.fuelItems);
         output.store(HEATER_KEY, HEATER_CODEC, this.heater);
@@ -162,7 +163,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void applyImplicitComponents(final DataComponentGetter componentInput) {
+    protected void applyImplicitComponents(final BlockEntity.DataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         this.casingTypeId = componentInput.getOrDefault(ModDataComponents.CASING_TYPE.get(), DEFAULT_CASING_TYPE);
     }
@@ -183,7 +184,6 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return this.saveCustomOnly(registries);
     }
 
-    @Override
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {
         this.dropContents();
     }
@@ -215,7 +215,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         return this.fuelItems;
     }
 
-    public Identifier casingTypeId() {
+    public ResourceLocation casingTypeId() {
         return this.casingTypeId;
     }
 
@@ -223,7 +223,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         this.setCasingType(ModDataPackRegistries.casingTypeId(casingTypeKey));
     }
 
-    public void setCasingType(final Identifier casingTypeId) {
+    public void setCasingType(final ResourceLocation casingTypeId) {
         if (this.casingTypeId.equals(casingTypeId)) {
             return;
         }
@@ -246,17 +246,17 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     }
 
     @Nullable
-    public Identifier combustionHeaterTypeId() {
+    public ResourceLocation combustionHeaterTypeId() {
         return this.combustionHeaterTypeId;
     }
 
     @Nullable
-    public Identifier heatProviderTypeId() {
+    public ResourceLocation heatProviderTypeId() {
         return this.heatProviderTypeId;
     }
 
     @Nullable
-    public Identifier condenserTypeId() {
+    public ResourceLocation condenserTypeId() {
         return this.condenserTypeId;
     }
 
@@ -638,7 +638,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         final BlockState state = level.getBlockState(sourcePos);
         final FluidState fluidState = state.getFluidState();
         if (!fluidState.isEmpty() && fluidState.isSource()) {
-            final Identifier id = BuiltInRegistries.FLUID.getKey(fluidState.getType());
+            final ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluidState.getType());
             return Optional.of(CondenserRecipe.Source.fluid(id));
         }
         if (state.isAir()) {
@@ -688,8 +688,8 @@ public final class MachineCasingBlockEntity extends BlockEntity {
 
     private boolean routeCondenserOutput(final ServerLevel level, final ItemStack output) {
         final BlockPos outputPos = this.worldPosition.below();
-        final ResourceHandler<ItemResource> handler =
-                level.getCapability(Capabilities.Item.BLOCK, outputPos, Direction.UP);
+        final IItemHandler handler =
+                level.getCapability(Capabilities.ItemHandler.BLOCK, outputPos, Direction.UP);
         if (handler == null) {
             Containers.dropItemStack(
                     level,
@@ -701,14 +701,19 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             return true;
         }
 
-        try (Transaction transaction = Transaction.openRoot()) {
-            final int inserted = handler.insert(ItemResource.of(output), output.getCount(), transaction);
-            if (inserted != output.getCount()) {
-                return false;
-            }
-            transaction.commit();
-            return true;
+        ItemStack simulatedRemainder = output.copy();
+        for (int slot = 0; slot < handler.getSlots() && !simulatedRemainder.isEmpty(); slot++) {
+            simulatedRemainder = handler.insertItem(slot, simulatedRemainder, true);
         }
+        if (!simulatedRemainder.isEmpty()) {
+            return false;
+        }
+
+        ItemStack remainder = output.copy();
+        for (int slot = 0; slot < handler.getSlots() && !remainder.isEmpty(); slot++) {
+            remainder = handler.insertItem(slot, remainder, false);
+        }
+        return remainder.isEmpty();
     }
 
     private void clearAdjacentFlowingFluids(final ServerLevel level, final BlockPos sourcePos) {
@@ -769,7 +774,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         final Item fuelItem = fuel.getItem();
         fuel.shrink(1);
         if (fuel.isEmpty()) {
-            this.fuelItems.setStack(FUEL_SLOT, fuelItem.getCraftingRemainder());
+            this.fuelItems.setStack(FUEL_SLOT, craftingRemainder(fuelItem));
         }
     }
 
@@ -788,8 +793,14 @@ public final class MachineCasingBlockEntity extends BlockEntity {
         final Item fuelItem = fuel.getItem();
         fuel.shrink(1);
         if (fuel.isEmpty()) {
-            this.fuelItems.setStack(FUEL_SLOT, fuelItem.getCraftingRemainder());
+            this.fuelItems.setStack(FUEL_SLOT, craftingRemainder(fuelItem));
         }
+    }
+
+    private static ItemStack craftingRemainder(final Item item) {
+        return item.hasCraftingRemainingItem()
+                ? new ItemStack(item.getCraftingRemainingItem())
+                : ItemStack.EMPTY;
     }
 
     private void provideHeat(final ServerLevel level, final HeatProviderType providerType) {

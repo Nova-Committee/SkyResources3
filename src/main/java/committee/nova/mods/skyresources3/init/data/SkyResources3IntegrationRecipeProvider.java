@@ -9,7 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public final class SkyResources3IntegrationRecipeProvider implements DataProvider {
     private static final String INTEGRATED_DYNAMICS = "integrateddynamics";
@@ -52,7 +52,7 @@ public final class SkyResources3IntegrationRecipeProvider implements DataProvide
             final String result,
             final JsonObject... inputs
     ) {
-        final Identifier id = Identifier.fromNamespaceAndPath(
+        final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
                 Skyresources3.MODID,
                 "process/infusion/" + name
         );

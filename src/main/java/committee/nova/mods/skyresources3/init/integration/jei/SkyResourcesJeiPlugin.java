@@ -17,18 +17,17 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.Blocks;
 
 @JeiPlugin
@@ -36,8 +35,8 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
     private static IJeiRuntime runtime;
 
     @Override
-    public Identifier getPluginUid() {
-        return Identifier.fromNamespaceAndPath(Skyresources3.MODID, "jei");
+    public ResourceLocation getPluginUid() {
+        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "jei");
     }
 
     @Override
@@ -108,33 +107,29 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(final IRecipeRegistration registration) {
-        final RecipeMap syncedRecipes = SkyResourcesJeiRecipeMaps.clientSyncedRecipes();
         final List<SkyResourcesProcessRecipe> combustionRecipes = this.addProcessRecipes(
                 registration,
-                syncedRecipes,
                 SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION,
                 ProcessRecipes.COMBUSTION
         );
-        this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_FREEZER, ProcessRecipes.FREEZER);
+        this.addProcessRecipes(registration, SkyResourcesJeiRecipeTypes.PROCESS_FREEZER, ProcessRecipes.FREEZER);
         final List<SkyResourcesProcessRecipe> fusionRecipes = this.addProcessRecipes(
                 registration,
-                syncedRecipes,
                 SkyResourcesJeiRecipeTypes.PROCESS_FUSION,
                 ProcessRecipes.FUSION
         );
         final List<SkyResourcesProcessRecipe> infusionRecipes = this.addProcessRecipes(
                 registration,
-                syncedRecipes,
                 SkyResourcesJeiRecipeTypes.PROCESS_INFUSION,
                 ProcessRecipes.INFUSION
         );
-        this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_KNIFE, ProcessRecipes.KNIFE);
-        this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_ROCK_GRINDER, ProcessRecipes.ROCK_GRINDER);
-        this.addProcessRecipes(registration, syncedRecipes, SkyResourcesJeiRecipeTypes.PROCESS_CAULDRON_CLEAN, ProcessRecipes.CAULDRON_CLEAN);
+        this.addProcessRecipes(registration, SkyResourcesJeiRecipeTypes.PROCESS_KNIFE, ProcessRecipes.KNIFE);
+        this.addProcessRecipes(registration, SkyResourcesJeiRecipeTypes.PROCESS_ROCK_GRINDER, ProcessRecipes.ROCK_GRINDER);
+        this.addProcessRecipes(registration, SkyResourcesJeiRecipeTypes.PROCESS_CAULDRON_CLEAN, ProcessRecipes.CAULDRON_CLEAN);
         final List<CrucibleRecipe> crucibleRecipes =
-                SkyResourcesJeiRecipeMaps.recipes(syncedRecipes, ModRecipeTypes.CRUCIBLE_TYPE.get());
+                SkyResourcesJeiRecipeMaps.recipes(ModRecipeTypes.CRUCIBLE_TYPE.get());
         final List<CondenserRecipe> condenserRecipes =
-                SkyResourcesJeiRecipeMaps.recipes(syncedRecipes, ModRecipeTypes.CONDENSER_TYPE.get());
+                SkyResourcesJeiRecipeMaps.recipes(ModRecipeTypes.CONDENSER_TYPE.get());
         registration.addRecipes(
                 SkyResourcesJeiRecipeTypes.CRUCIBLE,
                 crucibleRecipes
@@ -155,53 +150,53 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(final IRecipeCatalystRegistration registration) {
-        registration.addCraftingStation(
+        registration.addRecipeCatalysts(
                 SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION,
                 combustionHeaters()
         );
-        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION, ModItems.COMBUSTION_CONTROLLER.get());
-        registration.addCraftingStation(
+        registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.PROCESS_COMBUSTION, ModItems.COMBUSTION_CONTROLLER.get());
+        registration.addRecipeCatalysts(
                 SkyResourcesJeiRecipeTypes.PROCESS_FREEZER,
                 ModItems.MINI_FREEZER.get(),
                 ModItems.IRON_FREEZER.get(),
                 ModItems.LIGHT_FREEZER.get()
         );
-        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.PROCESS_FUSION, ModItems.FUSION_TABLE.get());
-        registration.addCraftingStation(
+        registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.PROCESS_FUSION, ModItems.FUSION_TABLE.get());
+        registration.addRecipeCatalysts(
                 SkyResourcesJeiRecipeTypes.PROCESS_INFUSION,
                 ModItems.SANDSTONE_INFUSION_STONE.get(),
                 ModItems.RED_SANDSTONE_INFUSION_STONE.get(),
                 ModItems.ALCHEMICAL_INFUSION_STONE.get(),
                 ModItems.LIFE_INFUSER.get()
         );
-        registration.addCraftingStation(
+        registration.addRecipeCatalysts(
                 SkyResourcesJeiRecipeTypes.PROCESS_KNIFE,
                 ModItems.CACTUS_CUTTING_KNIFE.get(),
                 ModItems.STONE_CUTTING_KNIFE.get(),
                 ModItems.IRON_CUTTING_KNIFE.get(),
                 ModItems.DIAMOND_CUTTING_KNIFE.get()
         );
-        registration.addCraftingStation(
+        registration.addRecipeCatalysts(
                 SkyResourcesJeiRecipeTypes.PROCESS_ROCK_GRINDER,
                 ModItems.STONE_GRINDER.get(),
                 ModItems.IRON_GRINDER.get(),
                 ModItems.DIAMOND_GRINDER.get(),
                 ModItems.ROCK_CRUSHER.get()
         );
-        registration.addCraftingStation(
+        registration.addRecipeCatalysts(
                 SkyResourcesJeiRecipeTypes.PROCESS_CAULDRON_CLEAN,
                 Blocks.CAULDRON,
                 ModItems.ROCK_CLEANER.get()
         );
-        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.CRUCIBLE, ModItems.CRUCIBLE.get());
-        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.CONDENSER, condensers());
-        registration.addCraftingStation(
+        registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.CRUCIBLE, ModItems.CRUCIBLE.get());
+        registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.CONDENSER, condensers());
+        registration.addRecipeCatalysts(
                 SkyResourcesJeiRecipeTypes.HEAT_SOURCES,
                 Items.LAVA_BUCKET,
                 Blocks.TORCH,
                 Blocks.MAGMA_BLOCK
         );
-        registration.addCraftingStation(SkyResourcesJeiRecipeTypes.HEAT_SOURCES, heatProviders());
+        registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.HEAT_SOURCES, heatProviders());
     }
 
     @Override
@@ -222,7 +217,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         if (target == null || target.isBlank()) {
             return openItemRecipe(jeiRuntime, icon);
         }
-        final List<IRecipeType<?>> recipeTypes = SkyResourcesJeiRecipeTypes.byGuideTarget(target);
+        final List<RecipeType<?>> recipeTypes = SkyResourcesJeiRecipeTypes.byGuideTarget(target);
         if (recipeTypes.isEmpty()) {
             return openItemRecipe(jeiRuntime, icon);
         }
@@ -236,18 +231,17 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
 
     private List<SkyResourcesProcessRecipe> addProcessRecipes(
             final IRecipeRegistration registration,
-            final RecipeMap syncedRecipes,
-            final IRecipeType<SkyResourcesProcessRecipe> recipeType,
+            final RecipeType<SkyResourcesProcessRecipe> recipeType,
             final String process
     ) {
-        final List<SkyResourcesProcessRecipe> recipes = SkyResourcesJeiRecipeMaps.processRecipes(syncedRecipes, process);
+        final List<SkyResourcesProcessRecipe> recipes = SkyResourcesJeiRecipeMaps.processRecipes(process);
         registration.addRecipes(recipeType, recipes);
         return recipes;
     }
 
     private static ProcessRecipeJeiCategory processCategory(
             final IGuiHelper guiHelper,
-            final IRecipeType<SkyResourcesProcessRecipe> recipeType,
+            final RecipeType<SkyResourcesProcessRecipe> recipeType,
             final String translationSuffix,
             final ItemStack icon,
             final String parameterKey,

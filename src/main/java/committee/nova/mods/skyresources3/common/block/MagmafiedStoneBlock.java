@@ -14,7 +14,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.Orientation;
 
 public final class MagmafiedStoneBlock extends Block {
     private static final int CHECK_INTERVAL_TICKS = 10;
@@ -47,7 +46,7 @@ public final class MagmafiedStoneBlock extends Block {
             final Level level,
             final BlockPos pos,
             final Block neighborBlock,
-            final Orientation orientation,
+            final BlockPos neighborPos,
             final boolean movedByPiston
     ) {
         if (!level.isClientSide()) {

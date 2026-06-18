@@ -11,7 +11,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,7 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
     private static final int HEIGHT = 84;
     private static final int TEXT_COLOR = 0xFF404040;
 
-    private final IRecipeType<SkyResourcesProcessRecipe> recipeType;
+    private final RecipeType<SkyResourcesProcessRecipe> recipeType;
     private final Component title;
     private final IDrawable icon;
     private final IDrawable arrow;
@@ -31,7 +31,7 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
 
     ProcessRecipeJeiCategory(
             final IGuiHelper guiHelper,
-            final IRecipeType<SkyResourcesProcessRecipe> recipeType,
+            final RecipeType<SkyResourcesProcessRecipe> recipeType,
             final Component title,
             final ItemStack icon,
             final String parameterKey,
@@ -46,7 +46,7 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
     }
 
     @Override
-    public IRecipeType<SkyResourcesProcessRecipe> getRecipeType() {
+    public RecipeType<SkyResourcesProcessRecipe> getRecipeType() {
         return this.recipeType;
     }
 
@@ -130,7 +130,7 @@ final class ProcessRecipeJeiCategory implements IRecipeCategory<SkyResourcesProc
             final int y = 14 + index / 2 * 20;
             final IRecipeSlotBuilder slot = builder.addOutputSlot(x, y)
                     .setOutputSlotBackground()
-                    .add(outputs.get(index));
+                    .addItemStack(outputs.get(index));
             JeiSourceDescriptions.addProcessOutputTooltip(slot, process);
         }
     }

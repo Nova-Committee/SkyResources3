@@ -1,8 +1,7 @@
 package committee.nova.mods.skyresources3.client.utils;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public final class GuiBlit {
     private GuiBlit() {
@@ -10,7 +9,7 @@ public final class GuiBlit {
 
     public static void blit(
             final GuiGraphics guiGraphics,
-            final Identifier texture,
+            final ResourceLocation texture,
             final int x,
             final int y,
             final float u,
@@ -21,7 +20,6 @@ public final class GuiBlit {
             final int textureHeight
     ) {
         guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
                 texture,
                 x,
                 y,
@@ -36,12 +34,12 @@ public final class GuiBlit {
 
     public static void sprite(
             final GuiGraphics guiGraphics,
-            final Identifier sprite,
+            final ResourceLocation sprite,
             final int x,
             final int y,
             final int width,
             final int height
     ) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, width, height);
+        guiGraphics.blitSprite(sprite, x, y, width, height);
     }
 }

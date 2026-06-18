@@ -12,7 +12,7 @@ public final class CondenserRecipes {
             final ItemStack catalyst,
             final CondenserRecipe.Source source
     ) {
-        return level.recipeAccess().getRecipeFor(
+        return level.getRecipeManager().getRecipeFor(
                 ModRecipeTypes.CONDENSER_TYPE.get(),
                 new CondenserRecipeInput(catalyst, source),
                 level
@@ -23,9 +23,8 @@ public final class CondenserRecipes {
         if (stack.isEmpty()) {
             return false;
         }
-        return level.recipeAccess()
-                .recipeMap()
-                .byType(ModRecipeTypes.CONDENSER_TYPE.get())
+        return level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.CONDENSER_TYPE.get())
                 .stream()
                 .anyMatch(holder -> holder.value().isCatalyst(stack));
     }

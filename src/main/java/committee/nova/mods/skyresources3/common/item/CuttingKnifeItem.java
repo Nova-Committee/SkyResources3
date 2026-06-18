@@ -26,7 +26,6 @@ public final class CuttingKnifeItem extends Item {
     ) {
         super(properties
                 .durability(durability)
-                .enchantable(enchantmentValue)
                 .attributes(attributes(attackDamage)));
         this.miningSpeed = miningSpeed;
     }

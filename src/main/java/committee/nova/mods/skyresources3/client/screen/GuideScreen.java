@@ -13,7 +13,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -196,14 +195,14 @@ public final class GuideScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(final MouseButtonEvent event, final boolean doubleClick) {
+    public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
         if (this.currentStructure != null) {
-            if (event.button() != 0) {
+            if (button != 0) {
                 return false;
             }
             return switch (this.structurePonderView.mouseClicked(
-                    event.x(),
-                    event.y(),
+                    mouseX,
+                    mouseY,
                     0,
                     0,
                     this.width,
@@ -218,31 +217,37 @@ public final class GuideScreen extends Screen {
                 case NONE -> false;
             };
         }
-        if (super.mouseClicked(event, doubleClick)) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        if (event.button() != 0) {
+        if (button != 0) {
             return false;
         }
-        return this.selectInlineActionAt(event.x(), event.y())
-                || this.selectActionAt(event.x(), event.y())
-                || this.selectResultAt(event.x(), event.y());
+        return this.selectInlineActionAt(mouseX, mouseY)
+                || this.selectActionAt(mouseX, mouseY)
+                || this.selectResultAt(mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseReleased(final MouseButtonEvent event) {
+    public boolean mouseReleased(final double mouseX, final double mouseY, final int button) {
         if (this.currentStructure != null) {
-            return this.structurePonderView.mouseReleased(event.button());
+            return this.structurePonderView.mouseReleased(button);
         }
-        return super.mouseReleased(event);
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean mouseDragged(final MouseButtonEvent event, final double mouseX, final double mouseY) {
+    public boolean mouseDragged(
+            final double mouseX,
+            final double mouseY,
+            final int button,
+            final double dragX,
+            final double dragY
+    ) {
         if (this.currentStructure != null) {
             return this.structurePonderView.mouseDragged(mouseX, mouseY);
         }
-        return super.mouseDragged(event, mouseX, mouseY);
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
@@ -397,7 +402,7 @@ public final class GuideScreen extends Screen {
             guiGraphics.renderFakeItem(icon, contentX, iconY);
             guiGraphics.renderItemDecorations(this.font, icon, contentX, iconY);
             if (this.isInside(mouseX, mouseY, contentX, iconY, ICON_SIZE, ICON_SIZE)) {
-                guiGraphics.setTooltipForNextFrame(this.font, icon, mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, icon, mouseX, mouseY);
             }
         }
 
@@ -426,8 +431,7 @@ public final class GuideScreen extends Screen {
                     contentX,
                     textBottom,
                     contentWidth,
-                    MUTED_TEXT_COLOR,
-                    false
+                    MUTED_TEXT_COLOR
             );
         }
         if (textBottom > bodyY) {
@@ -597,8 +601,7 @@ public final class GuideScreen extends Screen {
                 contentX,
                 panelY + Math.max(72, panelHeight / 2 - this.font.lineHeight),
                 contentWidth,
-                MUTED_TEXT_COLOR,
-                false
+                MUTED_TEXT_COLOR
         );
     }
 
@@ -863,7 +866,7 @@ public final class GuideScreen extends Screen {
             this.inlineActionRegions.add(new InlineActionRegion(cursor.x, cursor.y, chipWidth, ACTION_ROW_HEIGHT - 1, action));
         }
         if (hovered && cursor.isVisible()) {
-            guiGraphics.setTooltipForNextFrame(this.font, this.actionTooltip(action), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, this.actionTooltip(action), mouseX, mouseY);
         }
         cursor.x += chipWidth + INLINE_ACTION_GAP;
     }
@@ -959,7 +962,7 @@ public final class GuideScreen extends Screen {
                 false
         );
         if (hovered) {
-            guiGraphics.setTooltipForNextFrame(this.font, this.actionTooltip(action), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, this.actionTooltip(action), mouseX, mouseY);
         }
     }
 

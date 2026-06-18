@@ -5,17 +5,16 @@ import committee.nova.mods.skyresources3.core.machine.CasingType;
 import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
-import java.util.function.Consumer;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 public final class MachineCasingItem extends BlockItem {
@@ -27,13 +26,13 @@ public final class MachineCasingItem extends BlockItem {
         return forType(ModDataPackRegistries.casingTypeId(typeKey));
     }
 
-    public static ItemStack forType(final Identifier typeId) {
+    public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.MACHINE_CASING.get());
         stack.set(ModDataComponents.CASING_TYPE.get(), typeId);
         return stack;
     }
 
-    public static Identifier casingTypeId(final ItemStack stack) {
+    public static ResourceLocation casingTypeId(final ItemStack stack) {
         return stack.getOrDefault(
                 ModDataComponents.CASING_TYPE.get(),
                 ModDataPackRegistries.casingTypeId(ModDataPackRegistries.IRON)
@@ -50,22 +49,21 @@ public final class MachineCasingItem extends BlockItem {
     public void appendHoverText(
             final ItemStack stack,
             final Item.TooltipContext context,
-            final TooltipDisplay tooltipDisplay,
-            final Consumer<Component> tooltipAdder,
+            final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
         final HolderLookup.Provider registries = context.registries();
         if (registries == null) {
             return;
         }
-        final Identifier typeId = casingTypeId(stack);
+        final ResourceLocation typeId = casingTypeId(stack);
         registries.lookup(ModDataPackRegistries.CASING_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.casingTypeKey(typeId)))
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
-                    tooltipAdder.accept(Component.translatable("item.skyresources.machine_casing.max_heat", type.maxHeat())
+                    tooltipComponents.add(Component.translatable("item.skyresources.machine_casing.max_heat", type.maxHeat())
                             .withStyle(ChatFormatting.GRAY));
-                    tooltipAdder.accept(Component.translatable(
+                    tooltipComponents.add(Component.translatable(
                                     "item.skyresources.machine_casing.efficiency",
                                     Math.round(type.efficiency() * 100.0F)
                             )
@@ -73,7 +71,7 @@ public final class MachineCasingItem extends BlockItem {
                 });
     }
 
-    public static String translationKey(final Identifier typeId) {
+    public static String translationKey(final ResourceLocation typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
             return "block.skyresources.machine_casing." + typeId.getPath();
         }

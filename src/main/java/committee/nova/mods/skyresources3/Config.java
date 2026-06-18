@@ -3,7 +3,7 @@ package committee.nova.mods.skyresources3;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -244,7 +244,7 @@ public final class Config {
             return false;
         }
         try {
-            return BuiltInRegistries.BLOCK.containsKey(Identifier.parse(blockName));
+            return BuiltInRegistries.BLOCK.containsKey(ResourceLocation.parse(blockName));
         } catch (final RuntimeException exception) {
             return false;
         }
@@ -252,9 +252,9 @@ public final class Config {
 
     private static Block resolveBlock(final String blockName) {
         try {
-            final Identifier id = Identifier.parse(blockName);
+            final ResourceLocation id = ResourceLocation.parse(blockName);
             if (BuiltInRegistries.BLOCK.containsKey(id)) {
-                return BuiltInRegistries.BLOCK.getValue(id);
+                return BuiltInRegistries.BLOCK.get(id);
             }
         } catch (final RuntimeException ignored) {
             // Invalid values should be rejected by the config spec; keep runtime fallback defensive.

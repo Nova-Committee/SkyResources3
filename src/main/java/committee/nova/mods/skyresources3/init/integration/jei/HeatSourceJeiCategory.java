@@ -6,7 +6,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ final class HeatSourceJeiCategory implements IRecipeCategory<HeatSourceJeiRecipe
     }
 
     @Override
-    public IRecipeType<HeatSourceJeiRecipe> getRecipeType() {
+    public RecipeType<HeatSourceJeiRecipe> getRecipeType() {
         return SkyResourcesJeiRecipeTypes.HEAT_SOURCES;
     }
 
@@ -53,7 +53,7 @@ final class HeatSourceJeiCategory implements IRecipeCategory<HeatSourceJeiRecipe
     public void setRecipe(final IRecipeLayoutBuilder builder, final HeatSourceJeiRecipe recipe, final IFocusGroup focuses) {
         builder.addInputSlot(8, 11)
                 .setStandardSlotBackground()
-                .add(recipe.source());
+                .addItemStack(recipe.source());
     }
 
     @Override

@@ -30,7 +30,7 @@ public final class ProcessRecipes {
             final List<ItemStack> items,
             final float parameter
     ) {
-        return level.recipeAccess().getRecipeFor(
+        return level.getRecipeManager().getRecipeFor(
                 ModRecipeTypes.PROCESS_TYPE.get(),
                 new ProcessRecipeInput(process, items, parameter),
                 level
@@ -43,9 +43,8 @@ public final class ProcessRecipes {
             final List<ItemStack> items
     ) {
         final ProcessRecipeInput input = new ProcessRecipeInput(process, items, Float.MAX_VALUE);
-        return level.recipeAccess()
-                .recipeMap()
-                .byType(ModRecipeTypes.PROCESS_TYPE.get())
+        return level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.PROCESS_TYPE.get())
                 .stream()
                 .filter(holder -> holder.value().matches(input, level))
                 .toList();

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -37,12 +36,12 @@ record HeatSourceJeiRecipe(ItemStack source, int heat) {
         heatProviderTypes().ifPresent(registry -> ModDataPackRegistries.BUILTIN_HEAT_PROVIDER_TYPES.forEach(key -> add(
                 recipes,
                 HeatProviderItem.forType(key),
-                Math.round(registry.getValueOrThrow(key).heatPerTick())
+                Math.round(registry.getOrThrow(key).value().heatPerTick())
         )));
         return List.copyOf(recipes);
     }
 
-    private static Optional<Registry<HeatProviderType>> heatProviderTypes() {
+    private static Optional<net.minecraft.core.HolderLookup.RegistryLookup<HeatProviderType>> heatProviderTypes() {
         final Minecraft minecraft = Minecraft.getInstance();
         final Level level = minecraft.level;
         final RegistryAccess registryAccess;

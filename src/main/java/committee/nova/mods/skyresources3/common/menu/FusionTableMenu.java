@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class FusionTableMenu extends AbstractContainerMenu {
+public final class FusionTableMenu extends SkyResourcesMenu {
     private static final int MACHINE_SLOT_COUNT = FusionTableBlockEntity.SLOT_COUNT;
     private static final int PLAYER_SLOT_START = MACHINE_SLOT_COUNT;
     private static final int PLAYER_SLOT_END = PLAYER_SLOT_START + 36;

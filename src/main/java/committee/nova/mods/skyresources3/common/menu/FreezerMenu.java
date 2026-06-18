@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
-public final class FreezerMenu extends AbstractContainerMenu {
+public final class FreezerMenu extends SkyResourcesMenu {
     public static final int SLOT_START_X = 53;
     public static final int INPUT_SLOT_Y = 22;
     public static final int OUTPUT_SLOT_Y = 40;

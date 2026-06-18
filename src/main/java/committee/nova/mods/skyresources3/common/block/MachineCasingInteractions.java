@@ -20,7 +20,7 @@ public final class MachineCasingInteractions {
         if (!removed.isEmpty() && !player.addItem(removed)) {
             Containers.dropItemStack(level, player.getX(), player.getY(), player.getZ(), removed);
         }
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 
     private MachineCasingInteractions() {

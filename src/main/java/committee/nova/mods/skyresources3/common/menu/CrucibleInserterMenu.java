@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class CrucibleInserterMenu extends AbstractContainerMenu {
+public final class CrucibleInserterMenu extends SkyResourcesMenu {
     public static final int SLOT_X = 80;
     public static final int SLOT_Y = 53;
     private static final int PLAYER_INVENTORY_Y = 84;

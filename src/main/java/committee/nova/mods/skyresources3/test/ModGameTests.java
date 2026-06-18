@@ -11,7 +11,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
@@ -19,8 +19,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModGameTests {
-    private static final Identifier EMPTY_STRUCTURE = Identifier.withDefaultNamespace("empty");
-    private static final Identifier COMMAND_ENVIRONMENT_ID = id("command_environment");
+    private static final ResourceLocation EMPTY_STRUCTURE = ResourceLocation.withDefaultNamespace("empty");
+    private static final ResourceLocation COMMAND_ENVIRONMENT_ID = id("command_environment");
     private static final int DEFAULT_MAX_TICKS = 400;
     private static final int DEFAULT_SETUP_TICKS = 1;
 
@@ -431,8 +431,8 @@ public final class ModGameTests {
         event.registerTest(id(name), instance);
     }
 
-    private static Identifier id(final String path) {
-        return Identifier.fromNamespaceAndPath(Skyresources3.MODID, path);
+    private static ResourceLocation id(final String path) {
+        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
     }
 
     private static void jadeMachineCasingObjectName(final GameTestHelper helper) {

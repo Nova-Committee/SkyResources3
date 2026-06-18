@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import committee.nova.mods.skyresources3.Skyresources3;
 import java.util.List;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
@@ -13,8 +13,8 @@ import org.joml.Vector3f;
 
 public record CombustionHeaterType(
         String translationKey,
-        Identifier bodyTexture,
-        Identifier topTexture,
+        ResourceLocation bodyTexture,
+        ResourceLocation topTexture,
         float speed,
         float efficiency,
         MachineFuel fuel,
@@ -27,8 +27,8 @@ public record CombustionHeaterType(
     );
     public static final Codec<CombustionHeaterType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("translation_key").forGetter(CombustionHeaterType::translationKey),
-            Identifier.CODEC.fieldOf("body_texture").forGetter(CombustionHeaterType::bodyTexture),
-            Identifier.CODEC.fieldOf("top_texture").forGetter(CombustionHeaterType::topTexture),
+            ResourceLocation.CODEC.fieldOf("body_texture").forGetter(CombustionHeaterType::bodyTexture),
+            ResourceLocation.CODEC.fieldOf("top_texture").forGetter(CombustionHeaterType::topTexture),
             Codec.FLOAT.fieldOf("speed").forGetter(CombustionHeaterType::speed),
             Codec.FLOAT.fieldOf("efficiency").forGetter(CombustionHeaterType::efficiency),
             MachineFuel.CODEC.fieldOf("fuel").forGetter(CombustionHeaterType::fuel),
@@ -38,8 +38,8 @@ public record CombustionHeaterType(
     ).apply(instance, CombustionHeaterType::new));
     private static final CombustionHeaterType FALLBACK = new CombustionHeaterType(
             "block.skyresources.combustion_heater.iron",
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/combustion"),
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/combustion"),
             1.0F,
             1.2F,
             MachineFuel.furnace(),

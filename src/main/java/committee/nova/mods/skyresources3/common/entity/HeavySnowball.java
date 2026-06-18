@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public final class HeavySnowball extends AbstractHeavySnowball {
-    public HeavySnowball(final EntityType<? extends HeavySnowball> entityType, final Level level) {
+    public HeavySnowball(final EntityType<HeavySnowball> entityType, final Level level) {
         super(entityType, level);
     }
 

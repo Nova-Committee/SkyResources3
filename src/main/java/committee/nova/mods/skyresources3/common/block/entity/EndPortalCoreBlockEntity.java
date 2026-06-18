@@ -15,10 +15,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.monster.Silverfish;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -31,14 +31,14 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.EndPlatformFeature;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import committee.nova.mods.skyresources3.common.compat.ValueInput;
+import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
 
 public final class EndPortalCoreBlockEntity extends BlockEntity {
     public static final int SLOT_COUNT = 1;
@@ -51,7 +51,7 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
     private static final int SILVERFISH_INTERVAL = 800;
     private static final int AMBIENT_SOUND_INTERVAL = 60;
     private static final int MAX_SILVERFISH = 16;
-    private static final Set<Relative> NO_RELATIVE_MOVEMENT = Set.of();
+    private static final Set<RelativeMovement> NO_RELATIVE_MOVEMENT = Set.of();
 
     private final EndPortalCoreItemHandler items = new EndPortalCoreItemHandler(this);
     private boolean powered;
@@ -61,20 +61,21 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        final ValueInput input = new ValueInput(tag, registries);
         input.readChild(ITEMS_KEY, this.items);
         this.powered = input.getBooleanOr(POWERED_KEY, false);
     }
 
     @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        final ValueOutput output = new ValueOutput(tag, registries);
         output.putChild(ITEMS_KEY, this.items);
         output.putBoolean(POWERED_KEY, this.powered);
     }
 
-    @Override
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {
         this.dropContents();
     }
@@ -260,8 +261,7 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
                     target.z(),
                     NO_RELATIVE_MOVEMENT,
                     Direction.WEST.toYRot(),
-                    0.0F,
-                    false
+                    0.0F
             );
             if (!tier2) {
                 this.items.stack(EYE_SLOT).shrink(EYES_PER_TELEPORT);
@@ -293,7 +293,7 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
             return;
         }
 
-        final Silverfish silverfish = EntityType.SILVERFISH.create(level, EntitySpawnReason.TRIGGERED);
+        final Silverfish silverfish = EntityType.SILVERFISH.create(level);
         if (silverfish == null) {
             return;
         }
@@ -305,7 +305,7 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
         silverfish.finalizeSpawn(
                 level,
                 level.getCurrentDifficultyAt(silverfish.blockPosition()),
-                EntitySpawnReason.TRIGGERED,
+                MobSpawnType.TRIGGERED,
                 null
         );
         if (Config.endPortalMode == Config.EndPortalDifficulty.NORMAL) {

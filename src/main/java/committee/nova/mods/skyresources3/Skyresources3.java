@@ -25,7 +25,6 @@ import committee.nova.mods.skyresources3.init.registry.ModFluids;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import committee.nova.mods.skyresources3.init.registry.ModRecipeTypes;
-import committee.nova.mods.skyresources3.test.ModGameTests;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -56,7 +55,6 @@ public final class Skyresources3 {
         ModEntityTypes.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
-        ModGameTests.register(modEventBus);
 
         NeoForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockPlace);

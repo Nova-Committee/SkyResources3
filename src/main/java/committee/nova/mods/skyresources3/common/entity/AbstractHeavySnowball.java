@@ -6,7 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Blaze;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -27,7 +27,8 @@ abstract class AbstractHeavySnowball extends ThrowableItemProjectile {
             final Level level,
             final ItemStack item
     ) {
-        super(entityType, x, y, z, level, item);
+        super(entityType, x, y, z, level);
+        this.setItem(item);
     }
 
     private ParticleOptions particle() {

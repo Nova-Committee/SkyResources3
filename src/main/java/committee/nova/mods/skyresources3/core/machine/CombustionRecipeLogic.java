@@ -34,9 +34,8 @@ public final class CombustionRecipeLogic {
             final float heat,
             final Predicate<ItemStack> outputFilter
     ) {
-        return level.recipeAccess()
-                .recipeMap()
-                .byType(ModRecipeTypes.PROCESS_TYPE.get())
+        return level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.PROCESS_TYPE.get())
                 .stream()
                 .filter(holder -> holder.value().process().equals(ProcessRecipes.COMBUSTION))
                 .filter(holder -> holder.value().parameter() <= heat)

@@ -9,7 +9,7 @@ import committee.nova.mods.skyresources3.common.item.DirtyGemType;
 import committee.nova.mods.skyresources3.common.item.OreAlchemyDustType;
 import java.util.List;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
@@ -135,76 +135,76 @@ public final class ModDataPackRegistries {
         return casingTypeKey(id(path));
     }
 
-    public static ResourceKey<CasingType> casingTypeKey(final Identifier id) {
+    public static ResourceKey<CasingType> casingTypeKey(final ResourceLocation id) {
         return ResourceKey.create(CASING_TYPES, id);
     }
 
-    public static Identifier casingTypeId(final ResourceKey<CasingType> key) {
-        return key.identifier();
+    public static ResourceLocation casingTypeId(final ResourceKey<CasingType> key) {
+        return key.location();
     }
 
     public static ResourceKey<CombustionHeaterType> combustionHeaterTypeKey(final String path) {
         return combustionHeaterTypeKey(id(path));
     }
 
-    public static ResourceKey<CombustionHeaterType> combustionHeaterTypeKey(final Identifier id) {
+    public static ResourceKey<CombustionHeaterType> combustionHeaterTypeKey(final ResourceLocation id) {
         return ResourceKey.create(COMBUSTION_HEATER_TYPES, id);
     }
 
-    public static Identifier combustionHeaterTypeId(final ResourceKey<CombustionHeaterType> key) {
-        return key.identifier();
+    public static ResourceLocation combustionHeaterTypeId(final ResourceKey<CombustionHeaterType> key) {
+        return key.location();
     }
 
     public static ResourceKey<HeatProviderType> heatProviderTypeKey(final String path) {
         return heatProviderTypeKey(id(path));
     }
 
-    public static ResourceKey<HeatProviderType> heatProviderTypeKey(final Identifier id) {
+    public static ResourceKey<HeatProviderType> heatProviderTypeKey(final ResourceLocation id) {
         return ResourceKey.create(HEAT_PROVIDER_TYPES, id);
     }
 
-    public static Identifier heatProviderTypeId(final ResourceKey<HeatProviderType> key) {
-        return key.identifier();
+    public static ResourceLocation heatProviderTypeId(final ResourceKey<HeatProviderType> key) {
+        return key.location();
     }
 
     public static ResourceKey<CondenserType> condenserTypeKey(final String path) {
         return condenserTypeKey(id(path));
     }
 
-    public static ResourceKey<CondenserType> condenserTypeKey(final Identifier id) {
+    public static ResourceKey<CondenserType> condenserTypeKey(final ResourceLocation id) {
         return ResourceKey.create(CONDENSER_TYPES, id);
     }
 
-    public static Identifier condenserTypeId(final ResourceKey<CondenserType> key) {
-        return key.identifier();
+    public static ResourceLocation condenserTypeId(final ResourceKey<CondenserType> key) {
+        return key.location();
     }
 
     public static ResourceKey<OreAlchemyDustType> oreAlchemyDustTypeKey(final String path) {
         return oreAlchemyDustTypeKey(id(path));
     }
 
-    public static ResourceKey<OreAlchemyDustType> oreAlchemyDustTypeKey(final Identifier id) {
+    public static ResourceKey<OreAlchemyDustType> oreAlchemyDustTypeKey(final ResourceLocation id) {
         return ResourceKey.create(ORE_ALCHEMY_DUST_TYPES, id);
     }
 
-    public static Identifier oreAlchemyDustTypeId(final ResourceKey<OreAlchemyDustType> key) {
-        return key.identifier();
+    public static ResourceLocation oreAlchemyDustTypeId(final ResourceKey<OreAlchemyDustType> key) {
+        return key.location();
     }
 
     public static ResourceKey<DirtyGemType> dirtyGemTypeKey(final String path) {
         return dirtyGemTypeKey(id(path));
     }
 
-    public static ResourceKey<DirtyGemType> dirtyGemTypeKey(final Identifier id) {
+    public static ResourceKey<DirtyGemType> dirtyGemTypeKey(final ResourceLocation id) {
         return ResourceKey.create(DIRTY_GEM_TYPES, id);
     }
 
-    public static Identifier dirtyGemTypeId(final ResourceKey<DirtyGemType> key) {
-        return key.identifier();
+    public static ResourceLocation dirtyGemTypeId(final ResourceKey<DirtyGemType> key) {
+        return key.location();
     }
 
-    private static Identifier id(final String path) {
-        return Identifier.fromNamespaceAndPath(Skyresources3.MODID, path);
+    private static ResourceLocation id(final String path) {
+        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
     }
 
     private ModDataPackRegistries() {

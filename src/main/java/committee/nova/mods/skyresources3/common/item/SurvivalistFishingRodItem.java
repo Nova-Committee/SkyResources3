@@ -6,9 +6,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -23,7 +23,7 @@ public final class SurvivalistFishingRodItem extends FishingRodItem {
     }
 
     @Override
-    public InteractionResult use(final Level level, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
         final ItemStack itemStack = player.getItemInHand(hand);
         if (player.fishing != null) {
             if (!level.isClientSide()) {
@@ -40,7 +40,7 @@ public final class SurvivalistFishingRodItem extends FishingRodItem {
                     1.0F,
                     0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
             );
-            itemStack.causeUseVibration(player, GameEvent.ITEM_INTERACT_FINISH);
+            level.gameEvent(player, GameEvent.ITEM_INTERACT_FINISH, player.position());
         } else {
             level.playSound(
                     null,
@@ -56,13 +56,13 @@ public final class SurvivalistFishingRodItem extends FishingRodItem {
                 final int lureTimeReduction = BASE_LURE_TIME_REDUCTION_TICKS
                         + (int) (EnchantmentHelper.getFishingTimeReduction(serverLevel, itemStack, player) * 20.0F);
                 final int luck = EnchantmentHelper.getFishingLuckBonus(serverLevel, itemStack, player);
-                Projectile.spawnProjectile(new FishingHook(player, level, luck, lureTimeReduction), serverLevel, itemStack);
+                serverLevel.addFreshEntity(new FishingHook(player, level, luck, lureTimeReduction));
             }
 
             player.awardStat(Stats.ITEM_USED.get(this));
-            itemStack.causeUseVibration(player, GameEvent.ITEM_INTERACT_START);
+            level.gameEvent(player, GameEvent.ITEM_INTERACT_START, player.position());
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.success(itemStack);
     }
 }

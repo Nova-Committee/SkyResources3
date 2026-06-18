@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -33,7 +34,7 @@ public final class HeavySnowballItem extends Item implements ProjectileItem {
     }
 
     @Override
-    public InteractionResult use(final Level level, final Player player, final InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand hand) {
         final ItemStack itemStack = player.getItemInHand(hand);
         level.playSound(
                 null,
@@ -47,20 +48,14 @@ public final class HeavySnowballItem extends Item implements ProjectileItem {
         );
 
         if (level instanceof ServerLevel serverLevel) {
-            Projectile.spawnProjectileFromRotation(
-                    this.ownerProjectileFactory::create,
-                    serverLevel,
-                    itemStack,
-                    player,
-                    0.0F,
-                    PROJECTILE_SHOOT_POWER,
-                    1.0F
-            );
+            final Projectile projectile = this.ownerProjectileFactory.create(serverLevel, player, itemStack);
+            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, PROJECTILE_SHOOT_POWER, 1.0F);
+            serverLevel.addFreshEntity(projectile);
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
         itemStack.consume(1, player);
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.success(itemStack);
     }
 
     @Override

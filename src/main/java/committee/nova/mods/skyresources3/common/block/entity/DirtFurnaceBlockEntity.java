@@ -23,9 +23,9 @@ import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
+import committee.nova.mods.skyresources3.common.compat.transfer.item.WorldlyContainerWrapper;
 import org.jetbrains.annotations.Nullable;
 
 public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
@@ -56,7 +56,7 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
             final int maxStackSize = this.getMaxStackSize();
 
             if (!this.isLit() && canBurn(level.registryAccess(), recipe, recipeInput, this.items, maxStackSize)) {
-                final int burnDuration = this.getBurnDuration(level.fuelValues(), fuel);
+                final int burnDuration = this.getBurnDuration(fuel);
                 this.setLitTime(burnDuration);
                 this.setLitDuration(burnDuration);
                 if (this.isLit()) {
@@ -124,15 +124,14 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
     }
 
     private void consumeFuel(final ItemStack fuel, final boolean hasFuel) {
-        final ItemStack remainder = fuel.getCraftingRemainder();
+        final Item fuelItem = fuel.getItem();
+        final ItemStack remainder = fuelItem.hasCraftingRemainingItem()
+                ? new ItemStack(fuelItem.getCraftingRemainingItem())
+                : ItemStack.EMPTY;
         if (!remainder.isEmpty()) {
             this.items.set(SLOT_FUEL, remainder);
         } else if (hasFuel) {
-            final Item item = fuel.getItem();
             fuel.shrink(1);
-            if (fuel.isEmpty()) {
-                this.items.set(SLOT_FUEL, item.getCraftingRemainder());
-            }
         }
     }
 
@@ -173,7 +172,7 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
             final ServerLevel level,
             final SingleRecipeInput recipeInput
     ) {
-        return level.recipeAccess()
+        return level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMELTING, recipeInput, level)
                 .<RecipeHolder<? extends AbstractCookingRecipe>>map(holder -> holder)
                 .orElse(null);

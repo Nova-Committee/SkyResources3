@@ -11,14 +11,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
 public final class SkyResourcesProcessRecipe implements Recipe<ProcessRecipeInput> {
     private static final Codec<List<ProcessIngredient>> INPUTS_CODEC =
@@ -31,7 +27,6 @@ public final class SkyResourcesProcessRecipe implements Recipe<ProcessRecipeInpu
     private final List<ProcessIngredient> inputs;
     private final List<ItemStack> outputs;
     private final float parameter;
-    private @Nullable PlacementInfo placementInfo;
 
     public SkyResourcesProcessRecipe(
             final String group,
@@ -70,9 +65,23 @@ public final class SkyResourcesProcessRecipe implements Recipe<ProcessRecipeInpu
         return true;
     }
 
-    @Override
     public String group() {
         return this.group;
+    }
+
+    @Override
+    public String getGroup() {
+        return this.group;
+    }
+
+    @Override
+    public ItemStack getResultItem(final HolderLookup.Provider registries) {
+        return this.outputs.isEmpty() ? ItemStack.EMPTY : this.outputs.getFirst().copy();
+    }
+
+    @Override
+    public boolean canCraftInDimensions(final int width, final int height) {
+        return true;
     }
 
     @Override
@@ -83,21 +92,6 @@ public final class SkyResourcesProcessRecipe implements Recipe<ProcessRecipeInpu
     @Override
     public RecipeType<? extends Recipe<ProcessRecipeInput>> getType() {
         return ModRecipeTypes.PROCESS_TYPE.get();
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        if (this.placementInfo == null) {
-            this.placementInfo = PlacementInfo.create(this.inputs.stream()
-                    .map(ProcessIngredient::ingredient)
-                    .toList());
-        }
-        return this.placementInfo;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public String process() {

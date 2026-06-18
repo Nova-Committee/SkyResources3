@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class WildlifeAttractorMenu extends AbstractContainerMenu {
+public final class WildlifeAttractorMenu extends SkyResourcesMenu {
     public static final int SLOT_X = 80;
     public static final int SLOT_Y = 59;
     private static final int PLAYER_INVENTORY_Y = 107;

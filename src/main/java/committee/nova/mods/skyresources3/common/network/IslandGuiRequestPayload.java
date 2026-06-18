@@ -4,13 +4,13 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record IslandGuiRequestPayload() implements CustomPacketPayload {
     public static final Type<IslandGuiRequestPayload> TYPE = new Type<>(
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_request")
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_request")
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, IslandGuiRequestPayload> STREAM_CODEC =
             StreamCodec.unit(new IslandGuiRequestPayload());

@@ -5,7 +5,7 @@ import committee.nova.mods.skyresources3.init.registry.ModItems;
 import java.util.List;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +26,7 @@ import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 public final class SurvivalistFishingEvents {
     private static final ResourceKey<LootTable> SURVIVALIST_FISHING = ResourceKey.create(
             Registries.LOOT_TABLE,
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "gameplay/fishingsurvivalist")
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "gameplay/fishingsurvivalist")
     );
 
     public static void onItemFished(final ItemFishedEvent event) {

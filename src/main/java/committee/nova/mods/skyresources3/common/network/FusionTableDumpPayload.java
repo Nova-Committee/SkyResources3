@@ -6,14 +6,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record FusionTableDumpPayload(BlockPos pos) implements CustomPacketPayload {
     public static final Type<FusionTableDumpPayload> TYPE = new Type<>(
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "fusion_table_dump")
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "fusion_table_dump")
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, FusionTableDumpPayload> STREAM_CODEC =
             StreamCodec.composite(BlockPos.STREAM_CODEC, FusionTableDumpPayload::pos, FusionTableDumpPayload::new);

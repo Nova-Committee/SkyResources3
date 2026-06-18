@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public final class SkyResources3MaterialTypeProvider implements DataProvider {
     private static final List<DustSeed> DUSTS = List.of(
@@ -130,8 +130,8 @@ public final class SkyResources3MaterialTypeProvider implements DataProvider {
         return DataProvider.saveStable(output, json, this.gemTypePathProvider.json(typeId(gem.id)));
     }
 
-    private static Identifier typeId(final String path) {
-        return Identifier.fromNamespaceAndPath(Skyresources3.MODID, path);
+    private static ResourceLocation typeId(final String path) {
+        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
     }
 
     private static String color(final int rgb) {

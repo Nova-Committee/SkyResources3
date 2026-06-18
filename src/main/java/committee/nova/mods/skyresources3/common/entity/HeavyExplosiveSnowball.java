@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 public final class HeavyExplosiveSnowball extends AbstractHeavySnowball {
     private static final float EXPLOSION_RADIUS = 0.01F;
 
-    public HeavyExplosiveSnowball(final EntityType<? extends HeavyExplosiveSnowball> entityType, final Level level) {
+    public HeavyExplosiveSnowball(final EntityType<HeavyExplosiveSnowball> entityType, final Level level) {
         super(entityType, level);
     }
 

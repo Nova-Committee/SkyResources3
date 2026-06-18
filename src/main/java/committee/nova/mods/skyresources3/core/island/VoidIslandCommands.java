@@ -19,7 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -34,7 +34,7 @@ public final class VoidIslandCommands {
     private static final int STARTER_RESET_MIN_Y_OFFSET = -1;
     private static final int STARTER_RESET_MAX_Y_OFFSET = 5;
     private static final BlockPos TEMPORARY_SPAWN_COLUMN = new BlockPos(0, 0, 0);
-    private static final Set<Relative> NO_RELATIVE_MOVEMENT = Set.of();
+    private static final Set<RelativeMovement> NO_RELATIVE_MOVEMENT = Set.of();
 
     public static void register(final RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal(Skyresources3.MODID).then(islandNode()));
@@ -458,7 +458,7 @@ public final class VoidIslandCommands {
                         "message.skyresources.island.info",
                         island.ownerName(),
                         island.type(),
-                        island.dimension().identifier().toString(),
+                        island.dimension().location().toString(),
                         formatPosition(island.home()),
                         island.playerNames(),
                         island.invites().size()
@@ -764,8 +764,7 @@ public final class VoidIslandCommands {
                 home.getZ() + 0.5D,
                 NO_RELATIVE_MOVEMENT,
                 player.getYRot(),
-                player.getXRot(),
-                false
+                player.getXRot()
         );
     }
 

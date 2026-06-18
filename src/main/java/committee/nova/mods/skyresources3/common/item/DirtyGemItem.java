@@ -4,16 +4,15 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
-import java.util.function.Consumer;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
 public final class DirtyGemItem extends Item {
     public DirtyGemItem(final Properties properties) {
@@ -24,13 +23,13 @@ public final class DirtyGemItem extends Item {
         return forType(ModDataPackRegistries.dirtyGemTypeId(typeKey));
     }
 
-    public static ItemStack forType(final Identifier typeId) {
+    public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.DIRTY_GEM.get());
         stack.set(ModDataComponents.DIRTY_GEM_TYPE.get(), typeId);
         return stack;
     }
 
-    public static Identifier dirtyGemTypeId(final ItemStack stack) {
+    public static ResourceLocation dirtyGemTypeId(final ItemStack stack) {
         return stack.getOrDefault(
                 ModDataComponents.DIRTY_GEM_TYPE.get(),
                 ModDataPackRegistries.dirtyGemTypeId(ModDataPackRegistries.EMERALD_DIRTY_GEM)
@@ -47,31 +46,30 @@ public final class DirtyGemItem extends Item {
     public void appendHoverText(
             final ItemStack stack,
             final TooltipContext context,
-            final TooltipDisplay tooltipDisplay,
-            final Consumer<Component> tooltipAdder,
+            final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
         final HolderLookup.Provider registries = context.registries();
         if (registries == null) {
             return;
         }
-        final Identifier typeId = dirtyGemTypeId(stack);
+        final ResourceLocation typeId = dirtyGemTypeId(stack);
         registries.lookup(ModDataPackRegistries.DIRTY_GEM_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.dirtyGemTypeKey(typeId)))
                 .map(reference -> reference.value())
                 .ifPresent(type -> {
-                    tooltipAdder.accept(Component.translatable(
+                    tooltipComponents.add(Component.translatable(
                             "item.skyresources.dirty_gem.source_tag",
                             "#" + type.sourceTag().location()
                     ).withStyle(ChatFormatting.GRAY));
-                    tooltipAdder.accept(Component.translatable(
+                    tooltipComponents.add(Component.translatable(
                             "item.skyresources.dirty_gem.rarity",
                             type.rarity()
                     ).withStyle(ChatFormatting.GRAY));
                 });
     }
 
-    public static String translationKey(final Identifier typeId) {
+    public static String translationKey(final ResourceLocation typeId) {
         if (Skyresources3.MODID.equals(typeId.getNamespace())) {
             return "item.skyresources.dirty_gem." + typeId.getPath();
         }

@@ -4,14 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import committee.nova.mods.skyresources3.Skyresources3;
 import java.util.List;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import org.joml.Vector3f;
 
 public record CasingType(
         String translationKey,
-        Identifier texture,
+        ResourceLocation texture,
         int maxHeat,
         float efficiency,
         StructureRule structureRule,
@@ -33,7 +33,7 @@ public record CasingType(
     );
     public static final Codec<CasingType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("translation_key").forGetter(CasingType::translationKey),
-            Identifier.CODEC.fieldOf("texture").forGetter(CasingType::texture),
+            ResourceLocation.CODEC.fieldOf("texture").forGetter(CasingType::texture),
             Codec.INT.fieldOf("max_heat").forGetter(CasingType::maxHeat),
             Codec.FLOAT.fieldOf("efficiency").forGetter(CasingType::efficiency),
             StructureRule.CODEC.fieldOf("structure_rule").forGetter(CasingType::structureRule),
@@ -41,7 +41,7 @@ public record CasingType(
     ).apply(instance, CasingType::new));
     private static final CasingType FALLBACK = new CasingType(
             "block.skyresources.machine_casing.iron",
-            Identifier.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
+            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
             1538,
             1.2F,
             StructureRule.METAL,

@@ -3,7 +3,7 @@ package committee.nova.mods.skyresources3.init.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -20,47 +20,47 @@ public final class ModDataComponents {
                             .persistent(SimpleFluidContent.CODEC)
                             .networkSynchronized(SimpleFluidContent.STREAM_CODEC)
             );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
             CASING_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
                     "casing_type",
                     builder -> builder
-                            .persistent(Identifier.CODEC)
-                            .networkSynchronized(Identifier.STREAM_CODEC)
+                            .persistent(ResourceLocation.CODEC)
+                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
             );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
             COMBUSTION_HEATER_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
                     "combustion_heater_type",
                     builder -> builder
-                            .persistent(Identifier.CODEC)
-                            .networkSynchronized(Identifier.STREAM_CODEC)
+                            .persistent(ResourceLocation.CODEC)
+                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
             );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
             HEAT_PROVIDER_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
                     "heat_provider_type",
                     builder -> builder
-                            .persistent(Identifier.CODEC)
-                            .networkSynchronized(Identifier.STREAM_CODEC)
+                            .persistent(ResourceLocation.CODEC)
+                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
             );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
             CONDENSER_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
                     "condenser_type",
                     builder -> builder
-                            .persistent(Identifier.CODEC)
-                            .networkSynchronized(Identifier.STREAM_CODEC)
+                            .persistent(ResourceLocation.CODEC)
+                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
             );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
             ORE_ALCHEMY_DUST_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
                     "ore_alchemy_dust_type",
                     builder -> builder
-                            .persistent(Identifier.CODEC)
-                            .networkSynchronized(Identifier.STREAM_CODEC)
+                            .persistent(ResourceLocation.CODEC)
+                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
             );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>>
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
             DIRTY_GEM_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
                     "dirty_gem_type",
                     builder -> builder
-                            .persistent(Identifier.CODEC)
-                            .networkSynchronized(Identifier.STREAM_CODEC)
+                            .persistent(ResourceLocation.CODEC)
+                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
             );
 
     public static void register(final IEventBus modEventBus) {

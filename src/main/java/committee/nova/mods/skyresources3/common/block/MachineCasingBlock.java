@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +57,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             final ItemStack stack,
             final BlockState state,
             final Level level,
@@ -66,21 +67,21 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
             final BlockHitResult hitResult
     ) {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!(level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (player.isShiftKeyDown() && casing.hasHeater()) {
-            return MachineCasingInteractions.removeHeater(level, player, casing);
+            return BlockInteractionResults.item(MachineCasingInteractions.removeHeater(level, player, casing));
         }
         if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (!casing.hasHeater() && casing.canInstallMachine(stack)) {
-            return casing.installHeater(stack, player) ? InteractionResult.SUCCESS_SERVER : InteractionResult.PASS;
+            return casing.installHeater(stack, player) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        return this.openMenu(pos, player, casing);
+        return BlockInteractionResults.item(this.openMenu(pos, player, casing));
     }
 
     @Override
@@ -118,6 +119,6 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
                 ),
                 buffer -> MachineCasingMenu.writeClientSideData(buffer, pos)
         );
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.SUCCESS;
     }
 }

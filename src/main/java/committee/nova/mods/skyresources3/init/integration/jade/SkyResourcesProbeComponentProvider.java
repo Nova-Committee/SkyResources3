@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.JadeIds;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -26,7 +26,7 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return SkyResourcesJadePlugin.PROBE_DATA;
     }
 
