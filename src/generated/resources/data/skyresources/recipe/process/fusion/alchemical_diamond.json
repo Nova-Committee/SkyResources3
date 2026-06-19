@@ -2,11 +2,15 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:diamond"
+      "ingredient": {
+        "item": "minecraft:diamond"
+      }
     },
     {
       "count": 8,
-      "ingredient": "minecraft:redstone"
+      "ingredient": {
+        "item": "minecraft:redstone"
+      }
     }
   ],
   "outputs": [

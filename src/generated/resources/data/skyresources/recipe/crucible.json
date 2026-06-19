@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:brick"
+    "X": {
+      "item": "minecraft:brick"
+    }
   },
   "pattern": [
     "X X",

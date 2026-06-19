@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "C": "minecraft:coal_block",
-    "X": "minecraft:coal"
+    "C": {
+      "item": "minecraft:coal_block"
+    },
+    "X": {
+      "item": "minecraft:coal"
+    }
   },
   "pattern": [
     "CCC",

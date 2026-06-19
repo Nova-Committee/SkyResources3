@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "X": "skyresources:light_matter"
+    "X": {
+      "item": "skyresources:light_matter"
+    }
   },
   "pattern": [
     "XXX",

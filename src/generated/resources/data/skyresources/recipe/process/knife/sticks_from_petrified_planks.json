@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:petrified_planks"
+      "ingredient": {
+        "item": "skyresources:petrified_planks"
+      }
     }
   ],
   "outputs": [

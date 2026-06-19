@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:alchemical_gold_ingot"
+    "X": {
+      "item": "skyresources:alchemical_gold_ingot"
+    }
   },
   "pattern": [
     "X",

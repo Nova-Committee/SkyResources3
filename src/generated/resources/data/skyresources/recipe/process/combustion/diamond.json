@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:compressed_coal_block"
+      "ingredient": {
+        "item": "skyresources:compressed_coal_block"
+      }
     }
   ],
   "outputs": [

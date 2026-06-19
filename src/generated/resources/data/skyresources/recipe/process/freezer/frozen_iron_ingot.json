@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:iron_ingot"
+      "ingredient": {
+        "item": "minecraft:iron_ingot"
+      }
     }
   ],
   "outputs": [

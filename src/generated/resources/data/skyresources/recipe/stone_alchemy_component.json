@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:stone",
-    "Y": "skyresources:primus_alchemical_dust"
+    "X": {
+      "item": "minecraft:stone"
+    },
+    "Y": {
+      "item": "skyresources:primus_alchemical_dust"
+    }
   },
   "pattern": [
     "XXX",

@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:frozen_iron_ingot",
-    "Y": "minecraft:glowstone_dust",
-    "Z": "minecraft:lapis_lazuli"
+    "X": {
+      "item": "skyresources:frozen_iron_ingot"
+    },
+    "Y": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "Z": {
+      "item": "minecraft:lapis_lazuli"
+    }
   },
   "pattern": [
     "XZX",

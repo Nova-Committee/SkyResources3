@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:iron_ingot",
-    "Y": "skyresources:advanced_power_component"
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "skyresources:advanced_power_component"
+    }
   },
   "pattern": [
     "XYX",

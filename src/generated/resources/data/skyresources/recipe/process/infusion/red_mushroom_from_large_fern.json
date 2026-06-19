@@ -3,10 +3,14 @@
   "inputs": [
     {
       "count": 8,
-      "ingredient": "minecraft:red_dye"
+      "ingredient": {
+        "item": "minecraft:red_dye"
+      }
     },
     {
-      "ingredient": "minecraft:large_fern"
+      "ingredient": {
+        "item": "minecraft:large_fern"
+      }
     }
   ],
   "outputs": [

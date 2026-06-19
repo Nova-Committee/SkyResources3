@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:birch_log"
+      "ingredient": {
+        "item": "minecraft:birch_log"
+      }
     }
   ],
   "outputs": [

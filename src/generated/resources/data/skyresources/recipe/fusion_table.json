@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "#minecraft:planks",
-    "Y": "skyresources:stone_alchemy_component",
-    "Z": "skyresources:primus_alchemical_dust"
+    "X": {
+      "tag": "minecraft:planks"
+    },
+    "Y": {
+      "item": "skyresources:stone_alchemy_component"
+    },
+    "Z": {
+      "item": "skyresources:primus_alchemical_dust"
+    }
   },
   "pattern": [
     "XZX",

@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "skyresources:heavy_snowball",
-    "skyresources:heavy_snowball",
-    "skyresources:heavy_snowball",
-    "minecraft:gunpowder"
+    {
+      "item": "skyresources:heavy_snowball"
+    },
+    {
+      "item": "skyresources:heavy_snowball"
+    },
+    {
+      "item": "skyresources:heavy_snowball"
+    },
+    {
+      "item": "minecraft:gunpowder"
+    }
   ],
   "result": {
     "count": 3,

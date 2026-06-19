@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "skyresources:light_matter_block"
+    {
+      "item": "skyresources:light_matter_block"
+    }
   ],
   "result": {
     "count": 9,

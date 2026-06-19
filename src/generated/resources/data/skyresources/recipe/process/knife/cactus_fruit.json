@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:cactus"
+      "ingredient": {
+        "item": "minecraft:cactus"
+      }
     }
   ],
   "outputs": [

@@ -3,7 +3,9 @@
   "inputs": [
     {
       "count": 4,
-      "ingredient": "minecraft:snowball"
+      "ingredient": {
+        "item": "minecraft:snowball"
+      }
     }
   ],
   "outputs": [

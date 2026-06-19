@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:end_stone"
+    "X": {
+      "item": "minecraft:end_stone"
+    }
   },
   "pattern": [
     "XXX",

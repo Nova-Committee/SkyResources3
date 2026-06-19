@@ -2,11 +2,15 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:pumpkin_seeds"
+      "ingredient": {
+        "item": "minecraft:pumpkin_seeds"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:gunpowder"
+      "ingredient": {
+        "item": "minecraft:gunpowder"
+      }
     }
   ],
   "outputs": [

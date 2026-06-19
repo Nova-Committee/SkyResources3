@@ -2,11 +2,15 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:rotten_flesh"
+      "ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:blaze_powder"
+      "ingredient": {
+        "item": "minecraft:blaze_powder"
+      }
     }
   ],
   "outputs": [

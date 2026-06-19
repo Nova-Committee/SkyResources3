@@ -3,14 +3,20 @@
   "inputs": [
     {
       "count": 2,
-      "ingredient": "minecraft:redstone"
+      "ingredient": {
+        "item": "minecraft:redstone"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:blaze_powder"
+      "ingredient": {
+        "item": "minecraft:blaze_powder"
+      }
     },
     {
-      "ingredient": "skyresources:alchemical_iron_ingot"
+      "ingredient": {
+        "item": "skyresources:alchemical_iron_ingot"
+      }
     }
   ],
   "outputs": [

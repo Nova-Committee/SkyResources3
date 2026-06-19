@@ -2,10 +2,14 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:alchemical_diamond"
+      "ingredient": {
+        "item": "skyresources:alchemical_diamond"
+      }
     },
     {
-      "ingredient": "minecraft:chorus_flower"
+      "ingredient": {
+        "item": "minecraft:chorus_flower"
+      }
     }
   ],
   "outputs": [

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "X": "skyresources:alchemical_coal"
+    "X": {
+      "item": "skyresources:alchemical_coal"
+    }
   },
   "pattern": [
     "XXX",

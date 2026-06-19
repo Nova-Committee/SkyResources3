@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:flint"
+      "ingredient": {
+        "item": "minecraft:flint"
+      }
     }
   ],
   "outputs": [

@@ -3,10 +3,14 @@
   "inputs": [
     {
       "count": 4,
-      "ingredient": "minecraft:quartz"
+      "ingredient": {
+        "item": "minecraft:quartz"
+      }
     },
     {
-      "ingredient": "minecraft:mossy_cobblestone"
+      "ingredient": {
+        "item": "minecraft:mossy_cobblestone"
+      }
     }
   ],
   "outputs": [

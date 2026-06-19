@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:snow"
+    "X": {
+      "item": "minecraft:snow"
+    }
   },
   "pattern": [
     "X",

@@ -3,10 +3,14 @@
   "inputs": [
     {
       "count": 8,
-      "ingredient": "minecraft:red_dye"
+      "ingredient": {
+        "item": "minecraft:red_dye"
+      }
     },
     {
-      "ingredient": "minecraft:tall_grass"
+      "ingredient": {
+        "item": "minecraft:tall_grass"
+      }
     }
   ],
   "outputs": [

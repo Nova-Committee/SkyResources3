@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "#minecraft:dirt",
-    "Y": "skyresources:wooden_heat_component"
+    "X": {
+      "tag": "minecraft:dirt"
+    },
+    "Y": {
+      "item": "skyresources:wooden_heat_component"
+    }
   },
   "pattern": [
     "X",

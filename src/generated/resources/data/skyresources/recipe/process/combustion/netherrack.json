@@ -3,11 +3,15 @@
   "inputs": [
     {
       "count": 8,
-      "ingredient": "minecraft:cobblestone"
+      "ingredient": {
+        "item": "minecraft:cobblestone"
+      }
     },
     {
       "count": 3,
-      "ingredient": "minecraft:blaze_powder"
+      "ingredient": {
+        "item": "minecraft:blaze_powder"
+      }
     }
   ],
   "outputs": [

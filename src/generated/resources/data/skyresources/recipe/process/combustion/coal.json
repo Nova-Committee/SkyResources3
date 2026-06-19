@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:charcoal"
+      "ingredient": {
+        "item": "minecraft:charcoal"
+      }
     }
   ],
   "outputs": [

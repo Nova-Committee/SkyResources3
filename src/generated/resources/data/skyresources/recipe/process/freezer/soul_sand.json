@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:sandy_netherrack"
+      "ingredient": {
+        "item": "skyresources:sandy_netherrack"
+      }
     }
   ],
   "outputs": [

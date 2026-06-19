@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:jungle_log"
+      "ingredient": {
+        "item": "minecraft:jungle_log"
+      }
     }
   ],
   "outputs": [

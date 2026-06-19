@@ -3,22 +3,32 @@
   "inputs": [
     {
       "count": 5,
-      "ingredient": "minecraft:soul_sand"
+      "ingredient": {
+        "item": "minecraft:soul_sand"
+      }
     },
     {
       "count": 3,
-      "ingredient": "skyresources:compressed_coal_block"
+      "ingredient": {
+        "item": "skyresources:compressed_coal_block"
+      }
     },
     {
-      "ingredient": "minecraft:gold_ingot"
+      "ingredient": {
+        "item": "minecraft:gold_ingot"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:iron_ingot"
+      "ingredient": {
+        "item": "minecraft:iron_ingot"
+      }
     },
     {
       "count": 4,
-      "ingredient": "minecraft:brick"
+      "ingredient": {
+        "item": "minecraft:brick"
+      }
     }
   ],
   "outputs": [

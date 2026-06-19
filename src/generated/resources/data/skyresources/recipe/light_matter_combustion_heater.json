@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:light_matter",
-    "Y": "skyresources:quartz_amplification_component"
+    "X": {
+      "item": "skyresources:light_matter"
+    },
+    "Y": {
+      "item": "skyresources:quartz_amplification_component"
+    }
   },
   "pattern": [
     "XXX",

@@ -3,11 +3,15 @@
   "inputs": [
     {
       "count": 4,
-      "ingredient": "minecraft:redstone"
+      "ingredient": {
+        "item": "minecraft:redstone"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:blaze_powder"
+      "ingredient": {
+        "item": "minecraft:blaze_powder"
+      }
     }
   ],
   "outputs": [

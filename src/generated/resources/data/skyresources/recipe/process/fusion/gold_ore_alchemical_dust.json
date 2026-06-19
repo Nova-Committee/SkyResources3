@@ -2,11 +2,15 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:wheat"
+      "ingredient": {
+        "item": "minecraft:wheat"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:glowstone_dust"
+      "ingredient": {
+        "item": "minecraft:glowstone_dust"
+      }
     }
   ],
   "outputs": [

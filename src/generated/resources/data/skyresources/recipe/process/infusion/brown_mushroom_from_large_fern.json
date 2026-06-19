@@ -3,10 +3,14 @@
   "inputs": [
     {
       "count": 8,
-      "ingredient": "minecraft:cocoa_beans"
+      "ingredient": {
+        "item": "minecraft:cocoa_beans"
+      }
     },
     {
-      "ingredient": "minecraft:large_fern"
+      "ingredient": {
+        "item": "minecraft:large_fern"
+      }
     }
   ],
   "outputs": [

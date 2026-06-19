@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.2,
-  "ingredient": "skyresources:dry_cactus",
+  "ingredient": {
+    "item": "skyresources:dry_cactus"
+  },
   "result": {
     "count": 1,
     "id": "minecraft:light_gray_dye"

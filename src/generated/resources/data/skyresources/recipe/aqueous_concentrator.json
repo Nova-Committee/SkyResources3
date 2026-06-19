@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "minecraft:snow",
-    "X": "minecraft:iron_ingot",
-    "Y": "skyresources:advanced_power_component",
-    "Z": "skyresources:water_extractor"
+    "A": {
+      "item": "minecraft:snow"
+    },
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "skyresources:advanced_power_component"
+    },
+    "Z": {
+      "item": "skyresources:water_extractor"
+    }
   },
   "pattern": [
     "XAX",

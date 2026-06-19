@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:alchemical_gold_needle",
-    "Y": "skyresources:alchemical_diamond"
+    "X": {
+      "item": "skyresources:alchemical_gold_needle"
+    },
+    "Y": {
+      "item": "skyresources:alchemical_diamond"
+    }
   },
   "pattern": [
     "X",

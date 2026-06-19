@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:cactus_needle",
-    "Y": "minecraft:red_sandstone"
+    "X": {
+      "item": "skyresources:cactus_needle"
+    },
+    "Y": {
+      "item": "minecraft:red_sandstone"
+    }
   },
   "pattern": [
     "X",

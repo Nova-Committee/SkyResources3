@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "#minecraft:planks",
-    "Y": "skyresources:sawdust"
+    "X": {
+      "tag": "minecraft:planks"
+    },
+    "Y": {
+      "item": "skyresources:sawdust"
+    }
   },
   "pattern": [
     "XXX",

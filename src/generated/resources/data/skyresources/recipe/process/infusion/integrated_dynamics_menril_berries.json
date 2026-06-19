@@ -9,10 +9,14 @@
   "inputs": [
     {
       "count": 4,
-      "ingredient": "minecraft:light_blue_dye"
+      "ingredient": {
+        "item": "minecraft:light_blue_dye"
+      }
     },
     {
-      "ingredient": "minecraft:red_mushroom"
+      "ingredient": {
+        "item": "minecraft:red_mushroom"
+      }
     }
   ],
   "outputs": [

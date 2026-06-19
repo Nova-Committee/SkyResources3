@@ -9,10 +9,14 @@
   "inputs": [
     {
       "count": 4,
-      "ingredient": "integrateddynamics:menril_berries"
+      "ingredient": {
+        "item": "integrateddynamics:menril_berries"
+      }
     },
     {
-      "ingredient": "minecraft:birch_sapling"
+      "ingredient": {
+        "item": "minecraft:birch_sapling"
+      }
     }
   ],
   "outputs": [

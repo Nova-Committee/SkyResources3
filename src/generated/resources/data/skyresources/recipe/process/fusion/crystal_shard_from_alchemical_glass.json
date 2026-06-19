@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:alchemical_glass"
+      "ingredient": {
+        "item": "skyresources:alchemical_glass"
+      }
     }
   ],
   "outputs": [

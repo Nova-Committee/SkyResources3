@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "#minecraft:logs",
-    "Y": "minecraft:diamond_sword"
+    "X": {
+      "tag": "minecraft:logs"
+    },
+    "Y": {
+      "item": "minecraft:diamond_sword"
+    }
   },
   "pattern": [
     " Y ",

@@ -108,7 +108,9 @@ public final class SkyResources3IntegrationRecipeProvider implements DataProvide
 
     private static JsonObject input(final String ingredient, final int count) {
         final JsonObject input = new JsonObject();
-        input.addProperty("ingredient", ingredient);
+        final JsonObject ingredientObject = new JsonObject();
+        ingredientObject.addProperty("item", ingredient);
+        input.add("ingredient", ingredientObject);
         if (count != 1) {
             input.addProperty("count", count);
         }

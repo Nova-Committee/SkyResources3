@@ -1,7 +1,9 @@
 {
   "type": "skyresources:crucible",
   "input": {
-    "ingredient": "skyresources:crystal_shard"
+    "ingredient": {
+      "item": "skyresources:crystal_shard"
+    }
   },
   "output": {
     "amount": 1000,

@@ -2,14 +2,20 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:magma_block"
+      "ingredient": {
+        "item": "minecraft:magma_block"
+      }
     },
     {
-      "ingredient": "minecraft:stone"
+      "ingredient": {
+        "item": "minecraft:stone"
+      }
     },
     {
       "count": 2,
-      "ingredient": "skyresources:alchemical_coal"
+      "ingredient": {
+        "item": "skyresources:alchemical_coal"
+      }
     }
   ],
   "outputs": [

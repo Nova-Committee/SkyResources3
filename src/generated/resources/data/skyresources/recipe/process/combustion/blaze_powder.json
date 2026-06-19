@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:gunpowder"
+      "ingredient": {
+        "item": "minecraft:gunpowder"
+      }
     }
   ],
   "outputs": [

@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "#minecraft:logs"
+      "ingredient": {
+        "tag": "minecraft:logs"
+      }
     }
   ],
   "outputs": [

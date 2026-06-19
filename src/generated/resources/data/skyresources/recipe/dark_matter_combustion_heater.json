@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:dark_matter",
-    "Y": "skyresources:advanced_power_component"
+    "X": {
+      "item": "skyresources:dark_matter"
+    },
+    "Y": {
+      "item": "skyresources:advanced_power_component"
+    }
   },
   "pattern": [
     "XXX",

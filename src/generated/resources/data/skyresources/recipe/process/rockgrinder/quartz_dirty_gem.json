@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:netherrack"
+      "ingredient": {
+        "item": "minecraft:netherrack"
+      }
     }
   ],
   "outputs": [

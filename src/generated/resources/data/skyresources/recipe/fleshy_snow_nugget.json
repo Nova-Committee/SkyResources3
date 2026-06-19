@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": "minecraft:rotten_flesh",
-    "S": "minecraft:snowball"
+    "F": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "S": {
+      "item": "minecraft:snowball"
+    }
   },
   "pattern": [
     "SS",

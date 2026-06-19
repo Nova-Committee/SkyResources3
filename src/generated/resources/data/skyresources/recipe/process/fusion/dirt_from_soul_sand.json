@@ -2,11 +2,15 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:soul_sand"
+      "ingredient": {
+        "item": "minecraft:soul_sand"
+      }
     },
     {
       "count": 3,
-      "ingredient": "skyresources:enriched_bonemeal"
+      "ingredient": {
+        "item": "skyresources:enriched_bonemeal"
+      }
     }
   ],
   "outputs": [

@@ -2,14 +2,20 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:nether_wart"
+      "ingredient": {
+        "item": "minecraft:nether_wart"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:gunpowder"
+      "ingredient": {
+        "item": "minecraft:gunpowder"
+      }
     },
     {
-      "ingredient": "minecraft:rotten_flesh"
+      "ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
     }
   ],
   "outputs": [

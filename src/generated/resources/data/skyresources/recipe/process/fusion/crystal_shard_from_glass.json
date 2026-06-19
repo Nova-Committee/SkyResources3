@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:glass"
+      "ingredient": {
+        "item": "minecraft:glass"
+      }
     }
   ],
   "outputs": [

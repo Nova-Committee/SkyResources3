@@ -2,13 +2,19 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "#minecraft:logs"
+      "ingredient": {
+        "tag": "minecraft:logs"
+      }
     },
     {
-      "ingredient": "minecraft:rotten_flesh"
+      "ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
     },
     {
-      "ingredient": "minecraft:coal"
+      "ingredient": {
+        "item": "minecraft:coal"
+      }
     }
   ],
   "outputs": [

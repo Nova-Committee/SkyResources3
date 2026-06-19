@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:iron_ingot",
-    "Y": "minecraft:dropper",
-    "Z": "minecraft:glowstone"
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "minecraft:dropper"
+    },
+    "Z": {
+      "item": "minecraft:glowstone"
+    }
   },
   "pattern": [
     "XXX",

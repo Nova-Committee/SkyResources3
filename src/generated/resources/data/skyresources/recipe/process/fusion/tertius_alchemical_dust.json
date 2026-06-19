@@ -3,14 +3,20 @@
   "inputs": [
     {
       "count": 2,
-      "ingredient": "minecraft:glowstone_dust"
+      "ingredient": {
+        "item": "minecraft:glowstone_dust"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:lapis_lazuli"
+      "ingredient": {
+        "item": "minecraft:lapis_lazuli"
+      }
     },
     {
-      "ingredient": "skyresources:alchemical_gold_ingot"
+      "ingredient": {
+        "item": "skyresources:alchemical_gold_ingot"
+      }
     }
   ],
   "outputs": [

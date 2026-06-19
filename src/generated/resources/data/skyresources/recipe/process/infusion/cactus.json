@@ -3,10 +3,14 @@
   "inputs": [
     {
       "count": 6,
-      "ingredient": "skyresources:primus_alchemical_dust"
+      "ingredient": {
+        "item": "skyresources:primus_alchemical_dust"
+      }
     },
     {
-      "ingredient": "minecraft:cactus"
+      "ingredient": {
+        "item": "minecraft:cactus"
+      }
     }
   ],
   "outputs": [

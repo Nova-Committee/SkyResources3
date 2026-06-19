@@ -2,11 +2,15 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:gold_ingot"
+      "ingredient": {
+        "item": "minecraft:gold_ingot"
+      }
     },
     {
       "count": 3,
-      "ingredient": "minecraft:glowstone_dust"
+      "ingredient": {
+        "item": "minecraft:glowstone_dust"
+      }
     }
   ],
   "outputs": [

@@ -3,10 +3,14 @@
   "inputs": [
     {
       "count": 3,
-      "ingredient": "minecraft:popped_chorus_fruit"
+      "ingredient": {
+        "item": "minecraft:popped_chorus_fruit"
+      }
     },
     {
-      "ingredient": "minecraft:red_mushroom"
+      "ingredient": {
+        "item": "minecraft:red_mushroom"
+      }
     }
   ],
   "outputs": [

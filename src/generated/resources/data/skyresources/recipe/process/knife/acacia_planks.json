@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:acacia_log"
+      "ingredient": {
+        "item": "minecraft:acacia_log"
+      }
     }
   ],
   "outputs": [

@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:dark_matter"
+    "X": {
+      "item": "skyresources:dark_matter"
+    }
   },
   "pattern": [
     "XXX",

@@ -3,7 +3,9 @@
   "inputs": [
     {
       "count": 4,
-      "ingredient": "skyresources:plant_matter"
+      "ingredient": {
+        "item": "skyresources:plant_matter"
+      }
     }
   ],
   "outputs": [

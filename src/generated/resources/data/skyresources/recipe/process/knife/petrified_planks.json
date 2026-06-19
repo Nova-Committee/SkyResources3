@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:petrified_wood"
+      "ingredient": {
+        "item": "skyresources:petrified_wood"
+      }
     }
   ],
   "outputs": [

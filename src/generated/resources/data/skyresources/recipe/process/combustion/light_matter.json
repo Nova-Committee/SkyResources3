@@ -3,19 +3,27 @@
   "inputs": [
     {
       "count": 5,
-      "ingredient": "skyresources:heavy_snow"
+      "ingredient": {
+        "item": "skyresources:heavy_snow"
+      }
     },
     {
       "count": 4,
-      "ingredient": "skyresources:frozen_iron_ingot"
+      "ingredient": {
+        "item": "skyresources:frozen_iron_ingot"
+      }
     },
     {
       "count": 4,
-      "ingredient": "skyresources:alchemical_gold_ingot"
+      "ingredient": {
+        "item": "skyresources:alchemical_gold_ingot"
+      }
     },
     {
       "count": 3,
-      "ingredient": "minecraft:end_stone"
+      "ingredient": {
+        "item": "minecraft:end_stone"
+      }
     }
   ],
   "outputs": [

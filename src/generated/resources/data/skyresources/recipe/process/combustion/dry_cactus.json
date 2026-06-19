@@ -2,15 +2,21 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:bone_block"
+      "ingredient": {
+        "item": "minecraft:bone_block"
+      }
     },
     {
       "count": 8,
-      "ingredient": "minecraft:light_gray_dye"
+      "ingredient": {
+        "item": "minecraft:light_gray_dye"
+      }
     },
     {
       "count": 8,
-      "ingredient": "skyresources:plant_matter"
+      "ingredient": {
+        "item": "skyresources:plant_matter"
+      }
     }
   ],
   "outputs": [

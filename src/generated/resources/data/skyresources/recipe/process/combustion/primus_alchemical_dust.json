@@ -3,14 +3,20 @@
   "inputs": [
     {
       "count": 3,
-      "ingredient": "minecraft:gunpowder"
+      "ingredient": {
+        "item": "minecraft:gunpowder"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:blaze_powder"
+      "ingredient": {
+        "item": "minecraft:blaze_powder"
+      }
     },
     {
-      "ingredient": "minecraft:charcoal"
+      "ingredient": {
+        "item": "minecraft:charcoal"
+      }
     }
   ],
   "outputs": [

@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "N": "minecraft:netherrack",
-    "S": "minecraft:sand",
-    "W": "minecraft:nether_wart"
+    "N": {
+      "item": "minecraft:netherrack"
+    },
+    "S": {
+      "item": "minecraft:sand"
+    },
+    "W": {
+      "item": "minecraft:nether_wart"
+    }
   },
   "pattern": [
     "SW",

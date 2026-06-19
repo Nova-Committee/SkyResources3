@@ -3,10 +3,14 @@
   "inputs": [
     {
       "count": 10,
-      "ingredient": "minecraft:bone_meal"
+      "ingredient": {
+        "item": "minecraft:bone_meal"
+      }
     },
     {
-      "ingredient": "#minecraft:saplings"
+      "ingredient": {
+        "tag": "minecraft:saplings"
+      }
     }
   ],
   "outputs": [

@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:quartz",
-    "Y": "minecraft:lapis_lazuli",
-    "Z": "minecraft:glowstone_dust"
+    "X": {
+      "item": "minecraft:quartz"
+    },
+    "Y": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "Z": {
+      "item": "minecraft:glowstone_dust"
+    }
   },
   "pattern": [
     "XYX",

@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:melon"
+      "ingredient": {
+        "item": "minecraft:melon"
+      }
     }
   ],
   "outputs": [

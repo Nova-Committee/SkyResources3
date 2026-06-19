@@ -2,22 +2,32 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:dark_matter"
+      "ingredient": {
+        "item": "skyresources:dark_matter"
+      }
     },
     {
-      "ingredient": "skyresources:light_matter"
+      "ingredient": {
+        "item": "skyresources:light_matter"
+      }
     },
     {
       "count": 6,
-      "ingredient": "skyresources:alchemical_coal"
+      "ingredient": {
+        "item": "skyresources:alchemical_coal"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:emerald"
+      "ingredient": {
+        "item": "minecraft:emerald"
+      }
     },
     {
       "count": 6,
-      "ingredient": "skyresources:alchemical_diamond"
+      "ingredient": {
+        "item": "skyresources:alchemical_diamond"
+      }
     }
   ],
   "outputs": [

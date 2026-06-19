@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "skyresources:light_matter",
-    "Z": "skyresources:iron_freezer"
+    "X": {
+      "item": "skyresources:light_matter"
+    },
+    "Z": {
+      "item": "skyresources:iron_freezer"
+    }
   },
   "pattern": [
     "XXX",

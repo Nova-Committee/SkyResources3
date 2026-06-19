@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:gravel"
+      "ingredient": {
+        "item": "minecraft:gravel"
+      }
     }
   ],
   "outputs": [

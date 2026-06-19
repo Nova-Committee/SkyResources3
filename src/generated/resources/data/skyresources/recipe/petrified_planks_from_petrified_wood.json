@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    "skyresources:petrified_wood"
+    {
+      "item": "skyresources:petrified_wood"
+    }
   ],
   "result": {
     "count": 4,

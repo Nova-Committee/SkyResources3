@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:dark_oak_log"
+      "ingredient": {
+        "item": "minecraft:dark_oak_log"
+      }
     }
   ],
   "outputs": [

@@ -2,13 +2,19 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "minecraft:sand"
+      "ingredient": {
+        "item": "minecraft:sand"
+      }
     },
     {
-      "ingredient": "skyresources:crystal_shard"
+      "ingredient": {
+        "item": "skyresources:crystal_shard"
+      }
     },
     {
-      "ingredient": "minecraft:prismarine_crystals"
+      "ingredient": {
+        "item": "minecraft:prismarine_crystals"
+      }
     }
   ],
   "outputs": [

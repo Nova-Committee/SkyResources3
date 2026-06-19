@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "skyresources:cactus_needle"
+    "#": {
+      "item": "skyresources:cactus_needle"
+    }
   },
   "pattern": [
     " #",

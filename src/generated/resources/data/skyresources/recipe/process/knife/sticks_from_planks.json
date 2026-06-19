@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "#minecraft:planks"
+      "ingredient": {
+        "tag": "minecraft:planks"
+      }
     }
   ],
   "outputs": [

@@ -2,7 +2,9 @@
   "type": "skyresources:process",
   "inputs": [
     {
-      "ingredient": "skyresources:heavy_snow"
+      "ingredient": {
+        "item": "skyresources:heavy_snow"
+      }
     }
   ],
   "outputs": [

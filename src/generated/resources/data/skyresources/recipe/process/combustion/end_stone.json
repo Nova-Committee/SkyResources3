@@ -3,23 +3,33 @@
   "inputs": [
     {
       "count": 6,
-      "ingredient": "minecraft:diorite"
+      "ingredient": {
+        "item": "minecraft:diorite"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:sugar"
+      "ingredient": {
+        "item": "minecraft:sugar"
+      }
     },
     {
       "count": 4,
-      "ingredient": "minecraft:ender_pearl"
+      "ingredient": {
+        "item": "minecraft:ender_pearl"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:quartz"
+      "ingredient": {
+        "item": "minecraft:quartz"
+      }
     },
     {
       "count": 4,
-      "ingredient": "minecraft:bone_block"
+      "ingredient": {
+        "item": "minecraft:bone_block"
+      }
     }
   ],
   "outputs": [

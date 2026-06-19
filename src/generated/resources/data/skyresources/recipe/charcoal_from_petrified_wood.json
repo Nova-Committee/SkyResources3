@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": "skyresources:petrified_wood",
+  "ingredient": {
+    "item": "skyresources:petrified_wood"
+  },
   "result": {
     "count": 1,
     "id": "minecraft:charcoal"
