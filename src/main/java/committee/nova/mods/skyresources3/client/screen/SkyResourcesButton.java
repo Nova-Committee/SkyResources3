@@ -63,6 +63,24 @@ final class SkyResourcesButton extends Button {
         }
     }
 
+    private static void renderFrame(
+            final GuiGraphics guiGraphics,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
+            final boolean active,
+            final boolean hovered,
+            final boolean focused,
+            final float alpha,
+            final Tone tone
+    ) {
+        renderFrame(guiGraphics, x, y, width, height, active, hovered, alpha, tone);
+        if (focused && !hovered && active && width > 4 && height > 4) {
+            guiGraphics.renderOutline(x + 1, y + 1, width - 2, height - 2, withAlpha(GOLD_COLOR, alpha));
+        }
+    }
+
     static void renderLabel(
             final GuiGraphics guiGraphics,
             final Font font,
@@ -103,7 +121,7 @@ final class SkyResourcesButton extends Button {
             final int mouseY,
             final float partialTick
     ) {
-        final boolean hovered = this.isHoveredOrFocused();
+        final boolean hovered = this.isHovered();
         renderFrame(
                 guiGraphics,
                 this.getX(),
@@ -112,6 +130,7 @@ final class SkyResourcesButton extends Button {
                 this.getHeight(),
                 this.active,
                 hovered,
+                this.isFocused(),
                 this.alpha,
                 this.tone
         );

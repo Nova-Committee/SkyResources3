@@ -19,7 +19,6 @@ public final class SkyResourcesJadePlugin implements IWailaPlugin {
 
     @Override
     public void registerClient(final IWailaClientRegistration registration) {
-        registration.addConfig(PROBE_DATA, true);
         registration.registerBlockComponent(SkyResourcesProbeComponentProvider.INSTANCE, Block.class);
     }
 
