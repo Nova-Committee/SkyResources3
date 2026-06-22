@@ -1,12 +1,27 @@
 package committee.nova.mods.skyresources3.client.screen;
 
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import committee.nova.mods.skyresources3.common.item.CombustionHeaterItem;
+import committee.nova.mods.skyresources3.common.item.CondenserItem;
+import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
+import committee.nova.mods.skyresources3.common.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.core.guide.GuideStructure;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 final class GuideStructurePonderView {
     private static final int EDGE_PADDING = 20;
@@ -18,7 +33,6 @@ final class GuideStructurePonderView {
     private static final int CONTROL_HEIGHT = 22;
     private static final int CONTROL_GAP = 8;
     private static final int TIMELINE_HEIGHT = 4;
-    private static final int ICON_CELL = 24;
     private static final int CONTROL_TEXT = 0xFFE9EEF2;
     private static final int OVERLAY_BACKGROUND = 0x9A0C1014;
     private static final int SCENE_BACKGROUND = 0xEE10151B;
@@ -26,28 +40,41 @@ final class GuideStructurePonderView {
     private static final int TIMELINE_ACTIVE = 0xFFE4B64A;
     private static final int TIMELINE_KNOB = 0xFFF7E7B1;
     private static final int STEP_MILLIS = 850;
+    private static final float DEFAULT_YAW = -35.0F;
+    private static final float DEFAULT_PITCH = 28.0F;
+    private static final float DRAG_YAW_SPEED = 0.55F;
+    private static final float DRAG_PITCH_SPEED = 0.45F;
 
     private boolean paused;
     private int manualStep;
     private long startedAtMillis;
+    private float viewYaw = DEFAULT_YAW;
+    private float viewPitch = DEFAULT_PITCH;
+    private boolean dragging;
+    private double lastDragX;
+    private double lastDragY;
 
     void open() {
         this.paused = false;
         this.manualStep = 1;
         this.startedAtMillis = System.currentTimeMillis();
+        this.viewYaw = DEFAULT_YAW;
+        this.viewPitch = DEFAULT_PITCH;
+        this.dragging = false;
     }
 
     void clear() {
         this.paused = false;
         this.manualStep = 1;
         this.startedAtMillis = 0L;
+        this.dragging = false;
     }
 
     void render(final GuiGraphics guiGraphics, final Font font, final int mouseX, final int mouseY,
                 final int x, final int y, final int width, final int height, final GuideStructure structure) {
         final int maxStep = this.layerCount(structure);
         final int currentStep = this.currentStep(maxStep);
-        this.renderScene(guiGraphics, font, structure, x, y, width, height, currentStep);
+        this.renderScene(guiGraphics, structure, x, y, width, height, currentStep);
         this.renderTopOverlay(guiGraphics, font, structure, mouseX, mouseY, x, y, width, currentStep, maxStep);
         this.renderBottomOverlay(guiGraphics, font, mouseX, mouseY, x, y, width, height, currentStep, maxStep);
     }
@@ -71,24 +98,42 @@ final class GuideStructurePonderView {
             return ClickResult.HANDLED;
         }
 
-        return isInside(mouseX, mouseY, this.sceneX(x), this.sceneY(y), this.sceneWidth(width), this.sceneHeight(height))
-                ? ClickResult.HANDLED
-                : ClickResult.NONE;
+        if (isInside(mouseX, mouseY, this.sceneX(x), this.sceneY(y), this.sceneWidth(width), this.sceneHeight(height))) {
+            this.dragging = true;
+            this.lastDragX = mouseX;
+            this.lastDragY = mouseY;
+            return ClickResult.HANDLED;
+        }
+
+        return ClickResult.NONE;
     }
 
     boolean mouseReleased(final int button) {
-        return false;
+        if (button != 0 || !this.dragging) {
+            return false;
+        }
+        this.dragging = false;
+        return true;
     }
 
     boolean mouseDragged(final double mouseX, final double mouseY) {
-        return false;
+        if (!this.dragging) {
+            return false;
+        }
+        final double deltaX = mouseX - this.lastDragX;
+        final double deltaY = mouseY - this.lastDragY;
+        this.viewYaw += (float) deltaX * DRAG_YAW_SPEED;
+        this.viewPitch = clamp(this.viewPitch + (float) deltaY * DRAG_PITCH_SPEED, -75.0F, 75.0F);
+        this.lastDragX = mouseX;
+        this.lastDragY = mouseY;
+        return true;
     }
 
     boolean mouseScrolled(final double mouseX, final double mouseY, final int x, final int y, final int width, final int height) {
         return isInside(mouseX, mouseY, this.sceneX(x), this.sceneY(y), this.sceneWidth(width), this.sceneHeight(height));
     }
 
-    private void renderScene(final GuiGraphics guiGraphics, final Font font, final GuideStructure structure,
+    private void renderScene(final GuiGraphics guiGraphics, final GuideStructure structure,
                              final int x, final int y, final int width, final int height, final int visibleCount) {
         final int sceneX = this.sceneX(x);
         final int sceneY = this.sceneY(y);
@@ -101,30 +146,12 @@ final class GuideStructurePonderView {
         }
 
         final StructureBounds bounds = StructureBounds.from(structure);
-        final int visibleLayer = bounds.minY() + visibleCount - 1;
-        final int spanX = bounds.maxX() - bounds.minX() + 1;
-        final int spanZ = bounds.maxZ() - bounds.minZ() + 1;
-        final int gridWidth = spanX * ICON_CELL;
-        final int gridHeight = spanZ * ICON_CELL;
-        final int originX = sceneX + Math.max(8, (sceneWidth - gridWidth) / 2);
-        final int originY = sceneY + Math.max(10, (sceneHeight - gridHeight) / 2);
-
-        for (final GuideStructure.BlockEntry entry : structure.blocks()) {
-            if (entry.y() > visibleLayer) {
-                continue;
-            }
-            final ItemStack icon = entry.icon();
-            if (icon.isEmpty()) {
-                continue;
-            }
-            final int iconX = originX + (entry.x() - bounds.minX()) * ICON_CELL;
-            final int iconY = originY + (entry.z() - bounds.minZ()) * ICON_CELL - (entry.y() - bounds.minY()) * 5;
-            if (iconX < sceneX || iconY < sceneY || iconX + 16 > sceneX + sceneWidth || iconY + 16 > sceneY + sceneHeight) {
-                continue;
-            }
-            guiGraphics.renderItem(icon, iconX, iconY);
-            guiGraphics.renderItemDecorations(font, icon, iconX, iconY);
+        final List<StructureBlock> blocks = this.visibleStructureBlocks(structure, visibleCount, bounds);
+        if (blocks.isEmpty()) {
+            return;
         }
+        this.renderStructureBlocks(guiGraphics, blocks, bounds, sceneX, sceneY, sceneWidth, sceneHeight,
+                this.sceneScale(structure, sceneWidth, sceneHeight));
     }
 
     private void renderTopOverlay(final GuiGraphics guiGraphics, final Font font, final GuideStructure structure,
@@ -177,6 +204,114 @@ final class GuideStructurePonderView {
                             final SkyResourcesButton.Tone tone) {
         SkyResourcesButton.renderFrame(guiGraphics, x, y, width, height, true, hovered, 1.0F, tone);
         SkyResourcesButton.renderLabel(guiGraphics, font, label, x, y, width, height, true, 1.0F, tone);
+    }
+
+    private List<StructureBlock> visibleStructureBlocks(final GuideStructure structure,
+                                                        final int visibleStep,
+                                                        final StructureBounds bounds) {
+        final List<StructureBlock> blocks = new ArrayList<>();
+        if (visibleStep <= 0 || structure.blocks().isEmpty()) {
+            return blocks;
+        }
+        final int visibleLayer = bounds.minY() + visibleStep - 1;
+        for (int i = 0; i < structure.blocks().size(); i++) {
+            final GuideStructure.BlockEntry entry = structure.blocks().get(i);
+            if (entry.y() > visibleLayer) {
+                continue;
+            }
+            final ItemStack icon = entry.icon();
+            if (icon.isEmpty()) {
+                continue;
+            }
+            blocks.add(new StructureBlock(this.blockStateFor(icon), icon, entry.x(), entry.y(), entry.z(), i));
+        }
+        return blocks;
+    }
+
+    private BlockState blockStateFor(final ItemStack icon) {
+        if (usesItemModel(icon) || !(icon.getItem() instanceof final BlockItem blockItem)) {
+            return null;
+        }
+        return blockItem.getBlock().defaultBlockState();
+    }
+
+    private static boolean usesItemModel(final ItemStack icon) {
+        return icon.getItem() instanceof MachineCasingItem
+                || icon.getItem() instanceof CombustionHeaterItem
+                || icon.getItem() instanceof HeatProviderItem
+                || icon.getItem() instanceof CondenserItem;
+    }
+
+    private void renderStructureBlocks(final GuiGraphics guiGraphics,
+                                       final List<StructureBlock> blocks,
+                                       final StructureBounds bounds,
+                                       final int sceneX,
+                                       final int sceneY,
+                                       final int sceneWidth,
+                                       final int sceneHeight,
+                                       final float scale) {
+        final Minecraft minecraft = Minecraft.getInstance();
+        final BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
+        final PoseStack poseStack = guiGraphics.pose();
+        guiGraphics.flush();
+        guiGraphics.enableScissor(sceneX, sceneY, sceneX + sceneWidth, sceneY + sceneHeight);
+        RenderSystem.enableDepthTest();
+        Lighting.setupFor3DItems();
+        try {
+            poseStack.pushPose();
+            try {
+                poseStack.translate(sceneX + sceneWidth / 2.0F, sceneY + sceneHeight / 2.0F, 450.0F);
+                poseStack.scale(scale, -scale, scale);
+                poseStack.mulPose(Axis.XP.rotationDegrees(this.viewPitch));
+                poseStack.mulPose(Axis.YP.rotationDegrees(this.viewYaw));
+                poseStack.translate(-bounds.centerX(), -bounds.centerY(), -bounds.centerZ());
+
+                for (final StructureBlock block : blocks) {
+                    poseStack.pushPose();
+                    poseStack.translate(block.x(), block.y(), block.z());
+                    if (block.state() != null) {
+                        blockRenderer.renderSingleBlock(
+                                block.state(),
+                                poseStack,
+                                guiGraphics.bufferSource(),
+                                LightTexture.FULL_BRIGHT,
+                                OverlayTexture.NO_OVERLAY
+                        );
+                    } else {
+                        poseStack.translate(0.5F, 0.5F, 0.5F);
+                        minecraft.getItemRenderer().renderStatic(
+                                block.stack(),
+                                ItemDisplayContext.NONE,
+                                LightTexture.FULL_BRIGHT,
+                                OverlayTexture.NO_OVERLAY,
+                                poseStack,
+                                guiGraphics.bufferSource(),
+                                minecraft.level,
+                                block.index()
+                        );
+                    }
+                    poseStack.popPose();
+                }
+            } finally {
+                poseStack.popPose();
+            }
+            guiGraphics.flush();
+        } finally {
+            guiGraphics.disableScissor();
+            Lighting.setupFor3DItems();
+        }
+    }
+
+    private float sceneScale(final GuideStructure structure, final int width, final int height) {
+        final StructureBounds bounds = StructureBounds.from(structure);
+        final int spanX = bounds.maxX() - bounds.minX() + 1;
+        final int spanY = bounds.maxY() - bounds.minY() + 1;
+        final int spanZ = bounds.maxZ() - bounds.minZ() + 1;
+        final float footprint = Math.max(spanX, spanZ) + Math.min(spanX, spanZ) * 0.6F;
+        final float vertical = spanY + Math.max(spanX, spanZ) * 0.45F;
+        final float scaleByWidth = width / Math.max(1.0F, footprint * 1.7F);
+        final float scaleByHeight = height / Math.max(1.0F, vertical * 1.8F);
+        return clamp(Math.min(scaleByWidth, scaleByHeight), 8.0F, 42.0F);
     }
 
     private int layerCount(final GuideStructure structure) {
@@ -305,8 +440,17 @@ final class GuideStructurePonderView {
     private record StructureControl(int x, int y, int width, int height, Component label, StructureControlAction action) {
     }
 
+    private record StructureBlock(BlockState state, ItemStack stack, int x, int y, int z, int index) {
+        private StructureBlock {
+            stack = stack.copy();
+        }
+    }
+
     private record StructureBounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
         static StructureBounds from(final GuideStructure structure) {
+            if (structure.blocks().isEmpty()) {
+                return new StructureBounds(0, 0, 0, 0, 0, 0);
+            }
             int minX = Integer.MAX_VALUE;
             int minY = Integer.MAX_VALUE;
             int minZ = Integer.MAX_VALUE;
@@ -326,6 +470,18 @@ final class GuideStructurePonderView {
 
         int layerCount() {
             return this.maxY - this.minY + 1;
+        }
+
+        float centerX() {
+            return (this.minX + this.maxX + 1.0F) * 0.5F;
+        }
+
+        float centerY() {
+            return (this.minY + this.maxY + 1.0F) * 0.5F;
+        }
+
+        float centerZ() {
+            return (this.minZ + this.maxZ + 1.0F) * 0.5F;
         }
     }
 }
