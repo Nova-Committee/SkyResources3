@@ -29,6 +29,7 @@ public final class MachineCasingItem extends BlockItem {
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.MACHINE_CASING.get());
         stack.set(ModDataComponents.CASING_TYPE.get(), typeId);
+        VariantModelData.apply(stack, typeId);
         return stack;
     }
 

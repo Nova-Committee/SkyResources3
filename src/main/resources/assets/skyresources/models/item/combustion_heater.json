@@ -1,6 +1,47 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "skyresources:item/combustion_heater"
-  }
+  "parent": "skyresources:block/iron_combustion_heater",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "skyresources:block/wooden_combustion_heater"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "skyresources:block/stone_combustion_heater"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3
+      },
+      "model": "skyresources:block/iron_combustion_heater"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 4
+      },
+      "model": "skyresources:block/nether_brick_combustion_heater"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 5
+      },
+      "model": "skyresources:block/end_stone_combustion_heater"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 6
+      },
+      "model": "skyresources:block/dark_matter_combustion_heater"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 7
+      },
+      "model": "skyresources:block/light_matter_combustion_heater"
+    }
+  ]
 }

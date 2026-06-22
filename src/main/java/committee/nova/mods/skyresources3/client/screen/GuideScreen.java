@@ -195,6 +195,10 @@ public final class GuideScreen extends Screen {
     }
 
     @Override
+    public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+    }
+
+    @Override
     public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
         if (this.currentStructure != null) {
             if (button != 0) {

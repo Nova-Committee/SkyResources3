@@ -28,6 +28,7 @@ public final class CondenserItem extends BlockItem {
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.CONDENSER.get());
         stack.set(ModDataComponents.CONDENSER_TYPE.get(), typeId);
+        VariantModelData.apply(stack, typeId);
         return stack;
     }
 

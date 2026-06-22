@@ -1,3 +1,47 @@
 {
-  "parent": "skyresources:block/iron_machine_casing"
+  "parent": "skyresources:block/iron_machine_casing",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "skyresources:block/wooden_machine_casing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "skyresources:block/stone_machine_casing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3
+      },
+      "model": "skyresources:block/iron_machine_casing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 4
+      },
+      "model": "skyresources:block/nether_brick_machine_casing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 5
+      },
+      "model": "skyresources:block/end_stone_machine_casing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 6
+      },
+      "model": "skyresources:block/dark_matter_machine_casing"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 7
+      },
+      "model": "skyresources:block/light_matter_machine_casing"
+    }
+  ]
 }

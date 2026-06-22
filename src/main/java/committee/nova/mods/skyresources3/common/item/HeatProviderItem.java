@@ -28,6 +28,7 @@ public final class HeatProviderItem extends BlockItem {
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.HEAT_PROVIDER.get());
         stack.set(ModDataComponents.HEAT_PROVIDER_TYPE.get(), typeId);
+        VariantModelData.apply(stack, typeId);
         return stack;
     }
 

@@ -84,6 +84,10 @@ public final class IslandGuiScreen extends Screen {
     }
 
     @Override
+    public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+    }
+
+    @Override
     public boolean isPauseScreen() {
         return false;
     }

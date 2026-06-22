@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "skyresources:block/iron_condenser"
+      "model": "skyresources:block/machine_casing_empty"
     }
   }
 }

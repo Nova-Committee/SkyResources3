@@ -28,6 +28,7 @@ public final class CombustionHeaterItem extends BlockItem {
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.COMBUSTION_HEATER.get());
         stack.set(ModDataComponents.COMBUSTION_HEATER_TYPE.get(), typeId);
+        VariantModelData.apply(stack, typeId);
         return stack;
     }
 

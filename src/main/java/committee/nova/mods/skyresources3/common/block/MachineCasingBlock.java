@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.common.block;
 
 import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.common.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.common.menu.MachineCasingMenu;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 public final class MachineCasingBlock extends Block implements EntityBlock {
@@ -37,6 +40,32 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state) {
         return new MachineCasingBlockEntity(pos, state);
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(
+            final LevelReader level,
+            final BlockPos pos,
+            final BlockState state
+    ) {
+        if (level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing) {
+            return MachineCasingItem.forType(casing.casingTypeId());
+        }
+        return super.getCloneItemStack(level, pos, state);
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(
+            final BlockState state,
+            final HitResult target,
+            final LevelReader level,
+            final BlockPos pos,
+            final Player player
+    ) {
+        if (level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing) {
+            return MachineCasingItem.forType(casing.casingTypeId());
+        }
+        return super.getCloneItemStack(state, target, level, pos, player);
     }
 
     @Nullable

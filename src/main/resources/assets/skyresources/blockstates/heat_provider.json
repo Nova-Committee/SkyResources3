@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "skyresources:block/iron_heat_provider"
+      "model": "skyresources:block/machine_casing_empty"
     }
   }
 }
