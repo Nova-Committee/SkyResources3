@@ -26,7 +26,7 @@ public final class FreezerGameTests {
 
     private static void assertMenuReadsValidMultiblock(final GameTestHelper helper, final Block block) {
         final FreezerBlockEntity freezer = setupFreezer(helper, block);
-        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.SURVIVAL);
         final FreezerMenu menu = new FreezerMenu(0, player.getInventory(), freezer);
 
         menu.slots.get(0).setByPlayer(new ItemStack(Items.SNOWBALL, 4));
@@ -39,7 +39,12 @@ public final class FreezerGameTests {
                 freezer.getStackInSlot(0).is(Items.SNOWBALL),
                 "Freezer menu input slot should write to the block entity"
         );
-        helper.assertValueEqual(4, freezer.getStackInSlot(0).getCount(), "Freezer input stack count should persist");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                4,
+                freezer.getStackInSlot(0).getCount(),
+                "Freezer input stack count should persist"
+        );
         helper.succeed();
     }
 
@@ -56,7 +61,7 @@ public final class FreezerGameTests {
                         .setValue(FreezerBlock.FACING, Direction.NORTH)
                         .setValue(FreezerBlock.PART, FreezerBlock.FreezerPart.TOP)
         );
-        return helper.getBlockEntity(FREEZER_POS, FreezerBlockEntity.class);
+        return GameTestAssertions.getBlockEntity(helper, FREEZER_POS, FreezerBlockEntity.class);
     }
 
     private FreezerGameTests() {

@@ -357,8 +357,8 @@ public final class GuideMenuGameTests {
     ) {
         final ResourceLocation id = BuiltInRegistries.MENU.getKey(menuType);
         helper.assertTrue(id != null, "Menu type should be registered: " + path);
-        helper.assertValueEqual(Skyresources3.MODID, id.getNamespace(), "Menu namespace should match");
-        helper.assertValueEqual(path, id.getPath(), "Menu path should match");
+        GameTestAssertions.assertValueEqual(helper, Skyresources3.MODID, id.getNamespace(), "Menu namespace should match");
+        GameTestAssertions.assertValueEqual(helper, path, id.getPath(), "Menu path should match");
     }
 
     private static void assertTranslationExists(

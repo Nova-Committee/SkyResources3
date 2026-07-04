@@ -57,6 +57,9 @@ public final class PlayerIdentitySavedData extends SavedData {
     }
 
     public void remember(final UUID player, final String playerName) {
+        this.players.entrySet().removeIf(entry ->
+                !entry.getKey().equals(player) && entry.getValue().equalsIgnoreCase(playerName)
+        );
         final String previousName = this.players.put(player, playerName);
         if (!playerName.equals(previousName)) {
             this.setDirty();

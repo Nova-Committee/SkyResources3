@@ -1,11 +1,13 @@
 package committee.nova.mods.skyresources3.common.block;
 
 import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
+import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,6 +50,15 @@ public final class StandaloneMachineBlock extends Block implements EntityBlock {
             return machine.asItemStack();
         }
         return super.getCloneItemStack(level, pos, state);
+    }
+
+    @Override
+    public List<ItemStack> getDrops(final BlockState state, final LootParams.Builder params) {
+        final BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (blockEntity instanceof StandaloneMachineBlockEntity machine) {
+            return List.of(machine.asItemStack());
+        }
+        return super.getDrops(state, params);
     }
 
 }

@@ -7,20 +7,19 @@ import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.core.machine.CasingType;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
+import committee.nova.mods.skyresources3.test.GameTestAssertions;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.network.codec.StreamDecoder;
-import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -74,7 +73,12 @@ public final class SkyResourcesJadeGameTests {
             final String expectedCasingKey
     ) {
         final Component objectName = probeObjectName(helper, casingType, null);
-        helper.assertValueEqual(expectedCasingKey, translatableKey(helper, objectName), "Jade bare casing object name");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                expectedCasingKey,
+                translatableKey(helper, objectName),
+                "Jade bare casing object name"
+        );
     }
 
     private static void assertInstalledMachineName(
@@ -86,19 +90,27 @@ public final class SkyResourcesJadeGameTests {
     ) {
         final Component objectName = probeObjectName(helper, casingType, machineStack);
         final TranslatableContents contents = translatableContents(helper, objectName);
-        helper.assertValueEqual(
+        GameTestAssertions.assertValueEqual(
+                helper,
                 "container.skyresources.machine_casing.with_machine",
                 contents.getKey(),
                 "Jade installed machine object name"
         );
         final Object[] args = contents.getArgs();
-        helper.assertValueEqual(2, args.length, "Jade installed machine object name argument count");
-        helper.assertValueEqual(
+        GameTestAssertions.assertValueEqual(
+                helper,
+                2,
+                args.length,
+                "Jade installed machine object name argument count"
+        );
+        GameTestAssertions.assertValueEqual(
+                helper,
                 expectedCasingKey,
                 translatableKey(helper, componentArg(helper, args[0])),
                 "Jade installed machine casing name"
         );
-        helper.assertValueEqual(
+        GameTestAssertions.assertValueEqual(
+                helper,
                 expectedMachineKey,
                 translatableKey(helper, componentArg(helper, args[1])),
                 "Jade installed machine type name"
@@ -115,11 +127,11 @@ public final class SkyResourcesJadeGameTests {
         final MachineCasingBlockEntity casing = machineCasingAt(helper);
         casing.setCasingType(casingType);
         if (machineStack != null) {
-            final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+            final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.CREATIVE);
             helper.assertTrue(casing.installHeater(machineStack.get(), player), "Machine should install into casing");
         }
 
-        final SkyResourcesProbeData data = SkyResourcesProbeDataProvider.INSTANCE.streamData(
+        final SkyResourcesProbeData data = SkyResourcesProbeDataProvider.probeDataForTest(
                 new TestBlockAccessor(helper, casing)
         );
         helper.assertTrue(data != null, "Jade probe data should exist for typed machine casing");
@@ -129,12 +141,16 @@ public final class SkyResourcesJadeGameTests {
     }
 
     private static MachineCasingBlockEntity machineCasingAt(final GameTestHelper helper) {
-        final BlockEntity blockEntity = helper.getBlockEntity(CASING_POS, MachineCasingBlockEntity.class);
+        final BlockEntity blockEntity = GameTestAssertions.getBlockEntity(
+                helper,
+                CASING_POS,
+                MachineCasingBlockEntity.class
+        );
         if (blockEntity instanceof MachineCasingBlockEntity casing) {
             return casing;
         }
         helper.fail("Expected machine casing block entity");
-        throw helper.assertionException("Expected machine casing block entity");
+        throw new IllegalStateException("Expected machine casing block entity");
     }
 
     private static Component componentArg(final GameTestHelper helper, final Object value) {
@@ -142,7 +158,7 @@ public final class SkyResourcesJadeGameTests {
             return component;
         }
         helper.fail("Expected translatable component argument");
-        throw helper.assertionException("Expected translatable component argument");
+        throw new IllegalStateException("Expected translatable component argument");
     }
 
     private static String translatableKey(final GameTestHelper helper, final Component component) {
@@ -154,7 +170,7 @@ public final class SkyResourcesJadeGameTests {
             return contents;
         }
         helper.fail("Expected translatable component");
-        throw helper.assertionException("Expected translatable component");
+        throw new IllegalStateException("Expected translatable component");
     }
 
     private record TestBlockAccessor(GameTestHelper helper, MachineCasingBlockEntity casing) implements BlockAccessor {
@@ -190,7 +206,7 @@ public final class SkyResourcesJadeGameTests {
 
         @Override
         public Player getPlayer() {
-            return this.helper.makeMockPlayer(GameType.CREATIVE);
+            return GameTestAssertions.makeMockPlayer(this.helper, GameType.CREATIVE);
         }
 
         @Override
@@ -199,23 +215,13 @@ public final class SkyResourcesJadeGameTests {
         }
 
         @Override
-        public void setServerData(final CompoundTag serverData) {
+        public boolean isFakeBlock() {
+            return false;
         }
 
         @Override
-        public <D> Optional<D> decodeFromNbt(
-                final StreamDecoder<FriendlyByteBuf, D> decoder,
-                final Tag tag
-        ) {
-            return Optional.empty();
-        }
-
-        @Override
-        public <D> Tag encodeAsNbt(
-                final StreamEncoder<FriendlyByteBuf, D> encoder,
-                final D value
-        ) {
-            return new CompoundTag();
+        public ItemStack getFakeBlock() {
+            return ItemStack.EMPTY;
         }
 
         @Override
@@ -259,13 +265,7 @@ public final class SkyResourcesJadeGameTests {
         }
 
         @Override
-        public boolean shouldVerifyData() {
-            return false;
-        }
-
-        @Override
-        public float tickRate() {
-            return 0.0F;
+        public void toNetwork(final FriendlyByteBuf buffer) {
         }
     }
 

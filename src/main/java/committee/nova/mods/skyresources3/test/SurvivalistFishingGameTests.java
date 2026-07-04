@@ -5,13 +5,14 @@ import committee.nova.mods.skyresources3.init.registry.ModItems;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.ItemFishedEvent;
 
 public final class SurvivalistFishingGameTests {
@@ -24,7 +25,7 @@ public final class SurvivalistFishingGameTests {
     public static void survivalistRodUsesCustomFishingLoot(final GameTestHelper helper) {
         helper.killAllEntities();
 
-        final ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        final ServerPlayer player = GameTestAssertions.makeMockServerPlayer(helper, GameType.CREATIVE);
         player.setPos(helper.absoluteVec(Vec3.atBottomCenterOf(PLAYER_POS)));
         player.setItemInHand(
                 InteractionHand.MAIN_HAND,
@@ -42,7 +43,12 @@ public final class SurvivalistFishingGameTests {
         SurvivalistFishingEvents.onItemFished(event);
 
         helper.assertTrue(event.isCanceled(), "Survivalist fishing should cancel vanilla fishing drops");
-        helper.assertValueEqual(0, event.getRodDamage(), "Survivalist fishing should not damage the rod");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                0,
+                event.getRodDamage(),
+                "Survivalist fishing should not damage the rod"
+        );
         helper.assertItemEntityNotPresent(
                 Items.DIAMOND,
                 HOOK_POS,

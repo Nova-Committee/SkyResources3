@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.test;
 
+import committee.nova.mods.skyresources3.common.block.MagmafiedStoneBlock;
 import committee.nova.mods.skyresources3.init.event.CuttingKnifeEvents;
 import committee.nova.mods.skyresources3.init.event.RockGrinderEvents;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
@@ -8,12 +9,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.level.BlockEvent;
 
 public final class RuntimeMigrationGameTests {
@@ -83,16 +86,21 @@ public final class RuntimeMigrationGameTests {
             helper.setBlock(MAGMAFIED_STONE_POS.relative(direction), ModBlocks.CRYSTAL_FLUID.get());
         }
 
-        helper.onEachTick(() -> helper.tickBlock(MAGMAFIED_STONE_POS));
-        helper.succeedWhen(() -> helper.assertItemEntityPresent(
+        final ServerLevel level = helper.getLevel();
+        final BlockPos absolutePos = helper.absolutePos(MAGMAFIED_STONE_POS);
+        final BlockState state = level.getBlockState(absolutePos);
+        helper.assertTrue(state.getBlock() instanceof MagmafiedStoneBlock, "Expected magmafied stone block state");
+        ((MagmafiedStoneBlock) state.getBlock()).tick(state, level, absolutePos, alwaysSuccessRandom());
+        helper.assertItemEntityPresent(
                 Items.COBBLESTONE,
                 MAGMAFIED_STONE_POS,
                 ITEM_ASSERT_RADIUS
-        ));
+        );
+        helper.succeed();
     }
 
     private static Player makeSurvivalPlayerWith(final GameTestHelper helper, final ItemStack stack) {
-        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.SURVIVAL);
         player.setItemInHand(InteractionHand.MAIN_HAND, stack);
         return player;
     }
@@ -105,6 +113,61 @@ public final class RuntimeMigrationGameTests {
         final ServerLevel level = helper.getLevel();
         final BlockPos absolutePos = helper.absolutePos(relativePos);
         return new BlockEvent.BreakEvent(level, absolutePos, level.getBlockState(absolutePos), player);
+    }
+
+    private static RandomSource alwaysSuccessRandom() {
+        final RandomSource delegate = RandomSource.create(0L);
+        return new RandomSource() {
+            @Override
+            public RandomSource fork() {
+                return alwaysSuccessRandom();
+            }
+
+            @Override
+            public net.minecraft.world.level.levelgen.PositionalRandomFactory forkPositional() {
+                return delegate.forkPositional();
+            }
+
+            @Override
+            public void setSeed(final long seed) {
+                delegate.setSeed(seed);
+            }
+
+            @Override
+            public int nextInt() {
+                return 0;
+            }
+
+            @Override
+            public int nextInt(final int bound) {
+                return 0;
+            }
+
+            @Override
+            public long nextLong() {
+                return delegate.nextLong();
+            }
+
+            @Override
+            public boolean nextBoolean() {
+                return delegate.nextBoolean();
+            }
+
+            @Override
+            public float nextFloat() {
+                return 0.0F;
+            }
+
+            @Override
+            public double nextDouble() {
+                return 0.0D;
+            }
+
+            @Override
+            public double nextGaussian() {
+                return 0.0D;
+            }
+        };
     }
 
     private RuntimeMigrationGameTests() {

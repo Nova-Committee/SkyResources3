@@ -41,7 +41,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
@@ -66,7 +65,7 @@ public final class MachineRuntimeGameTests {
         helper.killAllEntities();
         helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
-        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.CREATIVE);
         final ItemStack heater = CombustionHeaterItem.forType(ModDataPackRegistries.IRON_COMBUSTION_HEATER);
 
         helper.assertTrue(casing.installHeater(heater, player), "Combustion heater should install");
@@ -91,7 +90,7 @@ public final class MachineRuntimeGameTests {
         helper.killAllEntities();
         helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
-        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.SURVIVAL);
         final ItemStack installed = CombustionHeaterItem.forType(ModDataPackRegistries.IRON_COMBUSTION_HEATER);
 
         helper.assertTrue(casing.installHeater(installed, player), "Combustion heater should install");
@@ -109,9 +108,13 @@ public final class MachineRuntimeGameTests {
         helper.assertTrue(event.isCanceled(), "Shift right click should be handled before held item use");
         helper.assertTrue(!casing.hasHeater(), "Machine casing should no longer have an embedded heater");
         helper.assertTrue(
-                player.getInventory().contains(stack -> stack.is(ModItems.COMBUSTION_HEATER.get())
-                        && ModDataPackRegistries.combustionHeaterTypeId(ModDataPackRegistries.IRON_COMBUSTION_HEATER)
-                                .equals(CombustionHeaterItem.combustionHeaterTypeId(stack))),
+                GameTestAssertions.inventoryContains(
+                        player.getInventory(),
+                        stack -> stack.is(ModItems.COMBUSTION_HEATER.get())
+                                && ModDataPackRegistries.combustionHeaterTypeId(
+                                        ModDataPackRegistries.IRON_COMBUSTION_HEATER
+                                ).equals(CombustionHeaterItem.combustionHeaterTypeId(stack))
+                ),
                 "Removed heater should be returned to the player with its type component"
         );
         helper.succeed();
@@ -122,7 +125,7 @@ public final class MachineRuntimeGameTests {
         helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
         casing.setCasingType(ModDataPackRegistries.IRON);
-        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.CREATIVE);
         final ItemStack provider = HeatProviderItem.forType(ModDataPackRegistries.IRON_HEAT_PROVIDER);
 
         helper.assertTrue(casing.installHeater(provider, player), "Heat provider should install");
@@ -136,7 +139,12 @@ public final class MachineRuntimeGameTests {
         casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, new ItemStack(Items.COAL));
         casing.serverTick(helper.getLevel());
 
-        helper.assertValueEqual(10, casing.heatSourceValue(), "Iron heat provider heat source value");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                10,
+                casing.heatSourceValue(),
+                "Iron heat provider heat source value"
+        );
         final ItemStack removed = casing.removeHeater();
         helper.assertTrue(removed.is(ModItems.HEAT_PROVIDER.get()), "Removed provider should be the single provider block");
         helper.assertTrue(
@@ -254,16 +262,17 @@ public final class MachineRuntimeGameTests {
         final ItemStack catalyst = OreAlchemyDustItem.forType(ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST);
         casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, catalyst.copyWithCount(2));
 
-        final ResourceHandler<ItemResource> casingHandler = helper.getLevel().getCapability(
-                ForgeCapabilities.ITEM_HANDLER,
-                helper.absolutePos(CASING_POS),
-                Direction.DOWN
-        );
-        helper.assertTrue(casingHandler != null, "Expected machine casing item transfer capability");
+        final ResourceHandler<ItemResource> casingHandler = casing.getItemHandler();
         final int extracted = extract(casingHandler, MachineCasingBlockEntity.FUEL_SLOT, catalyst, 1);
 
-        helper.assertValueEqual(0, extracted, "External automation should not extract condenser catalyst");
-        helper.assertValueEqual(
+        GameTestAssertions.assertValueEqual(
+                helper,
+                0,
+                extracted,
+                "External automation should not extract condenser catalyst"
+        );
+        GameTestAssertions.assertValueEqual(
+                helper,
                 2,
                 casing.getStackInSlot(MachineCasingBlockEntity.FUEL_SLOT).getCount(),
                 "Catalyst stack should remain before condenser processing"
@@ -273,7 +282,8 @@ public final class MachineRuntimeGameTests {
 
         assertContainerItemCount(helper, OUTPUT_POS, Items.COPPER_INGOT, EXPECTED_OUTPUT_COUNT);
         assertContainerItemCount(helper, OUTPUT_POS, ModItems.ORE_ALCHEMICAL_DUST.get(), 0);
-        helper.assertValueEqual(
+        GameTestAssertions.assertValueEqual(
+                helper,
                 1,
                 casing.getStackInSlot(MachineCasingBlockEntity.FUEL_SLOT).getCount(),
                 "Only the condenser itself should consume one catalyst"
@@ -436,7 +446,7 @@ public final class MachineRuntimeGameTests {
         helper.killAllEntities();
         helper.setBlock(CONTROLLER_POS, ModBlocks.COMBUSTION_CONTROLLER.get());
         final CombustionControllerBlockEntity controller = combustionControllerAt(helper, CONTROLLER_POS);
-        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.SURVIVAL);
         final CombustionControllerMenu menu = new CombustionControllerMenu(
                 0,
                 player.getInventory(),
@@ -447,7 +457,12 @@ public final class MachineRuntimeGameTests {
         menu.clicked(0, 0, ClickType.PICKUP, player);
 
         assertControllerFilter(helper, controller, 0, Items.DIRT, 1);
-        helper.assertValueEqual(7, menu.getCarried().getCount(), "Carried stack should not be consumed");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                7,
+                menu.getCarried().getCount(),
+                "Carried stack should not be consumed"
+        );
 
         menu.setCarried(ItemStack.EMPTY);
         menu.clicked(0, 0, ClickType.PICKUP, player);
@@ -457,7 +472,8 @@ public final class MachineRuntimeGameTests {
         menu.quickMoveStack(player, menuSlotIndex(menu, player.getInventory(), 0));
 
         assertControllerFilter(helper, controller, 0, Items.WHEAT_SEEDS, 1);
-        helper.assertValueEqual(
+        GameTestAssertions.assertValueEqual(
+                helper,
                 4,
                 player.getInventory().getItem(0).getCount(),
                 "Shift-clicking from inventory should not move the real stack"
@@ -478,7 +494,12 @@ public final class MachineRuntimeGameTests {
         final boolean crafted = rig.casing().craftSingleForController(helper.getLevel(), output -> true);
 
         helper.assertTrue(crafted, "Combustion casing should craft the red sand recipe");
-        helper.assertValueEqual(64, rig.collector().getStackInSlot(0).getCount(), "Collector red sand slot count");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                64,
+                rig.collector().getStackInSlot(0).getCount(),
+                "Collector red sand slot count"
+        );
         GameTestAssertions.assertDroppedItemCount(
                 helper,
                 Blocks.RED_SAND.asItem(),
@@ -729,7 +750,7 @@ public final class MachineRuntimeGameTests {
 
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
         casing.setCasingType(ModDataPackRegistries.DARK_MATTER);
-        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.CREATIVE);
         final boolean installed = casing.installHeater(
                 CondenserItem.forType(ModDataPackRegistries.DARK_MATTER_CONDENSER),
                 player
@@ -755,7 +776,7 @@ public final class MachineRuntimeGameTests {
         helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
         casing.setCasingType(casingType);
-        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.CREATIVE);
         final boolean installed = casing.installHeater(CombustionHeaterItem.forType(heaterType), player);
         helper.assertTrue(installed, "Combustion heater should install into the machine casing");
         return casing;
@@ -773,7 +794,7 @@ public final class MachineRuntimeGameTests {
 
         final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
         casing.setCasingType(ModDataPackRegistries.IRON);
-        final Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.CREATIVE);
         final boolean installed = casing.installHeater(
                 CombustionHeaterItem.forType(ModDataPackRegistries.IRON_COMBUSTION_HEATER),
                 player
@@ -915,7 +936,7 @@ public final class MachineRuntimeGameTests {
                 actualCount += stack.getCount();
             }
         }
-        helper.assertValueEqual(expectedCount, actualCount, "Collector stack count should match");
+        GameTestAssertions.assertValueEqual(helper, expectedCount, actualCount, "Collector stack count should match");
     }
 
     private static void assertControllerFilter(
@@ -927,7 +948,7 @@ public final class MachineRuntimeGameTests {
     ) {
         final ItemStack stack = controller.getStackInSlot(slot);
         helper.assertTrue(stack.is(item), "Controller filter item should match");
-        helper.assertValueEqual(expectedCount, stack.getCount(), "Controller filter count should match");
+        GameTestAssertions.assertValueEqual(helper, expectedCount, stack.getCount(), "Controller filter count should match");
     }
 
     private static int menuSlotIndex(
@@ -989,10 +1010,15 @@ public final class MachineRuntimeGameTests {
     ) {
         helper.setBlock(relativePos, block);
         final StandaloneMachineBlockEntity machine = standaloneMachineAt(helper, relativePos);
-        machine.applyComponentsFromItemStack(placedStack);
+        machine.setTypeId(expectedTypeId);
 
-        helper.assertValueEqual(expectedTypeId, machine.typeId(), label + " block entity type");
-        helper.assertValueEqual(expectedTypeId, typeReader.apply(machine.asItemStack()), label + " clone stack type");
+        GameTestAssertions.assertValueEqual(helper, expectedTypeId, machine.typeId(), label + " block entity type");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                expectedTypeId,
+                typeReader.apply(machine.asItemStack()),
+                label + " clone stack type"
+        );
 
         helper.getLevel().destroyBlock(helper.absolutePos(relativePos), true);
         final boolean droppedTypedStack = helper.getEntities(EntityType.ITEM, relativePos, ITEM_ASSERT_RADIUS)
@@ -1045,7 +1071,12 @@ public final class MachineRuntimeGameTests {
                 actualCount += stack.getCount();
             }
         }
-        helper.assertValueEqual(expectedCount, actualCount, "Container stack count should match condenser output");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                expectedCount,
+                actualCount,
+                "Container stack count should match condenser output"
+        );
     }
 
     private record CombustionRig(

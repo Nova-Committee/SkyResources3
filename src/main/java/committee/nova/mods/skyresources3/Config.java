@@ -188,48 +188,61 @@ public final class Config {
     public static boolean addCarrotDrop;
     public static boolean addPotatoDrop;
 
+    static {
+        applyConfigValues(ForgeConfigSpec.ConfigValue::getDefault);
+    }
+
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
-        enableMigrationDebugLogging = ENABLE_MIGRATION_DEBUG_LOGGING.get();
-        enableVoidIslandFeatures = ENABLE_VOID_ISLAND_FEATURES.get();
-        islandProtectionRadius = ISLAND_PROTECTION_RADIUS.get();
-        voidIslandSpawnPlatformRadius = VOID_ISLAND_SPAWN_PLATFORM_RADIUS.get();
-        voidIslandSpawnPlatformBlock = resolveBlock(VOID_ISLAND_SPAWN_PLATFORM_BLOCK.get());
-        enableMagmaIsland = ENABLE_MAGMA_ISLAND.get();
-        heavySnowballDamage = HEAVY_SNOWBALL_DAMAGE.get();
-        explosiveHeavySnowballDamage = EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE.get();
-        plantMatterBonemealCapability = PLANT_MATTER_BONEMEAL_CAPABILITY.get();
-        infusionStoneBonemealCapability = INFUSION_STONE_BONEMEAL_CAPABILITY.get();
-        healthGemMaxHealth = HEALTH_GEM_MAX_HEALTH.get();
-        healthGemPercentage = HEALTH_GEM_PERCENTAGE.get();
-        waterExtractorCapacity = WATER_EXTRACTOR_CAPACITY.get();
-        fluidDropperCapacity = FLUID_DROPPER_CAPACITY.get();
-        crucibleCapacity = CRUCIBLE_CAPACITY.get();
-        crucibleSpeed = CRUCIBLE_SPEED.get();
-        rockCrusherPowerUsage = ROCK_CRUSHER_POWER_USAGE.get();
-        rockCrusherSpeed = ROCK_CRUSHER_SPEED.get();
-        rockCleanerPowerUsage = ROCK_CLEANER_POWER_USAGE.get();
-        rockCleanerSpeed = ROCK_CLEANER_SPEED.get();
-        aqueousConcentratorPowerUsage = AQUEOUS_CONCENTRATOR_POWER_USAGE.get();
-        aqueousConcentratorSpeed = AQUEOUS_CONCENTRATOR_SPEED.get();
-        aqueousDeconcentratorPowerUsage = AQUEOUS_DECONCENTRATOR_POWER_USAGE.get();
-        aqueousDeconcentratorSpeed = AQUEOUS_DECONCENTRATOR_SPEED.get();
-        wildlifeAttractorPowerUsage = WILDLIFE_ATTRACTOR_POWER_USAGE.get();
-        wildlifeAttractorWaterUsage = WILDLIFE_ATTRACTOR_WATER_USAGE.get();
-        wildlifeAttractorMatterTime = WILDLIFE_ATTRACTOR_MATTER_TIME.get();
-        wildlifeAttractorWaterCapacity = WILDLIFE_ATTRACTOR_WATER_CAPACITY.get();
-        wildlifeAttractorAnimalIds = parseEntityIdList(WILDLIFE_ATTRACTOR_ANIMAL_IDS.get());
-        combustionControllerTicks = COMBUSTION_CONTROLLER_TICKS.get();
-        darkMatterWarperFuelTime = DARK_MATTER_WARPER_FUEL_TIME.get();
-        darkMatterWarperEffectPlayers = DARK_MATTER_WARPER_EFFECT_PLAYERS.get();
-        darkMatterWarperEffectNoFuel = DARK_MATTER_WARPER_EFFECT_NO_FUEL.get();
-        endPortalMode = END_PORTAL_MODE.get();
-        addBeetrootSeedDrop = ADD_BEETROOT_SEED_DROP.get();
-        addMelonSeedDrop = ADD_MELON_SEED_DROP.get();
-        addPumpkinSeedDrop = ADD_PUMPKIN_SEED_DROP.get();
-        addCocoaBeanDrop = ADD_COCOA_BEAN_DROP.get();
-        addCarrotDrop = ADD_CARROT_DROP.get();
-        addPotatoDrop = ADD_POTATO_DROP.get();
+        applyConfigValues(ForgeConfigSpec.ConfigValue::get);
+    }
+
+    private static void applyConfigValues(final ConfigReader reader) {
+        enableMigrationDebugLogging = reader.read(ENABLE_MIGRATION_DEBUG_LOGGING);
+        enableVoidIslandFeatures = reader.read(ENABLE_VOID_ISLAND_FEATURES);
+        islandProtectionRadius = reader.read(ISLAND_PROTECTION_RADIUS);
+        voidIslandSpawnPlatformRadius = reader.read(VOID_ISLAND_SPAWN_PLATFORM_RADIUS);
+        voidIslandSpawnPlatformBlock = resolveBlock(reader.read(VOID_ISLAND_SPAWN_PLATFORM_BLOCK));
+        enableMagmaIsland = reader.read(ENABLE_MAGMA_ISLAND);
+        heavySnowballDamage = reader.read(HEAVY_SNOWBALL_DAMAGE);
+        explosiveHeavySnowballDamage = reader.read(EXPLOSIVE_HEAVY_SNOWBALL_DAMAGE);
+        plantMatterBonemealCapability = reader.read(PLANT_MATTER_BONEMEAL_CAPABILITY);
+        infusionStoneBonemealCapability = reader.read(INFUSION_STONE_BONEMEAL_CAPABILITY);
+        healthGemMaxHealth = reader.read(HEALTH_GEM_MAX_HEALTH);
+        healthGemPercentage = reader.read(HEALTH_GEM_PERCENTAGE);
+        waterExtractorCapacity = reader.read(WATER_EXTRACTOR_CAPACITY);
+        fluidDropperCapacity = reader.read(FLUID_DROPPER_CAPACITY);
+        crucibleCapacity = reader.read(CRUCIBLE_CAPACITY);
+        crucibleSpeed = reader.read(CRUCIBLE_SPEED);
+        rockCrusherPowerUsage = reader.read(ROCK_CRUSHER_POWER_USAGE);
+        rockCrusherSpeed = reader.read(ROCK_CRUSHER_SPEED);
+        rockCleanerPowerUsage = reader.read(ROCK_CLEANER_POWER_USAGE);
+        rockCleanerSpeed = reader.read(ROCK_CLEANER_SPEED);
+        aqueousConcentratorPowerUsage = reader.read(AQUEOUS_CONCENTRATOR_POWER_USAGE);
+        aqueousConcentratorSpeed = reader.read(AQUEOUS_CONCENTRATOR_SPEED);
+        aqueousDeconcentratorPowerUsage = reader.read(AQUEOUS_DECONCENTRATOR_POWER_USAGE);
+        aqueousDeconcentratorSpeed = reader.read(AQUEOUS_DECONCENTRATOR_SPEED);
+        wildlifeAttractorPowerUsage = reader.read(WILDLIFE_ATTRACTOR_POWER_USAGE);
+        wildlifeAttractorWaterUsage = reader.read(WILDLIFE_ATTRACTOR_WATER_USAGE);
+        wildlifeAttractorMatterTime = reader.read(WILDLIFE_ATTRACTOR_MATTER_TIME);
+        wildlifeAttractorWaterCapacity = reader.read(WILDLIFE_ATTRACTOR_WATER_CAPACITY);
+        wildlifeAttractorAnimalIds = parseEntityIdList(reader.read(WILDLIFE_ATTRACTOR_ANIMAL_IDS));
+        combustionControllerTicks = reader.read(COMBUSTION_CONTROLLER_TICKS);
+        darkMatterWarperFuelTime = reader.read(DARK_MATTER_WARPER_FUEL_TIME);
+        darkMatterWarperEffectPlayers = reader.read(DARK_MATTER_WARPER_EFFECT_PLAYERS);
+        darkMatterWarperEffectNoFuel = reader.read(DARK_MATTER_WARPER_EFFECT_NO_FUEL);
+        endPortalMode = reader.read(END_PORTAL_MODE);
+        addBeetrootSeedDrop = reader.read(ADD_BEETROOT_SEED_DROP);
+        addMelonSeedDrop = reader.read(ADD_MELON_SEED_DROP);
+        addPumpkinSeedDrop = reader.read(ADD_PUMPKIN_SEED_DROP);
+        addCocoaBeanDrop = reader.read(ADD_COCOA_BEAN_DROP);
+        addCarrotDrop = reader.read(ADD_CARROT_DROP);
+        addPotatoDrop = reader.read(ADD_POTATO_DROP);
+    }
+
+    @FunctionalInterface
+    private interface ConfigReader {
+        <T> T read(ForgeConfigSpec.ConfigValue<T> value);
     }
 
     private static List<String> parseEntityIdList(final String value) {

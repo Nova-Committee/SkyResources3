@@ -31,6 +31,10 @@ final class SkyResourcesProbeDataProvider implements IServerDataProvider<BlockAc
         }
     }
 
+    static SkyResourcesProbeData probeDataForTest(final BlockAccessor accessor) {
+        return probeData(accessor);
+    }
+
     private static SkyResourcesProbeData probeData(final BlockAccessor accessor) {
         final Level level = accessor.getLevel();
         final BlockPos pos = accessor.getPosition();

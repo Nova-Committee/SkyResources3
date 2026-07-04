@@ -2,437 +2,239 @@ package committee.nova.mods.skyresources3.test;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.FunctionGameTestInstance;
+import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.GameTestInstance;
-import net.minecraft.gametest.framework.TestData;
-import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.gametest.framework.TestFunction;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.event.RegisterGameTestsEvent;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
 
 public final class ModGameTests {
-    private static final ResourceLocation EMPTY_STRUCTURE = ResourceLocation.withDefaultNamespace("empty");
-    private static final ResourceLocation COMMAND_ENVIRONMENT_ID = id("command_environment");
+    private static final String DEFAULT_BATCH = "defaultBatch";
+    private static final String EMPTY_STRUCTURE = Skyresources3.MODID + ":empty";
     private static final int DEFAULT_MAX_TICKS = 400;
-    private static final int DEFAULT_SETUP_TICKS = 1;
-
-    public static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS =
-            DeferredRegister.create(BuiltInRegistries.TEST_FUNCTION, Skyresources3.MODID);
-
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_CREATE_RESET =
-            TEST_FUNCTIONS.register("island_create_reset", () -> IslandCommandGameTests::createInfoAndReset);
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_SPAWN_PLATFORM =
-            TEST_FUNCTIONS.register(
-                    "island_spawn_platform",
-                    () -> IslandCommandGameTests::spawnGeneratesConfiguredPlatform
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_FEATURE_DEFAULTS =
-            TEST_FUNCTIONS.register(
-                    "island_feature_defaults",
-                    () -> IslandCommandGameTests::voidIslandFeatureDefaultFollowsEmptyFlatWorld
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_VISIT =
-            TEST_FUNCTIONS.register(
-                    "island_visit",
-                    () -> IslandCommandGameTests::visitTeleportsToOnlinePlayerIsland
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_OFFLINE_VISIT =
-            TEST_FUNCTIONS.register(
-                    "island_offline_visit",
-                    () -> IslandCommandGameTests::visitTeleportsToOfflineSavedIsland
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_MAGMA_TEMPLATE =
-            TEST_FUNCTIONS.register(
-                    "island_magma_template",
-                    () -> IslandCommandGameTests::magmaIslandPlacesCrystalFluid
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_LAYERED_TEMPLATES =
-            TEST_FUNCTIONS.register(
-                    "island_layered_templates",
-                    () -> IslandCommandGameTests::starterTemplatesUseLegacyLayeredStructures
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_RELATION_COMMANDS =
-            TEST_FUNCTIONS.register(
-                    "island_relation_commands",
-                    () -> IslandCommandGameTests::islandInviteHomeLeaveAndDisband
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_TRUST_COMMANDS =
-            TEST_FUNCTIONS.register(
-                    "island_trust_commands",
-                    () -> IslandCommandGameTests::trustListAndUntrustVisitor
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_OFFLINE_IDENTITY =
-            TEST_FUNCTIONS.register(
-                    "island_offline_identity",
-                    () -> IslandCommandGameTests::offlineIdentityInviteAndTrust
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> CUTTING_KNIFE_PROCESS =
-            TEST_FUNCTIONS.register(
-                    "cutting_knife_process",
-                    () -> RuntimeMigrationGameTests::cuttingKnifeUsesProcessRecipe
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> ROCK_GRINDER_PROCESS =
-            TEST_FUNCTIONS.register(
-                    "rock_grinder_process",
-                    () -> RuntimeMigrationGameTests::rockGrinderUsesProcessRecipe
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> MAGMAFIED_STONE_TICK =
-            TEST_FUNCTIONS.register(
-                    "magmafied_stone_tick",
-                    () -> RuntimeMigrationGameTests::magmafiedStoneTicksCrystalFluid
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> INFUSION_STONE_PROCESS =
-            TEST_FUNCTIONS.register(
-                    "infusion_stone_process",
-                    () -> LifeInfusionGameTests::infusionStoneUsesProcessRecipe
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> LIFE_INFUSER_PROCESS =
-            TEST_FUNCTIONS.register(
-                    "life_infuser_process",
-                    () -> LifeInfusionGameTests::lifeInfuserUsesProcessRecipe
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> LIFE_INJECTOR_ITEM_CAPABILITY =
-            TEST_FUNCTIONS.register(
-                    "life_injector_item_capability",
-                    () -> LifeInfusionGameTests::lifeInjectorItemCapabilityTransfers
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            LIFE_INJECTOR_SHIFT_RIGHT_CLICK =
-            TEST_FUNCTIONS.register(
-                    "life_injector_shift_right_click",
-                    () -> LifeInfusionGameTests::lifeInjectorShiftRightClickRemovesGemWithHeldItem
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> LIFE_INFUSER_ITEM_CAPABILITY =
-            TEST_FUNCTIONS.register(
-                    "life_infuser_item_capability",
-                    () -> LifeInfusionGameTests::lifeInfuserItemCapabilityTransfers
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            FUSION_TABLE_CATALYST_YIELD =
-            TEST_FUNCTIONS.register(
-                    "fusion_table_catalyst_yield",
-                    () -> FusionTableGameTests::fusionTableCachesFractionalCatalystYield
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            FUSION_TABLE_SPLIT_DUPLICATE_INPUTS =
-            TEST_FUNCTIONS.register(
-                    "fusion_table_split_duplicate_inputs",
-                    () -> FusionTableGameTests::fusionTableSplitDuplicateStacksDoNotMatchRecipe
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            FUSION_TABLE_MENU_SLOT_PERSISTENCE =
-            TEST_FUNCTIONS.register(
-                    "fusion_table_menu_slot_persistence",
-                    () -> FusionTableGameTests::fusionTableMenuWritesToBlockEntity
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            IRON_FREEZER_MENU_MULTIBLOCK =
-            TEST_FUNCTIONS.register(
-                    "iron_freezer_menu_multiblock",
-                    () -> FreezerGameTests::ironFreezerMenuReadsValidMultiblock
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            LIGHT_FREEZER_MENU_MULTIBLOCK =
-            TEST_FUNCTIONS.register(
-                    "light_freezer_menu_multiblock",
-                    () -> FreezerGameTests::lightFreezerMenuReadsValidMultiblock
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID =
-            TEST_FUNCTIONS.register(
-                    "combustion_heater_embeds_as_type_id",
-                    () -> MachineRuntimeGameTests::combustionHeaterEmbedsAsTypeId
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_HEATER_SHIFT_RIGHT_CLICK_REMOVES =
-            TEST_FUNCTIONS.register(
-                    "combustion_heater_shift_right_click_removes",
-                    () -> MachineRuntimeGameTests::shiftRightClickRemovesEmbeddedCombustionHeaterWithHeldItem
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            HEAT_PROVIDER_EMBEDS_AS_TYPE_ID =
-            TEST_FUNCTIONS.register(
-                    "heat_provider_embeds_as_type_id",
-                    () -> MachineRuntimeGameTests::heatProviderEmbedsAsTypeIdAndProvidesHeat
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            STANDALONE_MACHINE_TYPE_COMPONENTS =
-            TEST_FUNCTIONS.register(
-                    "standalone_machine_type_components",
-                    () -> MachineRuntimeGameTests::standaloneMachineBlocksPersistTypeComponents
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
-            TEST_FUNCTIONS.register(
-                    "condenser_drops_output",
-                    () -> MachineRuntimeGameTests::condenserDropsOutputWhenNoHandlerExists
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_BLOCKED_OUTPUT =
-            TEST_FUNCTIONS.register(
-                    "condenser_blocked_output",
-                    () -> MachineRuntimeGameTests::condenserKeepsSourceWhenOutputIsBlocked
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_CATALYST_SLOT =
-            TEST_FUNCTIONS.register(
-                    "condenser_catalyst_slot",
-                    () -> MachineRuntimeGameTests::condenserFuelSlotAcceptsOreAlchemyDustCatalyst
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_HOPPER_OUTPUT =
-            TEST_FUNCTIONS.register(
-                    "condenser_hopper_output",
-                    () -> MachineRuntimeGameTests::condenserHopperBelowDoesNotExtractCatalyst
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> COMBUSTION_PRIORITY =
-            TEST_FUNCTIONS.register(
-                    "combustion_priority",
-                    () -> MachineRuntimeGameTests::combustionControllerUsesFilterPriority
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> COMBUSTION_COOLDOWN =
-            TEST_FUNCTIONS.register(
-                    "combustion_cooldown",
-                    () -> MachineRuntimeGameTests::combustionControllerWaitsForCooldown
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_POWERED_CONTROLLER =
-            TEST_FUNCTIONS.register(
-                    "combustion_powered_controller",
-                    () -> MachineRuntimeGameTests::combustionControllerStopsWhenPowered
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_CONTROLLER_DIRECTION =
-            TEST_FUNCTIONS.register(
-                    "combustion_controller_direction",
-                    () -> MachineRuntimeGameTests::combustionControllerRequiresBackFacingChamber
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_CONTROLLER_ALL_SIDES_DIRECTION =
-            TEST_FUNCTIONS.register(
-                    "combustion_controller_all_sides_direction",
-                    () -> MachineRuntimeGameTests::combustionControllerBackFacesChamberFromEverySide
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_CONTROLLER_GHOST_FILTERS =
-            TEST_FUNCTIONS.register(
-                    "combustion_controller_ghost_filters",
-                    () -> MachineRuntimeGameTests::combustionControllerFilterSlotsAreGhosts
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_CONTROLLER_WOOD_STONE_REJECT =
-            TEST_FUNCTIONS.register(
-                    "combustion_controller_wood_stone_reject",
-                    () -> MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectSmartController
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> COMBUSTION_COLLECTOR_OVERFLOW =
-            TEST_FUNCTIONS.register(
-                    "combustion_collector_overflow",
-                    () -> MachineRuntimeGameTests::combustionCollectorDropsOverflow
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            MANUAL_COMBUSTION_COLLECTOR_OUTPUT =
-            TEST_FUNCTIONS.register(
-                    "manual_combustion_collector_output",
-                    () -> MachineRuntimeGameTests::manualCombustionRoutesOutputsToCollector
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            MANUAL_COMBUSTION_MULTI_INPUT_PRIORITY =
-            TEST_FUNCTIONS.register(
-                    "manual_combustion_multi_input_priority",
-                    () -> MachineRuntimeGameTests::manualCombustionPrefersMultiInputRecipe
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            COMBUSTION_COLLECTOR_WOOD_STONE_REJECT =
-            TEST_FUNCTIONS.register(
-                    "combustion_collector_wood_stone_reject",
-                    () -> MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectCollector
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            WOODEN_COMBUSTION_STRUCTURE =
-            TEST_FUNCTIONS.register(
-                    "wooden_combustion_structure",
-                    () -> MachineRuntimeGameTests::woodenCombustionHeaterUsesWoodStructure
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            STONE_COMBUSTION_STRUCTURE =
-            TEST_FUNCTIONS.register(
-                    "stone_combustion_structure",
-                    () -> MachineRuntimeGameTests::stoneCombustionHeaterRejectsAutomationBlocks
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            IRON_COMBUSTION_AUTOMATION_STRUCTURE =
-            TEST_FUNCTIONS.register(
-                    "iron_combustion_automation_structure",
-                    () -> MachineRuntimeGameTests::ironCombustionHeaterAcceptsMetalAutomationShell
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>>
-            MANUAL_COMBUSTION_RESTORED_STRUCTURE =
-            TEST_FUNCTIONS.register(
-                    "manual_combustion_restored_structure",
-                    () -> MachineRuntimeGameTests::manualCombustionCraftsAfterStructureIsRestored
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> SURVIVALIST_FISHING_LOOT =
-            TEST_FUNCTIONS.register(
-                    "survivalist_fishing_loot",
-                    () -> SurvivalistFishingGameTests::survivalistRodUsesCustomFishingLoot
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> GUIDE_DATA_INTEGRITY =
-            TEST_FUNCTIONS.register(
-                    "guide_data_integrity",
-                    () -> GuideMenuGameTests::guideDataIntegrity
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> MENU_TYPE_REGISTRATION =
-            TEST_FUNCTIONS.register(
-                    "menu_type_registration",
-                    () -> GuideMenuGameTests::menuTypesResolve
-            );
-    private static final RegistryObject<Consumer<GameTestHelper>> JADE_MACHINE_CASING_OBJECT_NAME =
-            TEST_FUNCTIONS.register(
-                    "jade_machine_casing_object_name",
-                    () -> ModGameTests::jadeMachineCasingObjectName
-            );
+    private static final long DEFAULT_SETUP_TICKS = 1L;
 
     public static void register(final IEventBus modEventBus) {
-        TEST_FUNCTIONS.register(modEventBus);
         modEventBus.addListener(ModGameTests::registerGameTests);
     }
 
     private static void registerGameTests(final RegisterGameTestsEvent event) {
-        final Holder<TestEnvironmentDefinition> environment = event.registerEnvironment(
-                COMMAND_ENVIRONMENT_ID,
-                new TestEnvironmentDefinition.AllOf(List.of())
-        );
-        registerFunctionTest(event, "island_create_reset", ISLAND_CREATE_RESET, environment);
-        registerFunctionTest(event, "island_spawn_platform", ISLAND_SPAWN_PLATFORM, environment);
-        registerFunctionTest(event, "island_feature_defaults", ISLAND_FEATURE_DEFAULTS, environment);
-        registerFunctionTest(event, "island_visit", ISLAND_VISIT, environment);
-        registerFunctionTest(event, "island_offline_visit", ISLAND_OFFLINE_VISIT, environment);
-        registerFunctionTest(event, "island_magma_template", ISLAND_MAGMA_TEMPLATE, environment);
-        registerFunctionTest(event, "island_layered_templates", ISLAND_LAYERED_TEMPLATES, environment);
-        registerFunctionTest(event, "island_relation_commands", ISLAND_RELATION_COMMANDS, environment);
-        registerFunctionTest(event, "island_trust_commands", ISLAND_TRUST_COMMANDS, environment);
-        registerFunctionTest(event, "island_offline_identity", ISLAND_OFFLINE_IDENTITY, environment);
-        registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
-        registerFunctionTest(event, "rock_grinder_process", ROCK_GRINDER_PROCESS, environment);
-        registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);
-        registerFunctionTest(event, "infusion_stone_process", INFUSION_STONE_PROCESS, environment);
-        registerFunctionTest(event, "life_infuser_process", LIFE_INFUSER_PROCESS, environment);
-        registerFunctionTest(event, "life_injector_item_capability", LIFE_INJECTOR_ITEM_CAPABILITY, environment);
-        registerFunctionTest(event, "life_injector_shift_right_click", LIFE_INJECTOR_SHIFT_RIGHT_CLICK, environment);
-        registerFunctionTest(event, "life_infuser_item_capability", LIFE_INFUSER_ITEM_CAPABILITY, environment);
-        registerFunctionTest(event, "fusion_table_catalyst_yield", FUSION_TABLE_CATALYST_YIELD, environment);
+        event.register(ModGameTests.class);
+    }
+
+    @GameTestGenerator
+    public static Collection<TestFunction> generateTests() {
+        final List<TestFunction> tests = new ArrayList<>();
+        registerFunctionTest(tests, "island_create_reset", IslandCommandGameTests::createInfoAndReset);
+        registerFunctionTest(tests, "island_spawn_platform", IslandCommandGameTests::spawnGeneratesConfiguredPlatform);
         registerFunctionTest(
-                event,
+                tests,
+                "island_feature_defaults",
+                IslandCommandGameTests::voidIslandFeatureDefaultFollowsEmptyFlatWorld
+        );
+        registerFunctionTest(tests, "island_visit", IslandCommandGameTests::visitTeleportsToOnlinePlayerIsland);
+        registerFunctionTest(
+                tests,
+                "island_offline_visit",
+                IslandCommandGameTests::visitTeleportsToOfflineSavedIsland
+        );
+        registerFunctionTest(tests, "island_magma_template", IslandCommandGameTests::magmaIslandPlacesCrystalFluid);
+        registerFunctionTest(
+                tests,
+                "island_layered_templates",
+                IslandCommandGameTests::starterTemplatesUseLegacyLayeredStructures
+        );
+        registerFunctionTest(
+                tests,
+                "island_relation_commands",
+                IslandCommandGameTests::islandInviteHomeLeaveAndDisband
+        );
+        registerFunctionTest(
+                tests,
+                "island_trust_commands",
+                IslandCommandGameTests::trustListAndUntrustVisitor
+        );
+        registerFunctionTest(
+                tests,
+                "island_offline_identity",
+                IslandCommandGameTests::offlineIdentityInviteAndTrust
+        );
+        registerFunctionTest(tests, "cutting_knife_process", RuntimeMigrationGameTests::cuttingKnifeUsesProcessRecipe);
+        registerFunctionTest(tests, "rock_grinder_process", RuntimeMigrationGameTests::rockGrinderUsesProcessRecipe);
+        registerFunctionTest(
+                tests,
+                "magmafied_stone_tick",
+                RuntimeMigrationGameTests::magmafiedStoneTicksCrystalFluid
+        );
+        registerFunctionTest(tests, "infusion_stone_process", LifeInfusionGameTests::infusionStoneUsesProcessRecipe);
+        registerFunctionTest(tests, "life_infuser_process", LifeInfusionGameTests::lifeInfuserUsesProcessRecipe);
+        registerFunctionTest(
+                tests,
+                "life_injector_item_capability",
+                LifeInfusionGameTests::lifeInjectorItemCapabilityTransfers
+        );
+        registerFunctionTest(
+                tests,
+                "life_injector_shift_right_click",
+                LifeInfusionGameTests::lifeInjectorShiftRightClickRemovesGemWithHeldItem
+        );
+        registerFunctionTest(
+                tests,
+                "life_infuser_item_capability",
+                LifeInfusionGameTests::lifeInfuserItemCapabilityTransfers
+        );
+        registerFunctionTest(
+                tests,
+                "fusion_table_catalyst_yield",
+                FusionTableGameTests::fusionTableCachesFractionalCatalystYield
+        );
+        registerFunctionTest(
+                tests,
                 "fusion_table_split_duplicate_inputs",
-                FUSION_TABLE_SPLIT_DUPLICATE_INPUTS,
-                environment
+                FusionTableGameTests::fusionTableSplitDuplicateStacksDoNotMatchRecipe
         );
         registerFunctionTest(
-                event,
+                tests,
                 "fusion_table_menu_slot_persistence",
-                FUSION_TABLE_MENU_SLOT_PERSISTENCE,
-                environment
+                FusionTableGameTests::fusionTableMenuWritesToBlockEntity
         );
-        registerFunctionTest(event, "iron_freezer_menu_multiblock", IRON_FREEZER_MENU_MULTIBLOCK, environment);
-        registerFunctionTest(event, "light_freezer_menu_multiblock", LIGHT_FREEZER_MENU_MULTIBLOCK, environment);
-        registerFunctionTest(event, "combustion_heater_embeds_as_type_id", COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID, environment);
+        registerFunctionTest(tests, "iron_freezer_menu_multiblock", FreezerGameTests::ironFreezerMenuReadsValidMultiblock);
         registerFunctionTest(
-                event,
+                tests,
+                "light_freezer_menu_multiblock",
+                FreezerGameTests::lightFreezerMenuReadsValidMultiblock
+        );
+        registerFunctionTest(
+                tests,
+                "combustion_heater_embeds_as_type_id",
+                MachineRuntimeGameTests::combustionHeaterEmbedsAsTypeId
+        );
+        registerFunctionTest(
+                tests,
                 "combustion_heater_shift_right_click_removes",
-                COMBUSTION_HEATER_SHIFT_RIGHT_CLICK_REMOVES,
-                environment
+                MachineRuntimeGameTests::shiftRightClickRemovesEmbeddedCombustionHeaterWithHeldItem
         );
-        registerFunctionTest(event, "heat_provider_embeds_as_type_id", HEAT_PROVIDER_EMBEDS_AS_TYPE_ID, environment);
-        registerFunctionTest(event, "standalone_machine_type_components", STANDALONE_MACHINE_TYPE_COMPONENTS, environment);
-        registerFunctionTest(event, "condenser_drops_output", CONDENSER_DROPS_OUTPUT, environment);
-        registerFunctionTest(event, "condenser_blocked_output", CONDENSER_BLOCKED_OUTPUT, environment);
-        registerFunctionTest(event, "condenser_catalyst_slot", CONDENSER_CATALYST_SLOT, environment);
-        registerFunctionTest(event, "condenser_hopper_output", CONDENSER_HOPPER_OUTPUT, environment);
-        registerFunctionTest(event, "combustion_priority", COMBUSTION_PRIORITY, environment);
-        registerFunctionTest(event, "combustion_cooldown", COMBUSTION_COOLDOWN, environment);
-        registerFunctionTest(event, "combustion_powered_controller", COMBUSTION_POWERED_CONTROLLER, environment);
-        registerFunctionTest(event, "combustion_controller_direction", COMBUSTION_CONTROLLER_DIRECTION, environment);
         registerFunctionTest(
-                event,
+                tests,
+                "heat_provider_embeds_as_type_id",
+                MachineRuntimeGameTests::heatProviderEmbedsAsTypeIdAndProvidesHeat
+        );
+        registerFunctionTest(
+                tests,
+                "standalone_machine_type_components",
+                MachineRuntimeGameTests::standaloneMachineBlocksPersistTypeComponents
+        );
+        registerFunctionTest(tests, "condenser_drops_output", MachineRuntimeGameTests::condenserDropsOutputWhenNoHandlerExists);
+        registerFunctionTest(tests, "condenser_blocked_output", MachineRuntimeGameTests::condenserKeepsSourceWhenOutputIsBlocked);
+        registerFunctionTest(
+                tests,
+                "condenser_catalyst_slot",
+                MachineRuntimeGameTests::condenserFuelSlotAcceptsOreAlchemyDustCatalyst
+        );
+        registerFunctionTest(
+                tests,
+                "condenser_hopper_output",
+                MachineRuntimeGameTests::condenserHopperBelowDoesNotExtractCatalyst
+        );
+        registerFunctionTest(tests, "combustion_priority", MachineRuntimeGameTests::combustionControllerUsesFilterPriority);
+        registerFunctionTest(tests, "combustion_cooldown", MachineRuntimeGameTests::combustionControllerWaitsForCooldown);
+        registerFunctionTest(
+                tests,
+                "combustion_powered_controller",
+                MachineRuntimeGameTests::combustionControllerStopsWhenPowered
+        );
+        registerFunctionTest(
+                tests,
+                "combustion_controller_direction",
+                MachineRuntimeGameTests::combustionControllerRequiresBackFacingChamber
+        );
+        registerFunctionTest(
+                tests,
                 "combustion_controller_all_sides_direction",
-                COMBUSTION_CONTROLLER_ALL_SIDES_DIRECTION,
-                environment
+                MachineRuntimeGameTests::combustionControllerBackFacesChamberFromEverySide
         );
         registerFunctionTest(
-                event,
+                tests,
                 "combustion_controller_ghost_filters",
-                COMBUSTION_CONTROLLER_GHOST_FILTERS,
-                environment
+                MachineRuntimeGameTests::combustionControllerFilterSlotsAreGhosts
         );
         registerFunctionTest(
-                event,
+                tests,
                 "combustion_controller_wood_stone_reject",
-                COMBUSTION_CONTROLLER_WOOD_STONE_REJECT,
-                environment
+                MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectSmartController
         );
-        registerFunctionTest(event, "combustion_collector_overflow", COMBUSTION_COLLECTOR_OVERFLOW, environment);
         registerFunctionTest(
-                event,
+                tests,
+                "combustion_collector_overflow",
+                MachineRuntimeGameTests::combustionCollectorDropsOverflow
+        );
+        registerFunctionTest(
+                tests,
                 "manual_combustion_collector_output",
-                MANUAL_COMBUSTION_COLLECTOR_OUTPUT,
-                environment
+                MachineRuntimeGameTests::manualCombustionRoutesOutputsToCollector
         );
         registerFunctionTest(
-                event,
+                tests,
                 "manual_combustion_multi_input_priority",
-                MANUAL_COMBUSTION_MULTI_INPUT_PRIORITY,
-                environment
+                MachineRuntimeGameTests::manualCombustionPrefersMultiInputRecipe
         );
         registerFunctionTest(
-                event,
+                tests,
                 "combustion_collector_wood_stone_reject",
-                COMBUSTION_COLLECTOR_WOOD_STONE_REJECT,
-                environment
+                MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectCollector
         );
-        registerFunctionTest(event, "wooden_combustion_structure", WOODEN_COMBUSTION_STRUCTURE, environment);
-        registerFunctionTest(event, "stone_combustion_structure", STONE_COMBUSTION_STRUCTURE, environment);
         registerFunctionTest(
-                event,
+                tests,
+                "wooden_combustion_structure",
+                MachineRuntimeGameTests::woodenCombustionHeaterUsesWoodStructure
+        );
+        registerFunctionTest(
+                tests,
+                "stone_combustion_structure",
+                MachineRuntimeGameTests::stoneCombustionHeaterRejectsAutomationBlocks
+        );
+        registerFunctionTest(
+                tests,
                 "iron_combustion_automation_structure",
-                IRON_COMBUSTION_AUTOMATION_STRUCTURE,
-                environment
+                MachineRuntimeGameTests::ironCombustionHeaterAcceptsMetalAutomationShell
         );
         registerFunctionTest(
-                event,
+                tests,
                 "manual_combustion_restored_structure",
-                MANUAL_COMBUSTION_RESTORED_STRUCTURE,
-                environment
+                MachineRuntimeGameTests::manualCombustionCraftsAfterStructureIsRestored
         );
-        registerFunctionTest(event, "survivalist_fishing_loot", SURVIVALIST_FISHING_LOOT, environment);
-        registerFunctionTest(event, "guide_data_integrity", GUIDE_DATA_INTEGRITY, environment);
-        registerFunctionTest(event, "menu_type_registration", MENU_TYPE_REGISTRATION, environment);
-        registerFunctionTest(event, "jade_machine_casing_object_name", JADE_MACHINE_CASING_OBJECT_NAME, environment);
+        registerFunctionTest(
+                tests,
+                "survivalist_fishing_loot",
+                SurvivalistFishingGameTests::survivalistRodUsesCustomFishingLoot
+        );
+        registerFunctionTest(tests, "guide_data_integrity", GuideMenuGameTests::guideDataIntegrity);
+        registerFunctionTest(tests, "menu_type_registration", GuideMenuGameTests::menuTypesResolve);
+        registerFunctionTest(tests, "jade_machine_casing_object_name", ModGameTests::jadeMachineCasingObjectName);
+        return tests;
     }
 
     private static void registerFunctionTest(
-            final RegisterGameTestsEvent event,
+            final List<TestFunction> tests,
             final String name,
-            final RegistryObject<Consumer<GameTestHelper>> function,
-            final Holder<TestEnvironmentDefinition> environment
+            final Consumer<GameTestHelper> function
     ) {
-        final TestData<Holder<TestEnvironmentDefinition>> data = new TestData<>(
-                environment,
+        tests.add(new TestFunction(
+                DEFAULT_BATCH,
+                name,
                 EMPTY_STRUCTURE,
+                Rotation.NONE,
                 DEFAULT_MAX_TICKS,
                 DEFAULT_SETUP_TICKS,
-                true
-        );
-        final GameTestInstance instance = new FunctionGameTestInstance(function.getKey(), data);
-        event.registerTest(id(name), instance);
-    }
-
-    private static ResourceLocation id(final String path) {
-        return new ResourceLocation(Skyresources3.MODID, path);
+                true,
+                function
+        ));
     }
 
     private static void jadeMachineCasingObjectName(final GameTestHelper helper) {

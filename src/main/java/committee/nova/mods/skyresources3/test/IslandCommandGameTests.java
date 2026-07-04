@@ -18,7 +18,6 @@ import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -34,18 +33,24 @@ public final class IslandCommandGameTests {
         Config.islandProtectionRadius = 4;
 
         try {
-            final ServerPlayer player = helper.makeMockServerPlayerInLevel();
+            final ServerPlayer player = GameTestAssertions.makeMockServerPlayer(helper, GameType.CREATIVE);
             assertCommandSucceeds(helper, player, "island create");
 
             final IslandSavedData islands = IslandSavedData.get(helper.getLevel().getServer().overworld());
             final IslandSavedData.IslandRecord created = getIslandOrFail(helper, islands, player);
-            helper.assertValueEqual(
+            GameTestAssertions.assertValueEqual(
+                    helper,
                     IslandTemplate.DEFAULT_ID,
                     created.type(),
                     "Created island should use the default type"
             );
             helper.assertTrue(created.includes(player.getUUID()), "Created island should include its owner");
-            helper.assertValueEqual(1, created.playerCount(), "Solo island should start with one player");
+            GameTestAssertions.assertValueEqual(
+                    helper,
+                    1,
+                    created.playerCount(),
+                    "Solo island should start with one player"
+            );
 
             final ServerLevel targetLevel = helper.getLevel().getServer().getLevel(created.dimension());
             if (targetLevel == null) {
@@ -61,7 +66,12 @@ public final class IslandCommandGameTests {
             assertCommandSucceeds(helper, player, "island reset " + SAND_TEMPLATE_ID + " confirm");
 
             final IslandSavedData.IslandRecord reset = getIslandOrFail(helper, islands, player);
-            helper.assertValueEqual(SAND_TEMPLATE_ID, reset.type(), "Reset should persist the requested island type");
+            GameTestAssertions.assertValueEqual(
+                    helper,
+                    SAND_TEMPLATE_ID,
+                    reset.type(),
+                    "Reset should persist the requested island type"
+            );
             helper.assertTrue(
                     targetLevel.getBlockState(protectedResidue).isAir(),
                     "Reset should clear residue inside the island protection radius"
@@ -109,7 +119,8 @@ public final class IslandCommandGameTests {
         try {
             final MinecraftServer server = helper.getLevel().getServer();
             Config.enableVoidIslandFeatures = false;
-            helper.assertValueEqual(
+            GameTestAssertions.assertValueEqual(
+                    helper,
                     VoidIslandWorld.getInitialSpawnLevel(server).isPresent(),
                     VoidIslandWorld.areFeaturesEnabled(server),
                     "Void island preset worlds should enable island features even when the config is disabled"
@@ -137,18 +148,20 @@ public final class IslandCommandGameTests {
 
         try {
             final ServerLevel spawnLevel = VoidIslandWorld.get(helper.getLevel().getServer()).orElse(null);
-            final ServerPlayer player = helper.makeMockServerPlayerInLevel();
+            final ServerPlayer player = GameTestAssertions.makeMockServerPlayer(helper, GameType.CREATIVE);
             assertCommandSucceeds(helper, player, "island spawn");
 
             final BlockPos spawnHome = VoidIslandWorld.spawnHome();
             if (spawnLevel == null) {
-                helper.assertValueEqual(
+                GameTestAssertions.assertValueEqual(
+                        helper,
                         helper.getLevel().dimension(),
                         player.level().dimension(),
                         "Player should stay in the fallback level when the void island level is unavailable"
                 );
             } else {
-                helper.assertValueEqual(
+                GameTestAssertions.assertValueEqual(
+                        helper,
                         spawnHome,
                         player.blockPosition(),
                         "Player should be teleported to void spawn home"
@@ -188,7 +201,8 @@ public final class IslandCommandGameTests {
             final IslandSavedData.IslandRecord island = getIslandOrFail(helper, islands, owner);
             assertCommandSucceeds(helper, visitor, "island visit " + owner.getName().getString());
 
-            helper.assertValueEqual(
+            GameTestAssertions.assertValueEqual(
+                    helper,
                     island.home(),
                     visitor.blockPosition(),
                     "Visitor should be teleported to the target player's island home"
@@ -217,7 +231,8 @@ public final class IslandCommandGameTests {
 
             final ServerPlayer ownerVisitor = makeNamedMockServerPlayerInLevel(helper, "offline_visit_guest");
             assertCommandSucceeds(helper, ownerVisitor, "island visit OFFLINE_OWNER");
-            helper.assertValueEqual(
+            GameTestAssertions.assertValueEqual(
+                    helper,
                     home,
                     ownerVisitor.blockPosition(),
                     "Offline owner name lookup should teleport to the saved island"
@@ -225,7 +240,8 @@ public final class IslandCommandGameTests {
 
             final ServerPlayer memberVisitor = makeNamedMockServerPlayerInLevel(helper, "offline_member_guest");
             assertCommandSucceeds(helper, memberVisitor, "island visit OFFLINE_MEMBER");
-            helper.assertValueEqual(
+            GameTestAssertions.assertValueEqual(
+                    helper,
                     home,
                     memberVisitor.blockPosition(),
                     "Offline island member name lookup should teleport to that island"
@@ -335,7 +351,8 @@ public final class IslandCommandGameTests {
             );
 
             assertCommandSucceeds(helper, member, "island home");
-            helper.assertValueEqual(
+            GameTestAssertions.assertValueEqual(
+                    helper,
                     island.home(),
                     member.blockPosition(),
                     "Island member /island home should use the owner's island"
@@ -532,35 +549,7 @@ public final class IslandCommandGameTests {
             final UUID uuid,
             final String name
     ) {
-        final ServerLevel level = helper.getLevel();
-        final GameProfile profile = new GameProfile(uuid, name);
-        final CommonListenerCookie cookie = CommonListenerCookie.createInitial(profile, false);
-        final ServerPlayer player = new NamedMockServerPlayer(
-                level.getServer(),
-                level,
-                cookie.gameProfile(),
-                cookie.clientInformation()
-        );
-        final Connection connection = new Connection(PacketFlow.SERVERBOUND);
-        new EmbeddedChannel(connection);
-        level.getServer().getPlayerList().placeNewPlayer(connection, player, cookie);
-        return player;
-    }
-
-    private static final class NamedMockServerPlayer extends ServerPlayer {
-        private NamedMockServerPlayer(
-                final MinecraftServer server,
-                final ServerLevel level,
-                final GameProfile gameProfile,
-                final net.minecraft.server.level.ClientInformation clientInformation
-        ) {
-            super(server, level, gameProfile, clientInformation);
-        }
-
-        @Override
-        public GameType gameMode() {
-            return GameType.CREATIVE;
-        }
+        return GameTestAssertions.makeNamedMockServerPlayer(helper, uuid, name, GameType.CREATIVE);
     }
 
     private IslandCommandGameTests() {

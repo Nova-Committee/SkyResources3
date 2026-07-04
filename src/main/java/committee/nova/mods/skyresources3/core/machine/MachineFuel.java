@@ -9,6 +9,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeHooks;
 
 public record MachineFuel(FuelKind kind, Optional<ResourceLocation> item, int rate) {
     public static final Codec<MachineFuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -26,7 +27,7 @@ public record MachineFuel(FuelKind kind, Optional<ResourceLocation> item, int ra
             return false;
         }
         if (this.kind == FuelKind.FURNACE) {
-            return stack.getBurnTime(RecipeType.SMELTING) > 0;
+            return furnaceBurnTime(stack) > 0;
         }
         return this.item.map(id -> stack.is(BuiltInRegistries.ITEM.get(id))).orElse(false);
     }
@@ -36,9 +37,13 @@ public record MachineFuel(FuelKind kind, Optional<ResourceLocation> item, int ra
             return 0.0F;
         }
         if (this.kind == FuelKind.FURNACE) {
-            return stack.getBurnTime(RecipeType.SMELTING) * combinedEfficiency;
+            return furnaceBurnTime(stack) * combinedEfficiency;
         }
         return this.rate * combinedEfficiency;
+    }
+
+    private static int furnaceBurnTime(final ItemStack stack) {
+        return ForgeHooks.getBurnTime(stack, RecipeType.SMELTING);
     }
 
     public enum FuelKind implements StringRepresentable {

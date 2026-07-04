@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public final class InfusionStoneItem extends Item {
@@ -88,9 +89,10 @@ public final class InfusionStoneItem extends Item {
             return;
         }
 
+        final BlockPos targetPos = context.getClickedPos();
         player.getOffhandItem().shrink(recipe.ingredientCount());
-        player.drop(recipe.createOutput(), false);
-        level.destroyBlock(context.getClickedPos(), false, player);
+        Block.popResource(level, targetPos, recipe.createOutput());
+        level.destroyBlock(targetPos, false, player);
         hurtStoneAndPlayer(context, player, recipe.healthCost());
     }
 

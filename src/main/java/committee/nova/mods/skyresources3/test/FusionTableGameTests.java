@@ -57,7 +57,12 @@ public final class FusionTableGameTests {
 
         tick(table, helper, 5);
 
-        helper.assertValueEqual(0, table.getProgress(), "Split duplicate inputs should not start fusion progress");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                0,
+                table.getProgress(),
+                "Split duplicate inputs should not start fusion progress"
+        );
         helper.assertTrue(
                 table.getStackInSlot(FusionTableBlockEntity.OUTPUT_SLOT).isEmpty(),
                 "Split duplicate inputs should not produce fusion output"
@@ -69,7 +74,7 @@ public final class FusionTableGameTests {
 
     public static void fusionTableMenuWritesToBlockEntity(final GameTestHelper helper) {
         final FusionTableBlockEntity table = setupFusionTable(helper);
-        final Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.SURVIVAL);
         final FusionTableMenu menu = new FusionTableMenu(0, player.getInventory(), table);
 
         menu.slots.get(FusionTableBlockEntity.CATALYST_SLOT)
@@ -87,7 +92,7 @@ public final class FusionTableGameTests {
 
     private static FusionTableBlockEntity setupFusionTable(final GameTestHelper helper) {
         helper.setBlock(TABLE_POS, ModBlocks.FUSION_TABLE.get());
-        return helper.getBlockEntity(TABLE_POS, FusionTableBlockEntity.class);
+        return GameTestAssertions.getBlockEntity(helper, TABLE_POS, FusionTableBlockEntity.class);
     }
 
     private static void setAlchemicalCoalInputs(final FusionTableBlockEntity table) {
@@ -124,7 +129,7 @@ public final class FusionTableGameTests {
             final int expectedCount
     ) {
         helper.assertTrue(stack.is(item), "Stack item should match");
-        helper.assertValueEqual(expectedCount, stack.getCount(), "Stack count should match");
+        GameTestAssertions.assertValueEqual(helper, expectedCount, stack.getCount(), "Stack count should match");
     }
 
     private FusionTableGameTests() {

@@ -24,6 +24,7 @@ import committee.nova.mods.skyresources3.init.registry.ModFluids;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import committee.nova.mods.skyresources3.init.registry.ModRecipeTypes;
+import committee.nova.mods.skyresources3.test.ModGameTests;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -54,6 +55,7 @@ public final class Skyresources3 {
         ModEntityTypes.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
+        ModGameTests.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockBreak);
         MinecraftForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockPlace);
