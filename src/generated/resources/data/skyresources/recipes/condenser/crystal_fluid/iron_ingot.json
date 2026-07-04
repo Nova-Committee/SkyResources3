@@ -1,0 +1,17 @@
+{
+  "type": "skyresources:condenser",
+  "catalyst": {
+    "stack": {
+      "item": "skyresources:ore_alchemical_dust",
+      "nbt": "{ore_alchemy_dust_type:\"skyresources:iron\"}"
+    }
+  },
+  "output": {
+    "item": "minecraft:iron_ingot"
+  },
+  "parameter": 137.2,
+  "source": {
+    "type": "fluid",
+    "id": "skyresources:crystal_fluid"
+  }
+}

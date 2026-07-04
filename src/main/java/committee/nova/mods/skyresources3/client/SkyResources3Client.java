@@ -10,31 +10,24 @@ import committee.nova.mods.skyresources3.common.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModEntityTypes;
-import committee.nova.mods.skyresources3.init.registry.ModFluidTypes;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@EventBusSubscriber(modid = Skyresources3.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Skyresources3.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class SkyResources3Client {
-    private static final ResourceLocation CRYSTAL_FLUID_STILL =
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_still");
-    private static final ResourceLocation CRYSTAL_FLUID_FLOW =
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/crystal_fluid_flow");
     private static final String KEY_CATEGORY = "key.categories.skyresources";
     private static final KeyMapping OPEN_GUIDE = new KeyMapping(
             "key.skyresources.guide",
@@ -70,23 +63,25 @@ public final class SkyResources3Client {
     }
 
     @SubscribeEvent
-    public static void registerMenuScreens(final RegisterMenuScreensEvent event) {
-        event.register(ModMenuTypes.FUSION_TABLE.get(), FusionTableScreen::new);
-        event.register(ModMenuTypes.DIRT_FURNACE.get(), DirtFurnaceScreen::new);
-        event.register(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
-        event.register(ModMenuTypes.QUICK_DROPPER.get(), QuickDropperScreen::new);
-        event.register(ModMenuTypes.DARK_MATTER_WARPER.get(), DarkMatterWarperScreen::new);
-        event.register(ModMenuTypes.END_PORTAL_CORE.get(), EndPortalCoreScreen::new);
-        event.register(ModMenuTypes.CRUCIBLE_INSERTER.get(), CrucibleInserterScreen::new);
-        event.register(ModMenuTypes.ROCK_CRUSHER.get(), RockCrusherScreen::new);
-        event.register(ModMenuTypes.ROCK_CLEANER.get(), RockCleanerScreen::new);
-        event.register(ModMenuTypes.AQUEOUS_MACHINE.get(), AqueousMachineScreen::new);
-        event.register(ModMenuTypes.WILDLIFE_ATTRACTOR.get(), WildlifeAttractorScreen::new);
-        event.register(ModMenuTypes.MACHINE_CASING.get(), MachineCasingScreen::new);
-        event.register(ModMenuTypes.LIFE_INFUSER.get(), LifeInfuserScreen::new);
-        event.register(ModMenuTypes.LIFE_INJECTOR.get(), LifeInjectorScreen::new);
-        event.register(ModMenuTypes.COMBUSTION_COLLECTOR.get(), CombustionCollectorScreen::new);
-        event.register(ModMenuTypes.COMBUSTION_CONTROLLER.get(), CombustionControllerScreen::new);
+    public static void registerMenuScreens(final FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            MenuScreens.register(ModMenuTypes.FUSION_TABLE.get(), FusionTableScreen::new);
+            MenuScreens.register(ModMenuTypes.DIRT_FURNACE.get(), DirtFurnaceScreen::new);
+            MenuScreens.register(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
+            MenuScreens.register(ModMenuTypes.QUICK_DROPPER.get(), QuickDropperScreen::new);
+            MenuScreens.register(ModMenuTypes.DARK_MATTER_WARPER.get(), DarkMatterWarperScreen::new);
+            MenuScreens.register(ModMenuTypes.END_PORTAL_CORE.get(), EndPortalCoreScreen::new);
+            MenuScreens.register(ModMenuTypes.CRUCIBLE_INSERTER.get(), CrucibleInserterScreen::new);
+            MenuScreens.register(ModMenuTypes.ROCK_CRUSHER.get(), RockCrusherScreen::new);
+            MenuScreens.register(ModMenuTypes.ROCK_CLEANER.get(), RockCleanerScreen::new);
+            MenuScreens.register(ModMenuTypes.AQUEOUS_MACHINE.get(), AqueousMachineScreen::new);
+            MenuScreens.register(ModMenuTypes.WILDLIFE_ATTRACTOR.get(), WildlifeAttractorScreen::new);
+            MenuScreens.register(ModMenuTypes.MACHINE_CASING.get(), MachineCasingScreen::new);
+            MenuScreens.register(ModMenuTypes.LIFE_INFUSER.get(), LifeInfuserScreen::new);
+            MenuScreens.register(ModMenuTypes.LIFE_INJECTOR.get(), LifeInjectorScreen::new);
+            MenuScreens.register(ModMenuTypes.COMBUSTION_COLLECTOR.get(), CombustionCollectorScreen::new);
+            MenuScreens.register(ModMenuTypes.COMBUSTION_CONTROLLER.get(), CombustionControllerScreen::new);
+        });
     }
 
     @SubscribeEvent
@@ -96,8 +91,10 @@ public final class SkyResources3Client {
         event.register(OPEN_ISLAND);
     }
 
-    @SubscribeEvent
-    public static void onClientTick(final ClientTickEvent.Post event) {
+    private static void onClientTick(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
         final Minecraft minecraft = Minecraft.getInstance();
         while (OPEN_GUIDE.consumeClick()) {
             if (minecraft.player != null && minecraft.screen == null) {
@@ -123,19 +120,15 @@ public final class SkyResources3Client {
         );
     }
 
-    @SubscribeEvent
-    public static void registerClientExtensions(final RegisterClientExtensionsEvent event) {
-        event.registerFluidType(new IClientFluidTypeExtensions() {
-            @Override
-            public ResourceLocation getStillTexture() {
-                return CRYSTAL_FLUID_STILL;
-            }
+    @Mod.EventBusSubscriber(modid = Skyresources3.MODID, value = Dist.CLIENT)
+    private static final class ForgeEvents {
+        @SubscribeEvent
+        public static void onClientTick(final TickEvent.ClientTickEvent event) {
+            SkyResources3Client.onClientTick(event);
+        }
 
-            @Override
-            public ResourceLocation getFlowingTexture() {
-                return CRYSTAL_FLUID_FLOW;
-            }
-        }, ModFluidTypes.CRYSTAL_FLUID);
+        private ForgeEvents() {
+        }
     }
 
     private SkyResources3Client() {

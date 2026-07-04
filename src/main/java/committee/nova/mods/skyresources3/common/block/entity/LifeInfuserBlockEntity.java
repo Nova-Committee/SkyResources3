@@ -37,9 +37,9 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         this.loadLegacyStack(input, GEM_KEY, GEM_SLOT);
         this.loadLegacyStack(input, INPUT_KEY, INPUT_SLOT);
@@ -47,9 +47,9 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
     }
 
@@ -218,7 +218,7 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
         if (!this.items.stack(slot).isEmpty()) {
             return;
         }
-        input.read(key, ItemStack.OPTIONAL_CODEC)
+        input.read(key, ItemStack.CODEC)
                 .filter(stack -> !stack.isEmpty())
                 .ifPresent(stack -> this.items.setStack(slot, stack));
     }

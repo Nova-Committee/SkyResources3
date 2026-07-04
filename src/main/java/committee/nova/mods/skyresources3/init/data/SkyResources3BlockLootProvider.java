@@ -2,15 +2,14 @@ package committee.nova.mods.skyresources3.init.data;
 
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import java.util.Set;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public final class SkyResources3BlockLootProvider extends BlockLootSubProvider {
-    public SkyResources3BlockLootProvider(final HolderLookup.Provider lookupProvider) {
-        super(Set.<Item>of(), FeatureFlags.DEFAULT_FLAGS, lookupProvider);
+    public SkyResources3BlockLootProvider() {
+        super(Set.<Item>of(), FeatureFlags.DEFAULT_FLAGS);
     }
 
     @Override

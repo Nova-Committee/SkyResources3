@@ -11,7 +11,7 @@ import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 final class CrucibleRecipeJeiCategory implements IRecipeCategory<CrucibleRecipe> {
     private static final int WIDTH = 120;
@@ -62,7 +62,7 @@ final class CrucibleRecipeJeiCategory implements IRecipeCategory<CrucibleRecipe>
         builder.addOutputSlot(86, 22)
                 .setOutputSlotBackground()
                 .setFluidRenderer(output.getAmount(), true, 16, 16)
-                .addFluidStack(output.getFluid(), output.getAmount(), output.getComponentsPatch());
+                .addFluidStack(output.getFluid(), output.getAmount());
     }
 
     @Override

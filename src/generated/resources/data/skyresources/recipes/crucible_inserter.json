@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "minecraft:dropper"
+    }
+  },
+  "pattern": [
+    "XYX",
+    "X X",
+    "X X"
+  ],
+  "result": {
+    "item": "skyresources:crucible_inserter"
+  },
+  "show_notification": true
+}

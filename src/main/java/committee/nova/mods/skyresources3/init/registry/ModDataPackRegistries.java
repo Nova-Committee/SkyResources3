@@ -11,7 +11,7 @@ import java.util.List;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.minecraftforge.registries.DataPackRegistryEvent;
 
 public final class ModDataPackRegistries {
     public static final ResourceKey<Registry<CasingType>> CASING_TYPES =
@@ -204,7 +204,7 @@ public final class ModDataPackRegistries {
     }
 
     private static ResourceLocation id(final String path) {
-        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
+        return new ResourceLocation(Skyresources3.MODID, path);
     }
 
     private ModDataPackRegistries() {

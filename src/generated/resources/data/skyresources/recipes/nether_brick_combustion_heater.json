@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:nether_bricks"
+    },
+    "Y": {
+      "item": "minecraft:blaze_powder"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:combustion_heater",
+    "nbt": "{BlockEntityTag:{machine_type:\"skyresources:nether_brick\"},CustomModelData:4,combustion_heater_type:\"skyresources:nether_brick\"}"
+  }
+}

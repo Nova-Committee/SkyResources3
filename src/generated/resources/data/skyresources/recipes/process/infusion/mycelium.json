@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:brown_mushroom"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:dirt"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:mycelium"
+    }
+  ],
+  "parameter": 16.0,
+  "process": "infusion"
+}

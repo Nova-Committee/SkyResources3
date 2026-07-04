@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:hay_block"
+    },
+    "Y": {
+      "item": "minecraft:chest"
+    },
+    "Z": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XYX",
+    "XZX"
+  ],
+  "result": {
+    "item": "skyresources:wildlife_attractor"
+  },
+  "show_notification": true
+}

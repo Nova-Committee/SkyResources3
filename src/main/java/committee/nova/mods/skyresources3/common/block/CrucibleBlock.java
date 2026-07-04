@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -60,8 +59,7 @@ public final class CrucibleBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -69,35 +67,25 @@ public final class CrucibleBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection())
-                ? ItemInteractionResult.SUCCESS
-                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                ? InteractionResult.SUCCESS
+                : InteractionResult.PASS;
     }
 
     @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        return InteractionResult.PASS;
-    }
-
-    @Override
-    protected boolean hasAnalogOutputSignal(final BlockState state) {
+    public boolean hasAnalogOutputSignal(final BlockState state) {
         return true;
     }
 
     @Override
-    protected int getAnalogOutputSignal(
+    public int getAnalogOutputSignal(
             final BlockState state,
             final Level level,
             final BlockPos pos
@@ -109,7 +97,7 @@ public final class CrucibleBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(
+    public VoxelShape getShape(
             final BlockState state,
             final BlockGetter level,
             final BlockPos pos,
@@ -119,7 +107,7 @@ public final class CrucibleBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected VoxelShape getCollisionShape(
+    public VoxelShape getCollisionShape(
             final BlockState state,
             final BlockGetter level,
             final BlockPos pos,
@@ -129,7 +117,7 @@ public final class CrucibleBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(final BlockState state) {
+    public RenderShape getRenderShape(final BlockState state) {
         return RenderShape.MODEL;
     }
 }

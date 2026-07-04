@@ -36,7 +36,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "jei");
+        return new ResourceLocation(Skyresources3.MODID, "jei");
     }
 
     @Override
@@ -223,10 +223,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         }
         final IRecipesGui recipesGui = jeiRuntime.getRecipesGui();
         recipesGui.showTypes(recipeTypes);
-        if (recipesGui.getParentScreen().isPresent()) {
-            return true;
-        }
-        return openItemRecipe(jeiRuntime, icon);
+        return true;
     }
 
     private List<SkyResourcesProcessRecipe> addProcessRecipes(
@@ -266,7 +263,7 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                 .createFocus(RecipeIngredientRole.OUTPUT, VanillaTypes.ITEM_STACK, icon.copy());
         final IRecipesGui recipesGui = jeiRuntime.getRecipesGui();
         recipesGui.show(focus);
-        return recipesGui.getParentScreen().isPresent();
+        return true;
     }
 
     private static ItemStack[] combustionHeaters() {

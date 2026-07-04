@@ -1,0 +1,17 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "skyresources:heavy_snow"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:coarse_dirt"
+    }
+  ],
+  "parameter": 800.0,
+  "process": "freezer"
+}

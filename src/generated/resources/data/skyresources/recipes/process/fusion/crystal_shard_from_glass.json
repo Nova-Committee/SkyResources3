@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:glass"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 2,
+      "item": "skyresources:crystal_shard"
+    }
+  ],
+  "parameter": 0.001,
+  "process": "fusion"
+}

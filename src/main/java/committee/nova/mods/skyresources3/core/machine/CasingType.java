@@ -41,7 +41,7 @@ public record CasingType(
     ).apply(instance, CasingType::new));
     private static final CasingType FALLBACK = new CasingType(
             "block.skyresources.machine_casing.iron",
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
+            new ResourceLocation(Skyresources3.MODID, "block/iron_machine"),
             1538,
             1.2F,
             StructureRule.METAL,

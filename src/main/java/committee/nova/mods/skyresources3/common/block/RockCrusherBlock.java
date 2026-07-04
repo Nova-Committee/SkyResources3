@@ -1,6 +1,5 @@
 package committee.nova.mods.skyresources3.common.block;
 
-import com.mojang.serialization.MapCodec;
 import committee.nova.mods.skyresources3.common.block.entity.RockCrusherBlockEntity;
 import committee.nova.mods.skyresources3.common.menu.RockCrusherMenu;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
@@ -10,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,16 +29,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public final class RockCrusherBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public static final MapCodec<RockCrusherBlock> CODEC = simpleCodec(RockCrusherBlock::new);
-
     public RockCrusherBlock(final BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
-    }
-
-    @Override
-    protected MapCodec<RockCrusherBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -72,12 +63,12 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
     }
 
     @Override
-    protected BlockState rotate(final BlockState state, final Rotation rotation) {
+    public BlockState rotate(final BlockState state, final Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(final BlockState state, final Mirror mirror) {
+    public BlockState mirror(final BlockState state, final Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -87,8 +78,7 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -96,18 +86,7 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return BlockInteractionResults.item(this.openMenu(level, pos, player, hitResult, stack));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        return this.openMenu(level, pos, player, hitResult, ItemStack.EMPTY);
+        return this.openMenu(level, pos, player, hitResult, player.getItemInHand(hand));
     }
 
     private InteractionResult openMenu(
@@ -127,7 +106,7 @@ public final class RockCrusherBlock extends HorizontalDirectionalBlock implement
             return InteractionResult.SUCCESS;
         }
 
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new RockCrusherMenu(containerId, inventory, crusher),
                         Component.translatable("container.skyresources.rock_crusher")

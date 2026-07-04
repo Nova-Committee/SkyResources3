@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.energy.EnergyHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.energy.SimpleEnergyHandler;
@@ -53,9 +53,9 @@ public final class AqueousMachineBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         input.readChild(ENERGY_KEY, this.energy);
         input.readChild(FLUIDS_KEY, this.fluids);
@@ -63,9 +63,9 @@ public final class AqueousMachineBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         output.putChild(ENERGY_KEY, this.energy);
         output.putChild(FLUIDS_KEY, this.fluids);
@@ -248,7 +248,7 @@ public final class AqueousMachineBlockEntity extends BlockEntity {
         if (current.isEmpty()) {
             return output.getCount() <= output.getMaxStackSize();
         }
-        return ItemStack.isSameItemSameComponents(current, output)
+        return ItemStack.isSameItemSameTags(current, output)
                 && current.getCount() + output.getCount() <= current.getMaxStackSize();
     }
 

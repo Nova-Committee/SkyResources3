@@ -1,0 +1,28 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:nether_wart"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:gunpowder"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:dark_oak_sapling"
+    }
+  ],
+  "parameter": 0.0015,
+  "process": "fusion"
+}

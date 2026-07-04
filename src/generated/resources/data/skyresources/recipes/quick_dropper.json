@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "minecraft:dropper"
+    },
+    "Z": {
+      "item": "minecraft:glowstone"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XZX",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:quick_dropper"
+  },
+  "show_notification": true
+}

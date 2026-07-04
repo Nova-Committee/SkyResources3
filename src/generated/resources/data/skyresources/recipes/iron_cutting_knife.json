@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "X": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "#X ",
+    " #X"
+  ],
+  "result": {
+    "item": "skyresources:iron_cutting_knife"
+  },
+  "show_notification": true
+}

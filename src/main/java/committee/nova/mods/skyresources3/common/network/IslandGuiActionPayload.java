@@ -2,42 +2,31 @@ package committee.nova.mods.skyresources3.common.network;
 
 import committee.nova.mods.skyresources3.Skyresources3;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+import java.util.function.Supplier;
 
-public record IslandGuiActionPayload(Action action, String value) implements CustomPacketPayload {
+public record IslandGuiActionPayload(Action action, String value) {
     private static final int MAX_VALUE_LENGTH = 64;
-
-    public static final Type<IslandGuiActionPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_action")
-    );
-    public static final StreamCodec<RegistryFriendlyByteBuf, IslandGuiActionPayload> STREAM_CODEC = StreamCodec.of(
-            IslandGuiActionPayload::encode,
-            IslandGuiActionPayload::decode
-    );
 
     public IslandGuiActionPayload {
         action = action == null ? Action.REFRESH : action;
         value = value == null ? "" : value.strip();
     }
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
-    static void handle(final IslandGuiActionPayload payload, final IPayloadContext context) {
-        if (!(context.player() instanceof ServerPlayer player)) {
-            return;
-        }
-        payload.run(player);
-        IslandGuiStatePayload.sendTo(player);
+    static void handle(final IslandGuiActionPayload payload, final Supplier<NetworkEvent.Context> contextSupplier) {
+        final NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            final ServerPlayer player = context.getSender();
+            if (player != null) {
+                payload.run(player);
+                IslandGuiStatePayload.sendTo(player);
+            }
+        });
+        context.setPacketHandled(true);
     }
 
     private void run(final ServerPlayer player) {
@@ -89,12 +78,12 @@ public record IslandGuiActionPayload(Action action, String value) implements Cus
         return this.value;
     }
 
-    private static void encode(final RegistryFriendlyByteBuf buffer, final IslandGuiActionPayload payload) {
+    static void encode(final IslandGuiActionPayload payload, final FriendlyByteBuf buffer) {
         buffer.writeVarInt(payload.action.ordinal());
         buffer.writeUtf(payload.value, MAX_VALUE_LENGTH);
     }
 
-    private static IslandGuiActionPayload decode(final RegistryFriendlyByteBuf buffer) {
+    static IslandGuiActionPayload decode(final FriendlyByteBuf buffer) {
         return new IslandGuiActionPayload(Action.byOrdinal(buffer.readVarInt()), buffer.readUtf(MAX_VALUE_LENGTH));
     }
 

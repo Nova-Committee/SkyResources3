@@ -8,13 +8,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 public final class MachineCasingBlock extends Block implements EntityBlock {
@@ -44,7 +42,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(
-            final LevelReader level,
+            final BlockGetter level,
             final BlockPos pos,
             final BlockState state
     ) {
@@ -52,20 +50,6 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
             return MachineCasingItem.forType(casing.casingTypeId());
         }
         return super.getCloneItemStack(level, pos, state);
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(
-            final BlockState state,
-            final HitResult target,
-            final LevelReader level,
-            final BlockPos pos,
-            final Player player
-    ) {
-        if (level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing) {
-            return MachineCasingItem.forType(casing.casingTypeId());
-        }
-        return super.getCloneItemStack(state, target, level, pos, player);
     }
 
     @Nullable
@@ -86,8 +70,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -95,43 +78,21 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (player.isShiftKeyDown() && casing.hasHeater()) {
-            return BlockInteractionResults.item(MachineCasingInteractions.removeHeater(level, player, casing));
-        }
-        if (level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
-        }
-        if (!casing.hasHeater() && casing.canInstallMachine(stack)) {
-            return casing.installHeater(stack, player) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-        return BlockInteractionResults.item(this.openMenu(pos, player, casing));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!level.mayInteract(player, pos)) {
-            return InteractionResult.PASS;
-        }
-        if (!(level.getBlockEntity(pos) instanceof MachineCasingBlockEntity casing)) {
-            return InteractionResult.PASS;
+            return MachineCasingInteractions.removeHeater(level, player, casing);
         }
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
-        if (player.isShiftKeyDown() && casing.hasHeater()) {
-            return MachineCasingInteractions.removeHeater(level, player, casing);
+        if (!casing.hasHeater() && casing.canInstallMachine(stack)) {
+            return casing.installHeater(stack, player) ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
         return this.openMenu(pos, player, casing);
     }
@@ -141,7 +102,7 @@ public final class MachineCasingBlock extends Block implements EntityBlock {
             final Player player,
             final MachineCasingBlockEntity casing
     ) {
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new MachineCasingMenu(containerId, inventory, casing),
                         casing.menuTitle()

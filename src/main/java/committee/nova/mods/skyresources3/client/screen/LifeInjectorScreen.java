@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class LifeInjectorScreen extends AbstractContainerScreen<LifeInjectorMenu> {
-    private static final ResourceLocation HEART = ResourceLocation.withDefaultNamespace("hud/heart/full");
+    private static final ResourceLocation HEART = new ResourceLocation("minecraft", "textures/gui/icons.png");
     private static final int HEALTH_X = 99;
     private static final int HEALTH_Y = 31;
     private static final int HEALTH_WIDTH = 60;

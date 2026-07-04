@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:sand"
+    },
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "skyresources:advanced_power_component"
+    },
+    "Z": {
+      "item": "skyresources:water_extractor"
+    }
+  },
+  "pattern": [
+    "XAX",
+    "XZX",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:aqueous_deconcentrator"
+  },
+  "show_notification": true
+}

@@ -8,7 +8,7 @@ import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,7 +37,7 @@ public final class AqueousMachineMenu extends SkyResourcesMenu {
     private final DataSlot energyHigh;
     private final DataSlot water;
 
-    public AqueousMachineMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
+    public AqueousMachineMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
     }
 
@@ -79,7 +79,7 @@ public final class AqueousMachineMenu extends SkyResourcesMenu {
     }
 
     public static void writeClientSideData(
-            final RegistryFriendlyByteBuf buffer,
+            final FriendlyByteBuf buffer,
             final BlockPos pos,
             final AqueousMachineMode mode
     ) {
@@ -241,7 +241,7 @@ public final class AqueousMachineMenu extends SkyResourcesMenu {
 
     private static AqueousClientData readClientData(
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf buffer
+            final FriendlyByteBuf buffer
     ) {
         final BlockPos pos = buffer.readBlockPos();
         final AqueousMachineMode mode = buffer.readBoolean()

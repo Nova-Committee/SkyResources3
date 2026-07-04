@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "skyresources:alchemical_gold_needle"
+    },
+    "Y": {
+      "item": "skyresources:alchemical_diamond"
+    }
+  },
+  "pattern": [
+    "X",
+    "Y"
+  ],
+  "result": {
+    "item": "skyresources:alchemical_infusion_stone"
+  },
+  "show_notification": true
+}

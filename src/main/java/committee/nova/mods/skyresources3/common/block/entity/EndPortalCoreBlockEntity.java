@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.EndPlatformFeature;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -61,17 +60,17 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         this.powered = input.getBooleanOr(POWERED_KEY, false);
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         output.putBoolean(POWERED_KEY, this.powered);
     }
@@ -252,8 +251,8 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
             if (!tier2 && this.items.stack(EYE_SLOT).getCount() < EYES_PER_TELEPORT) {
                 return;
             }
-            EndPlatformFeature.createEndPlatform(endLevel, ServerLevel.END_SPAWN_POINT.below(), true);
-            final Vec3 target = ServerLevel.END_SPAWN_POINT.getBottomCenter().subtract(0.0D, 1.0D, 0.0D);
+            createEndPlatform(endLevel, ServerLevel.END_SPAWN_POINT.below());
+            final Vec3 target = Vec3.atBottomCenterOf(ServerLevel.END_SPAWN_POINT).subtract(0.0D, 1.0D, 0.0D);
             player.teleportTo(
                     endLevel,
                     target.x(),
@@ -270,6 +269,15 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
                 }
                 this.setChanged();
             }
+        }
+    }
+
+    private static void createEndPlatform(final ServerLevel level, final BlockPos center) {
+        for (final BlockPos pos : BlockPos.betweenClosed(center.offset(-2, 0, -2), center.offset(2, 0, 2))) {
+            level.setBlockAndUpdate(pos, Blocks.OBSIDIAN.defaultBlockState());
+        }
+        for (final BlockPos pos : BlockPos.betweenClosed(center.offset(-2, 1, -2), center.offset(2, 3, 2))) {
+            level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
     }
 
@@ -306,6 +314,7 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
                 level,
                 level.getCurrentDifficultyAt(silverfish.blockPosition()),
                 MobSpawnType.TRIGGERED,
+                null,
                 null
         );
         if (Config.endPortalMode == Config.EndPortalDifficulty.NORMAL) {
@@ -322,14 +331,8 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
         silverfish.setDropChance(EquipmentSlot.FEET, 0.0F);
 
         final ItemStack sword = new ItemStack(Items.IRON_SWORD);
-        final Holder<Enchantment> fireAspect = level.registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.FIRE_ASPECT);
-        final Holder<Enchantment> sharpness = level.registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.SHARPNESS);
-        sword.enchant(fireAspect, 1);
-        sword.enchant(sharpness, 3);
+        sword.enchant(Enchantments.FIRE_ASPECT, 1);
+        sword.enchant(Enchantments.SHARPNESS, 3);
 
         silverfish.setItemSlot(EquipmentSlot.MAINHAND, sword);
         silverfish.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET));

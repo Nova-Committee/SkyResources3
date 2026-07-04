@@ -1,0 +1,28 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:magma_block"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:stone"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "skyresources:alchemical_coal"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:magmafied_stone"
+    }
+  ],
+  "parameter": 0.009,
+  "process": "fusion"
+}

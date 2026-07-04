@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "stack": {
+        "item": "skyresources:dirty_gem",
+        "nbt": "{dirty_gem_type:\"skyresources:quartz\"}"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:quartz"
+    }
+  ],
+  "parameter": 1.0,
+  "process": "cauldronclean"
+}

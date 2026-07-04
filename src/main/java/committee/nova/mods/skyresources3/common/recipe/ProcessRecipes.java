@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 public final class ProcessRecipes {
     public static final String COMBUSTION = "combustion";
@@ -16,7 +15,7 @@ public final class ProcessRecipes {
     public static final String ROCK_GRINDER = "rockgrinder";
     public static final String CAULDRON_CLEAN = "cauldronclean";
 
-    public static Optional<RecipeHolder<SkyResourcesProcessRecipe>> find(
+    public static Optional<SkyResourcesProcessRecipe> find(
             final ServerLevel level,
             final String process,
             final List<ItemStack> items
@@ -24,7 +23,7 @@ public final class ProcessRecipes {
         return find(level, process, items, Float.MAX_VALUE);
     }
 
-    public static Optional<RecipeHolder<SkyResourcesProcessRecipe>> find(
+    public static Optional<SkyResourcesProcessRecipe> find(
             final ServerLevel level,
             final String process,
             final List<ItemStack> items,
@@ -37,7 +36,7 @@ public final class ProcessRecipes {
         );
     }
 
-    public static List<RecipeHolder<SkyResourcesProcessRecipe>> findAll(
+    public static List<SkyResourcesProcessRecipe> findAll(
             final ServerLevel level,
             final String process,
             final List<ItemStack> items
@@ -46,7 +45,7 @@ public final class ProcessRecipes {
         return level.getRecipeManager()
                 .getAllRecipesFor(ModRecipeTypes.PROCESS_TYPE.get())
                 .stream()
-                .filter(holder -> holder.value().matches(input, level))
+                .filter(recipe -> recipe.matches(input, level))
                 .toList();
     }
 

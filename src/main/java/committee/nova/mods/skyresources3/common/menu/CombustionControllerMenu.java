@@ -4,7 +4,7 @@ import committee.nova.mods.skyresources3.common.block.entity.AbstractCombustionI
 import committee.nova.mods.skyresources3.common.block.entity.CombustionControllerBlockEntity;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -16,7 +16,7 @@ public final class CombustionControllerMenu extends AbstractCombustionInventoryM
     public CombustionControllerMenu(
             final int containerId,
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf data
+            final FriendlyByteBuf data
     ) {
         super(
                 ModMenuTypes.COMBUSTION_CONTROLLER.get(),

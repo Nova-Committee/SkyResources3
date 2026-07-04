@@ -1,11 +1,8 @@
 package committee.nova.mods.skyresources3.init.event;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -30,10 +27,7 @@ final class ProcessingToolDrops {
     }
 
     private static int getFortuneLevel(final Level level, final ItemStack tool) {
-        final Holder<Enchantment> fortune = level.registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT)
-                .getOrThrow(Enchantments.FORTUNE);
-        return tool.getEnchantmentLevel(fortune);
+        return tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
     }
 
     private ProcessingToolDrops() {

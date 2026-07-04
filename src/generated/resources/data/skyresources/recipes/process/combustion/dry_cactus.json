@@ -1,0 +1,29 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:bone_block"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:light_gray_dye"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "skyresources:plant_matter"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:dry_cactus"
+    }
+  ],
+  "parameter": 400.0,
+  "process": "combustion"
+}

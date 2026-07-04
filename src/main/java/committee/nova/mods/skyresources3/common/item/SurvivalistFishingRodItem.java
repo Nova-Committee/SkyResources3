@@ -54,8 +54,8 @@ public final class SurvivalistFishingRodItem extends FishingRodItem {
             );
             if (level instanceof ServerLevel serverLevel) {
                 final int lureTimeReduction = BASE_LURE_TIME_REDUCTION_TICKS
-                        + (int) (EnchantmentHelper.getFishingTimeReduction(serverLevel, itemStack, player) * 20.0F);
-                final int luck = EnchantmentHelper.getFishingLuckBonus(serverLevel, itemStack, player);
+                        + EnchantmentHelper.getFishingSpeedBonus(itemStack) * 20;
+                final int luck = EnchantmentHelper.getFishingLuckBonus(itemStack);
                 serverLevel.addFreshEntity(new FishingHook(player, level, luck, lureTimeReduction));
             }
 

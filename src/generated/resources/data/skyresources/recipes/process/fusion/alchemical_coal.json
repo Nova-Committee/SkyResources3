@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:coal"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:gunpowder"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:alchemical_coal"
+    }
+  ],
+  "parameter": 0.0015,
+  "process": "fusion"
+}

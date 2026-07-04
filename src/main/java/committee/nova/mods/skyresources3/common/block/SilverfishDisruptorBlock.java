@@ -15,7 +15,7 @@ public final class SilverfishDisruptorBlock extends Block {
     }
 
     @Override
-    protected VoxelShape getShape(
+    public VoxelShape getShape(
             final BlockState state,
             final BlockGetter level,
             final BlockPos pos,
@@ -25,7 +25,7 @@ public final class SilverfishDisruptorBlock extends Block {
     }
 
     @Override
-    protected VoxelShape getCollisionShape(
+    public VoxelShape getCollisionShape(
             final BlockState state,
             final BlockGetter level,
             final BlockPos pos,

@@ -1,6 +1,5 @@
 package committee.nova.mods.skyresources3.common.block;
 
-import com.mojang.serialization.MapCodec;
 import committee.nova.mods.skyresources3.common.block.entity.CombustionControllerBlockEntity;
 import committee.nova.mods.skyresources3.common.menu.CombustionControllerMenu;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
@@ -10,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,16 +29,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public final class CombustionControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public static final MapCodec<CombustionControllerBlock> CODEC = simpleCodec(CombustionControllerBlock::new);
-
     public CombustionControllerBlock(final BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
-    }
-
-    @Override
-    protected MapCodec<CombustionControllerBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -73,12 +64,12 @@ public final class CombustionControllerBlock extends HorizontalDirectionalBlock 
     }
 
     @Override
-    protected BlockState rotate(final BlockState state, final Rotation rotation) {
+    public BlockState rotate(final BlockState state, final Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(final BlockState state, final Mirror mirror) {
+    public BlockState mirror(final BlockState state, final Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -88,8 +79,7 @@ public final class CombustionControllerBlock extends HorizontalDirectionalBlock 
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -97,21 +87,8 @@ public final class CombustionControllerBlock extends HorizontalDirectionalBlock 
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-        return BlockInteractionResults.item(this.useWithoutItem(state, level, pos, player, hitResult));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!level.mayInteract(player, pos)) {
             return InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof CombustionControllerBlockEntity controller)) {
@@ -120,7 +97,7 @@ public final class CombustionControllerBlock extends HorizontalDirectionalBlock 
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new CombustionControllerMenu(containerId, inventory, controller),

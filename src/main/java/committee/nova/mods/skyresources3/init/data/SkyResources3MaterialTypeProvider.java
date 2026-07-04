@@ -90,10 +90,14 @@ public final class SkyResources3MaterialTypeProvider implements DataProvider {
     private final PackOutput.PathProvider gemTypePathProvider;
 
     public SkyResources3MaterialTypeProvider(final PackOutput output) {
-        this.dustTypePathProvider = output.createRegistryElementsPathProvider(
-                ModDataPackRegistries.ORE_ALCHEMY_DUST_TYPES
+        this.dustTypePathProvider = output.createPathProvider(
+                PackOutput.Target.DATA_PACK,
+                ModDataPackRegistries.ORE_ALCHEMY_DUST_TYPES.location().getPath()
         );
-        this.gemTypePathProvider = output.createRegistryElementsPathProvider(ModDataPackRegistries.DIRTY_GEM_TYPES);
+        this.gemTypePathProvider = output.createPathProvider(
+                PackOutput.Target.DATA_PACK,
+                ModDataPackRegistries.DIRTY_GEM_TYPES.location().getPath()
+        );
     }
 
     @Override
@@ -131,7 +135,7 @@ public final class SkyResources3MaterialTypeProvider implements DataProvider {
     }
 
     private static ResourceLocation typeId(final String path) {
-        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
+        return new ResourceLocation(Skyresources3.MODID, path);
     }
 
     private static String color(final int rgb) {

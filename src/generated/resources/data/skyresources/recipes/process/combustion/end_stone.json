@@ -1,0 +1,42 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 6,
+      "ingredient": {
+        "item": "minecraft:diorite"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:sugar"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:ender_pearl"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:quartz"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:bone_block"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:end_stone"
+    }
+  ],
+  "parameter": 1800.0,
+  "process": "combustion"
+}

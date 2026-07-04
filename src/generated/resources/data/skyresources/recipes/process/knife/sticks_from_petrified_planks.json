@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "skyresources:petrified_planks"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "item": "minecraft:stick"
+    }
+  ],
+  "parameter": 0.0,
+  "process": "knife"
+}

@@ -1,0 +1,27 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "tag": "minecraft:logs"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:coal"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:petrified_wood"
+    }
+  ],
+  "parameter": 0.001,
+  "process": "fusion"
+}

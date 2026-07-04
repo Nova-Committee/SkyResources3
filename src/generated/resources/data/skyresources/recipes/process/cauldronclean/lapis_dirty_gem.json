@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "stack": {
+        "item": "skyresources:dirty_gem",
+        "nbt": "{dirty_gem_type:\"skyresources:lapis\"}"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "parameter": 1.0,
+  "process": "cauldronclean"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "tag": "minecraft:logs"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:sawdust"
+    }
+  ],
+  "parameter": 1.5,
+  "process": "rockgrinder"
+}

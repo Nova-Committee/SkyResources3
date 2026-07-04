@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:gold_ingot"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:glowstone_dust"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:alchemical_gold_ingot"
+    }
+  ],
+  "parameter": 0.005,
+  "process": "fusion"
+}

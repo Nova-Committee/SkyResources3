@@ -1,0 +1,24 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 6,
+      "ingredient": {
+        "item": "skyresources:primus_alchemical_dust"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:cactus"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 3,
+      "item": "minecraft:cactus"
+    }
+  ],
+  "parameter": 8.0,
+  "process": "infusion"
+}

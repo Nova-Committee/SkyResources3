@@ -12,15 +12,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.level.BlockDropsEvent;
+import net.minecraftforge.event.level.BlockEvent;
 
 public final class GrassSeedDropEvents {
     private static final int GRASS_SEED_CHANCE = 8;
     private static final int WHEAT_SEED_WEIGHT = 10;
 
-    public static void onBlockDrops(final BlockDropsEvent event) {
+    public static void onBlockDrops(final BlockEvent.BreakEvent event) {
         final BlockState state = event.getState();
-        if (!isGrassSeedTarget(state) || hasShearedGrassDrop(event.getDrops())) {
+        if (!(event.getLevel() instanceof ServerLevel level) || !isGrassSeedTarget(state)) {
             return;
         }
 
@@ -29,19 +29,17 @@ public final class GrassSeedDropEvents {
             return;
         }
 
-        event.getDrops().removeIf(GrassSeedDropEvents::isVanillaWheatSeedDrop);
-        if (event.getLevel().random.nextInt(GRASS_SEED_CHANCE) != 0) {
+        if (level.random.nextInt(GRASS_SEED_CHANCE) != 0) {
             return;
         }
 
-        final ItemStack selected = selectSeed(event.getLevel().random, seeds);
+        final ItemStack selected = selectSeed(level.random, seeds);
         if (selected.isEmpty()) {
             return;
         }
 
-        final ServerLevel level = event.getLevel();
         final BlockPos pos = event.getPos();
-        event.getDrops().add(new ItemEntity(
+        level.addFreshEntity(new ItemEntity(
                 level,
                 pos.getX() + 0.5D,
                 pos.getY() + 0.5D,
@@ -51,19 +49,10 @@ public final class GrassSeedDropEvents {
     }
 
     private static boolean isGrassSeedTarget(final BlockState state) {
-        return state.is(Blocks.SHORT_GRASS)
+        return state.is(Blocks.GRASS)
                 || state.is(Blocks.TALL_GRASS)
                 || state.is(Blocks.FERN)
                 || state.is(Blocks.LARGE_FERN);
-    }
-
-    private static boolean hasShearedGrassDrop(final List<ItemEntity> drops) {
-        return drops.stream().map(ItemEntity::getItem).anyMatch(stack ->
-                stack.is(Items.SHORT_GRASS) || stack.is(Items.FERN));
-    }
-
-    private static boolean isVanillaWheatSeedDrop(final ItemEntity drop) {
-        return drop.getItem().is(Items.WHEAT_SEEDS);
     }
 
     private static List<WeightedSeed> seedPool() {

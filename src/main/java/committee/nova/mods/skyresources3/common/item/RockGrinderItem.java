@@ -1,13 +1,14 @@
 package committee.nova.mods.skyresources3.common.item;
 
 import committee.nova.mods.skyresources3.init.event.RockGrinderEvents;
-import net.minecraft.core.Holder;
-import net.minecraft.world.entity.EquipmentSlotGroup;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,6 +17,8 @@ public final class RockGrinderItem extends Item {
     private static final float ATTACK_SPEED = -2.4F;
     private static final float DEFAULT_MINING_SPEED = 0.5F;
 
+    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
+    private final int enchantmentValue;
     private final float miningSpeed;
 
     public RockGrinderItem(
@@ -25,9 +28,9 @@ public final class RockGrinderItem extends Item {
             final float attackDamage,
             final int enchantmentValue
     ) {
-        super(properties
-                .durability(durability)
-                .attributes(attributes(attackDamage)));
+        super(properties.durability(durability));
+        this.defaultModifiers = attributes(attackDamage);
+        this.enchantmentValue = enchantmentValue;
         this.miningSpeed = miningSpeed;
     }
 
@@ -41,34 +44,39 @@ public final class RockGrinderItem extends Item {
     }
 
     @Override
-    public boolean supportsEnchantment(final ItemStack stack, final Holder<Enchantment> enchantment) {
-        return enchantment.is(Enchantments.FORTUNE) || super.supportsEnchantment(stack, enchantment);
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(final EquipmentSlot slot) {
+        return slot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(slot);
     }
 
     @Override
-    public boolean isPrimaryItemFor(final ItemStack stack, final Holder<Enchantment> enchantment) {
-        return this.supportsEnchantment(stack, enchantment);
+    public boolean canApplyAtEnchantingTable(final ItemStack stack, final Enchantment enchantment) {
+        return enchantment == Enchantments.BLOCK_FORTUNE || super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
-    private static ItemAttributeModifiers attributes(final float attackDamage) {
-        return ItemAttributeModifiers.builder()
-                .add(
+    @Override
+    public int getEnchantmentValue(final ItemStack stack) {
+        return this.enchantmentValue;
+    }
+
+    private static Multimap<Attribute, AttributeModifier> attributes(final float attackDamage) {
+        return ImmutableMultimap.<Attribute, AttributeModifier>builder()
+                .put(
                         Attributes.ATTACK_DAMAGE,
                         new AttributeModifier(
-                                Item.BASE_ATTACK_DAMAGE_ID,
+                                BASE_ATTACK_DAMAGE_UUID,
+                                "Tool modifier",
                                 attackDamage,
-                                AttributeModifier.Operation.ADD_VALUE
-                        ),
-                        EquipmentSlotGroup.MAINHAND
+                                AttributeModifier.Operation.ADDITION
+                        )
                 )
-                .add(
+                .put(
                         Attributes.ATTACK_SPEED,
                         new AttributeModifier(
-                                Item.BASE_ATTACK_SPEED_ID,
+                                BASE_ATTACK_SPEED_UUID,
+                                "Tool modifier",
                                 ATTACK_SPEED,
-                                AttributeModifier.Operation.ADD_VALUE
-                        ),
-                        EquipmentSlotGroup.MAINHAND
+                                AttributeModifier.Operation.ADDITION
+                        )
                 )
                 .build();
     }

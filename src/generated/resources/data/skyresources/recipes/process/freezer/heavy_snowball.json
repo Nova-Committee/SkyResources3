@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:snowball"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:heavy_snowball"
+    }
+  ],
+  "parameter": 40.0,
+  "process": "freezer"
+}

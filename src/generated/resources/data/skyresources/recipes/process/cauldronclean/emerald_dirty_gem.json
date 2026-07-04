@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "stack": {
+        "item": "skyresources:dirty_gem",
+        "nbt": "{dirty_gem_type:\"skyresources:emerald\"}"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:emerald"
+    }
+  ],
+  "parameter": 1.0,
+  "process": "cauldronclean"
+}

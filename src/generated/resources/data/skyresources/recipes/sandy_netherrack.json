@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "N": {
+      "item": "minecraft:netherrack"
+    },
+    "S": {
+      "item": "minecraft:sand"
+    },
+    "W": {
+      "item": "minecraft:nether_wart"
+    }
+  },
+  "pattern": [
+    "SW",
+    "NS"
+  ],
+  "result": {
+    "count": 4,
+    "item": "skyresources:sandy_netherrack"
+  },
+  "show_notification": true
+}

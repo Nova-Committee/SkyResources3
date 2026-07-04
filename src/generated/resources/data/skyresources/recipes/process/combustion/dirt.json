@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "skyresources:plant_matter"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:dirt"
+    }
+  ],
+  "parameter": 100.0,
+  "process": "combustion"
+}

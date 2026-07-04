@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:brick"
+    }
+  },
+  "pattern": [
+    "X X",
+    "X X",
+    "XXX"
+  ],
+  "result": {
+    "item": "skyresources:crucible"
+  },
+  "show_notification": true
+}

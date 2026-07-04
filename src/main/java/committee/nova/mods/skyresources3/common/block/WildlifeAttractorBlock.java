@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -51,8 +50,7 @@ public final class WildlifeAttractorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -60,37 +58,17 @@ public final class WildlifeAttractorBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof WildlifeAttractorBlockEntity attractor)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection())) {
-            return ItemInteractionResult.SUCCESS;
-        }
-        return BlockInteractionResults.item(this.openMenu(pos, player, attractor));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!level.mayInteract(player, pos)
-                || !player.mayUseItemAt(pos, hitResult.getDirection(), ItemStack.EMPTY)) {
-            return InteractionResult.PASS;
-        }
-        if (!(level.getBlockEntity(pos) instanceof WildlifeAttractorBlockEntity attractor)) {
-            return InteractionResult.PASS;
-        }
-        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         return this.openMenu(pos, player, attractor);
@@ -101,7 +79,7 @@ public final class WildlifeAttractorBlock extends Block implements EntityBlock {
             final Player player,
             final WildlifeAttractorBlockEntity attractor
     ) {
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new WildlifeAttractorMenu(containerId, inventory, attractor),
                         Component.translatable("container.skyresources.wildlife_attractor")

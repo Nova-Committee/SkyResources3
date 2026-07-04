@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:gunpowder"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 3,
+      "item": "minecraft:blaze_powder"
+    }
+  ],
+  "parameter": 75.0,
+  "process": "combustion"
+}

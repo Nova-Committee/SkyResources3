@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:flint"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 3,
+      "item": "minecraft:gunpowder"
+    }
+  ],
+  "parameter": 1120.0,
+  "process": "combustion"
+}

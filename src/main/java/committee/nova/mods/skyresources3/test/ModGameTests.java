@@ -12,11 +12,11 @@ import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.event.RegisterGameTestsEvent;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 
 public final class ModGameTests {
     private static final ResourceLocation EMPTY_STRUCTURE = ResourceLocation.withDefaultNamespace("empty");
@@ -27,271 +27,271 @@ public final class ModGameTests {
     public static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS =
             DeferredRegister.create(BuiltInRegistries.TEST_FUNCTION, Skyresources3.MODID);
 
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_CREATE_RESET =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_CREATE_RESET =
             TEST_FUNCTIONS.register("island_create_reset", () -> IslandCommandGameTests::createInfoAndReset);
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_SPAWN_PLATFORM =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_SPAWN_PLATFORM =
             TEST_FUNCTIONS.register(
                     "island_spawn_platform",
                     () -> IslandCommandGameTests::spawnGeneratesConfiguredPlatform
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_FEATURE_DEFAULTS =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_FEATURE_DEFAULTS =
             TEST_FUNCTIONS.register(
                     "island_feature_defaults",
                     () -> IslandCommandGameTests::voidIslandFeatureDefaultFollowsEmptyFlatWorld
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_VISIT =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_VISIT =
             TEST_FUNCTIONS.register(
                     "island_visit",
                     () -> IslandCommandGameTests::visitTeleportsToOnlinePlayerIsland
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_OFFLINE_VISIT =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_OFFLINE_VISIT =
             TEST_FUNCTIONS.register(
                     "island_offline_visit",
                     () -> IslandCommandGameTests::visitTeleportsToOfflineSavedIsland
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_MAGMA_TEMPLATE =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_MAGMA_TEMPLATE =
             TEST_FUNCTIONS.register(
                     "island_magma_template",
                     () -> IslandCommandGameTests::magmaIslandPlacesCrystalFluid
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_LAYERED_TEMPLATES =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_LAYERED_TEMPLATES =
             TEST_FUNCTIONS.register(
                     "island_layered_templates",
                     () -> IslandCommandGameTests::starterTemplatesUseLegacyLayeredStructures
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_RELATION_COMMANDS =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_RELATION_COMMANDS =
             TEST_FUNCTIONS.register(
                     "island_relation_commands",
                     () -> IslandCommandGameTests::islandInviteHomeLeaveAndDisband
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_TRUST_COMMANDS =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_TRUST_COMMANDS =
             TEST_FUNCTIONS.register(
                     "island_trust_commands",
                     () -> IslandCommandGameTests::trustListAndUntrustVisitor
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ISLAND_OFFLINE_IDENTITY =
+    private static final RegistryObject<Consumer<GameTestHelper>> ISLAND_OFFLINE_IDENTITY =
             TEST_FUNCTIONS.register(
                     "island_offline_identity",
                     () -> IslandCommandGameTests::offlineIdentityInviteAndTrust
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CUTTING_KNIFE_PROCESS =
+    private static final RegistryObject<Consumer<GameTestHelper>> CUTTING_KNIFE_PROCESS =
             TEST_FUNCTIONS.register(
                     "cutting_knife_process",
                     () -> RuntimeMigrationGameTests::cuttingKnifeUsesProcessRecipe
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ROCK_GRINDER_PROCESS =
+    private static final RegistryObject<Consumer<GameTestHelper>> ROCK_GRINDER_PROCESS =
             TEST_FUNCTIONS.register(
                     "rock_grinder_process",
                     () -> RuntimeMigrationGameTests::rockGrinderUsesProcessRecipe
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> MAGMAFIED_STONE_TICK =
+    private static final RegistryObject<Consumer<GameTestHelper>> MAGMAFIED_STONE_TICK =
             TEST_FUNCTIONS.register(
                     "magmafied_stone_tick",
                     () -> RuntimeMigrationGameTests::magmafiedStoneTicksCrystalFluid
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> INFUSION_STONE_PROCESS =
+    private static final RegistryObject<Consumer<GameTestHelper>> INFUSION_STONE_PROCESS =
             TEST_FUNCTIONS.register(
                     "infusion_stone_process",
                     () -> LifeInfusionGameTests::infusionStoneUsesProcessRecipe
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LIFE_INFUSER_PROCESS =
+    private static final RegistryObject<Consumer<GameTestHelper>> LIFE_INFUSER_PROCESS =
             TEST_FUNCTIONS.register(
                     "life_infuser_process",
                     () -> LifeInfusionGameTests::lifeInfuserUsesProcessRecipe
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LIFE_INJECTOR_ITEM_CAPABILITY =
+    private static final RegistryObject<Consumer<GameTestHelper>> LIFE_INJECTOR_ITEM_CAPABILITY =
             TEST_FUNCTIONS.register(
                     "life_injector_item_capability",
                     () -> LifeInfusionGameTests::lifeInjectorItemCapabilityTransfers
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             LIFE_INJECTOR_SHIFT_RIGHT_CLICK =
             TEST_FUNCTIONS.register(
                     "life_injector_shift_right_click",
                     () -> LifeInfusionGameTests::lifeInjectorShiftRightClickRemovesGemWithHeldItem
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LIFE_INFUSER_ITEM_CAPABILITY =
+    private static final RegistryObject<Consumer<GameTestHelper>> LIFE_INFUSER_ITEM_CAPABILITY =
             TEST_FUNCTIONS.register(
                     "life_infuser_item_capability",
                     () -> LifeInfusionGameTests::lifeInfuserItemCapabilityTransfers
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             FUSION_TABLE_CATALYST_YIELD =
             TEST_FUNCTIONS.register(
                     "fusion_table_catalyst_yield",
                     () -> FusionTableGameTests::fusionTableCachesFractionalCatalystYield
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             FUSION_TABLE_SPLIT_DUPLICATE_INPUTS =
             TEST_FUNCTIONS.register(
                     "fusion_table_split_duplicate_inputs",
                     () -> FusionTableGameTests::fusionTableSplitDuplicateStacksDoNotMatchRecipe
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             FUSION_TABLE_MENU_SLOT_PERSISTENCE =
             TEST_FUNCTIONS.register(
                     "fusion_table_menu_slot_persistence",
                     () -> FusionTableGameTests::fusionTableMenuWritesToBlockEntity
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             IRON_FREEZER_MENU_MULTIBLOCK =
             TEST_FUNCTIONS.register(
                     "iron_freezer_menu_multiblock",
                     () -> FreezerGameTests::ironFreezerMenuReadsValidMultiblock
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             LIGHT_FREEZER_MENU_MULTIBLOCK =
             TEST_FUNCTIONS.register(
                     "light_freezer_menu_multiblock",
                     () -> FreezerGameTests::lightFreezerMenuReadsValidMultiblock
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_HEATER_EMBEDS_AS_TYPE_ID =
             TEST_FUNCTIONS.register(
                     "combustion_heater_embeds_as_type_id",
                     () -> MachineRuntimeGameTests::combustionHeaterEmbedsAsTypeId
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_HEATER_SHIFT_RIGHT_CLICK_REMOVES =
             TEST_FUNCTIONS.register(
                     "combustion_heater_shift_right_click_removes",
                     () -> MachineRuntimeGameTests::shiftRightClickRemovesEmbeddedCombustionHeaterWithHeldItem
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             HEAT_PROVIDER_EMBEDS_AS_TYPE_ID =
             TEST_FUNCTIONS.register(
                     "heat_provider_embeds_as_type_id",
                     () -> MachineRuntimeGameTests::heatProviderEmbedsAsTypeIdAndProvidesHeat
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             STANDALONE_MACHINE_TYPE_COMPONENTS =
             TEST_FUNCTIONS.register(
                     "standalone_machine_type_components",
                     () -> MachineRuntimeGameTests::standaloneMachineBlocksPersistTypeComponents
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
+    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_DROPS_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_drops_output",
                     () -> MachineRuntimeGameTests::condenserDropsOutputWhenNoHandlerExists
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_BLOCKED_OUTPUT =
+    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_BLOCKED_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_blocked_output",
                     () -> MachineRuntimeGameTests::condenserKeepsSourceWhenOutputIsBlocked
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_CATALYST_SLOT =
+    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_CATALYST_SLOT =
             TEST_FUNCTIONS.register(
                     "condenser_catalyst_slot",
                     () -> MachineRuntimeGameTests::condenserFuelSlotAcceptsOreAlchemyDustCatalyst
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> CONDENSER_HOPPER_OUTPUT =
+    private static final RegistryObject<Consumer<GameTestHelper>> CONDENSER_HOPPER_OUTPUT =
             TEST_FUNCTIONS.register(
                     "condenser_hopper_output",
                     () -> MachineRuntimeGameTests::condenserHopperBelowDoesNotExtractCatalyst
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_PRIORITY =
+    private static final RegistryObject<Consumer<GameTestHelper>> COMBUSTION_PRIORITY =
             TEST_FUNCTIONS.register(
                     "combustion_priority",
                     () -> MachineRuntimeGameTests::combustionControllerUsesFilterPriority
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_COOLDOWN =
+    private static final RegistryObject<Consumer<GameTestHelper>> COMBUSTION_COOLDOWN =
             TEST_FUNCTIONS.register(
                     "combustion_cooldown",
                     () -> MachineRuntimeGameTests::combustionControllerWaitsForCooldown
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_POWERED_CONTROLLER =
             TEST_FUNCTIONS.register(
                     "combustion_powered_controller",
                     () -> MachineRuntimeGameTests::combustionControllerStopsWhenPowered
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_CONTROLLER_DIRECTION =
             TEST_FUNCTIONS.register(
                     "combustion_controller_direction",
                     () -> MachineRuntimeGameTests::combustionControllerRequiresBackFacingChamber
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_CONTROLLER_ALL_SIDES_DIRECTION =
             TEST_FUNCTIONS.register(
                     "combustion_controller_all_sides_direction",
                     () -> MachineRuntimeGameTests::combustionControllerBackFacesChamberFromEverySide
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_CONTROLLER_GHOST_FILTERS =
             TEST_FUNCTIONS.register(
                     "combustion_controller_ghost_filters",
                     () -> MachineRuntimeGameTests::combustionControllerFilterSlotsAreGhosts
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_CONTROLLER_WOOD_STONE_REJECT =
             TEST_FUNCTIONS.register(
                     "combustion_controller_wood_stone_reject",
                     () -> MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectSmartController
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> COMBUSTION_COLLECTOR_OVERFLOW =
+    private static final RegistryObject<Consumer<GameTestHelper>> COMBUSTION_COLLECTOR_OVERFLOW =
             TEST_FUNCTIONS.register(
                     "combustion_collector_overflow",
                     () -> MachineRuntimeGameTests::combustionCollectorDropsOverflow
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             MANUAL_COMBUSTION_COLLECTOR_OUTPUT =
             TEST_FUNCTIONS.register(
                     "manual_combustion_collector_output",
                     () -> MachineRuntimeGameTests::manualCombustionRoutesOutputsToCollector
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             MANUAL_COMBUSTION_MULTI_INPUT_PRIORITY =
             TEST_FUNCTIONS.register(
                     "manual_combustion_multi_input_priority",
                     () -> MachineRuntimeGameTests::manualCombustionPrefersMultiInputRecipe
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             COMBUSTION_COLLECTOR_WOOD_STONE_REJECT =
             TEST_FUNCTIONS.register(
                     "combustion_collector_wood_stone_reject",
                     () -> MachineRuntimeGameTests::woodAndStoneCombustionHeatersRejectCollector
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             WOODEN_COMBUSTION_STRUCTURE =
             TEST_FUNCTIONS.register(
                     "wooden_combustion_structure",
                     () -> MachineRuntimeGameTests::woodenCombustionHeaterUsesWoodStructure
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             STONE_COMBUSTION_STRUCTURE =
             TEST_FUNCTIONS.register(
                     "stone_combustion_structure",
                     () -> MachineRuntimeGameTests::stoneCombustionHeaterRejectsAutomationBlocks
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             IRON_COMBUSTION_AUTOMATION_STRUCTURE =
             TEST_FUNCTIONS.register(
                     "iron_combustion_automation_structure",
                     () -> MachineRuntimeGameTests::ironCombustionHeaterAcceptsMetalAutomationShell
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+    private static final RegistryObject<Consumer<GameTestHelper>>
             MANUAL_COMBUSTION_RESTORED_STRUCTURE =
             TEST_FUNCTIONS.register(
                     "manual_combustion_restored_structure",
                     () -> MachineRuntimeGameTests::manualCombustionCraftsAfterStructureIsRestored
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SURVIVALIST_FISHING_LOOT =
+    private static final RegistryObject<Consumer<GameTestHelper>> SURVIVALIST_FISHING_LOOT =
             TEST_FUNCTIONS.register(
                     "survivalist_fishing_loot",
                     () -> SurvivalistFishingGameTests::survivalistRodUsesCustomFishingLoot
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> GUIDE_DATA_INTEGRITY =
+    private static final RegistryObject<Consumer<GameTestHelper>> GUIDE_DATA_INTEGRITY =
             TEST_FUNCTIONS.register(
                     "guide_data_integrity",
                     () -> GuideMenuGameTests::guideDataIntegrity
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> MENU_TYPE_REGISTRATION =
+    private static final RegistryObject<Consumer<GameTestHelper>> MENU_TYPE_REGISTRATION =
             TEST_FUNCTIONS.register(
                     "menu_type_registration",
                     () -> GuideMenuGameTests::menuTypesResolve
             );
-    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> JADE_MACHINE_CASING_OBJECT_NAME =
+    private static final RegistryObject<Consumer<GameTestHelper>> JADE_MACHINE_CASING_OBJECT_NAME =
             TEST_FUNCTIONS.register(
                     "jade_machine_casing_object_name",
                     () -> ModGameTests::jadeMachineCasingObjectName
@@ -417,7 +417,7 @@ public final class ModGameTests {
     private static void registerFunctionTest(
             final RegisterGameTestsEvent event,
             final String name,
-            final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> function,
+            final RegistryObject<Consumer<GameTestHelper>> function,
             final Holder<TestEnvironmentDefinition> environment
     ) {
         final TestData<Holder<TestEnvironmentDefinition>> data = new TestData<>(
@@ -432,7 +432,7 @@ public final class ModGameTests {
     }
 
     private static ResourceLocation id(final String path) {
-        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
+        return new ResourceLocation(Skyresources3.MODID, path);
     }
 
     private static void jadeMachineCasingObjectName(final GameTestHelper helper) {

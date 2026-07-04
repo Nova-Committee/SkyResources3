@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "tag": "minecraft:dirt"
+    },
+    "Y": {
+      "item": "skyresources:wooden_heat_component"
+    }
+  },
+  "pattern": [
+    "X",
+    "Y"
+  ],
+  "result": {
+    "item": "skyresources:dirt_furnace"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:spider_eye"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:tall_grass"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:nether_wart"
+    }
+  ],
+  "parameter": 12.0,
+  "process": "infusion"
+}

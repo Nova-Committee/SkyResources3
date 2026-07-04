@@ -24,16 +24,16 @@ public final class CombustionControllerBlockEntity extends AbstractCombustionInv
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         this.cooldownTicks = input.getIntOr(COOLDOWN_KEY, 0);
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putInt(COOLDOWN_KEY, this.cooldownTicks);
     }
 
@@ -79,7 +79,7 @@ public final class CombustionControllerBlockEntity extends AbstractCombustionInv
         }
         for (int slot = 0; slot < SLOT_COUNT; slot++) {
             final ItemStack filter = this.getStackInSlot(slot);
-            if (!filter.isEmpty() && ItemStack.isSameItemSameComponents(filter, output)) {
+            if (!filter.isEmpty() && ItemStack.isSameItemSameTags(filter, output)) {
                 return true;
             }
         }
@@ -91,7 +91,7 @@ public final class CombustionControllerBlockEntity extends AbstractCombustionInv
             final ItemStack filter = this.getStackInSlot(slot);
             if (!filter.isEmpty() && casing.craftSingleForController(
                     level,
-                    output -> ItemStack.isSameItemSameComponents(filter, output)
+                    output -> ItemStack.isSameItemSameTags(filter, output)
             )) {
                 return true;
             }

@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:melon"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 9,
+      "item": "minecraft:melon_slice"
+    }
+  ],
+  "parameter": 0.0,
+  "process": "knife"
+}

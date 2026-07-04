@@ -18,10 +18,19 @@ public record DirtyGemType(TagKey<Item> sourceTag, float rarity, int color) {
     ).apply(instance, DirtyGemType::new));
 
     public DirtyGemType {
-        color = FastColor.ARGB32.opaque(color);
+        color = opaque(color);
     }
 
     public boolean isAvailable(final HolderLookup.Provider registries) {
         return ItemTagAvailability.hasEntries(registries, this.sourceTag);
+    }
+
+    private static int opaque(final int color) {
+        return FastColor.ARGB32.color(
+                255,
+                FastColor.ARGB32.red(color),
+                FastColor.ARGB32.green(color),
+                FastColor.ARGB32.blue(color)
+        );
     }
 }

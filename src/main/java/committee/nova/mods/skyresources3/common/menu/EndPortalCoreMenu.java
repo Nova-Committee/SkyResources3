@@ -6,7 +6,7 @@ import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,7 +29,7 @@ public final class EndPortalCoreMenu extends SkyResourcesMenu {
     private final DataSlot validMultiblock;
     private final DataSlot validTier2;
 
-    public EndPortalCoreMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
+    public EndPortalCoreMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
     }
 
@@ -72,7 +72,7 @@ public final class EndPortalCoreMenu extends SkyResourcesMenu {
     }
 
     public static void writeClientSideData(
-            final RegistryFriendlyByteBuf buffer,
+            final FriendlyByteBuf buffer,
             final BlockPos pos,
             final EndPortalCoreBlockEntity blockEntity
     ) {
@@ -131,7 +131,7 @@ public final class EndPortalCoreMenu extends SkyResourcesMenu {
         return stillValid(this.access, player, ModBlocks.END_PORTAL_CORE.get());
     }
 
-    private static ClientData readClientData(final Inventory playerInventory, final RegistryFriendlyByteBuf buffer) {
+    private static ClientData readClientData(final Inventory playerInventory, final FriendlyByteBuf buffer) {
         final BlockPos pos = buffer.readBlockPos();
         final boolean validMultiblock = buffer.readBoolean();
         final boolean validTier2 = buffer.readBoolean();

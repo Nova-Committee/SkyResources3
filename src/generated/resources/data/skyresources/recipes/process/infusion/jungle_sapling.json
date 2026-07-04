@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 10,
+      "ingredient": {
+        "item": "minecraft:cocoa_beans"
+      }
+    },
+    {
+      "ingredient": {
+        "tag": "minecraft:saplings"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:jungle_sapling"
+    }
+  ],
+  "parameter": 19.0,
+  "process": "infusion"
+}

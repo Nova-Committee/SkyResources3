@@ -17,20 +17,30 @@ import committee.nova.mods.skyresources3.common.recipe.CondenserRecipe;
 import committee.nova.mods.skyresources3.common.recipe.CrucibleRecipe;
 import committee.nova.mods.skyresources3.common.recipe.ProcessIngredient;
 import committee.nova.mods.skyresources3.common.recipe.ProcessRecipes;
+import committee.nova.mods.skyresources3.common.recipe.RecipeJsonUtil;
 import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModFluids;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
+import committee.nova.mods.skyresources3.init.registry.ModRecipeTypes;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.core.HolderLookup;
+import java.util.Map;
+import java.util.function.Consumer;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -42,27 +52,25 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 public final class SkyResources3RecipeProvider extends RecipeProvider {
-    private RecipeOutput output;
+    private Consumer<FinishedRecipe> output;
 
-    public SkyResources3RecipeProvider(
-            final PackOutput output,
-            final CompletableFuture<HolderLookup.Provider> lookupProvider
-    ) {
-        super(output, lookupProvider);
+    public SkyResources3RecipeProvider(final PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildRecipes(final RecipeOutput output) {
+    protected void buildRecipes(final Consumer<FinishedRecipe> output) {
         this.output = output;
         this.buildSkyResourcesRecipes();
         this.output = null;
@@ -574,9 +582,9 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ResourceKey<CasingType> casingType,
             final Ingredient material,
             final String unlockName,
-            final Criterion<?> criterion
+            final CriterionTriggerInstance criterion
     ) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, MachineCasingItem.forType(casingType))
+        NbtShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, MachineCasingItem.forType(casingType))
                 .define('X', material)
                 .pattern("XXX")
                 .pattern("X X")
@@ -591,7 +599,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemLike component,
             final String unlockName
     ) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CombustionHeaterItem.forType(heaterType))
+        NbtShapedRecipeBuilder.shaped(RecipeCategory.MISC, CombustionHeaterItem.forType(heaterType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XXX")
@@ -608,7 +616,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemLike component,
             final String unlockName
     ) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HeatProviderItem.forType(providerType))
+        NbtShapedRecipeBuilder.shaped(RecipeCategory.MISC, HeatProviderItem.forType(providerType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XYX")
@@ -625,7 +633,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemLike component,
             final String unlockName
     ) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CondenserItem.forType(condenserType))
+        NbtShapedRecipeBuilder.shaped(RecipeCategory.MISC, CondenserItem.forType(condenserType))
                 .define('X', material)
                 .define('Y', component)
                 .pattern("XYX")
@@ -987,7 +995,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 output,
                 outputCount,
                 ingredient,
-                input(Blocks.SHORT_GRASS)
+                input(Blocks.GRASS)
         );
         this.infusionRecipe(name + "_from_fern", healthCost, output, outputCount, ingredient, input(Blocks.FERN));
         this.infusionRecipe(
@@ -1354,11 +1362,11 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void crucibleRecipe(final String name, final FluidStack output, final ProcessIngredient input) {
-        this.output.accept(
-                id("crucible/" + name),
-                new CrucibleRecipe("", input, output),
-                null
-        );
+        final ResourceLocation id = id("crucible/" + name);
+        this.output.accept(new JsonFinishedRecipe(id, ModRecipeTypes.CRUCIBLE_SERIALIZER.get(), json -> {
+            json.add("input", processIngredientToJson(input));
+            json.add("output", fluidStackToJson(output));
+        }));
     }
 
     private void condenserRecipe(
@@ -1368,17 +1376,16 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final float parameter,
             final ItemLike output
     ) {
-        this.output.accept(
-                id("condenser/" + name),
-                new CondenserRecipe(
-                        "",
-                        input(OreAlchemyDustItem.forType(dust)),
-                        source,
-                        new ItemStack(output),
-                        parameter
-                ),
-                null
-        );
+        final ResourceLocation id = id("condenser/" + name);
+        final JsonObject sourceJson = new JsonObject();
+        sourceJson.addProperty("type", source.type().id());
+        sourceJson.addProperty("id", source.id().toString());
+        this.output.accept(new JsonFinishedRecipe(id, ModRecipeTypes.CONDENSER_SERIALIZER.get(), json -> {
+            json.add("catalyst", processIngredientToJson(input(OreAlchemyDustItem.forType(dust))));
+            json.add("source", sourceJson);
+            json.add("output", RecipeJsonUtil.stackToJson(new ItemStack(output)));
+            json.addProperty("parameter", parameter);
+        }));
     }
 
     private void processRecipe(
@@ -1399,17 +1406,13 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemStack output,
             final ProcessIngredient... inputs
     ) {
-        this.output.accept(
-                id("process/" + process + "/" + name),
-                new SkyResourcesProcessRecipe(
-                        "",
-                        process,
-                        List.of(inputs),
-                        List.of(output.copy()),
-                        parameter
-                ),
-                null
-        );
+        final ResourceLocation id = id("process/" + process + "/" + name);
+        this.output.accept(new JsonFinishedRecipe(id, ModRecipeTypes.PROCESS_SERIALIZER.get(), json -> {
+            json.addProperty("process", process);
+            json.add("inputs", processIngredientsToJson(inputs));
+            json.add("outputs", itemStacksToJson(List.of(output.copy())));
+            json.addProperty("parameter", parameter);
+        }));
     }
 
     private static ProcessIngredient input(final ItemLike item) {
@@ -1430,6 +1433,42 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
 
     private ProcessIngredient input(final TagKey<Item> tag, final int count) {
         return new ProcessIngredient(Ingredient.of(tag), count);
+    }
+
+    private static JsonArray processIngredientsToJson(final ProcessIngredient... inputs) {
+        final JsonArray json = new JsonArray();
+        for (final ProcessIngredient input : inputs) {
+            json.add(processIngredientToJson(input));
+        }
+        return json;
+    }
+
+    private static JsonObject processIngredientToJson(final ProcessIngredient input) {
+        final JsonObject json = new JsonObject();
+        input.exactStack().ifPresentOrElse(
+                stack -> json.add("stack", RecipeJsonUtil.stackToJson(stack)),
+                () -> json.add("ingredient", input.ingredient().toJson())
+        );
+        if (input.count() != 1) {
+            json.addProperty("count", input.count());
+        }
+        return json;
+    }
+
+    private static JsonArray itemStacksToJson(final List<ItemStack> stacks) {
+        final JsonArray json = new JsonArray();
+        for (final ItemStack stack : stacks) {
+            json.add(RecipeJsonUtil.stackToJson(stack));
+        }
+        return json;
+    }
+
+    private static JsonObject fluidStackToJson(final FluidStack stack) {
+        return FluidStack.CODEC.encodeStart(JsonOps.INSTANCE, stack)
+                .getOrThrow(false, message -> {
+                    throw new IllegalArgumentException("Invalid fluid stack output: " + message);
+                })
+                .getAsJsonObject();
     }
 
     private static float condenserFluidParameter(final int rarity) {
@@ -1453,7 +1492,147 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private static ResourceLocation id(final String path) {
-        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
+        return new ResourceLocation(Skyresources3.MODID, path);
+    }
+
+    private record JsonFinishedRecipe(
+            ResourceLocation id,
+            RecipeSerializer<?> serializer,
+            Consumer<JsonObject> serializerData
+    ) implements FinishedRecipe {
+        @Override
+        public void serializeRecipeData(final JsonObject json) {
+            this.serializerData.accept(json);
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return this.id;
+        }
+
+        @Override
+        public RecipeSerializer<?> getType() {
+            return this.serializer;
+        }
+
+        @Override
+        public JsonObject serializeAdvancement() {
+            return null;
+        }
+
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return null;
+        }
+    }
+
+    private static final class NbtShapedRecipeBuilder {
+        private final RecipeCategory category;
+        private final ItemStack result;
+        private final Map<Character, Ingredient> key = new LinkedHashMap<>();
+        private final List<String> pattern = new ArrayList<>();
+        private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+
+        private NbtShapedRecipeBuilder(final RecipeCategory category, final ItemStack result) {
+            this.category = category;
+            this.result = result.copy();
+        }
+
+        static NbtShapedRecipeBuilder shaped(final RecipeCategory category, final ItemStack result) {
+            return new NbtShapedRecipeBuilder(category, result);
+        }
+
+        NbtShapedRecipeBuilder define(final Character symbol, final Ingredient ingredient) {
+            this.key.put(symbol, ingredient);
+            return this;
+        }
+
+        NbtShapedRecipeBuilder define(final Character symbol, final ItemLike item) {
+            return this.define(symbol, Ingredient.of(item));
+        }
+
+        NbtShapedRecipeBuilder pattern(final String row) {
+            this.pattern.add(row);
+            return this;
+        }
+
+        NbtShapedRecipeBuilder unlockedBy(final String name, final CriterionTriggerInstance criterion) {
+            this.advancement.addCriterion(name, criterion);
+            return this;
+        }
+
+        void save(final Consumer<FinishedRecipe> output, final ResourceLocation id) {
+            this.advancement
+                    .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+                    .rewards(AdvancementRewards.Builder.recipe(id))
+                    .requirements(RequirementsStrategy.OR);
+            output.accept(new NbtShapedFinishedRecipe(
+                    id,
+                    this.category,
+                    this.result,
+                    Map.copyOf(this.key),
+                    List.copyOf(this.pattern),
+                    this.advancement,
+                    new ResourceLocation(
+                            id.getNamespace(),
+                            "recipes/" + this.category.getFolderName() + "/" + id.getPath()
+                    )
+            ));
+        }
+    }
+
+    private record NbtShapedFinishedRecipe(
+            ResourceLocation id,
+            RecipeCategory category,
+            ItemStack result,
+            Map<Character, Ingredient> key,
+            List<String> pattern,
+            Advancement.Builder advancement,
+            ResourceLocation advancementId
+    ) implements FinishedRecipe {
+        @Override
+        public void serializeRecipeData(final JsonObject json) {
+            json.addProperty("category", bookCategory(this.category).getSerializedName());
+            final JsonArray patternJson = new JsonArray();
+            for (final String row : this.pattern) {
+                patternJson.add(row);
+            }
+            json.add("pattern", patternJson);
+
+            final JsonObject keyJson = new JsonObject();
+            this.key.forEach((symbol, ingredient) -> keyJson.add(String.valueOf(symbol), ingredient.toJson()));
+            json.add("key", keyJson);
+            json.add("result", RecipeJsonUtil.stackToJson(this.result));
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return this.id;
+        }
+
+        @Override
+        public RecipeSerializer<?> getType() {
+            return RecipeSerializer.SHAPED_RECIPE;
+        }
+
+        @Override
+        public JsonObject serializeAdvancement() {
+            return this.advancement.serializeToJson();
+        }
+
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return this.advancementId;
+        }
+
+        private static CraftingBookCategory bookCategory(final RecipeCategory category) {
+            return switch (category) {
+                case BUILDING_BLOCKS, DECORATIONS -> CraftingBookCategory.BUILDING;
+                case REDSTONE -> CraftingBookCategory.REDSTONE;
+                case TOOLS, COMBAT -> CraftingBookCategory.EQUIPMENT;
+                default -> CraftingBookCategory.MISC;
+            };
+        }
     }
 
 }

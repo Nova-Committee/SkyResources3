@@ -15,6 +15,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public final class MachineCasingItem extends BlockItem {
@@ -28,14 +29,16 @@ public final class MachineCasingItem extends BlockItem {
 
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.MACHINE_CASING.get());
-        stack.set(ModDataComponents.CASING_TYPE.get(), typeId);
+        ModDataComponents.setResource(stack, ModDataComponents.CASING_TYPE, typeId);
+        ModDataComponents.setBlockEntityResource(stack, ModDataComponents.CASING_TYPE, typeId);
         VariantModelData.apply(stack, typeId);
         return stack;
     }
 
     public static ResourceLocation casingTypeId(final ItemStack stack) {
-        return stack.getOrDefault(
-                ModDataComponents.CASING_TYPE.get(),
+        return ModDataComponents.getResource(
+                stack,
+                ModDataComponents.CASING_TYPE,
                 ModDataPackRegistries.casingTypeId(ModDataPackRegistries.IRON)
         );
     }
@@ -49,14 +52,14 @@ public final class MachineCasingItem extends BlockItem {
     @Deprecated
     public void appendHoverText(
             final ItemStack stack,
-            final Item.TooltipContext context,
+            final Level level,
             final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
-        final HolderLookup.Provider registries = context.registries();
-        if (registries == null) {
+        if (level == null) {
             return;
         }
+        final HolderLookup.Provider registries = level.registryAccess();
         final ResourceLocation typeId = casingTypeId(stack);
         registries.lookup(ModDataPackRegistries.CASING_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.casingTypeKey(typeId)))

@@ -14,10 +14,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ProjectileItem;
 import net.minecraft.world.level.Level;
 
-public final class HeavySnowballItem extends Item implements ProjectileItem {
+public final class HeavySnowballItem extends Item {
     private static final float PROJECTILE_SHOOT_POWER = 1.5F;
 
     private final OwnerProjectileFactory ownerProjectileFactory;
@@ -54,11 +53,12 @@ public final class HeavySnowballItem extends Item implements ProjectileItem {
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
-        itemStack.consume(1, player);
-        return InteractionResultHolder.success(itemStack);
+        if (!player.getAbilities().instabuild) {
+            itemStack.shrink(1);
+        }
+        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
     }
 
-    @Override
     public Projectile asProjectile(
             final Level level,
             final Position position,

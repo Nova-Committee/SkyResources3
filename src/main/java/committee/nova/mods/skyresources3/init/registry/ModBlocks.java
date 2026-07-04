@@ -33,43 +33,49 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Function;
 
 public final class ModBlocks {
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Skyresources3.MODID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(
+            ForgeRegistries.BLOCKS,
+            Skyresources3.MODID
+    );
 
-    public static final DeferredBlock<Block> COMPRESSED_COAL_BLOCK = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> COMPRESSED_COAL_BLOCK = registerSimpleBlock(
             "compressed_coal_block",
             stone(6.0F, 6.0F)
     );
-    public static final DeferredBlock<Block> COAL_INFUSED_BLOCK = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> COAL_INFUSED_BLOCK = registerSimpleBlock(
             "coal_infused_block",
             stone(5.0F, 6.0F)
     );
-    public static final DeferredBlock<Block> SANDY_NETHERRACK = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> SANDY_NETHERRACK = registerSimpleBlock(
             "sandy_netherrack",
             stone(0.4F, 0.4F)
     );
-    public static final DeferredBlock<Block> PETRIFIED_WOOD = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> PETRIFIED_WOOD = registerSimpleBlock(
             "petrified_wood",
             stone(2.0F, 10.0F)
     );
-    public static final DeferredBlock<Block> PETRIFIED_PLANKS = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> PETRIFIED_PLANKS = registerSimpleBlock(
             "petrified_planks",
             properties(2.0F, 6.0F, SoundType.WOOD)
     );
-    public static final DeferredBlock<MagmafiedStoneBlock> MAGMAFIED_STONE = BLOCKS.registerBlock(
+    public static final RegistryObject<MagmafiedStoneBlock> MAGMAFIED_STONE = registerBlock(
             "magmafied_stone",
             MagmafiedStoneBlock::new,
             stone(1.5F, 6.0F)
     );
-    public static final DeferredBlock<Block> HEAVY_SNOW = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> HEAVY_SNOW = registerSimpleBlock(
             "heavy_snow",
             properties(0.3F, 0.3F, SoundType.SNOW)
     );
-    public static final DeferredBlock<BlazePowderBlock> BLAZE_POWDER_BLOCK = BLOCKS.registerBlock(
+    public static final RegistryObject<BlazePowderBlock> BLAZE_POWDER_BLOCK = registerBlock(
             "blaze_powder_block",
             BlazePowderBlock::new,
             BlockBehaviour.Properties.of()
@@ -77,19 +83,19 @@ public final class ModBlocks {
                     .strength(0.5F, 0.5F)
                     .sound(SoundType.GRAVEL)
     );
-    public static final DeferredBlock<Block> DARK_MATTER_BLOCK = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> DARK_MATTER_BLOCK = registerSimpleBlock(
             "dark_matter_block",
             stone(5.0F, 10.0F)
     );
-    public static final DeferredBlock<Block> LIGHT_MATTER_BLOCK = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> LIGHT_MATTER_BLOCK = registerSimpleBlock(
             "light_matter_block",
             stone(5.0F, 10.0F)
     );
-    public static final DeferredBlock<Block> ALCHEMICAL_GLASS = BLOCKS.registerSimpleBlock(
+    public static final RegistryObject<Block> ALCHEMICAL_GLASS = registerSimpleBlock(
             "alchemical_glass",
             properties(0.3F, 0.3F, SoundType.GLASS).noOcclusion()
     );
-    public static final DeferredBlock<LiquidBlock> CRYSTAL_FLUID = BLOCKS.registerBlock(
+    public static final RegistryObject<LiquidBlock> CRYSTAL_FLUID = registerBlock(
             "crystal_fluid",
             properties -> new LiquidBlock(ModFluids.CRYSTAL_FLUID.get(), properties),
             BlockBehaviour.Properties.of()
@@ -100,12 +106,12 @@ public final class ModBlocks {
                     .liquid()
                     .pushReaction(PushReaction.DESTROY)
     );
-    public static final DeferredBlock<FusionTableBlock> FUSION_TABLE = BLOCKS.registerBlock(
+    public static final RegistryObject<FusionTableBlock> FUSION_TABLE = registerBlock(
             "fusion_table",
             FusionTableBlock::new,
             machineWood(3.0F, 10.0F)
     );
-    public static final DeferredBlock<DirtFurnaceBlock> DIRT_FURNACE = BLOCKS.registerBlock(
+    public static final RegistryObject<DirtFurnaceBlock> DIRT_FURNACE = registerBlock(
             "dirt_furnace",
             DirtFurnaceBlock::new,
             BlockBehaviour.Properties.of()
@@ -113,22 +119,22 @@ public final class ModBlocks {
                     .strength(0.5F, 0.5F)
                     .sound(SoundType.GRAVEL)
     );
-    public static final DeferredBlock<QuickDropperBlock> QUICK_DROPPER = BLOCKS.registerBlock(
+    public static final RegistryObject<QuickDropperBlock> QUICK_DROPPER = registerBlock(
             "quick_dropper",
             QuickDropperBlock::new,
             properties(6.0F, 12.0F, SoundType.METAL)
     );
-    public static final DeferredBlock<DarkMatterWarperBlock> DARK_MATTER_WARPER = BLOCKS.registerBlock(
+    public static final RegistryObject<DarkMatterWarperBlock> DARK_MATTER_WARPER = registerBlock(
             "dark_matter_warper",
             DarkMatterWarperBlock::new,
             properties(8.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<EndPortalCoreBlock> END_PORTAL_CORE = BLOCKS.registerBlock(
+    public static final RegistryObject<EndPortalCoreBlock> END_PORTAL_CORE = registerBlock(
             "end_portal_core",
             EndPortalCoreBlock::new,
             properties(6.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<SilverfishDisruptorBlock> SILVERFISH_DISRUPTOR = BLOCKS.registerBlock(
+    public static final RegistryObject<SilverfishDisruptorBlock> SILVERFISH_DISRUPTOR = registerBlock(
             "silverfish_disruptor",
             SilverfishDisruptorBlock::new,
             BlockBehaviour.Properties.of()
@@ -137,42 +143,42 @@ public final class ModBlocks {
                     .sound(SoundType.GLASS)
                     .noOcclusion()
     );
-    public static final DeferredBlock<FluidDropperBlock> FLUID_DROPPER = BLOCKS.registerBlock(
+    public static final RegistryObject<FluidDropperBlock> FLUID_DROPPER = registerBlock(
             "fluid_dropper",
             FluidDropperBlock::new,
             properties(2.0F, 12.0F, SoundType.STONE)
     );
-    public static final DeferredBlock<CrucibleBlock> CRUCIBLE = BLOCKS.registerBlock(
+    public static final RegistryObject<CrucibleBlock> CRUCIBLE = registerBlock(
             "crucible",
             CrucibleBlock::new,
             properties(2.0F, 12.0F, SoundType.STONE).noOcclusion()
     );
-    public static final DeferredBlock<CrucibleInserterBlock> CRUCIBLE_INSERTER = BLOCKS.registerBlock(
+    public static final RegistryObject<CrucibleInserterBlock> CRUCIBLE_INSERTER = registerBlock(
             "crucible_inserter",
             CrucibleInserterBlock::new,
             properties(2.0F, 12.0F, SoundType.STONE).noOcclusion()
     );
-    public static final DeferredBlock<RockCrusherBlock> ROCK_CRUSHER = BLOCKS.registerBlock(
+    public static final RegistryObject<RockCrusherBlock> ROCK_CRUSHER = registerBlock(
             "rock_crusher",
             RockCrusherBlock::new,
             properties(6.0F, 12.0F, SoundType.METAL)
     );
-    public static final DeferredBlock<RockCleanerBlock> ROCK_CLEANER = BLOCKS.registerBlock(
+    public static final RegistryObject<RockCleanerBlock> ROCK_CLEANER = registerBlock(
             "rock_cleaner",
             RockCleanerBlock::new,
             properties(6.0F, 12.0F, SoundType.METAL)
     );
-    public static final DeferredBlock<AqueousConcentratorBlock> AQUEOUS_CONCENTRATOR = BLOCKS.registerBlock(
+    public static final RegistryObject<AqueousConcentratorBlock> AQUEOUS_CONCENTRATOR = registerBlock(
             "aqueous_concentrator",
             AqueousConcentratorBlock::new,
             properties(2.0F, 12.0F, SoundType.METAL)
     );
-    public static final DeferredBlock<AqueousDeconcentratorBlock> AQUEOUS_DECONCENTRATOR = BLOCKS.registerBlock(
+    public static final RegistryObject<AqueousDeconcentratorBlock> AQUEOUS_DECONCENTRATOR = registerBlock(
             "aqueous_deconcentrator",
             AqueousDeconcentratorBlock::new,
             properties(2.0F, 12.0F, SoundType.METAL)
     );
-    public static final DeferredBlock<WildlifeAttractorBlock> WILDLIFE_ATTRACTOR = BLOCKS.registerBlock(
+    public static final RegistryObject<WildlifeAttractorBlock> WILDLIFE_ATTRACTOR = registerBlock(
             "wildlife_attractor",
             WildlifeAttractorBlock::new,
             BlockBehaviour.Properties.of()
@@ -180,12 +186,12 @@ public final class ModBlocks {
                     .strength(2.0F, 12.0F)
                     .sound(SoundType.GRASS)
     );
-    public static final DeferredBlock<MachineCasingBlock> MACHINE_CASING = BLOCKS.registerBlock(
+    public static final RegistryObject<MachineCasingBlock> MACHINE_CASING = registerBlock(
             "machine_casing",
             MachineCasingBlock::new,
             properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<StandaloneMachineBlock> COMBUSTION_HEATER = BLOCKS.registerBlock(
+    public static final RegistryObject<StandaloneMachineBlock> COMBUSTION_HEATER = registerBlock(
             "combustion_heater",
             properties -> new StandaloneMachineBlock(
                     StandaloneMachineBlockEntity.MachineKind.COMBUSTION_HEATER,
@@ -193,7 +199,7 @@ public final class ModBlocks {
             ),
             properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<StandaloneMachineBlock> HEAT_PROVIDER = BLOCKS.registerBlock(
+    public static final RegistryObject<StandaloneMachineBlock> HEAT_PROVIDER = registerBlock(
             "heat_provider",
             properties -> new StandaloneMachineBlock(
                     StandaloneMachineBlockEntity.MachineKind.HEAT_PROVIDER,
@@ -201,7 +207,7 @@ public final class ModBlocks {
             ),
             properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<StandaloneMachineBlock> CONDENSER = BLOCKS.registerBlock(
+    public static final RegistryObject<StandaloneMachineBlock> CONDENSER = registerBlock(
             "condenser",
             properties -> new StandaloneMachineBlock(
                     StandaloneMachineBlockEntity.MachineKind.CONDENSER,
@@ -209,42 +215,42 @@ public final class ModBlocks {
             ),
             properties(2.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<CombustionCollectorBlock> COMBUSTION_COLLECTOR = BLOCKS.registerBlock(
+    public static final RegistryObject<CombustionCollectorBlock> COMBUSTION_COLLECTOR = registerBlock(
             "combustion_collector",
             CombustionCollectorBlock::new,
             properties(6.0F, 12.0F, SoundType.METAL)
     );
-    public static final DeferredBlock<CombustionControllerBlock> COMBUSTION_CONTROLLER = BLOCKS.registerBlock(
+    public static final RegistryObject<CombustionControllerBlock> COMBUSTION_CONTROLLER = registerBlock(
             "combustion_controller",
             CombustionControllerBlock::new,
             properties(6.0F, 12.0F, SoundType.METAL)
     );
-    public static final DeferredBlock<FreezerBlock> MINI_FREEZER = BLOCKS.registerBlock(
+    public static final RegistryObject<FreezerBlock> MINI_FREEZER = registerBlock(
             "mini_freezer",
             properties -> new FreezerBlock(FreezerBlock.Tier.MINI, properties),
             properties(0.5F, 0.5F, SoundType.SNOW).noOcclusion()
     );
-    public static final DeferredBlock<FreezerBlock> IRON_FREEZER = BLOCKS.registerBlock(
+    public static final RegistryObject<FreezerBlock> IRON_FREEZER = registerBlock(
             "iron_freezer",
             properties -> new FreezerBlock(FreezerBlock.Tier.IRON, properties),
             properties(2.0F, 2.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<FreezerBlock> LIGHT_FREEZER = BLOCKS.registerBlock(
+    public static final RegistryObject<FreezerBlock> LIGHT_FREEZER = registerBlock(
             "light_freezer",
             properties -> new FreezerBlock(FreezerBlock.Tier.LIGHT, properties),
             properties(8.0F, 12.0F, SoundType.METAL).noOcclusion()
     );
-    public static final DeferredBlock<LifeInfuserBlock> LIFE_INFUSER = BLOCKS.registerBlock(
+    public static final RegistryObject<LifeInfuserBlock> LIFE_INFUSER = registerBlock(
             "life_infuser",
             LifeInfuserBlock::new,
             machineWood()
     );
-    public static final DeferredBlock<LifeInjectorBlock> LIFE_INJECTOR = BLOCKS.registerBlock(
+    public static final RegistryObject<LifeInjectorBlock> LIFE_INJECTOR = registerBlock(
             "life_injector",
             LifeInjectorBlock::new,
             machineWood()
     );
-    public static final DeferredBlock<CactusFruitNeedleBlock> CACTUS_FRUIT_NEEDLE = BLOCKS.registerBlock(
+    public static final RegistryObject<CactusFruitNeedleBlock> CACTUS_FRUIT_NEEDLE = registerBlock(
             "cactus_fruit_needle",
             CactusFruitNeedleBlock::new,
             BlockBehaviour.Properties.of()
@@ -253,7 +259,7 @@ public final class ModBlocks {
                     .sound(SoundType.GRASS)
                     .noOcclusion()
     );
-    public static final DeferredBlock<DryCactusBlock> DRY_CACTUS = BLOCKS.registerBlock(
+    public static final RegistryObject<DryCactusBlock> DRY_CACTUS = registerBlock(
             "dry_cactus",
             DryCactusBlock::new,
             BlockBehaviour.Properties.of()
@@ -267,6 +273,21 @@ public final class ModBlocks {
         BLOCKS.register(modEventBus);
     }
 
+
+    private static RegistryObject<Block> registerSimpleBlock(
+            final String name,
+            final BlockBehaviour.Properties properties
+    ) {
+        return BLOCKS.register(name, () -> new Block(properties));
+    }
+
+    private static <T extends Block> RegistryObject<T> registerBlock(
+            final String name,
+            final Function<BlockBehaviour.Properties, T> factory,
+            final BlockBehaviour.Properties properties
+    ) {
+        return BLOCKS.register(name, () -> factory.apply(properties));
+    }
     private static BlockBehaviour.Properties stone(final float destroyTime, final float explosionResistance) {
         return properties(destroyTime, explosionResistance, SoundType.STONE);
     }

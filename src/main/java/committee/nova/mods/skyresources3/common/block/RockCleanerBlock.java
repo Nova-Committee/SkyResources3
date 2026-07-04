@@ -1,6 +1,5 @@
 package committee.nova.mods.skyresources3.common.block;
 
-import com.mojang.serialization.MapCodec;
 import committee.nova.mods.skyresources3.common.block.entity.RockCleanerBlockEntity;
 import committee.nova.mods.skyresources3.common.menu.RockCleanerMenu;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
@@ -10,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,16 +30,9 @@ import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 import org.jetbrains.annotations.Nullable;
 
 public final class RockCleanerBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public static final MapCodec<RockCleanerBlock> CODEC = simpleCodec(RockCleanerBlock::new);
-
     public RockCleanerBlock(final BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
-    }
-
-    @Override
-    protected MapCodec<RockCleanerBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -73,12 +64,12 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
     }
 
     @Override
-    protected BlockState rotate(final BlockState state, final Rotation rotation) {
+    public BlockState rotate(final BlockState state, final Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(final BlockState state, final Mirror mirror) {
+    public BlockState mirror(final BlockState state, final Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -88,8 +79,7 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -97,37 +87,17 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof RockCleanerBlockEntity cleaner)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection())) {
-            return ItemInteractionResult.SUCCESS;
-        }
-        return BlockInteractionResults.item(this.openMenu(pos, player, cleaner));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!level.mayInteract(player, pos)
-                || !player.mayUseItemAt(pos, hitResult.getDirection(), ItemStack.EMPTY)) {
-            return InteractionResult.PASS;
-        }
-        if (!(level.getBlockEntity(pos) instanceof RockCleanerBlockEntity cleaner)) {
-            return InteractionResult.PASS;
-        }
-        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         return this.openMenu(pos, player, cleaner);
@@ -138,7 +108,7 @@ public final class RockCleanerBlock extends HorizontalDirectionalBlock implement
             final Player player,
             final RockCleanerBlockEntity cleaner
     ) {
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new RockCleanerMenu(containerId, inventory, cleaner),
                         Component.translatable("container.skyresources.rock_cleaner")

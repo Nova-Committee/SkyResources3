@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +29,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -39,69 +37,53 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
-            return !stack.isEmpty() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return !stack.isEmpty() || player.isShiftKeyDown() ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof LifeInfuserBlockEntity lifeInfuser)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
+        }
+
+        if (stack.isEmpty()) {
+            if (player.isShiftKeyDown()) {
+                final ItemStack removed = lifeInfuser.hasInput() ? lifeInfuser.removeInput() : lifeInfuser.removeGem();
+                if (!removed.isEmpty()) {
+                    if (!player.addItem(removed)) {
+                        Block.popResource(level, pos.above(), removed);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+            }
+            return this.openMenu(pos, player, lifeInfuser);
         }
 
         if (stack.getItem() instanceof HealthGemItem) {
             if (!lifeInfuser.canInsertGem(stack)) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.PASS;
             }
             lifeInfuser.insertGem(stack);
             if (!player.isCreative()) {
                 stack.shrink(1);
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!lifeInfuser.canInsertInput(stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         lifeInfuser.insertInput(stack);
         if (!player.isCreative()) {
             stack.setCount(0);
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!(level.getBlockEntity(pos) instanceof LifeInfuserBlockEntity lifeInfuser)) {
-            return InteractionResult.PASS;
-        }
-        if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), ItemStack.EMPTY)) {
-            return InteractionResult.PASS;
-        }
-        if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        }
-
-        if (player.isShiftKeyDown()) {
-            final ItemStack removed = lifeInfuser.hasInput() ? lifeInfuser.removeInput() : lifeInfuser.removeGem();
-            if (!removed.isEmpty()) {
-                if (!player.addItem(removed)) {
-                    Block.popResource(level, pos.above(), removed);
-                }
-                return InteractionResult.SUCCESS;
-            }
-        }
-        return this.openMenu(pos, player, lifeInfuser);
-    }
-
-    @Override
-    protected void neighborChanged(
+    public void neighborChanged(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -117,7 +99,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState playerWillDestroy(
+    public void playerWillDestroy(
             final Level level,
             final BlockPos pos,
             final BlockState state,
@@ -127,7 +109,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
                 && level.getBlockEntity(pos) instanceof LifeInfuserBlockEntity lifeInfuser) {
             lifeInfuser.dropContents(serverLevel);
         }
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     private InteractionResult openMenu(
@@ -135,7 +117,7 @@ public final class LifeInfuserBlock extends Block implements EntityBlock {
             final Player player,
             final LifeInfuserBlockEntity lifeInfuser
     ) {
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new LifeInfuserMenu(
                                 containerId,

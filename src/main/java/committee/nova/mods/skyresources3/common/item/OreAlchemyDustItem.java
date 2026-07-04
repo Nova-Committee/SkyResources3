@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public final class OreAlchemyDustItem extends Item {
     public OreAlchemyDustItem(final Properties properties) {
@@ -25,13 +26,14 @@ public final class OreAlchemyDustItem extends Item {
 
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.ORE_ALCHEMICAL_DUST.get());
-        stack.set(ModDataComponents.ORE_ALCHEMY_DUST_TYPE.get(), typeId);
+        ModDataComponents.setResource(stack, ModDataComponents.ORE_ALCHEMY_DUST_TYPE, typeId);
         return stack;
     }
 
     public static ResourceLocation oreAlchemyDustTypeId(final ItemStack stack) {
-        return stack.getOrDefault(
-                ModDataComponents.ORE_ALCHEMY_DUST_TYPE.get(),
+        return ModDataComponents.getResource(
+                stack,
+                ModDataComponents.ORE_ALCHEMY_DUST_TYPE,
                 ModDataPackRegistries.oreAlchemyDustTypeId(ModDataPackRegistries.IRON_ORE_ALCHEMY_DUST)
         );
     }
@@ -45,14 +47,14 @@ public final class OreAlchemyDustItem extends Item {
     @Deprecated
     public void appendHoverText(
             final ItemStack stack,
-            final TooltipContext context,
+            final Level level,
             final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
-        final HolderLookup.Provider registries = context.registries();
-        if (registries == null) {
+        if (level == null) {
             return;
         }
+        final HolderLookup.Provider registries = level.registryAccess();
         final ResourceLocation typeId = oreAlchemyDustTypeId(stack);
         registries.lookup(ModDataPackRegistries.ORE_ALCHEMY_DUST_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.oreAlchemyDustTypeKey(typeId)))

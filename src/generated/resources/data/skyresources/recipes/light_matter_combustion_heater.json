@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "skyresources:light_matter"
+    },
+    "Y": {
+      "item": "skyresources:quartz_amplification_component"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:combustion_heater",
+    "nbt": "{BlockEntityTag:{machine_type:\"skyresources:light_matter\"},CustomModelData:7,combustion_heater_type:\"skyresources:light_matter\"}"
+  }
+}

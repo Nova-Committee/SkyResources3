@@ -4,7 +4,7 @@ import committee.nova.mods.skyresources3.common.block.entity.AbstractCombustionI
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -46,7 +46,7 @@ public abstract class AbstractCombustionInventoryMenu extends SkyResourcesMenu {
         this.addStandardInventorySlots(playerInventory, 8, PLAYER_INVENTORY_Y);
     }
 
-    public static void writeClientSideData(final RegistryFriendlyByteBuf buffer, final BlockPos pos) {
+    public static void writeClientSideData(final FriendlyByteBuf buffer, final BlockPos pos) {
         buffer.writeBlockPos(pos);
     }
 
@@ -91,7 +91,7 @@ public abstract class AbstractCombustionInventoryMenu extends SkyResourcesMenu {
 
     protected static ClientData readClientData(
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf buffer
+            final FriendlyByteBuf buffer
     ) {
         final BlockPos pos = buffer.readBlockPos();
         return new ClientData(

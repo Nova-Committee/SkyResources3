@@ -1,7 +1,6 @@
 package committee.nova.mods.skyresources3.common.network;
 
 import committee.nova.mods.skyresources3.Config;
-import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.core.island.IslandSavedData;
 import committee.nova.mods.skyresources3.core.island.IslandTemplate;
 import committee.nova.mods.skyresources3.core.island.PlayerIdentitySavedData;
@@ -9,15 +8,12 @@ import committee.nova.mods.skyresources3.core.island.VoidIslandWorld;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
 public record IslandGuiStatePayload(
         boolean enabled,
@@ -34,19 +30,11 @@ public record IslandGuiStatePayload(
         List<String> invites,
         List<String> trustedVisitors,
         List<String> templates
-) implements CustomPacketPayload {
+) {
     private static final int MAX_TEXT_LENGTH = 128;
     private static final int MAX_LIST_SIZE = 64;
     private static Consumer<IslandGuiStatePayload> clientHandler = payload -> {
     };
-
-    public static final Type<IslandGuiStatePayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_state")
-    );
-    public static final StreamCodec<RegistryFriendlyByteBuf, IslandGuiStatePayload> STREAM_CODEC = StreamCodec.of(
-            IslandGuiStatePayload::encode,
-            IslandGuiStatePayload::decode
-    );
 
     public IslandGuiStatePayload {
         pendingInviteOwner = clean(pendingInviteOwner);
@@ -60,18 +48,13 @@ public record IslandGuiStatePayload(
         templates = List.copyOf(templates);
     }
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
     public static void setClientHandler(final Consumer<IslandGuiStatePayload> handler) {
         clientHandler = handler == null ? payload -> {
         } : handler;
     }
 
     public static void sendTo(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, from(player));
+        ModNetworking.sendToPlayer(player, from(player));
     }
 
     public static IslandGuiStatePayload from(final ServerPlayer player) {
@@ -138,8 +121,10 @@ public record IslandGuiStatePayload(
         );
     }
 
-    static void handle(final IslandGuiStatePayload payload, final IPayloadContext context) {
-        clientHandler.accept(payload);
+    static void handle(final IslandGuiStatePayload payload, final Supplier<NetworkEvent.Context> contextSupplier) {
+        final NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> clientHandler.accept(payload));
+        context.setPacketHandled(true);
     }
 
     private static IslandGuiStatePayload empty(final boolean enabled, final List<String> templates) {
@@ -161,7 +146,7 @@ public record IslandGuiStatePayload(
         );
     }
 
-    private static void encode(final RegistryFriendlyByteBuf buffer, final IslandGuiStatePayload payload) {
+    static void encode(final IslandGuiStatePayload payload, final FriendlyByteBuf buffer) {
         buffer.writeBoolean(payload.enabled);
         buffer.writeBoolean(payload.hasIsland);
         buffer.writeBoolean(payload.owner);
@@ -178,7 +163,7 @@ public record IslandGuiStatePayload(
         writeList(buffer, payload.templates);
     }
 
-    private static IslandGuiStatePayload decode(final RegistryFriendlyByteBuf buffer) {
+    static IslandGuiStatePayload decode(final FriendlyByteBuf buffer) {
         return new IslandGuiStatePayload(
                 buffer.readBoolean(),
                 buffer.readBoolean(),
@@ -197,7 +182,7 @@ public record IslandGuiStatePayload(
         );
     }
 
-    private static void writeList(final RegistryFriendlyByteBuf buffer, final List<String> values) {
+    private static void writeList(final FriendlyByteBuf buffer, final List<String> values) {
         buffer.writeVarInt(Math.min(values.size(), MAX_LIST_SIZE));
         values.stream()
                 .limit(MAX_LIST_SIZE)
@@ -205,7 +190,7 @@ public record IslandGuiStatePayload(
                 .forEach(value -> buffer.writeUtf(value, MAX_TEXT_LENGTH));
     }
 
-    private static List<String> readList(final RegistryFriendlyByteBuf buffer) {
+    private static List<String> readList(final FriendlyByteBuf buffer) {
         final int size = Math.max(0, Math.min(buffer.readVarInt(), MAX_LIST_SIZE));
         final List<String> values = new ArrayList<>(size);
         for (int index = 0; index < size; index++) {

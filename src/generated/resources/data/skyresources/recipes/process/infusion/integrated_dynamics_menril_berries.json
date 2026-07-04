@@ -1,0 +1,30 @@
+{
+  "type": "skyresources:process",
+  "forge:conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "integrateddynamics"
+    }
+  ],
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:light_blue_dye"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:red_mushroom"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "integrateddynamics:menril_berries"
+    }
+  ],
+  "parameter": 12.0,
+  "process": "infusion"
+}

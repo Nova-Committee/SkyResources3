@@ -1,70 +1,47 @@
 package committee.nova.mods.skyresources3.init.registry;
 
-import committee.nova.mods.skyresources3.Skyresources3;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fluids.SimpleFluidContent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.world.item.ItemStack;
 
 public final class ModDataComponents {
-    public static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES =
-            DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Skyresources3.MODID);
+    public static final String CASING_TYPE = "casing_type";
+    public static final String COMBUSTION_HEATER_TYPE = "combustion_heater_type";
+    public static final String HEAT_PROVIDER_TYPE = "heat_provider_type";
+    public static final String CONDENSER_TYPE = "condenser_type";
+    public static final String MACHINE_TYPE = "machine_type";
+    public static final String ORE_ALCHEMY_DUST_TYPE = "ore_alchemy_dust_type";
+    public static final String DIRTY_GEM_TYPE = "dirty_gem_type";
+    public static final String WATER_EXTRACTOR_WATER = "water";
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>>
-            WATER_EXTRACTOR_FLUID = DATA_COMPONENT_TYPES.registerComponentType(
-                    "water_extractor_fluid",
-                    builder -> builder
-                            .persistent(SimpleFluidContent.CODEC)
-                            .networkSynchronized(SimpleFluidContent.STREAM_CODEC)
-            );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
-            CASING_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
-                    "casing_type",
-                    builder -> builder
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
-            );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
-            COMBUSTION_HEATER_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
-                    "combustion_heater_type",
-                    builder -> builder
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
-            );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
-            HEAT_PROVIDER_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
-                    "heat_provider_type",
-                    builder -> builder
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
-            );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
-            CONDENSER_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
-                    "condenser_type",
-                    builder -> builder
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
-            );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
-            ORE_ALCHEMY_DUST_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
-                    "ore_alchemy_dust_type",
-                    builder -> builder
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
-            );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>>
-            DIRTY_GEM_TYPE = DATA_COMPONENT_TYPES.registerComponentType(
-                    "dirty_gem_type",
-                    builder -> builder
-                            .persistent(ResourceLocation.CODEC)
-                            .networkSynchronized(ResourceLocation.STREAM_CODEC)
-            );
+    public static void setResource(final ItemStack stack, final String key, final ResourceLocation value) {
+        stack.getOrCreateTag().putString(key, value.toString());
+    }
 
-    public static void register(final IEventBus modEventBus) {
-        DATA_COMPONENT_TYPES.register(modEventBus);
+    public static ResourceLocation getResource(
+            final ItemStack stack,
+            final String key,
+            final ResourceLocation fallback
+    ) {
+        final CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains(key)) {
+            return fallback;
+        }
+        final ResourceLocation parsed = ResourceLocation.tryParse(tag.getString(key));
+        return parsed == null ? fallback : parsed;
+    }
+
+    public static void setBlockEntityResource(final ItemStack stack, final String key, final ResourceLocation value) {
+        stack.getOrCreateTagElement("BlockEntityTag").putString(key, value.toString());
+    }
+
+    public static void setInt(final ItemStack stack, final String key, final int value) {
+        stack.getOrCreateTag().putInt(key, value);
+    }
+
+    public static int getInt(final ItemStack stack, final String key, final int fallback) {
+        final CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(key) ? tag.getInt(key) : fallback;
     }
 
     private ModDataComponents() {

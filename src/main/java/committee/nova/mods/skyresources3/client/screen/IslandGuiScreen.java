@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.client.screen;
 import committee.nova.mods.skyresources3.common.network.IslandGuiActionPayload;
 import committee.nova.mods.skyresources3.common.network.IslandGuiRequestPayload;
 import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;
+import committee.nova.mods.skyresources3.common.network.ModNetworking;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class IslandGuiScreen extends Screen {
     private static final int PANEL_MAX_WIDTH = 640;
@@ -58,7 +58,7 @@ public final class IslandGuiScreen extends Screen {
     }
 
     public static void requestOpen() {
-        PacketDistributor.sendToServer(new IslandGuiRequestPayload());
+        ModNetworking.sendToServer(new IslandGuiRequestPayload());
     }
 
     @Override
@@ -68,7 +68,7 @@ public final class IslandGuiScreen extends Screen {
 
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-        this.renderTransparentBackground(guiGraphics);
+        this.renderBackground(guiGraphics);
         guiGraphics.fill(0, 0, this.width, this.height, 0x9A000000);
 
         final int panelX = this.panelX();
@@ -84,7 +84,7 @@ public final class IslandGuiScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+    public void renderBackground(final GuiGraphics guiGraphics) {
     }
 
     @Override
@@ -528,7 +528,7 @@ public final class IslandGuiScreen extends Screen {
 
     private void send(final IslandGuiActionPayload.Action action, final String value) {
         this.confirmAction = "";
-        PacketDistributor.sendToServer(new IslandGuiActionPayload(action, value));
+        ModNetworking.sendToServer(new IslandGuiActionPayload(action, value));
     }
 
     private Button addButton(

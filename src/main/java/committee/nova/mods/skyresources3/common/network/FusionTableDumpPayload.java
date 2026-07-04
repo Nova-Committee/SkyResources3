@@ -1,40 +1,39 @@
 package committee.nova.mods.skyresources3.common.network;
 
-import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.block.entity.FusionTableBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+import java.util.function.Supplier;
 
-public record FusionTableDumpPayload(BlockPos pos) implements CustomPacketPayload {
-    public static final Type<FusionTableDumpPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "fusion_table_dump")
-    );
-    public static final StreamCodec<RegistryFriendlyByteBuf, FusionTableDumpPayload> STREAM_CODEC =
-            StreamCodec.composite(BlockPos.STREAM_CODEC, FusionTableDumpPayload::pos, FusionTableDumpPayload::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+public record FusionTableDumpPayload(BlockPos pos) {
+    static void encode(final FusionTableDumpPayload payload, final FriendlyByteBuf buffer) {
+        buffer.writeBlockPos(payload.pos());
     }
 
-    static void handle(final FusionTableDumpPayload payload, final IPayloadContext context) {
-        if (!(context.player() instanceof ServerPlayer player)
-                || !(player.level() instanceof ServerLevel level)
-                || !level.isLoaded(payload.pos())
-                || player.distanceToSqr(
-                        payload.pos().getX() + 0.5D,
-                        payload.pos().getY() + 0.5D,
-                        payload.pos().getZ() + 0.5D
-                ) > 64.0D
-                || !(level.getBlockEntity(payload.pos()) instanceof FusionTableBlockEntity fusionTable)) {
-            return;
-        }
-        fusionTable.clearStoredCatalyst();
+    static FusionTableDumpPayload decode(final FriendlyByteBuf buffer) {
+        return new FusionTableDumpPayload(buffer.readBlockPos());
+    }
+
+    static void handle(final FusionTableDumpPayload payload, final Supplier<NetworkEvent.Context> contextSupplier) {
+        final NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            final ServerPlayer player = context.getSender();
+            if (player == null
+                    || !(player.level() instanceof ServerLevel level)
+                    || !level.isLoaded(payload.pos())
+                    || player.distanceToSqr(
+                            payload.pos().getX() + 0.5D,
+                            payload.pos().getY() + 0.5D,
+                            payload.pos().getZ() + 0.5D
+                    ) > 64.0D
+                    || !(level.getBlockEntity(payload.pos()) instanceof FusionTableBlockEntity fusionTable)) {
+                return;
+            }
+            fusionTable.clearStoredCatalyst();
+        });
+        context.setPacketHandled(true);
     }
 }

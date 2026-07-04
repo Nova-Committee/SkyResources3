@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
+    },
+    {
+      "ingredient": {
+        "tag": "minecraft:saplings"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:dead_bush"
+    }
+  ],
+  "parameter": 10.0,
+  "process": "infusion"
+}

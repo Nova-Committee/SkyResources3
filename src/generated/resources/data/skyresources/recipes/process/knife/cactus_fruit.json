@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:cactus"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 2,
+      "item": "skyresources:cactus_fruit"
+    }
+  ],
+  "parameter": 0.0,
+  "process": "knife"
+}

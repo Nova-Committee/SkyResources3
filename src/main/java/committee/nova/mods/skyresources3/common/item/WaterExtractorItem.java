@@ -2,9 +2,9 @@ package committee.nova.mods.skyresources3.common.item;
 
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.common.recipe.WaterExtractorRecipes;
-import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -32,9 +32,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.SimpleFluidContent;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 
@@ -44,9 +44,7 @@ public final class WaterExtractorItem extends Item {
     private static final int MIN_EXTRACTION_USE_TICKS = 25;
 
     public WaterExtractorItem(final Properties properties) {
-        super(properties
-                .stacksTo(1)
-                .component(ModDataComponents.WATER_EXTRACTOR_FLUID.get(), SimpleFluidContent.EMPTY));
+        super(properties.stacksTo(1));
     }
 
     @Override
@@ -85,7 +83,7 @@ public final class WaterExtractorItem extends Item {
     }
 
     @Override
-    public int getUseDuration(final ItemStack stack, final LivingEntity entity) {
+    public int getUseDuration(final ItemStack stack) {
         return USE_DURATION_TICKS;
     }
 
@@ -100,7 +98,7 @@ public final class WaterExtractorItem extends Item {
             return;
         }
 
-        if (this.getUseDuration(stack, entity) - timeLeft < MIN_EXTRACTION_USE_TICKS) {
+        if (this.getUseDuration(stack) - timeLeft < MIN_EXTRACTION_USE_TICKS) {
             return;
         }
 
@@ -118,7 +116,7 @@ public final class WaterExtractorItem extends Item {
     @Deprecated
     public void appendHoverText(
             final ItemStack stack,
-            final TooltipContext context,
+            final Level level,
             final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
@@ -130,14 +128,11 @@ public final class WaterExtractorItem extends Item {
     }
 
     public static int getWaterAmount(final ItemStack stack) {
-        final SimpleFluidContent content = stack.getOrDefault(
-                ModDataComponents.WATER_EXTRACTOR_FLUID.get(),
-                SimpleFluidContent.EMPTY
-        );
-        if (!content.is(Fluids.WATER)) {
+        final FluidStack fluid = getStoredFluid(stack);
+        if (fluid.isEmpty() || fluid.getFluid() != Fluids.WATER) {
             return 0;
         }
-        return Math.min(content.getAmount(), getCapacity());
+        return Math.min(fluid.getAmount(), getCapacity());
     }
 
     public static float getModelLevel(final ItemStack stack) {
@@ -240,7 +235,7 @@ public final class WaterExtractorItem extends Item {
         final BlockPos clicked = context.getClickedPos();
         final BlockState clickedState = level.getBlockState(clicked);
         if (clickedState.getBlock() instanceof LiquidBlockContainer container
-                && container.canPlaceLiquid(player, level, clicked, clickedState, Fluids.WATER)) {
+                && container.canPlaceLiquid(level, clicked, clickedState, Fluids.WATER)) {
             return clicked;
         }
         return clickedState.canBeReplaced(Fluids.WATER) ? clicked : clicked.relative(context.getClickedFace());
@@ -329,11 +324,11 @@ public final class WaterExtractorItem extends Item {
 
         final BlockState state = level.getBlockState(pos);
         if (state.getBlock() instanceof BucketPickup bucketPickup) {
-            final ItemStack pickedUp = bucketPickup.pickupBlock(player, level, pos, state);
+            final ItemStack pickedUp = bucketPickup.pickupBlock(level, pos, state);
             if (pickedUp.isEmpty()) {
                 return false;
             }
-            bucketPickup.getPickupSound(state)
+            bucketPickup.getPickupSound()
                     .ifPresent(sound -> playWaterSound(level, player, pos, sound));
         } else {
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
@@ -363,10 +358,22 @@ public final class WaterExtractorItem extends Item {
 
     private static void setWaterAmount(final ItemStack stack, final int amount) {
         final int clamped = Mth.clamp(amount, 0, getCapacity());
-        final SimpleFluidContent content = clamped == 0
-                ? SimpleFluidContent.EMPTY
-                : SimpleFluidContent.copyOf(new FluidStack(Fluids.WATER, clamped));
-        stack.set(ModDataComponents.WATER_EXTRACTOR_FLUID.get(), content);
+        if (clamped == 0) {
+            if (stack.getTag() != null) {
+                stack.getTag().remove(FluidHandlerItemStack.FLUID_NBT_KEY);
+            }
+            return;
+        }
+        final CompoundTag fluidTag = new FluidStack(Fluids.WATER, clamped).writeToNBT(new CompoundTag());
+        stack.getOrCreateTag().put(FluidHandlerItemStack.FLUID_NBT_KEY, fluidTag);
+    }
+
+    private static FluidStack getStoredFluid(final ItemStack stack) {
+        final CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains(FluidHandlerItemStack.FLUID_NBT_KEY)) {
+            return FluidStack.EMPTY;
+        }
+        return FluidStack.loadFluidStackFromNBT(tag.getCompound(FluidHandlerItemStack.FLUID_NBT_KEY));
     }
 
     private static void playWaterSound(

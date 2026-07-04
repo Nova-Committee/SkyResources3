@@ -1,0 +1,17 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:netherrack"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:crushed_netherrack"
+    }
+  ],
+  "parameter": 0.44,
+  "process": "rockgrinder"
+}

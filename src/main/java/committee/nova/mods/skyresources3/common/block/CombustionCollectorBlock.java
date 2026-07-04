@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,8 +28,7 @@ public final class CombustionCollectorBlock extends Block implements EntityBlock
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -38,21 +36,8 @@ public final class CombustionCollectorBlock extends Block implements EntityBlock
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-        return BlockInteractionResults.item(this.useWithoutItem(state, level, pos, player, hitResult));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!level.mayInteract(player, pos)) {
             return InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof CombustionCollectorBlockEntity collector)) {
@@ -61,7 +46,7 @@ public final class CombustionCollectorBlock extends Block implements EntityBlock
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new CombustionCollectorMenu(containerId, inventory, collector),

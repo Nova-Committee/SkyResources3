@@ -1,11 +1,10 @@
 package committee.nova.mods.skyresources3.init.integration.jade;
 
 import java.util.Locale;
-import java.util.Optional;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import snownee.jade.api.JadeIds;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -21,8 +20,10 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
             final BlockAccessor accessor,
             final IPluginConfig config
     ) {
-        final Optional<SkyResourcesProbeData> data = SkyResourcesProbeDataProvider.INSTANCE.decodeFromData(accessor);
-        data.ifPresent(probeData -> appendData(tooltip, probeData));
+        final CompoundTag tag = accessor.getServerData();
+        if (!tag.isEmpty()) {
+            appendData(tooltip, SkyResourcesProbeData.read(tag));
+        }
     }
 
     @Override
@@ -52,7 +53,7 @@ final class SkyResourcesProbeComponentProvider implements IBlockComponentProvide
     private static void replaceObjectName(final ITooltip tooltip, final SkyResourcesProbeData data) {
         final Component objectName = data.objectName();
         if (objectName != null) {
-            tooltip.replace(JadeIds.CORE_OBJECT_NAME, IThemeHelper.get().title(objectName));
+            tooltip.add(0, IThemeHelper.get().title(objectName));
         }
     }
 

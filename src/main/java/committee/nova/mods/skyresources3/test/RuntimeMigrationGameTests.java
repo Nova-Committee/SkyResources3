@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 
 public final class RuntimeMigrationGameTests {
     private static final BlockPos TOOL_BLOCK_POS = new BlockPos(1, 1, 1);

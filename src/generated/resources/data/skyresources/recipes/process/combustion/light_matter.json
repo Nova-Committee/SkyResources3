@@ -1,0 +1,36 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 5,
+      "ingredient": {
+        "item": "skyresources:heavy_snow"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "skyresources:frozen_iron_ingot"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "skyresources:alchemical_gold_ingot"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:end_stone"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:light_matter"
+    }
+  ],
+  "parameter": 3400.0,
+  "process": "combustion"
+}

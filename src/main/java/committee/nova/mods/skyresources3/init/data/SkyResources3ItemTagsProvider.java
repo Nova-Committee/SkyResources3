@@ -37,6 +37,6 @@ public final class SkyResources3ItemTagsProvider extends ItemTagsProvider {
     }
 
     private static TagKey<Item> commonItemTag(final String path) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path));
+        return TagKey.create(Registries.ITEM, new ResourceLocation("c", path));
     }
 }

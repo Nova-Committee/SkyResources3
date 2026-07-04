@@ -6,7 +6,7 @@ import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,7 +31,7 @@ public final class FusionTableMenu extends SkyResourcesMenu {
     private final DataSlot catalystYieldPercent;
     private final DataSlot catalystLeft;
 
-    public FusionTableMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
+    public FusionTableMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
     }
 
@@ -73,13 +73,13 @@ public final class FusionTableMenu extends SkyResourcesMenu {
     }
 
     public static void writeClientSideData(
-            final RegistryFriendlyByteBuf buffer,
+            final FriendlyByteBuf buffer,
             final BlockPos pos,
             final FusionTableBlockEntity blockEntity
     ) {
         buffer.writeBlockPos(pos);
         for (int index = 0; index < FusionTableBlockEntity.INPUT_SLOT_COUNT; index++) {
-            ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, blockEntity.getFilterStack(index));
+            buffer.writeItem(blockEntity.getFilterStack(index));
         }
     }
 
@@ -211,7 +211,7 @@ public final class FusionTableMenu extends SkyResourcesMenu {
 
     private static FusionTableClientData readClientData(
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf buffer
+            final FriendlyByteBuf buffer
     ) {
         final BlockPos pos = buffer.readBlockPos();
         final NonNullList<ItemStack> filters = NonNullList.withSize(
@@ -219,7 +219,7 @@ public final class FusionTableMenu extends SkyResourcesMenu {
                 ItemStack.EMPTY
         );
         for (int index = 0; index < filters.size(); index++) {
-            filters.set(index, ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer));
+            filters.set(index, buffer.readItem());
         }
         return new FusionTableClientData(
                 pos,
@@ -263,9 +263,9 @@ public final class FusionTableMenu extends SkyResourcesMenu {
         }
 
         @Override
-        public void setByPlayer(final ItemStack newStack, final ItemStack oldStack) {
+        public void setByPlayer(final ItemStack newStack) {
             FusionTableMenu.this.setFilter(this.filterIndex, newStack);
-            super.setByPlayer(newStack, oldStack);
+            super.setByPlayer(newStack);
         }
 
         @Override

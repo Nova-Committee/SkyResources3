@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "skyresources:coal_infused_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "skyresources:alchemical_coal"
+  }
+}

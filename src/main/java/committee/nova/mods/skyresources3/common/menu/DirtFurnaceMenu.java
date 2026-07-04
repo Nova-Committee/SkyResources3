@@ -1,7 +1,7 @@
 package committee.nova.mods.skyresources3.common.menu;
 
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractFurnaceMenu;
@@ -13,7 +13,7 @@ public final class DirtFurnaceMenu extends AbstractFurnaceMenu {
     public DirtFurnaceMenu(
             final int containerId,
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf data
+            final FriendlyByteBuf data
     ) {
         this(containerId, playerInventory);
     }

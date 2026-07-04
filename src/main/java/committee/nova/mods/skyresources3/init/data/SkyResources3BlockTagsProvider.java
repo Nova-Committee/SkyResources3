@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.minecraftforge.common.data.BlockTagsProvider;
 
 public final class SkyResources3BlockTagsProvider extends BlockTagsProvider {
     public SkyResources3BlockTagsProvider(

@@ -1,0 +1,17 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:gravel"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:flint"
+    }
+  ],
+  "parameter": 0.3,
+  "process": "rockgrinder"
+}

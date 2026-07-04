@@ -27,7 +27,7 @@ public final class MagmafiedStoneBlock extends Block {
     }
 
     @Override
-    protected void onPlace(
+    public void onPlace(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -41,7 +41,7 @@ public final class MagmafiedStoneBlock extends Block {
     }
 
     @Override
-    protected void neighborChanged(
+    public void neighborChanged(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -55,7 +55,7 @@ public final class MagmafiedStoneBlock extends Block {
     }
 
     @Override
-    protected void tick(
+    public void tick(
             final BlockState state,
             final ServerLevel level,
             final BlockPos pos,

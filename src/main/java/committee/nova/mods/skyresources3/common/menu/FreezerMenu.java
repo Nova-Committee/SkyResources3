@@ -6,7 +6,7 @@ import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +35,7 @@ public final class FreezerMenu extends SkyResourcesMenu {
     private final DataSlot validMultiblock;
     private final NonNullList<DataSlot> progressSlots;
 
-    public FreezerMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
+    public FreezerMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
     }
 
@@ -77,7 +77,7 @@ public final class FreezerMenu extends SkyResourcesMenu {
     }
 
     public static void writeClientSideData(
-            final RegistryFriendlyByteBuf buffer,
+            final FriendlyByteBuf buffer,
             final BlockPos pos,
             final FreezerBlockEntity blockEntity
     ) {
@@ -220,7 +220,7 @@ public final class FreezerMenu extends SkyResourcesMenu {
 
     private static FreezerClientData readClientData(
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf buffer
+            final FriendlyByteBuf buffer
     ) {
         final BlockPos pos = buffer.readBlockPos();
         final int slotCount = buffer.readVarInt();

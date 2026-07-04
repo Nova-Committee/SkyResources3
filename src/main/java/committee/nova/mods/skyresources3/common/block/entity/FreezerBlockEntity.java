@@ -41,9 +41,9 @@ public final class FreezerBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         for (int index = 0; index < this.progress.length; index++) {
             this.progress[index] = input.getFloatOr(PROGRESS_KEY_PREFIX + index, 0.0F);
@@ -51,9 +51,9 @@ public final class FreezerBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         for (int index = 0; index < this.progress.length; index++) {
             output.putFloat(PROGRESS_KEY_PREFIX + index, this.progress[index]);
@@ -207,7 +207,7 @@ public final class FreezerBlockEntity extends BlockEntity {
 
         final ItemStack input = this.items.stack(inputSlot);
         final int outputSlot = inputSlot + this.getInputCount();
-        final ItemStack output = recipe.get().outputs().getFirst();
+        final ItemStack output = recipe.get().outputs().get(0);
         if (output.isEmpty() || !this.canFitOutput(output, outputSlot)) {
             return false;
         }
@@ -216,7 +216,7 @@ public final class FreezerBlockEntity extends BlockEntity {
         if (this.progress[inputSlot] >= required) {
             final int processed = this.ejectFinishedGroups(recipe.get(), inputSlot, outputSlot);
             if (processed > 0) {
-                final int inputCount = recipe.get().inputs().getFirst().count();
+                final int inputCount = recipe.get().inputs().get(0).count();
                 input.shrink(inputCount * processed);
                 if (input.isEmpty()) {
                     this.items.setStack(inputSlot, ItemStack.EMPTY);
@@ -239,7 +239,7 @@ public final class FreezerBlockEntity extends BlockEntity {
             return Optional.empty();
         }
         return ProcessRecipes.find(level, ProcessRecipes.FREEZER, List.of(input.copy()))
-                .map(holder -> holder.value());
+                .map(recipe -> recipe);
     }
 
     private int getTimeRequired(final SkyResourcesProcessRecipe recipe, final ItemStack input) {
@@ -247,7 +247,7 @@ public final class FreezerBlockEntity extends BlockEntity {
     }
 
     private int getGroupsFreezing(final SkyResourcesProcessRecipe recipe, final ItemStack input) {
-        final ProcessIngredient ingredient = recipe.inputs().getFirst();
+        final ProcessIngredient ingredient = recipe.inputs().get(0);
         return input.getCount() / ingredient.count();
     }
 
@@ -259,7 +259,7 @@ public final class FreezerBlockEntity extends BlockEntity {
         int processed = 0;
         final int groups = this.getGroupsFreezing(recipe, this.items.stack(inputSlot));
         for (int group = 0; group < groups; group++) {
-            final ItemStack output = recipe.outputs().getFirst().copy();
+            final ItemStack output = recipe.outputs().get(0).copy();
             if (!this.insertOutput(output, outputSlot)) {
                 break;
             }
@@ -273,7 +273,7 @@ public final class FreezerBlockEntity extends BlockEntity {
         if (current.isEmpty()) {
             return true;
         }
-        if (!ItemStack.isSameItemSameComponents(current, output)) {
+        if (!ItemStack.isSameItemSameTags(current, output)) {
             return false;
         }
         final int result = current.getCount() + output.getCount();

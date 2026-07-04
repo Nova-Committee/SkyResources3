@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "tag": "minecraft:logs"
+    },
+    "Y": {
+      "item": "skyresources:alchemical_infusion_stone"
+    }
+  },
+  "pattern": [
+    "XXX",
+    " X ",
+    " Y "
+  ],
+  "result": {
+    "item": "skyresources:life_infuser"
+  },
+  "show_notification": true
+}

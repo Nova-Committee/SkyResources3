@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "skyresources:dark_matter"
+    },
+    "Y": {
+      "item": "skyresources:advanced_power_component"
+    }
+  },
+  "pattern": [
+    "XYX",
+    "X X",
+    "X X"
+  ],
+  "result": {
+    "item": "skyresources:condenser",
+    "nbt": "{BlockEntityTag:{machine_type:\"skyresources:dark_matter\"},CustomModelData:6,condenser_type:\"skyresources:dark_matter\"}"
+  }
+}

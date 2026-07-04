@@ -1,0 +1,30 @@
+{
+  "type": "skyresources:process",
+  "forge:conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "integrateddynamics"
+    }
+  ],
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "integrateddynamics:menril_berries"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:birch_sapling"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "integrateddynamics:menril_sapling"
+    }
+  ],
+  "parameter": 12.0,
+  "process": "infusion"
+}

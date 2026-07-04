@@ -9,12 +9,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public final class CauldronCleanEvents {
     private static final float WATER_USE_CHANCE = 0.16F;
@@ -35,7 +34,7 @@ public final class CauldronCleanEvents {
             return;
         }
 
-        final List<RecipeHolder<SkyResourcesProcessRecipe>> recipes =
+        final List<SkyResourcesProcessRecipe> recipes =
                 ProcessRecipes.findAll(level, ProcessRecipes.CAULDRON_CLEAN, List.of(stack.copy()));
         if (recipes.isEmpty()) {
             return;
@@ -43,8 +42,7 @@ public final class CauldronCleanEvents {
 
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
-        for (final RecipeHolder<SkyResourcesProcessRecipe> holder : recipes) {
-            final SkyResourcesProcessRecipe recipe = holder.value();
+        for (final SkyResourcesProcessRecipe recipe : recipes) {
             for (final ItemStack output : recipe.outputs()) {
                 if (!output.isEmpty() && level.random.nextFloat() <= recipe.parameter()) {
                     Block.popResource(level, pos.above(), output.copy());
@@ -53,7 +51,7 @@ public final class CauldronCleanEvents {
         }
 
         if (!player.getAbilities().instabuild) {
-            final int consumed = Math.max(1, recipes.getFirst().value().inputs().getFirst().count());
+            final int consumed = Math.max(1, recipes.get(0).inputs().get(0).count());
             stack.shrink(consumed);
             if (stack.isEmpty()) {
                 player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);

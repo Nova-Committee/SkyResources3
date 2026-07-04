@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 
 public final class RockGrinderEvents {
     public static void onBlockBreak(final BlockEvent.BreakEvent event) {
@@ -43,7 +43,7 @@ public final class RockGrinderEvents {
         for (final GrinderDrop drop : drops) {
             ProcessingToolDrops.popWithFortune(level, event.getPos(), drop.stack(), player, tool, drop.chance());
         }
-        tool.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+        tool.hurtAndBreak(1, player, living -> living.broadcastBreakEvent(EquipmentSlot.MAINHAND));
     }
 
     public static boolean hasResult(final BlockState state) {
@@ -61,7 +61,7 @@ public final class RockGrinderEvents {
         }
         return ProcessRecipes.findAll(level, ProcessRecipes.ROCK_GRINDER, List.of(input))
                 .stream()
-                .flatMap(recipe -> dropsFor(recipe.value()).stream())
+                .flatMap(recipe -> dropsFor(recipe).stream())
                 .toList();
     }
 

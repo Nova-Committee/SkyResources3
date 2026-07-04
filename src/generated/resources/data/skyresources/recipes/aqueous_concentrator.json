@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:snow"
+    },
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "skyresources:advanced_power_component"
+    },
+    "Z": {
+      "item": "skyresources:water_extractor"
+    }
+  },
+  "pattern": [
+    "XAX",
+    "XZX",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:aqueous_concentrator"
+  },
+  "show_notification": true
+}

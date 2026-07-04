@@ -3,29 +3,29 @@ package committee.nova.mods.skyresources3.init.registry;
 import committee.nova.mods.skyresources3.Skyresources3;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 
 public final class ModFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, Skyresources3.MODID);
 
-    public static final DeferredHolder<Fluid, BaseFlowingFluid.Source> CRYSTAL_FLUID = FLUIDS.register(
+    public static final RegistryObject<ForgeFlowingFluid.Source> CRYSTAL_FLUID = FLUIDS.register(
             "crystal_fluid",
-            () -> new BaseFlowingFluid.Source(crystalFluidProperties())
+            () -> new ForgeFlowingFluid.Source(crystalFluidProperties())
     );
-    public static final DeferredHolder<Fluid, BaseFlowingFluid.Flowing> FLOWING_CRYSTAL_FLUID = FLUIDS.register(
+    public static final RegistryObject<ForgeFlowingFluid.Flowing> FLOWING_CRYSTAL_FLUID = FLUIDS.register(
             "flowing_crystal_fluid",
-            () -> new BaseFlowingFluid.Flowing(crystalFluidProperties())
+            () -> new ForgeFlowingFluid.Flowing(crystalFluidProperties())
     );
 
     public static void register(final IEventBus modEventBus) {
         FLUIDS.register(modEventBus);
     }
 
-    private static BaseFlowingFluid.Properties crystalFluidProperties() {
-        return new BaseFlowingFluid.Properties(
+    private static ForgeFlowingFluid.Properties crystalFluidProperties() {
+        return new ForgeFlowingFluid.Properties(
                 ModFluidTypes.CRYSTAL_FLUID,
                 ModFluids.CRYSTAL_FLUID,
                 ModFluids.FLOWING_CRYSTAL_FLUID

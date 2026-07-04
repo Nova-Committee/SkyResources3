@@ -18,7 +18,7 @@ public record CondenserType(
         List<Element> elements
 ) {
     public static final ResourceLocation DEFAULT_PART_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/condenser");
+            new ResourceLocation(Skyresources3.MODID, "block/condenser");
     public static final List<Element> DEFAULT_ELEMENTS = List.of(
             element(2.0F, 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, TextureSlot.BODY),
             element(2.0F, 13.0F, 2.0F, 14.0F, 14.0F, 14.0F, TextureSlot.PART)
@@ -33,7 +33,7 @@ public record CondenserType(
     ).apply(instance, CondenserType::new));
     private static final CondenserType FALLBACK = new CondenserType(
             "block.skyresources.condenser.iron",
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
+            new ResourceLocation(Skyresources3.MODID, "block/iron_machine"),
             DEFAULT_PART_TEXTURE,
             1.0F,
             1.2F,

@@ -1,0 +1,27 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:sand"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "skyresources:crystal_shard"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:prismarine_crystals"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:alchemical_glass"
+    }
+  ],
+  "parameter": 0.004,
+  "process": "fusion"
+}

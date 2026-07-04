@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XYX",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:combustion_controller"
+  },
+  "show_notification": true
+}

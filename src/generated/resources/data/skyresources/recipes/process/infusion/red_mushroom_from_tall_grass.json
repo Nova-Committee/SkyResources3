@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:red_dye"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:tall_grass"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:red_mushroom"
+    }
+  ],
+  "parameter": 12.0,
+  "process": "infusion"
+}

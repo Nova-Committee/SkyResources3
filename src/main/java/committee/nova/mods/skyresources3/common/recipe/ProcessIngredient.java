@@ -1,33 +1,16 @@
 package committee.nova.mods.skyresources3.common.recipe;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public record ProcessIngredient(Ingredient ingredient, Optional<ItemStack> exactStack, int count) {
-    public static final Codec<ProcessIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Ingredient.CODEC.optionalFieldOf("ingredient").forGetter(ProcessIngredient::codecIngredient),
-            ItemStack.STRICT_CODEC.optionalFieldOf("stack").forGetter(ProcessIngredient::exactStack),
-            ExtraCodecs.POSITIVE_INT.optionalFieldOf("count", 1).forGetter(ProcessIngredient::count)
-    ).apply(instance, ProcessIngredient::create));
-    public static final StreamCodec<RegistryFriendlyByteBuf, ProcessIngredient> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.optional(Ingredient.CONTENTS_STREAM_CODEC),
-            ProcessIngredient::codecIngredient,
-            ByteBufCodecs.optional(ItemStack.STREAM_CODEC),
-            ProcessIngredient::exactStack,
-            ByteBufCodecs.VAR_INT,
-            ProcessIngredient::count,
-            ProcessIngredient::create
-    );
-
     public ProcessIngredient {
         if (count <= 0) {
             throw new IllegalArgumentException("Process ingredient count must be positive");
@@ -49,7 +32,8 @@ public record ProcessIngredient(Ingredient ingredient, Optional<ItemStack> exact
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Exact process ingredient stack must not be empty");
         }
-        final ItemStack normalized = stack.copyWithCount(1);
+        final ItemStack normalized = stack.copy();
+        normalized.setCount(1);
         return new ProcessIngredient(Ingredient.of(normalized.getItem()), Optional.of(normalized), count);
     }
 
@@ -58,34 +42,53 @@ public record ProcessIngredient(Ingredient ingredient, Optional<ItemStack> exact
             return false;
         }
         return this.exactStack
-                .map(expected -> ItemStack.isSameItemSameComponents(stack, expected))
+                .map(expected -> ItemStack.isSameItemSameTags(stack, expected))
                 .orElseGet(() -> this.ingredient.test(stack));
     }
 
     public List<ItemStack> displayStacks() {
         return this.exactStack
-                .map(expected -> List.of(expected.copyWithCount(this.count)))
+                .map(expected -> List.of(copyWithCount(expected, this.count)))
                 .orElseGet(() -> Arrays.stream(this.ingredient.getItems())
-                        .map(stack -> stack.copyWithCount(this.count))
+                        .map(stack -> copyWithCount(stack, this.count))
                         .filter(stack -> !stack.isEmpty())
                         .toList());
     }
 
-    private Optional<Ingredient> codecIngredient() {
-        return this.exactStack.isPresent() ? Optional.empty() : Optional.of(this.ingredient);
+    static ProcessIngredient fromJson(final JsonElement element) {
+        final JsonObject json = GsonHelper.convertToJsonObject(element, "process ingredient");
+        final int count = GsonHelper.getAsInt(json, "count", 1);
+        if (json.has("stack")) {
+            return stack(RecipeJsonUtil.stackFromJson(GsonHelper.getAsJsonObject(json, "stack")), count);
+        }
+        if (json.has("ingredient")) {
+            return new ProcessIngredient(Ingredient.fromJson(json.get("ingredient")), count);
+        }
+        return new ProcessIngredient(Ingredient.fromJson(element), count);
     }
 
-    private static ProcessIngredient create(
-            final Optional<Ingredient> ingredient,
-            final Optional<ItemStack> exactStack,
-            final int count
-    ) {
-        if (exactStack.isPresent()) {
-            return stack(exactStack.get(), count);
+    static ProcessIngredient fromNetwork(final FriendlyByteBuf buffer) {
+        final boolean exact = buffer.readBoolean();
+        final int count = buffer.readVarInt();
+        if (exact) {
+            return stack(buffer.readItem(), count);
         }
-        return new ProcessIngredient(
-                ingredient.orElseThrow(() -> new IllegalArgumentException("Process ingredient requires ingredient or stack")),
-                count
-        );
+        return new ProcessIngredient(Ingredient.fromNetwork(buffer), count);
+    }
+
+    void toNetwork(final FriendlyByteBuf buffer) {
+        buffer.writeBoolean(this.exactStack.isPresent());
+        buffer.writeVarInt(this.count);
+        if (this.exactStack.isPresent()) {
+            buffer.writeItem(this.exactStack.get());
+        } else {
+            this.ingredient.toNetwork(buffer);
+        }
+    }
+
+    private static ItemStack copyWithCount(final ItemStack stack, final int count) {
+        final ItemStack copy = stack.copy();
+        copy.setCount(count);
+        return copy;
     }
 }

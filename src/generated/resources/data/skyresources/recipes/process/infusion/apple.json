@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:sugar"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:hay_block"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:apple"
+    }
+  ],
+  "parameter": 10.0,
+  "process": "infusion"
+}

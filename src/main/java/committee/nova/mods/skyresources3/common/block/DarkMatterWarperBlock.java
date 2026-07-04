@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +52,7 @@ public final class DarkMatterWarperBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(
+    public VoxelShape getShape(
             final BlockState state,
             final BlockGetter level,
             final BlockPos pos,
@@ -63,8 +62,7 @@ public final class DarkMatterWarperBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -72,18 +70,7 @@ public final class DarkMatterWarperBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return BlockInteractionResults.item(this.openMenu(level, pos, player, hitResult, stack));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        return this.openMenu(level, pos, player, hitResult, ItemStack.EMPTY);
+        return this.openMenu(level, pos, player, hitResult, player.getItemInHand(hand));
     }
 
     private InteractionResult openMenu(
@@ -103,7 +90,7 @@ public final class DarkMatterWarperBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new DarkMatterWarperMenu(containerId, inventory, warper),
                         Component.translatable("container.skyresources.dark_matter_warper")

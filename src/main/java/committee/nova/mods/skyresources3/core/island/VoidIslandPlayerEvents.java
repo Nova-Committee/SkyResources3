@@ -3,8 +3,8 @@ package committee.nova.mods.skyresources3.core.island;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 
 public final class VoidIslandPlayerEvents {
     public static void onServerStarted(final ServerStartedEvent event) {

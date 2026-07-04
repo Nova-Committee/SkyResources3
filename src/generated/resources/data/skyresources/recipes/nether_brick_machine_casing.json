@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": {
+      "item": "minecraft:nether_bricks"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XXX"
+  ],
+  "result": {
+    "item": "skyresources:machine_casing",
+    "nbt": "{BlockEntityTag:{casing_type:\"skyresources:nether_brick\"},CustomModelData:4,casing_type:\"skyresources:nether_brick\"}"
+  }
+}

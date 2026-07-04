@@ -25,9 +25,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 
 public final class ModBlockEntityTypes {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(
@@ -35,32 +35,32 @@ public final class ModBlockEntityTypes {
             Skyresources3.MODID
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LifeInjectorBlockEntity>> LIFE_INJECTOR =
+    public static final RegistryObject<BlockEntityType<LifeInjectorBlockEntity>> LIFE_INJECTOR =
             BLOCK_ENTITY_TYPES.register(
                     "life_injector",
                     () -> type(LifeInjectorBlockEntity::new, ModBlocks.LIFE_INJECTOR.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LifeInfuserBlockEntity>> LIFE_INFUSER =
+    public static final RegistryObject<BlockEntityType<LifeInfuserBlockEntity>> LIFE_INFUSER =
             BLOCK_ENTITY_TYPES.register(
                     "life_infuser",
                     () -> type(LifeInfuserBlockEntity::new, ModBlocks.LIFE_INFUSER.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FusionTableBlockEntity>> FUSION_TABLE =
+    public static final RegistryObject<BlockEntityType<FusionTableBlockEntity>> FUSION_TABLE =
             BLOCK_ENTITY_TYPES.register(
                     "fusion_table",
                     () -> type(FusionTableBlockEntity::new, ModBlocks.FUSION_TABLE.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DirtFurnaceBlockEntity>> DIRT_FURNACE =
+    public static final RegistryObject<BlockEntityType<DirtFurnaceBlockEntity>> DIRT_FURNACE =
             BLOCK_ENTITY_TYPES.register(
                     "dirt_furnace",
                     () -> type(DirtFurnaceBlockEntity::new, ModBlocks.DIRT_FURNACE.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuickDropperBlockEntity>> QUICK_DROPPER =
+    public static final RegistryObject<BlockEntityType<QuickDropperBlockEntity>> QUICK_DROPPER =
             BLOCK_ENTITY_TYPES.register(
                     "quick_dropper",
                     () -> type(QuickDropperBlockEntity::new, ModBlocks.QUICK_DROPPER.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DarkMatterWarperBlockEntity>>
+    public static final RegistryObject<BlockEntityType<DarkMatterWarperBlockEntity>>
             DARK_MATTER_WARPER =
             BLOCK_ENTITY_TYPES.register(
                     "dark_matter_warper",
@@ -69,7 +69,7 @@ public final class ModBlockEntityTypes {
                             ModBlocks.DARK_MATTER_WARPER.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EndPortalCoreBlockEntity>>
+    public static final RegistryObject<BlockEntityType<EndPortalCoreBlockEntity>>
             END_PORTAL_CORE =
             BLOCK_ENTITY_TYPES.register(
                     "end_portal_core",
@@ -78,33 +78,33 @@ public final class ModBlockEntityTypes {
                             ModBlocks.END_PORTAL_CORE.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidDropperBlockEntity>> FLUID_DROPPER =
+    public static final RegistryObject<BlockEntityType<FluidDropperBlockEntity>> FLUID_DROPPER =
             BLOCK_ENTITY_TYPES.register(
                     "fluid_dropper",
                     () -> type(FluidDropperBlockEntity::new, ModBlocks.FLUID_DROPPER.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrucibleBlockEntity>> CRUCIBLE =
+    public static final RegistryObject<BlockEntityType<CrucibleBlockEntity>> CRUCIBLE =
             BLOCK_ENTITY_TYPES.register(
                     "crucible",
                     () -> type(CrucibleBlockEntity::new, ModBlocks.CRUCIBLE.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrucibleInserterBlockEntity>>
+    public static final RegistryObject<BlockEntityType<CrucibleInserterBlockEntity>>
             CRUCIBLE_INSERTER =
             BLOCK_ENTITY_TYPES.register(
                     "crucible_inserter",
                     () -> type(CrucibleInserterBlockEntity::new, ModBlocks.CRUCIBLE_INSERTER.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RockCrusherBlockEntity>> ROCK_CRUSHER =
+    public static final RegistryObject<BlockEntityType<RockCrusherBlockEntity>> ROCK_CRUSHER =
             BLOCK_ENTITY_TYPES.register(
                     "rock_crusher",
                     () -> type(RockCrusherBlockEntity::new, ModBlocks.ROCK_CRUSHER.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RockCleanerBlockEntity>> ROCK_CLEANER =
+    public static final RegistryObject<BlockEntityType<RockCleanerBlockEntity>> ROCK_CLEANER =
             BLOCK_ENTITY_TYPES.register(
                     "rock_cleaner",
                     () -> type(RockCleanerBlockEntity::new, ModBlocks.ROCK_CLEANER.get())
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AqueousMachineBlockEntity>>
+    public static final RegistryObject<BlockEntityType<AqueousMachineBlockEntity>>
             AQUEOUS_MACHINE =
             BLOCK_ENTITY_TYPES.register(
                     "aqueous_machine",
@@ -114,7 +114,7 @@ public final class ModBlockEntityTypes {
                             ModBlocks.AQUEOUS_DECONCENTRATOR.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WildlifeAttractorBlockEntity>>
+    public static final RegistryObject<BlockEntityType<WildlifeAttractorBlockEntity>>
             WILDLIFE_ATTRACTOR =
             BLOCK_ENTITY_TYPES.register(
                     "wildlife_attractor",
@@ -123,7 +123,7 @@ public final class ModBlockEntityTypes {
                             ModBlocks.WILDLIFE_ATTRACTOR.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MachineCasingBlockEntity>> MACHINE_CASING =
+    public static final RegistryObject<BlockEntityType<MachineCasingBlockEntity>> MACHINE_CASING =
             BLOCK_ENTITY_TYPES.register(
                     "machine_casing",
                     () -> type(
@@ -131,7 +131,7 @@ public final class ModBlockEntityTypes {
                             ModBlocks.MACHINE_CASING.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StandaloneMachineBlockEntity>>
+    public static final RegistryObject<BlockEntityType<StandaloneMachineBlockEntity>>
             STANDALONE_MACHINE =
             BLOCK_ENTITY_TYPES.register(
                     "standalone_machine",
@@ -142,7 +142,7 @@ public final class ModBlockEntityTypes {
                             ModBlocks.CONDENSER.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionCollectorBlockEntity>>
+    public static final RegistryObject<BlockEntityType<CombustionCollectorBlockEntity>>
             COMBUSTION_COLLECTOR =
             BLOCK_ENTITY_TYPES.register(
                     "combustion_collector",
@@ -151,7 +151,7 @@ public final class ModBlockEntityTypes {
                             ModBlocks.COMBUSTION_COLLECTOR.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionControllerBlockEntity>>
+    public static final RegistryObject<BlockEntityType<CombustionControllerBlockEntity>>
             COMBUSTION_CONTROLLER =
             BLOCK_ENTITY_TYPES.register(
                     "combustion_controller",
@@ -160,7 +160,7 @@ public final class ModBlockEntityTypes {
                             ModBlocks.COMBUSTION_CONTROLLER.get()
                     )
             );
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreezerBlockEntity>> FREEZER =
+    public static final RegistryObject<BlockEntityType<FreezerBlockEntity>> FREEZER =
             BLOCK_ENTITY_TYPES.register(
                     "freezer",
                     () -> type(

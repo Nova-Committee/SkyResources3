@@ -40,6 +40,6 @@ public final class GuiBlit {
             final int width,
             final int height
     ) {
-        guiGraphics.blitSprite(sprite, x, y, width, height);
+        guiGraphics.blit(sprite, x, y, 0.0F, 0.0F, width, height, width, height);
     }
 }

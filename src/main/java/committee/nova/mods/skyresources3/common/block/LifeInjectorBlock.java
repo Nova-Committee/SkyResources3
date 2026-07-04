@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -52,8 +51,7 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -61,55 +59,36 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
             return player.isShiftKeyDown() || stack.getItem() instanceof HealthGemItem
-                    ? ItemInteractionResult.SUCCESS
-                    : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                    ? InteractionResult.SUCCESS
+                    : InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof LifeInjectorBlockEntity lifeInjector)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (player.isShiftKeyDown() && lifeInjector.hasGem()) {
-            return BlockInteractionResults.item(returnGemToPlayer(level, pos, player, lifeInjector));
+            return returnGemToPlayer(level, pos, player, lifeInjector);
+        }
+        if (stack.isEmpty()) {
+            return this.openMenu(pos, player, lifeInjector);
         }
         if (!lifeInjector.canInsertGem(stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         lifeInjector.insertGem(stack);
         if (!player.isCreative()) {
             stack.shrink(1);
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!(level.getBlockEntity(pos) instanceof LifeInjectorBlockEntity lifeInjector)) {
-            return InteractionResult.PASS;
-        }
-        if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), ItemStack.EMPTY)) {
-            return InteractionResult.PASS;
-        }
-        if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        }
-        if (player.isShiftKeyDown() && lifeInjector.hasGem()) {
-            return returnGemToPlayer(level, pos, player, lifeInjector);
-        }
-        return this.openMenu(pos, player, lifeInjector);
-    }
-
-    @Override
-    public BlockState playerWillDestroy(
+    public void playerWillDestroy(
             final Level level,
             final BlockPos pos,
             final BlockState state,
@@ -120,7 +99,7 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
                 && lifeInjector.hasGem()) {
             Containers.dropContents(level, pos, new SimpleContainer(lifeInjector.removeGem()));
         }
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     private static InteractionResult returnGemToPlayer(
@@ -141,7 +120,7 @@ public final class LifeInjectorBlock extends Block implements EntityBlock {
             final Player player,
             final LifeInjectorBlockEntity lifeInjector
     ) {
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new LifeInjectorMenu(
                                 containerId,

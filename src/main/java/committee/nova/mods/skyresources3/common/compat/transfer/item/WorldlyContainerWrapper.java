@@ -38,7 +38,7 @@ public final class WorldlyContainerWrapper implements ResourceHandler<ItemResour
         }
 
         final ItemStack current = this.container.getItem(containerSlot);
-        if (!current.isEmpty() && !ItemStack.isSameItemSameComponents(current, stack)) {
+        if (!current.isEmpty() && !ItemStack.isSameItemSameTags(current, stack)) {
             return stack;
         }
 

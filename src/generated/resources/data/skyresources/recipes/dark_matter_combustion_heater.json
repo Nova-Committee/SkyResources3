@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "skyresources:dark_matter"
+    },
+    "Y": {
+      "item": "skyresources:advanced_power_component"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:combustion_heater",
+    "nbt": "{BlockEntityTag:{machine_type:\"skyresources:dark_matter\"},CustomModelData:6,combustion_heater_type:\"skyresources:dark_matter\"}"
+  }
+}

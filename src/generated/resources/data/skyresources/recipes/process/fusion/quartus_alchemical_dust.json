@@ -1,0 +1,41 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "skyresources:dark_matter"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "skyresources:light_matter"
+      }
+    },
+    {
+      "count": 6,
+      "ingredient": {
+        "item": "skyresources:alchemical_coal"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:emerald"
+      }
+    },
+    {
+      "count": 6,
+      "ingredient": {
+        "item": "skyresources:alchemical_diamond"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 5,
+      "item": "skyresources:quartus_alchemical_dust"
+    }
+  ],
+  "parameter": 0.035,
+  "process": "fusion"
+}

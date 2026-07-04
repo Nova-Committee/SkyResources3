@@ -18,7 +18,7 @@ public final class BlazePowderBlock extends Block {
     }
 
     @Override
-    protected void onPlace(
+    public void onPlace(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -32,7 +32,7 @@ public final class BlazePowderBlock extends Block {
     }
 
     @Override
-    protected void tick(
+    public void tick(
             final BlockState state,
             final ServerLevel level,
             final BlockPos pos,

@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.common.compat;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -11,6 +12,10 @@ import net.minecraft.resources.RegistryOps;
 public final class ValueInput {
     private final CompoundTag tag;
     private final HolderLookup.Provider registries;
+
+    public ValueInput(final CompoundTag tag) {
+        this(tag, null);
+    }
 
     public ValueInput(final CompoundTag tag, final HolderLookup.Provider registries) {
         this.tag = tag;
@@ -39,7 +44,11 @@ public final class ValueInput {
         if (value == null) {
             return Optional.empty();
         }
-        return codec.parse(RegistryOps.create(NbtOps.INSTANCE, this.registries), value).result();
+        return codec.parse(this.ops(), value).result();
+    }
+
+    private DynamicOps<Tag> ops() {
+        return this.registries == null ? NbtOps.INSTANCE : RegistryOps.create(NbtOps.INSTANCE, this.registries);
     }
 
     public boolean getBooleanOr(final String key, final boolean fallback) {

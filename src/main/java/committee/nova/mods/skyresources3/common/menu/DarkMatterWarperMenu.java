@@ -6,7 +6,7 @@ import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,7 +29,7 @@ public final class DarkMatterWarperMenu extends SkyResourcesMenu {
     private final DataSlot burnTime;
     private final DataSlot maxBurnTime;
 
-    public DarkMatterWarperMenu(final int containerId, final Inventory playerInventory, final RegistryFriendlyByteBuf data) {
+    public DarkMatterWarperMenu(final int containerId, final Inventory playerInventory, final FriendlyByteBuf data) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
     }
 
@@ -64,7 +64,7 @@ public final class DarkMatterWarperMenu extends SkyResourcesMenu {
     }
 
     public static void writeClientSideData(
-            final RegistryFriendlyByteBuf buffer,
+            final FriendlyByteBuf buffer,
             final BlockPos pos,
             final DarkMatterWarperBlockEntity blockEntity
     ) {
@@ -133,7 +133,7 @@ public final class DarkMatterWarperMenu extends SkyResourcesMenu {
 
     private static ClientData readClientData(
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf buffer
+            final FriendlyByteBuf buffer
     ) {
         final BlockPos pos = buffer.readBlockPos();
         final int burnTime = buffer.readVarInt();

@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -81,7 +80,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(
+    public VoxelShape getShape(
             final BlockState state,
             final net.minecraft.world.level.BlockGetter level,
             final BlockPos pos,
@@ -91,8 +90,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -100,18 +98,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return BlockInteractionResults.item(this.openMenu(level, state, pos, player, hitResult, stack));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        return this.openMenu(level, state, pos, player, hitResult, ItemStack.EMPTY);
+        return this.openMenu(level, state, pos, player, hitResult, player.getItemInHand(hand));
     }
 
     @Override
@@ -132,7 +119,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState playerWillDestroy(
+    public void playerWillDestroy(
             final Level level,
             final BlockPos pos,
             final BlockState state,
@@ -143,16 +130,16 @@ public final class FreezerBlock extends Block implements EntityBlock {
                 && level.getBlockEntity(pos) instanceof FreezerBlockEntity freezer) {
             freezer.dropContents();
         }
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
-    protected BlockState rotate(final BlockState state, final Rotation rotation) {
+    public BlockState rotate(final BlockState state, final Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(final BlockState state, final Mirror mirror) {
+    public BlockState mirror(final BlockState state, final Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -180,7 +167,7 @@ public final class FreezerBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new FreezerMenu(containerId, inventory, freezer),
                         Component.translatable(freezer.getTier().containerTranslationKey())

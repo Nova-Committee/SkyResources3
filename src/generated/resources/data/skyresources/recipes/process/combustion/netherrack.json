@@ -1,0 +1,25 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:cobblestone"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:blaze_powder"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 8,
+      "item": "minecraft:netherrack"
+    }
+  ],
+  "parameter": 920.0,
+  "process": "combustion"
+}

@@ -12,7 +12,7 @@ import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
+import net.minecraftforge.event.entity.player.ItemFishedEvent;
 
 public final class SurvivalistFishingGameTests {
     private static final BlockPos PLAYER_POS = new BlockPos(2, 1, 2);

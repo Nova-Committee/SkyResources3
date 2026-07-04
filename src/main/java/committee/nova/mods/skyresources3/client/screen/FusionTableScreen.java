@@ -5,13 +5,13 @@ import committee.nova.mods.skyresources3.client.utils.MachineGuiTheme;
 import committee.nova.mods.skyresources3.common.block.entity.FusionTableBlockEntity;
 import committee.nova.mods.skyresources3.common.menu.FusionTableMenu;
 import committee.nova.mods.skyresources3.common.network.FusionTableDumpPayload;
+import committee.nova.mods.skyresources3.common.network.ModNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class FusionTableScreen extends AbstractContainerScreen<FusionTableMenu> {
     private static final int PROGRESS_X = 7;
@@ -43,7 +43,7 @@ public final class FusionTableScreen extends AbstractContainerScreen<FusionTable
         super.init();
         this.addRenderableWidget(SkyResourcesButton.create(
                 Component.translatable("button.skyresources.dump.short"),
-                button -> PacketDistributor.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos())),
+                button -> ModNetworking.sendToServer(new FusionTableDumpPayload(this.menu.getBlockPos())),
                 this.leftPos + 153,
                 this.topPos + 73,
                 18,

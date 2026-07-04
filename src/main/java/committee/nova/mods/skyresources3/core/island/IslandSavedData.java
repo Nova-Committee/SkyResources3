@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -29,8 +28,6 @@ public final class IslandSavedData extends SavedData {
             .optionalFieldOf("islands", Map.of())
             .xmap(IslandSavedData::new, data -> Map.copyOf(data.islands))
             .codec();
-    private static final Factory<IslandSavedData> FACTORY = new Factory<>(IslandSavedData::new, IslandSavedData::load);
-
     private final Map<UUID, IslandRecord> islands;
 
     public IslandSavedData() {
@@ -42,12 +39,12 @@ public final class IslandSavedData extends SavedData {
     }
 
     public static IslandSavedData get(final ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(FACTORY, DATA_ID);
+        return level.getDataStorage().computeIfAbsent(IslandSavedData::load, IslandSavedData::new, DATA_ID);
     }
 
     @Override
-    public CompoundTag save(final CompoundTag tag, final HolderLookup.Provider registries) {
-        CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+    public CompoundTag save(final CompoundTag tag) {
+        CODEC.encodeStart(NbtOps.INSTANCE, this)
                 .result()
                 .filter(CompoundTag.class::isInstance)
                 .map(CompoundTag.class::cast)
@@ -55,8 +52,8 @@ public final class IslandSavedData extends SavedData {
         return tag;
     }
 
-    private static IslandSavedData load(final CompoundTag tag, final HolderLookup.Provider registries) {
-        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag)
+    private static IslandSavedData load(final CompoundTag tag) {
+        return CODEC.parse(NbtOps.INSTANCE, tag)
                 .result()
                 .orElseGet(IslandSavedData::new);
     }

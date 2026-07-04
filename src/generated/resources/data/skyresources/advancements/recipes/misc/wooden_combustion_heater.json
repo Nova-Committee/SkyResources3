@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "skyresources:wooden_combustion_heater"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wooden_heat_component": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "skyresources:wooden_heat_component"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_wooden_heat_component",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "skyresources:wooden_combustion_heater"
+    ]
+  },
+  "sends_telemetry_event": false
+}

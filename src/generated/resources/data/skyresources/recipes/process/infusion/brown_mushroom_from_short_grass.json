@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:cocoa_beans"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:grass"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:brown_mushroom"
+    }
+  ],
+  "parameter": 12.0,
+  "process": "infusion"
+}

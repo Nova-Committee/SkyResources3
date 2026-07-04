@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class InfusionRecipes {
@@ -28,16 +27,15 @@ public final class InfusionRecipes {
                 .flatMap(InfusionRecipes::resolve);
     }
 
-    private static Optional<Match> resolve(final RecipeHolder<SkyResourcesProcessRecipe> holder) {
-        final SkyResourcesProcessRecipe recipe = holder.value();
+    private static Optional<Match> resolve(final SkyResourcesProcessRecipe recipe) {
         final List<ItemStack> outputs = recipe.outputs();
-        if (outputs.isEmpty() || outputs.getFirst().isEmpty()) {
+        if (outputs.isEmpty() || outputs.get(0).isEmpty()) {
             return Optional.empty();
         }
         return Optional.of(new Match(
-                recipe.inputs().getFirst().count(),
+                recipe.inputs().get(0).count(),
                 Math.max(0, (int) recipe.parameter()),
-                outputs.getFirst()
+                outputs.get(0)
         ));
     }
 

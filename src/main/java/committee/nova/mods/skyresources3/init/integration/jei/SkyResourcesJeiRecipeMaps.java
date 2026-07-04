@@ -3,9 +3,8 @@ package committee.nova.mods.skyresources3.init.integration.jei;
 import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -16,7 +15,7 @@ final class SkyResourcesJeiRecipeMaps {
                 .toList();
     }
 
-    static <I extends RecipeInput, T extends Recipe<I>> List<T> recipes(
+    static <I extends Container, T extends Recipe<I>> List<T> recipes(
             final RecipeType<T> type
     ) {
         final RecipeManager recipeManager = Minecraft.getInstance().level == null
@@ -25,9 +24,7 @@ final class SkyResourcesJeiRecipeMaps {
         if (recipeManager == null) {
             return List.of();
         }
-        return recipeManager.getAllRecipesFor(type).stream()
-                .map(RecipeHolder::value)
-                .toList();
+        return recipeManager.getAllRecipesFor(type);
     }
 
     private SkyResourcesJeiRecipeMaps() {

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:cobblestone"
+    },
+    "Y": {
+      "item": "skyresources:wooden_heat_component"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XYX"
+  ],
+  "result": {
+    "item": "skyresources:combustion_heater",
+    "nbt": "{BlockEntityTag:{machine_type:\"skyresources:stone\"},CustomModelData:2,combustion_heater_type:\"skyresources:stone\"}"
+  }
+}

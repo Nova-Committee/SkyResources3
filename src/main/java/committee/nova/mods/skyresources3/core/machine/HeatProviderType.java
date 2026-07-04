@@ -21,7 +21,7 @@ public record HeatProviderType(
         List<Element> elements
 ) {
     public static final ResourceLocation DEFAULT_PART_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/heat_provider");
+            new ResourceLocation(Skyresources3.MODID, "block/heat_provider");
     public static final List<Element> DEFAULT_ELEMENTS = List.of(
             element(2.0F, 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, TextureSlot.BODY),
             element(2.0F, 13.0F, 2.0F, 14.0F, 14.0F, 14.0F, TextureSlot.PART)
@@ -37,7 +37,7 @@ public record HeatProviderType(
     ).apply(instance, HeatProviderType::new));
     private static final HeatProviderType FALLBACK = new HeatProviderType(
             "block.skyresources.heat_provider.iron",
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
+            new ResourceLocation(Skyresources3.MODID, "block/iron_machine"),
             DEFAULT_PART_TEXTURE,
             1.0F,
             1.2F,

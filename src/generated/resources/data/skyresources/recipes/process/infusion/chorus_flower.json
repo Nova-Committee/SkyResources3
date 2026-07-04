@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:popped_chorus_fruit"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:red_mushroom"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:chorus_flower"
+    }
+  ],
+  "parameter": 19.0,
+  "process": "infusion"
+}

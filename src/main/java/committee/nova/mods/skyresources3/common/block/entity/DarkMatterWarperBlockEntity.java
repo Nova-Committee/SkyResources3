@@ -52,17 +52,17 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         this.burnTime = Math.max(0, input.getIntOr(BURN_TIME_KEY, 0));
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         output.putInt(BURN_TIME_KEY, this.burnTime);
     }
@@ -223,6 +223,7 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
                 level,
                 level.getCurrentDifficultyAt(replacement.blockPosition()),
                 MobSpawnType.CONVERSION,
+                null,
                 null
         );
         replacement.setHealth(replacement.getMaxHealth());
@@ -238,9 +239,6 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
 
     private static void copyEquipment(final LivingEntity source, final LivingEntity target) {
         for (final EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot == EquipmentSlot.BODY) {
-                continue;
-            }
             target.setItemSlot(slot, source.getItemBySlot(slot).copy());
         }
     }

@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:glistering_melon_slice"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:pumpkin"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:sugar_cane"
+    }
+  ],
+  "parameter": 17.0,
+  "process": "infusion"
+}

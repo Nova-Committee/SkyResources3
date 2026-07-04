@@ -44,13 +44,22 @@ public final class MaterialItemTintSources {
     ) {
         final ClientLevel lookupLevel = level != null ? level : Minecraft.getInstance().level;
         if (lookupLevel == null) {
-            return FastColor.ARGB32.opaque(defaultColor);
+            return opaque(defaultColor);
         }
         return lookupLevel.registryAccess()
                 .lookup(registryKey)
                 .flatMap(registry -> registry.get(typeKey))
-                .map(reference -> FastColor.ARGB32.opaque(colorGetter.applyAsInt(reference.value())))
-                .orElseGet(() -> FastColor.ARGB32.opaque(defaultColor));
+                .map(reference -> opaque(colorGetter.applyAsInt(reference.value())))
+                .orElseGet(() -> opaque(defaultColor));
+    }
+
+    private static int opaque(final int color) {
+        return FastColor.ARGB32.color(
+                255,
+                FastColor.ARGB32.red(color),
+                FastColor.ARGB32.green(color),
+                FastColor.ARGB32.blue(color)
+        );
     }
 
     private MaterialItemTintSources() {

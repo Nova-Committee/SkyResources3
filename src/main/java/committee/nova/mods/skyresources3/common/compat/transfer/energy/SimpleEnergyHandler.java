@@ -4,7 +4,7 @@ import committee.nova.mods.skyresources3.common.compat.LegacyNbtSerializable;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.energy.EnergyStorage;
+import net.minecraftforge.energy.EnergyStorage;
 
 public class SimpleEnergyHandler extends EnergyStorage implements EnergyHandler, LegacyNbtSerializable {
     private static final String ENERGY_KEY = "energy";

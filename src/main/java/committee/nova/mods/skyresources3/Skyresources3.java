@@ -17,7 +17,6 @@ import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModCapabilities;
 import committee.nova.mods.skyresources3.init.registry.ModCreativeTabs;
-import committee.nova.mods.skyresources3.init.registry.ModDataComponents;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModFluidTypes;
@@ -26,12 +25,13 @@ import committee.nova.mods.skyresources3.init.registry.ModItems;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import committee.nova.mods.skyresources3.init.registry.ModRecipeTypes;
 import com.mojang.logging.LogUtils;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.slf4j.Logger;
 
 @Mod(Skyresources3.MODID)
@@ -39,43 +39,43 @@ public final class Skyresources3 {
     public static final String MODID = "skyresources";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public Skyresources3(final IEventBus modEventBus, final ModContainer modContainer) {
+    public Skyresources3() {
+        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(ModCapabilities::register);
-        modEventBus.addListener(ModNetworking::register);
         modEventBus.addListener(ModDataPackRegistries::register);
 
         ModFluidTypes.register(modEventBus);
         ModFluids.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModBlockEntityTypes.register(modEventBus);
-        ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
         ModMenuTypes.register(modEventBus);
         ModEntityTypes.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
 
-        NeoForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockBreak);
-        NeoForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockPlace);
-        NeoForge.EVENT_BUS.addListener(IslandProtectionEvents::onRightClickBlock);
-        NeoForge.EVENT_BUS.addListener(PlayerIdentityEvents::onPlayerLoggedIn);
-        NeoForge.EVENT_BUS.addListener(VoidIslandPlayerEvents::onServerStarted);
-        NeoForge.EVENT_BUS.addListener(VoidIslandPlayerEvents::onPlayerLoggedIn);
-        NeoForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);
-        NeoForge.EVENT_BUS.addListener(EarlyHandHarvestEvents::onRightClickBlock);
-        NeoForge.EVENT_BUS.addListener(MachineCasingEvents::onRightClickBlock);
-        NeoForge.EVENT_BUS.addListener(CuttingKnifeEvents::onBlockBreak);
-        NeoForge.EVENT_BUS.addListener(CauldronCleanEvents::onRightClickBlock);
-        NeoForge.EVENT_BUS.addListener(RockGrinderEvents::onBlockBreak);
-        NeoForge.EVENT_BUS.addListener(HealthGemEvents::onPlayerTick);
-        NeoForge.EVENT_BUS.addListener(GrassSeedDropEvents::onBlockDrops);
-        NeoForge.EVENT_BUS.addListener(VoidIslandCommands::register);
+        MinecraftForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockBreak);
+        MinecraftForge.EVENT_BUS.addListener(IslandProtectionEvents::onBlockPlace);
+        MinecraftForge.EVENT_BUS.addListener(IslandProtectionEvents::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(PlayerIdentityEvents::onPlayerLoggedIn);
+        MinecraftForge.EVENT_BUS.addListener(VoidIslandPlayerEvents::onServerStarted);
+        MinecraftForge.EVENT_BUS.addListener(VoidIslandPlayerEvents::onPlayerLoggedIn);
+        MinecraftForge.EVENT_BUS.addListener(SurvivalistFishingEvents::onItemFished);
+        MinecraftForge.EVENT_BUS.addListener(EarlyHandHarvestEvents::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(MachineCasingEvents::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(CuttingKnifeEvents::onBlockBreak);
+        MinecraftForge.EVENT_BUS.addListener(CauldronCleanEvents::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(RockGrinderEvents::onBlockBreak);
+        MinecraftForge.EVENT_BUS.addListener(HealthGemEvents::onPlayerTick);
+        MinecraftForge.EVENT_BUS.addListener(GrassSeedDropEvents::onBlockDrops);
+        MinecraftForge.EVENT_BUS.addListener(VoidIslandCommands::register);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        ModNetworking.register();
         LOGGER.info("SkyResources3 common setup complete");
         if (Config.enableMigrationDebugLogging) {
             LOGGER.debug(

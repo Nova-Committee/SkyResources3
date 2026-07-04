@@ -4,7 +4,7 @@ import committee.nova.mods.skyresources3.common.block.entity.CrucibleInserterBlo
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,7 +27,7 @@ public final class CrucibleInserterMenu extends SkyResourcesMenu {
     public CrucibleInserterMenu(
             final int containerId,
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf data
+            final FriendlyByteBuf data
     ) {
         this(containerId, playerInventory, readClientData(playerInventory, data));
     }
@@ -61,7 +61,7 @@ public final class CrucibleInserterMenu extends SkyResourcesMenu {
         this.addStandardInventorySlots(playerInventory, 8, PLAYER_INVENTORY_Y);
     }
 
-    public static void writeClientSideData(final RegistryFriendlyByteBuf buffer, final BlockPos pos) {
+    public static void writeClientSideData(final FriendlyByteBuf buffer, final BlockPos pos) {
         buffer.writeBlockPos(pos);
     }
 
@@ -106,7 +106,7 @@ public final class CrucibleInserterMenu extends SkyResourcesMenu {
 
     private static CrucibleInserterClientData readClientData(
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf buffer
+            final FriendlyByteBuf buffer
     ) {
         final BlockPos pos = buffer.readBlockPos();
         return new CrucibleInserterClientData(

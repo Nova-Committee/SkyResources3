@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "minecraft:wheat_seeds"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:dirt"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:grass_block"
+    }
+  ],
+  "parameter": 14.0,
+  "process": "infusion"
+}

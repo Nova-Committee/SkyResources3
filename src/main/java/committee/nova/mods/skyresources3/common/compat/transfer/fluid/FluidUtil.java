@@ -15,7 +15,7 @@ public final class FluidUtil {
             final BlockPos pos,
             final Direction direction
     ) {
-        return net.neoforged.neoforge.fluids.FluidUtil.interactWithFluidHandler(player, hand, level, pos, direction);
+        return net.minecraftforge.fluids.FluidUtil.interactWithFluidHandler(player, hand, level, pos, direction);
     }
 
     public static boolean tryPlaceFluid(
@@ -25,13 +25,13 @@ public final class FluidUtil {
             final InteractionHand hand,
             final BlockPos pos
     ) {
-        return net.neoforged.neoforge.fluids.FluidUtil.tryPlaceFluid(
+        return net.minecraftforge.fluids.FluidUtil.tryPlaceFluid(
                 player,
                 level,
                 hand,
                 pos,
                 ItemStack.EMPTY,
-                resource.toStack(net.neoforged.neoforge.fluids.FluidType.BUCKET_VOLUME)
+                resource.toStack(net.minecraftforge.fluids.FluidType.BUCKET_VOLUME)
         ).isSuccess();
     }
 

@@ -45,7 +45,7 @@ final class SkyResourcesJeiRecipeTypes {
     }
 
     private static ResourceLocation id(final String path) {
-        return ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, path);
+        return new ResourceLocation(Skyresources3.MODID, path);
     }
 
     private SkyResourcesJeiRecipeTypes() {

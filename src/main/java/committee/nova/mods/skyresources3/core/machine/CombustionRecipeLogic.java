@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.phys.AABB;
 
 public final class CombustionRecipeLogic {
@@ -28,7 +27,7 @@ public final class CombustionRecipeLogic {
         return stacks;
     }
 
-    public static Optional<RecipeHolder<SkyResourcesProcessRecipe>> findRecipe(
+    public static Optional<SkyResourcesProcessRecipe> findRecipe(
             final ServerLevel level,
             final List<ItemStack> stacks,
             final float heat,
@@ -37,13 +36,12 @@ public final class CombustionRecipeLogic {
         return level.getRecipeManager()
                 .getAllRecipesFor(ModRecipeTypes.PROCESS_TYPE.get())
                 .stream()
-                .filter(holder -> holder.value().process().equals(ProcessRecipes.COMBUSTION))
-                .filter(holder -> holder.value().parameter() <= heat)
-                .filter(holder -> holder.value().outputs().stream().findFirst().filter(outputFilter).isPresent())
-                .filter(holder -> canCraft(holder.value(), stacks))
-                .max(Comparator.<RecipeHolder<SkyResourcesProcessRecipe>>comparingInt(
-                                holder -> inputEntryCount(holder.value()))
-                        .thenComparingInt(holder -> inputItemCount(holder.value())));
+                .filter(recipe -> recipe.process().equals(ProcessRecipes.COMBUSTION))
+                .filter(recipe -> recipe.parameter() <= heat)
+                .filter(recipe -> recipe.outputs().stream().findFirst().filter(outputFilter).isPresent())
+                .filter(recipe -> canCraft(recipe, stacks))
+                .max(Comparator.comparingInt(CombustionRecipeLogic::inputEntryCount)
+                        .thenComparingInt(CombustionRecipeLogic::inputItemCount));
     }
 
     public static boolean canCraft(final SkyResourcesProcessRecipe recipe, final List<ItemStack> stacks) {
@@ -68,7 +66,7 @@ public final class CombustionRecipeLogic {
             return;
         }
         for (final ItemStack current : stacks) {
-            if (ItemStack.isSameItemSameComponents(current, stack)) {
+            if (ItemStack.isSameItemSameTags(current, stack)) {
                 current.grow(stack.getCount());
                 return;
             }

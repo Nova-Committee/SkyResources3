@@ -41,8 +41,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.Transaction;
@@ -255,7 +255,7 @@ public final class MachineRuntimeGameTests {
         casing.setStackInSlot(MachineCasingBlockEntity.FUEL_SLOT, catalyst.copyWithCount(2));
 
         final ResourceHandler<ItemResource> casingHandler = helper.getLevel().getCapability(
-                Capabilities.ItemHandler.BLOCK,
+                ForgeCapabilities.ITEM_HANDLER,
                 helper.absolutePos(CASING_POS),
                 Direction.DOWN
         );

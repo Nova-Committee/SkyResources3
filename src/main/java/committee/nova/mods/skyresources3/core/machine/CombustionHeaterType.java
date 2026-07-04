@@ -38,8 +38,8 @@ public record CombustionHeaterType(
     ).apply(instance, CombustionHeaterType::new));
     private static final CombustionHeaterType FALLBACK = new CombustionHeaterType(
             "block.skyresources.combustion_heater.iron",
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/iron_machine"),
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "block/combustion"),
+            new ResourceLocation(Skyresources3.MODID, "block/iron_machine"),
+            new ResourceLocation(Skyresources3.MODID, "block/combustion"),
             1.0F,
             1.2F,
             MachineFuel.furnace(),

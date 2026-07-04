@@ -1,6 +1,5 @@
 package committee.nova.mods.skyresources3.common.block;
 
-import com.mojang.serialization.MapCodec;
 import committee.nova.mods.skyresources3.common.block.entity.DirtFurnaceBlockEntity;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -23,15 +22,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public final class DirtFurnaceBlock extends AbstractFurnaceBlock {
-    public static final MapCodec<DirtFurnaceBlock> CODEC = simpleCodec(DirtFurnaceBlock::new);
-
     public DirtFurnaceBlock(final BlockBehaviour.Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public MapCodec<DirtFurnaceBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -61,7 +53,7 @@ public final class DirtFurnaceBlock extends AbstractFurnaceBlock {
     protected void openContainer(final Level level, final BlockPos pos, final Player player) {
         final BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof DirtFurnaceBlockEntity dirtFurnace) {
-            player.openMenu((MenuProvider) dirtFurnace);
+            net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player, (MenuProvider) dirtFurnace);
             player.awardStat(Stats.INTERACT_WITH_FURNACE);
         }
     }

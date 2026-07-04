@@ -21,8 +21,7 @@ public final class InfusionStoneItem extends Item {
     public InfusionStoneItem(final Properties properties, final int durability) {
         super(properties
                 .durability(durability)
-                .setNoRepair()
-                .stacksTo(1));
+                .setNoRepair());
     }
 
     @Override
@@ -96,7 +95,7 @@ public final class InfusionStoneItem extends Item {
     }
 
     private static void hurtStoneAndPlayer(final UseOnContext context, final Player player, final int healthCost) {
-        context.getItemInHand().hurtAndBreak(1, player, slotForHand(context.getHand()));
+        context.getItemInHand().hurtAndBreak(1, player, living -> living.broadcastBreakEvent(slotForHand(context.getHand())));
         if (context.getLevel() instanceof ServerLevel serverLevel) {
             player.hurt(serverLevel.damageSources().magic(), (float) healthCost);
         }

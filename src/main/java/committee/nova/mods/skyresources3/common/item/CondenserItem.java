@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public final class CondenserItem extends BlockItem {
@@ -27,14 +28,16 @@ public final class CondenserItem extends BlockItem {
 
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.CONDENSER.get());
-        stack.set(ModDataComponents.CONDENSER_TYPE.get(), typeId);
+        ModDataComponents.setResource(stack, ModDataComponents.CONDENSER_TYPE, typeId);
+        ModDataComponents.setBlockEntityResource(stack, ModDataComponents.MACHINE_TYPE, typeId);
         VariantModelData.apply(stack, typeId);
         return stack;
     }
 
     public static ResourceLocation condenserTypeId(final ItemStack stack) {
-        return stack.getOrDefault(
-                ModDataComponents.CONDENSER_TYPE.get(),
+        return ModDataComponents.getResource(
+                stack,
+                ModDataComponents.CONDENSER_TYPE,
                 ModDataPackRegistries.condenserTypeId(ModDataPackRegistries.IRON_CONDENSER)
         );
     }
@@ -48,14 +51,14 @@ public final class CondenserItem extends BlockItem {
     @Deprecated
     public void appendHoverText(
             final ItemStack stack,
-            final TooltipContext context,
+            final Level level,
             final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
-        final HolderLookup.Provider registries = context.registries();
-        if (registries == null) {
+        if (level == null) {
             return;
         }
+        final HolderLookup.Provider registries = level.registryAccess();
         final ResourceLocation typeId = condenserTypeId(stack);
         registries.lookup(ModDataPackRegistries.CONDENSER_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.condenserTypeKey(typeId)))

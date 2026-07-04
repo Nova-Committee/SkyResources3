@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "skyresources:aqueous_deconcentrator"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_water_extractor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "skyresources:water_extractor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_water_extractor",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "skyresources:aqueous_deconcentrator"
+    ]
+  },
+  "sends_telemetry_event": false
+}

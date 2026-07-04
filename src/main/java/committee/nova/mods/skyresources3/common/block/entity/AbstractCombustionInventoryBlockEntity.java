@@ -29,16 +29,16 @@ public abstract class AbstractCombustionInventoryBlockEntity extends BlockEntity
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
     }
 
@@ -144,7 +144,7 @@ public abstract class AbstractCombustionInventoryBlockEntity extends BlockEntity
             remaining.shrink(moved);
             return remaining;
         }
-        if (!ItemStack.isSameItemSameComponents(current, stack)) {
+        if (!ItemStack.isSameItemSameTags(current, stack)) {
             return stack;
         }
         final int moved = Math.min(stack.getCount(), this.slotCapacity(slot, ItemResource.of(stack)) - current.getCount());

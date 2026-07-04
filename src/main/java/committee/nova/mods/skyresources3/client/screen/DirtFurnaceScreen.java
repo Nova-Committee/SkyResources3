@@ -21,12 +21,8 @@ public final class DirtFurnaceScreen extends AbstractFurnaceScreen<DirtFurnaceMe
     private static final int STATUS_Y = 56;
     private static final int STATUS_WIDTH = 58;
 
-    private static final ResourceLocation LIT_PROGRESS_SPRITE =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "container/furnace/lit_progress");
-    private static final ResourceLocation BURN_PROGRESS_SPRITE =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "container/furnace/burn_progress");
     private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/container/furnace.png");
+            new ResourceLocation("minecraft", "textures/gui/container/furnace.png");
 
     public DirtFurnaceScreen(
             final DirtFurnaceMenu menu,
@@ -38,9 +34,7 @@ public final class DirtFurnaceScreen extends AbstractFurnaceScreen<DirtFurnaceMe
                 new SmeltingRecipeBookComponent(),
                 playerInventory,
                 title,
-                TEXTURE,
-                LIT_PROGRESS_SPRITE,
-                BURN_PROGRESS_SPRITE
+                TEXTURE
         );
     }
 

@@ -2,9 +2,9 @@ package committee.nova.mods.skyresources3.common.compat.transfer;
 
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
 import java.util.function.Predicate;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public final class ResourceHandlerUtil {
     public static void moveFirst(
@@ -26,7 +26,7 @@ public final class ResourceHandlerUtil {
             if (accepted <= 0) {
                 continue;
             }
-            final FluidStack drained = from.drain(candidate.copyWithAmount(accepted), FluidAction.EXECUTE);
+            final FluidStack drained = from.drain(new FluidStack(candidate, accepted), FluidAction.EXECUTE);
             if (!drained.isEmpty()) {
                 to.fill(drained, FluidAction.EXECUTE);
             }

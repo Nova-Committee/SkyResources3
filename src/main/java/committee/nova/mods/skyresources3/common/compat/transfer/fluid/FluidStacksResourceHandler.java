@@ -9,11 +9,11 @@ import java.util.List;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class FluidStacksResourceHandler implements ResourceHandler<FluidResource>, LegacyNbtSerializable {
-    private static final Codec<List<FluidStack>> STACKS_CODEC = FluidStack.OPTIONAL_CODEC.listOf();
+    private static final Codec<List<FluidStack>> STACKS_CODEC = FluidStack.CODEC.listOf();
 
     protected NonNullList<FluidStack> stacks;
     private final int capacity;
@@ -133,7 +133,7 @@ public class FluidStacksResourceHandler implements ResourceHandler<FluidResource
         }
         final int drained = this.extract(0, FluidResource.of(resource), resource.getAmount(),
                 action == FluidAction.SIMULATE ? () -> true : null);
-        return drained <= 0 ? FluidStack.EMPTY : resource.copyWithAmount(drained);
+        return drained <= 0 ? FluidStack.EMPTY : new FluidStack(resource, drained);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class FluidStacksResourceHandler implements ResourceHandler<FluidResource
             if (!current.isEmpty()) {
                 final int drained = this.extract(tank, FluidResource.of(current), maxDrain,
                         action == FluidAction.SIMULATE ? () -> true : null);
-                return drained <= 0 ? FluidStack.EMPTY : current.copyWithAmount(drained);
+                return drained <= 0 ? FluidStack.EMPTY : new FluidStack(current, drained);
             }
         }
         return FluidStack.EMPTY;

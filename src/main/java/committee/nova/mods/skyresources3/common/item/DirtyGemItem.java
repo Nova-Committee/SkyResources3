@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public final class DirtyGemItem extends Item {
     public DirtyGemItem(final Properties properties) {
@@ -25,13 +26,14 @@ public final class DirtyGemItem extends Item {
 
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.DIRTY_GEM.get());
-        stack.set(ModDataComponents.DIRTY_GEM_TYPE.get(), typeId);
+        ModDataComponents.setResource(stack, ModDataComponents.DIRTY_GEM_TYPE, typeId);
         return stack;
     }
 
     public static ResourceLocation dirtyGemTypeId(final ItemStack stack) {
-        return stack.getOrDefault(
-                ModDataComponents.DIRTY_GEM_TYPE.get(),
+        return ModDataComponents.getResource(
+                stack,
+                ModDataComponents.DIRTY_GEM_TYPE,
                 ModDataPackRegistries.dirtyGemTypeId(ModDataPackRegistries.EMERALD_DIRTY_GEM)
         );
     }
@@ -45,14 +47,14 @@ public final class DirtyGemItem extends Item {
     @Deprecated
     public void appendHoverText(
             final ItemStack stack,
-            final TooltipContext context,
+            final Level level,
             final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
-        final HolderLookup.Provider registries = context.registries();
-        if (registries == null) {
+        if (level == null) {
             return;
         }
+        final HolderLookup.Provider registries = level.registryAccess();
         final ResourceLocation typeId = dirtyGemTypeId(stack);
         registries.lookup(ModDataPackRegistries.DIRTY_GEM_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.dirtyGemTypeKey(typeId)))

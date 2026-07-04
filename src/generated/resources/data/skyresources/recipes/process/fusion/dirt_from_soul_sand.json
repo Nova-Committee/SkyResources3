@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:soul_sand"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "skyresources:enriched_bonemeal"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:dirt"
+    }
+  ],
+  "parameter": 0.0012,
+  "process": "fusion"
+}

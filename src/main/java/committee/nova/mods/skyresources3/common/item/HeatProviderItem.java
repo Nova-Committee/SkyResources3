@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public final class HeatProviderItem extends BlockItem {
@@ -27,14 +28,16 @@ public final class HeatProviderItem extends BlockItem {
 
     public static ItemStack forType(final ResourceLocation typeId) {
         final ItemStack stack = new ItemStack(ModItems.HEAT_PROVIDER.get());
-        stack.set(ModDataComponents.HEAT_PROVIDER_TYPE.get(), typeId);
+        ModDataComponents.setResource(stack, ModDataComponents.HEAT_PROVIDER_TYPE, typeId);
+        ModDataComponents.setBlockEntityResource(stack, ModDataComponents.MACHINE_TYPE, typeId);
         VariantModelData.apply(stack, typeId);
         return stack;
     }
 
     public static ResourceLocation heatProviderTypeId(final ItemStack stack) {
-        return stack.getOrDefault(
-                ModDataComponents.HEAT_PROVIDER_TYPE.get(),
+        return ModDataComponents.getResource(
+                stack,
+                ModDataComponents.HEAT_PROVIDER_TYPE,
                 ModDataPackRegistries.heatProviderTypeId(ModDataPackRegistries.IRON_HEAT_PROVIDER)
         );
     }
@@ -48,14 +51,14 @@ public final class HeatProviderItem extends BlockItem {
     @Deprecated
     public void appendHoverText(
             final ItemStack stack,
-            final TooltipContext context,
+            final Level level,
             final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
-        final HolderLookup.Provider registries = context.registries();
-        if (registries == null) {
+        if (level == null) {
             return;
         }
+        final HolderLookup.Provider registries = level.registryAccess();
         final ResourceLocation typeId = heatProviderTypeId(stack);
         registries.lookup(ModDataPackRegistries.HEAT_PROVIDER_TYPES)
                 .flatMap(registry -> registry.get(ModDataPackRegistries.heatProviderTypeKey(typeId)))

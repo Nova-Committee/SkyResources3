@@ -3,7 +3,6 @@ package committee.nova.mods.skyresources3.common.item;
 import committee.nova.mods.skyresources3.Config;
 import java.util.List;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -16,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 
 public final class HealthGemItem extends Item {
@@ -49,16 +47,10 @@ public final class HealthGemItem extends Item {
     @Deprecated
     public void appendHoverText(
             final ItemStack stack,
-            final TooltipContext context,
+            final Level level,
             final List<Component> tooltipComponents,
             final TooltipFlag tooltipFlag
     ) {
-        if (!tooltipFlag.hasShiftDown()) {
-            tooltipComponents.add(Component.translatable("item.skyresources.health_gem.info")
-                    .withStyle(ChatFormatting.GREEN));
-            return;
-        }
-
         tooltipComponents.add(Component.translatable("item.skyresources.health_gem.inject")
                 .withStyle(ChatFormatting.GREEN));
         tooltipComponents.add(Component.translatable(
@@ -76,8 +68,8 @@ public final class HealthGemItem extends Item {
     }
 
     public static int getHealthInjected(final ItemStack itemStack) {
-        final CompoundTag tag = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        return tag.contains(HEALTH_KEY) ? tag.getInt(HEALTH_KEY) : 0;
+        final CompoundTag tag = itemStack.getTag();
+        return tag != null && tag.contains(HEALTH_KEY) ? tag.getInt(HEALTH_KEY) : 0;
     }
 
     public static boolean canReceiveHealth(final ItemStack itemStack, final int health) {
@@ -115,8 +107,7 @@ public final class HealthGemItem extends Item {
     }
 
     private static void setHealthInjected(final ItemStack itemStack, final int health) {
-        final CompoundTag tag = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        final CompoundTag tag = itemStack.getOrCreateTag();
         tag.putInt(HEALTH_KEY, Math.min(health, Config.healthGemMaxHealth));
-        itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 }

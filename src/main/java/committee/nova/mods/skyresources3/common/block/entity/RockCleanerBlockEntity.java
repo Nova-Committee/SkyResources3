@@ -12,13 +12,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.energy.EnergyHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.energy.SimpleEnergyHandler;
@@ -41,7 +40,7 @@ public final class RockCleanerBlockEntity extends BlockEntity {
     private static final int MAX_ENERGY_INSERT = 2_000;
     private static final int MAX_ENERGY_EXTRACT = 0;
     private static final float OUTPUT_CHANCE_BONUS = 2.0F;
-    private static final Codec<List<ItemStack>> BUFFER_CODEC = ItemStack.OPTIONAL_CODEC.listOf();
+    private static final Codec<List<ItemStack>> BUFFER_CODEC = ItemStack.CODEC.listOf();
     private static final FluidResource WATER = FluidResource.of(Fluids.WATER);
     private static final String ITEMS_KEY = "items";
     private static final String ENERGY_KEY = "energy";
@@ -60,9 +59,9 @@ public final class RockCleanerBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         input.readChild(ENERGY_KEY, this.energy);
         input.readChild(FLUIDS_KEY, this.fluids);
@@ -77,9 +76,9 @@ public final class RockCleanerBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         output.putChild(ENERGY_KEY, this.energy);
         output.putChild(FLUIDS_KEY, this.fluids);
@@ -107,7 +106,7 @@ public final class RockCleanerBlockEntity extends BlockEntity {
             return;
         }
 
-        final List<RecipeHolder<SkyResourcesProcessRecipe>> recipes = this.matchingRecipes(level);
+        final List<SkyResourcesProcessRecipe> recipes = this.matchingRecipes(level);
         if (recipes.isEmpty()) {
             if (this.progress > 0.0F) {
                 this.progress = 0.0F;
@@ -222,17 +221,16 @@ public final class RockCleanerBlockEntity extends BlockEntity {
 
     private boolean completeRecipe(
             final ServerLevel level,
-            final List<RecipeHolder<SkyResourcesProcessRecipe>> recipes
+            final List<SkyResourcesProcessRecipe> recipes
     ) {
-        for (final RecipeHolder<SkyResourcesProcessRecipe> holder : recipes) {
-            final SkyResourcesProcessRecipe recipe = holder.value();
+        for (final SkyResourcesProcessRecipe recipe : recipes) {
             for (final ItemStack output : recipe.outputs()) {
                 this.addChanceOutput(level, output, recipe.parameter() * OUTPUT_CHANCE_BONUS);
             }
         }
 
         final ItemStack input = this.items.stack(INPUT_SLOT);
-        final int consumed = Math.max(1, recipes.getFirst().value().inputs().getFirst().count());
+        final int consumed = Math.max(1, recipes.get(0).inputs().get(0).count());
         input.shrink(consumed);
         if (input.isEmpty()) {
             this.items.setStack(INPUT_SLOT, ItemStack.EMPTY);
@@ -254,12 +252,12 @@ public final class RockCleanerBlockEntity extends BlockEntity {
     private boolean moveBufferedOutputs() {
         boolean changed = false;
         for (int slot = FIRST_OUTPUT_SLOT; slot < SLOT_COUNT && !this.bufferStacks.isEmpty(); slot++) {
-            final ItemStack buffered = this.bufferStacks.getLast();
+            final ItemStack buffered = this.bufferStacks.get(this.bufferStacks.size() - 1);
             if (this.insertIntoOutputSlot(slot, buffered)) {
                 changed = true;
             }
             if (buffered.isEmpty()) {
-                this.bufferStacks.removeLast();
+                this.bufferStacks.remove(this.bufferStacks.size() - 1);
             }
         }
         return changed;
@@ -273,11 +271,13 @@ public final class RockCleanerBlockEntity extends BlockEntity {
         final int moved;
         if (current.isEmpty()) {
             moved = Math.min(stack.getCount(), stack.getMaxStackSize());
-            this.items.setStack(slot, stack.copyWithCount(moved));
+            final ItemStack movedStack = stack.copy();
+            movedStack.setCount(moved);
+            this.items.setStack(slot, movedStack);
             stack.shrink(moved);
             return moved > 0;
         }
-        if (!ItemStack.isSameItemSameComponents(current, stack)) {
+        if (!ItemStack.isSameItemSameTags(current, stack)) {
             return false;
         }
         moved = Math.min(stack.getCount(), current.getMaxStackSize() - current.getCount());
@@ -289,7 +289,7 @@ public final class RockCleanerBlockEntity extends BlockEntity {
         return true;
     }
 
-    private List<RecipeHolder<SkyResourcesProcessRecipe>> matchingRecipes(final ServerLevel level) {
+    private List<SkyResourcesProcessRecipe> matchingRecipes(final ServerLevel level) {
         final ItemStack input = this.items.stack(INPUT_SLOT);
         if (input.isEmpty()) {
             return List.of();

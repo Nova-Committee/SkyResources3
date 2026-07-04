@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.Transaction;
@@ -258,7 +258,7 @@ public final class LifeInfusionGameTests {
             final BlockPos relativePos
     ) {
         final ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(
-                Capabilities.ItemHandler.BLOCK,
+                ForgeCapabilities.ITEM_HANDLER,
                 helper.absolutePos(relativePos),
                 Direction.UP
         );

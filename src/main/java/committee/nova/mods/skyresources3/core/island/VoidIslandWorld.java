@@ -19,7 +19,7 @@ public final class VoidIslandWorld {
     public static final int ISLAND_Y = 192;
     public static final ResourceKey<Level> LEVEL = ResourceKey.create(
             Registries.DIMENSION,
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "void_island")
+            new ResourceLocation(Skyresources3.MODID, "void_island")
     );
 
     private static final BlockPos SPAWN_PLATFORM_CENTER = new BlockPos(0, ISLAND_Y, 0);

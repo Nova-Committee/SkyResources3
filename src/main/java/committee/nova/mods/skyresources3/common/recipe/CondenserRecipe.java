@@ -1,16 +1,13 @@
 package committee.nova.mods.skyresources3.common.recipe;
 
 import committee.nova.mods.skyresources3.init.registry.ModRecipeTypes;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.JsonObject;
 import java.util.Locale;
 import java.util.Objects;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -18,6 +15,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
+    private final ResourceLocation id;
     private final String group;
     private final ProcessIngredient catalyst;
     private final Source source;
@@ -25,6 +23,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     private final float parameter;
 
     public CondenserRecipe(
+            final ResourceLocation id,
             final String group,
             final ProcessIngredient catalyst,
             final Source source,
@@ -37,6 +36,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
         if (parameter <= 0.0F) {
             throw new IllegalArgumentException("Condenser recipe parameter must be positive");
         }
+        this.id = id;
         this.group = group;
         this.catalyst = catalyst;
         this.source = source;
@@ -50,7 +50,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(final CondenserRecipeInput input, final HolderLookup.Provider registries) {
+    public ItemStack assemble(final CondenserRecipeInput input, final RegistryAccess registryAccess) {
         return this.output.copy();
     }
 
@@ -69,7 +69,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     }
 
     @Override
-    public ItemStack getResultItem(final HolderLookup.Provider registries) {
+    public ItemStack getResultItem(final RegistryAccess registryAccess) {
         return this.output.copy();
     }
 
@@ -79,12 +79,17 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     }
 
     @Override
-    public RecipeSerializer<? extends Recipe<CondenserRecipeInput>> getSerializer() {
+    public ResourceLocation getId() {
+        return this.id;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
         return ModRecipeTypes.CONDENSER_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<? extends Recipe<CondenserRecipeInput>> getType() {
+    public RecipeType<?> getType() {
         return ModRecipeTypes.CONDENSER_TYPE.get();
     }
 
@@ -112,7 +117,7 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
         return Objects.hash(
                 this.source,
                 this.catalyst.displayStacks().stream()
-                        .map(ItemStack::hashItemAndComponents)
+                        .map(stack -> Objects.hash(stack.getItem(), stack.getTag()))
                         .toList(),
                 this.output.getItem(),
                 this.output.getCount(),
@@ -121,20 +126,6 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     }
 
     public record Source(SourceType type, ResourceLocation id) {
-        private static final Codec<ResourceLocation> IDENTIFIER_CODEC =
-                Codec.STRING.xmap(ResourceLocation::parse, ResourceLocation::toString);
-        private static final Codec<Source> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                SourceType.CODEC.fieldOf("type").forGetter(Source::type),
-                IDENTIFIER_CODEC.fieldOf("id").forGetter(Source::id)
-        ).apply(instance, Source::new));
-        private static final StreamCodec<RegistryFriendlyByteBuf, Source> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.STRING_UTF8,
-                source -> source.type().id(),
-                ByteBufCodecs.STRING_UTF8,
-                source -> source.id().toString(),
-                (type, id) -> new Source(SourceType.byId(type), ResourceLocation.parse(id))
-        );
-
         public static Source fluid(final ResourceLocation id) {
             return new Source(SourceType.FLUID, id);
         }
@@ -142,13 +133,27 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
         public static Source block(final ResourceLocation id) {
             return new Source(SourceType.BLOCK, id);
         }
+
+        private static Source fromJson(final JsonObject json) {
+            return new Source(
+                    SourceType.byId(GsonHelper.getAsString(json, "type")),
+                    new ResourceLocation(GsonHelper.getAsString(json, "id"))
+            );
+        }
+
+        private static Source fromNetwork(final FriendlyByteBuf buffer) {
+            return new Source(buffer.readEnum(SourceType.class), buffer.readResourceLocation());
+        }
+
+        private void toNetwork(final FriendlyByteBuf buffer) {
+            buffer.writeEnum(this.type);
+            buffer.writeResourceLocation(this.id);
+        }
     }
 
     public enum SourceType {
         FLUID("fluid"),
         BLOCK("block");
-
-        private static final Codec<SourceType> CODEC = Codec.STRING.xmap(SourceType::byId, SourceType::id);
 
         private final String id;
 
@@ -172,37 +177,37 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     }
 
     public static final class Serializer implements RecipeSerializer<CondenserRecipe> {
-        private static final MapCodec<CondenserRecipe> CODEC =
-                RecordCodecBuilder.mapCodec(instance -> instance.group(
-                        Codec.STRING.optionalFieldOf("group", "").forGetter(CondenserRecipe::group),
-                        ProcessIngredient.CODEC.fieldOf("catalyst").forGetter(CondenserRecipe::catalyst),
-                        Source.CODEC.fieldOf("source").forGetter(CondenserRecipe::source),
-                        ItemStack.STRICT_CODEC.fieldOf("output").forGetter(CondenserRecipe::output),
-                        Codec.FLOAT.fieldOf("parameter").forGetter(CondenserRecipe::parameter)
-                ).apply(instance, CondenserRecipe::new));
-        private static final StreamCodec<RegistryFriendlyByteBuf, CondenserRecipe> STREAM_CODEC =
-                StreamCodec.composite(
-                        ByteBufCodecs.STRING_UTF8,
-                        CondenserRecipe::group,
-                        ProcessIngredient.STREAM_CODEC,
-                        CondenserRecipe::catalyst,
-                        Source.STREAM_CODEC,
-                        CondenserRecipe::source,
-                        ItemStack.STREAM_CODEC,
-                        CondenserRecipe::output,
-                        ByteBufCodecs.FLOAT,
-                        CondenserRecipe::parameter,
-                        CondenserRecipe::new
-                );
-
         @Override
-        public MapCodec<CondenserRecipe> codec() {
-            return CODEC;
+        public CondenserRecipe fromJson(final ResourceLocation id, final JsonObject json) {
+            return new CondenserRecipe(
+                    id,
+                    GsonHelper.getAsString(json, "group", ""),
+                    ProcessIngredient.fromJson(GsonHelper.getAsJsonObject(json, "catalyst")),
+                    Source.fromJson(GsonHelper.getAsJsonObject(json, "source")),
+                    RecipeJsonUtil.stackFromJson(GsonHelper.getAsJsonObject(json, "output")),
+                    GsonHelper.getAsFloat(json, "parameter")
+            );
         }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, CondenserRecipe> streamCodec() {
-            return STREAM_CODEC;
+        public CondenserRecipe fromNetwork(final ResourceLocation id, final FriendlyByteBuf buffer) {
+            return new CondenserRecipe(
+                    id,
+                    buffer.readUtf(),
+                    ProcessIngredient.fromNetwork(buffer),
+                    Source.fromNetwork(buffer),
+                    buffer.readItem(),
+                    buffer.readFloat()
+            );
+        }
+
+        @Override
+        public void toNetwork(final FriendlyByteBuf buffer, final CondenserRecipe recipe) {
+            buffer.writeUtf(recipe.group());
+            recipe.catalyst().toNetwork(buffer);
+            recipe.source().toNetwork(buffer);
+            buffer.writeItem(recipe.output());
+            buffer.writeFloat(recipe.parameter());
         }
     }
 }

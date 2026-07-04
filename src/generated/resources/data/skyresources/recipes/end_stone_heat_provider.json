@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:end_stone"
+    },
+    "Y": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "pattern": [
+    "XYX",
+    "XYX",
+    "X X"
+  ],
+  "result": {
+    "item": "skyresources:heat_provider",
+    "nbt": "{BlockEntityTag:{machine_type:\"skyresources:end_stone\"},CustomModelData:5,heat_provider_type:\"skyresources:end_stone\"}"
+  }
+}

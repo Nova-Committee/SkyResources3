@@ -1,17 +1,18 @@
 package committee.nova.mods.skyresources3.common.item;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomModelData;
 
 final class VariantModelData {
     private VariantModelData() {
     }
 
     static void apply(final ItemStack stack, final ResourceLocation typeId) {
-        stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(value(typeId)));
+        final int value = value(typeId);
+        if (value > 0) {
+            stack.getOrCreateTag().putInt("CustomModelData", value);
+        }
     }
 
     private static int value(final ResourceLocation typeId) {

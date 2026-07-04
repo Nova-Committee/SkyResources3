@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "minecraft:quartz"
+    },
+    "Y": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "Z": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "pattern": [
+    "XYX",
+    "XZX",
+    "XZX"
+  ],
+  "result": {
+    "item": "skyresources:quartz_amplification_component"
+  },
+  "show_notification": true
+}

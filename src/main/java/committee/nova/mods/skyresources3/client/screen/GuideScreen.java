@@ -156,7 +156,7 @@ public final class GuideScreen extends Screen {
 
     @Override
     public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-        this.renderTransparentBackground(guiGraphics);
+        this.renderBackground(guiGraphics);
         guiGraphics.fill(0, 0, this.width, this.height, BACKGROUND_COLOR);
 
         if (this.currentStructure != null) {
@@ -195,7 +195,7 @@ public final class GuideScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+    public void renderBackground(final GuiGraphics guiGraphics) {
     }
 
     @Override
@@ -258,7 +258,6 @@ public final class GuideScreen extends Screen {
     public boolean mouseScrolled(
             final double mouseX,
             final double mouseY,
-            final double scrollX,
             final double scrollY
     ) {
         if (this.currentStructure != null) {
@@ -274,7 +273,7 @@ public final class GuideScreen extends Screen {
                     this.height
             );
         }
-        if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+        if (super.mouseScrolled(mouseX, mouseY, scrollY)) {
             return true;
         }
         if (scrollY == 0.0D) {

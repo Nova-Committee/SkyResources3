@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -68,12 +67,12 @@ public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalB
     }
 
     @Override
-    protected BlockState rotate(final BlockState state, final Rotation rotation) {
+    public BlockState rotate(final BlockState state, final Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(final BlockState state, final Mirror mirror) {
+    public BlockState mirror(final BlockState state, final Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -83,8 +82,7 @@ public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalB
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -92,37 +90,17 @@ public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalB
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
+        final ItemStack stack = player.getItemInHand(hand);
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hitResult.getDirection(), stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof AqueousMachineBlockEntity machine)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (!stack.isEmpty() && FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection())) {
-            return ItemInteractionResult.SUCCESS;
-        }
-        return BlockInteractionResults.item(this.openMenu(pos, player, machine));
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        if (!level.mayInteract(player, pos)
-                || !player.mayUseItemAt(pos, hitResult.getDirection(), ItemStack.EMPTY)) {
-            return InteractionResult.PASS;
-        }
-        if (!(level.getBlockEntity(pos) instanceof AqueousMachineBlockEntity machine)) {
-            return InteractionResult.PASS;
-        }
-        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         return this.openMenu(pos, player, machine);
@@ -134,7 +112,7 @@ public abstract class AbstractAqueousMachineBlock extends HorizontalDirectionalB
             final AqueousMachineBlockEntity machine
     ) {
         final AqueousMachineMode mode = this.mode();
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) -> new AqueousMachineMenu(containerId, inventory, machine),
                         Component.translatable(mode.containerTranslationKey())

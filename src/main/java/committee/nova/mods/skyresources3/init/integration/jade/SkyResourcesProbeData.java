@@ -1,10 +1,7 @@
 package committee.nova.mods.skyresources3.init.integration.jade;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 record SkyResourcesProbeData(
@@ -27,45 +24,6 @@ record SkyResourcesProbeData(
     static final int STATE_VALID_TIER2_MISSING = 4;
     static final int VALUE_NONE = -1;
     static final int EXPECTED_OUTPUT_SCALE = 100;
-    static final StreamCodec<RegistryFriendlyByteBuf, SkyResourcesProbeData> STREAM_CODEC = new StreamCodec<>() {
-        @Override
-        public SkyResourcesProbeData decode(final RegistryFriendlyByteBuf buffer) {
-            final Component objectName = ByteBufCodecs.BOOL.decode(buffer)
-                    ? ComponentSerialization.STREAM_CODEC.decode(buffer)
-                    : null;
-            return new SkyResourcesProbeData(
-                    objectName,
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer),
-                    ByteBufCodecs.VAR_INT.decode(buffer)
-            );
-        }
-
-        @Override
-        public void encode(final RegistryFriendlyByteBuf buffer, final SkyResourcesProbeData value) {
-            ByteBufCodecs.BOOL.encode(buffer, value.objectName != null);
-            if (value.objectName != null) {
-                ComponentSerialization.STREAM_CODEC.encode(buffer, value.objectName);
-            }
-            ByteBufCodecs.VAR_INT.encode(buffer, value.heatRequirementState);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.heatSourceValue);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.currentHeat);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.maxHeat);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.heatPerTick);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.multiblockState);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserProgress);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserMaxProgress);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserCatalystPercent);
-            ByteBufCodecs.VAR_INT.encode(buffer, value.condenserExpectedOutputValue);
-        }
-    };
 
     static SkyResourcesProbeData empty() {
         return new SkyResourcesProbeData(
@@ -196,5 +154,40 @@ record SkyResourcesProbeData(
 
     static int state(final boolean valid) {
         return valid ? STATE_VALID : STATE_INVALID;
+    }
+
+    void write(final CompoundTag tag) {
+        if (this.objectName != null) {
+            tag.putString("object_name", Component.Serializer.toJson(this.objectName));
+        }
+        tag.putInt("heat_requirement_state", this.heatRequirementState);
+        tag.putInt("heat_source_value", this.heatSourceValue);
+        tag.putInt("current_heat", this.currentHeat);
+        tag.putInt("max_heat", this.maxHeat);
+        tag.putInt("heat_per_tick", this.heatPerTick);
+        tag.putInt("multiblock_state", this.multiblockState);
+        tag.putInt("condenser_progress", this.condenserProgress);
+        tag.putInt("condenser_max_progress", this.condenserMaxProgress);
+        tag.putInt("condenser_catalyst_percent", this.condenserCatalystPercent);
+        tag.putInt("condenser_expected_output_value", this.condenserExpectedOutputValue);
+    }
+
+    static SkyResourcesProbeData read(final CompoundTag tag) {
+        final Component objectName = tag.contains("object_name")
+                ? Component.Serializer.fromJson(tag.getString("object_name"))
+                : null;
+        return new SkyResourcesProbeData(
+                objectName,
+                tag.getInt("heat_requirement_state"),
+                tag.getInt("heat_source_value"),
+                tag.getInt("current_heat"),
+                tag.getInt("max_heat"),
+                tag.getInt("heat_per_tick"),
+                tag.getInt("multiblock_state"),
+                tag.getInt("condenser_progress"),
+                tag.getInt("condenser_max_progress"),
+                tag.getInt("condenser_catalyst_percent"),
+                tag.getInt("condenser_expected_output_value")
+        );
     }
 }

@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.common.compat;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -10,6 +11,10 @@ import net.minecraft.resources.RegistryOps;
 public final class ValueOutput {
     private final CompoundTag tag;
     private final HolderLookup.Provider registries;
+
+    public ValueOutput(final CompoundTag tag) {
+        this(tag, null);
+    }
 
     public ValueOutput(final CompoundTag tag, final HolderLookup.Provider registries) {
         this.tag = tag;
@@ -45,9 +50,13 @@ public final class ValueOutput {
     }
 
     public <T> void store(final String key, final Codec<T> codec, final T value) {
-        codec.encodeStart(RegistryOps.create(NbtOps.INSTANCE, this.registries), value)
+        codec.encodeStart(this.ops(), value)
                 .result()
                 .ifPresent(tagValue -> this.putTag(key, tagValue));
+    }
+
+    private DynamicOps<Tag> ops() {
+        return this.registries == null ? NbtOps.INSTANCE : RegistryOps.create(NbtOps.INSTANCE, this.registries);
     }
 
     private void putTag(final String key, final Tag tagValue) {

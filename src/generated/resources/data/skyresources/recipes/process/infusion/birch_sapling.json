@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "count": 10,
+      "ingredient": {
+        "item": "minecraft:bone_meal"
+      }
+    },
+    {
+      "ingredient": {
+        "tag": "minecraft:saplings"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:birch_sapling"
+    }
+  ],
+  "parameter": 19.0,
+  "process": "infusion"
+}

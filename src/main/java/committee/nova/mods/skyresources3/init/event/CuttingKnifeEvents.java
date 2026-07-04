@@ -13,10 +13,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 
 public final class CuttingKnifeEvents {
     public static void onBlockBreak(final BlockEvent.BreakEvent event) {
@@ -44,7 +43,7 @@ public final class CuttingKnifeEvents {
             return;
         }
         ProcessingToolDrops.popWithFortune(level, event.getPos(), result.get(), player, tool, 1.0F);
-        tool.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+        tool.hurtAndBreak(1, player, living -> living.broadcastBreakEvent(EquipmentSlot.MAINHAND));
     }
 
     public static float getDestroySpeed(final CuttingKnifeItem knife, final BlockState state) {
@@ -61,9 +60,9 @@ public final class CuttingKnifeEvents {
                 .flatMap(CuttingKnifeEvents::firstOutput);
     }
 
-    private static Optional<ItemStack> firstOutput(final RecipeHolder<SkyResourcesProcessRecipe> recipe) {
-        final List<ItemStack> outputs = recipe.value().outputs();
-        return outputs.isEmpty() ? Optional.empty() : Optional.of(outputs.getFirst());
+    private static Optional<ItemStack> firstOutput(final SkyResourcesProcessRecipe recipe) {
+        final List<ItemStack> outputs = recipe.outputs();
+        return outputs.isEmpty() ? Optional.empty() : Optional.of(outputs.get(0));
     }
 
     private static ItemStack stackForState(final BlockState state) {

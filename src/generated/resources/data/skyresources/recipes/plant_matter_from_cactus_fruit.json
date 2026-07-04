@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "item": "skyresources:cactus_fruit"
+    }
+  },
+  "pattern": [
+    " X ",
+    "XXX",
+    " X "
+  ],
+  "result": {
+    "count": 3,
+    "item": "skyresources:plant_matter"
+  },
+  "show_notification": true
+}

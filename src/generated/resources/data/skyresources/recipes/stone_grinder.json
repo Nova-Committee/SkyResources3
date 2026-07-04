@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "X": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "#  ",
+    " # ",
+    "  X"
+  ],
+  "result": {
+    "item": "skyresources:stone_grinder"
+  },
+  "show_notification": true
+}

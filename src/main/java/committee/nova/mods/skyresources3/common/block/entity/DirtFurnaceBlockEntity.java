@@ -12,13 +12,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
@@ -49,8 +48,8 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
         final boolean hasInput = !input.isEmpty();
         final boolean hasFuel = !fuel.isEmpty();
         if (this.isLit() || hasFuel && hasInput) {
-            final SingleRecipeInput recipeInput = new SingleRecipeInput(input);
-            final RecipeHolder<? extends AbstractCookingRecipe> recipe = hasInput
+            final SimpleContainer recipeInput = new SimpleContainer(input);
+            final AbstractCookingRecipe recipe = hasInput
                     ? getSmeltingRecipe(level, recipeInput)
                     : null;
             final int maxStackSize = this.getMaxStackSize();
@@ -104,7 +103,7 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
     @Override
     public void setItem(final int index, final ItemStack stack) {
         final ItemStack current = this.items.get(index);
-        final boolean sameStack = !stack.isEmpty() && ItemStack.isSameItemSameComponents(current, stack);
+        final boolean sameStack = !stack.isEmpty() && ItemStack.isSameItemSameTags(current, stack);
         super.setItem(index, stack);
         if (index == SLOT_INPUT && !sameStack) {
             this.setCookingTimer(0);
@@ -168,20 +167,19 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
     }
 
     @Nullable
-    private static RecipeHolder<? extends AbstractCookingRecipe> getSmeltingRecipe(
+    private static AbstractCookingRecipe getSmeltingRecipe(
             final ServerLevel level,
-            final SingleRecipeInput recipeInput
+            final SimpleContainer recipeInput
     ) {
         return level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMELTING, recipeInput, level)
-                .<RecipeHolder<? extends AbstractCookingRecipe>>map(holder -> holder)
                 .orElse(null);
     }
 
     private static boolean canBurn(
             final RegistryAccess registryAccess,
-            @Nullable final RecipeHolder<? extends AbstractCookingRecipe> recipe,
-            final SingleRecipeInput recipeInput,
+            @Nullable final AbstractCookingRecipe recipe,
+            final SimpleContainer recipeInput,
             final NonNullList<ItemStack> items,
             final int maxStackSize
     ) {
@@ -189,7 +187,7 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
             return false;
         }
 
-        final ItemStack result = recipe.value().assemble(recipeInput, registryAccess);
+        final ItemStack result = recipe.assemble(recipeInput, registryAccess);
         if (result.isEmpty()) {
             return false;
         }
@@ -198,7 +196,7 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
         if (output.isEmpty()) {
             return true;
         }
-        if (!ItemStack.isSameItemSameComponents(output, result)) {
+        if (!ItemStack.isSameItemSameTags(output, result)) {
             return false;
         }
         final int combinedCount = output.getCount() + result.getCount();
@@ -208,8 +206,8 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
 
     private static boolean burn(
             final RegistryAccess registryAccess,
-            @Nullable final RecipeHolder<? extends AbstractCookingRecipe> recipe,
-            final SingleRecipeInput recipeInput,
+            @Nullable final AbstractCookingRecipe recipe,
+            final SimpleContainer recipeInput,
             final NonNullList<ItemStack> items,
             final int maxStackSize
     ) {
@@ -218,11 +216,11 @@ public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
         }
 
         final ItemStack input = items.get(SLOT_INPUT);
-        final ItemStack result = recipe.value().assemble(recipeInput, registryAccess);
+        final ItemStack result = recipe.assemble(recipeInput, registryAccess);
         final ItemStack output = items.get(SLOT_RESULT);
         if (output.isEmpty()) {
             items.set(SLOT_RESULT, result.copy());
-        } else if (ItemStack.isSameItemSameComponents(output, result)) {
+        } else if (ItemStack.isSameItemSameTags(output, result)) {
             output.grow(result.getCount());
         }
 

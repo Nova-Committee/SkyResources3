@@ -3,7 +3,7 @@ package committee.nova.mods.skyresources3.common.menu;
 import committee.nova.mods.skyresources3.common.block.entity.CombustionCollectorBlockEntity;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 
@@ -11,7 +11,7 @@ public final class CombustionCollectorMenu extends AbstractCombustionInventoryMe
     public CombustionCollectorMenu(
             final int containerId,
             final Inventory playerInventory,
-            final RegistryFriendlyByteBuf data
+            final FriendlyByteBuf data
     ) {
         super(
                 ModMenuTypes.COMBUSTION_COLLECTOR.get(),

@@ -1,5 +1,6 @@
 package committee.nova.mods.skyresources3.common.compat.transfer.item;
 
+import java.util.Objects;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,11 +32,11 @@ public final class ItemResource {
     @Override
     public boolean equals(final Object obj) {
         return this == obj || obj instanceof ItemResource other
-                && ItemStack.isSameItemSameComponents(this.stack, other.stack);
+                && ItemStack.isSameItemSameTags(this.stack, other.stack);
     }
 
     @Override
     public int hashCode() {
-        return ItemStack.hashItemAndComponents(this.stack);
+        return Objects.hash(this.stack.getItem(), this.stack.getTag());
     }
 }

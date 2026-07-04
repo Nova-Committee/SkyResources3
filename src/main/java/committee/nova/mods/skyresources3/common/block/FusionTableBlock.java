@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,8 +48,7 @@ public final class FusionTableBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -58,22 +56,11 @@ public final class FusionTableBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return BlockInteractionResults.item(this.openMenu(level, pos, player, hitResult, stack));
+        return this.openMenu(level, pos, player, hitResult, player.getItemInHand(hand));
     }
 
     @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        return this.openMenu(level, pos, player, hitResult, ItemStack.EMPTY);
-    }
-
-    @Override
-    public BlockState playerWillDestroy(
+    public void playerWillDestroy(
             final Level level,
             final BlockPos pos,
             final BlockState state,
@@ -82,7 +69,7 @@ public final class FusionTableBlock extends Block implements EntityBlock {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof FusionTableBlockEntity fusionTable) {
             fusionTable.dropContents();
         }
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     private InteractionResult openMenu(
@@ -101,7 +88,7 @@ public final class FusionTableBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new FusionTableMenu(containerId, inventory, fusionTable),

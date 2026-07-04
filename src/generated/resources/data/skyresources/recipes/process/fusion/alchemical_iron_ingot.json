@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:iron_ingot"
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "minecraft:blaze_powder"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:alchemical_iron_ingot"
+    }
+  ],
+  "parameter": 0.002,
+  "process": "fusion"
+}

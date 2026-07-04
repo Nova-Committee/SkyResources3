@@ -55,28 +55,28 @@ public final class FusionTableBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         input.readChild(FILTER_KEY, this.filter);
         this.yieldAmount = input.getDoubleOr(YIELD_KEY, 0.0D);
         this.yieldRate = input.getFloatOr(YIELD_RATE_KEY, 0.0F);
-        this.outputStack = input.read(OUTPUT_KEY, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.outputStack = input.read(OUTPUT_KEY, ItemStack.CODEC).orElse(ItemStack.EMPTY);
         this.catalystYield = input.getFloatOr(CATALYST_YIELD_KEY, 0.0F);
         this.catalystLeft = input.getFloatOr(CATALYST_LEFT_KEY, 0.0F);
         this.progress = input.getIntOr(PROGRESS_KEY, 0);
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         output.putChild(FILTER_KEY, this.filter);
         output.putDouble(YIELD_KEY, this.yieldAmount);
         output.putFloat(YIELD_RATE_KEY, this.yieldRate);
-        output.store(OUTPUT_KEY, ItemStack.OPTIONAL_CODEC, this.outputStack);
+        output.store(OUTPUT_KEY, ItemStack.CODEC, this.outputStack);
         output.putFloat(CATALYST_YIELD_KEY, this.catalystYield);
         output.putFloat(CATALYST_LEFT_KEY, this.catalystLeft);
         output.putInt(PROGRESS_KEY, this.progress);
@@ -224,12 +224,12 @@ public final class FusionTableBlockEntity extends BlockEntity {
             return false;
         }
         return ProcessRecipes.find(level, ProcessRecipes.FUSION, inputs)
-                .map(holder -> this.startRecipe(holder.value()))
+                .map(this::startRecipe)
                 .orElse(false);
     }
 
     private boolean startRecipe(final SkyResourcesProcessRecipe recipe) {
-        final ItemStack output = recipe.outputs().getFirst();
+        final ItemStack output = recipe.outputs().get(0);
         if (output.isEmpty() || recipe.parameter() <= 0.0F) {
             return false;
         }
@@ -328,7 +328,7 @@ public final class FusionTableBlockEntity extends BlockEntity {
         if (output.isEmpty()) {
             return stack.getMaxStackSize() / countPerCraft;
         }
-        if (!ItemStack.isSameItemSameComponents(output, stack)) {
+        if (!ItemStack.isSameItemSameTags(output, stack)) {
             return 0;
         }
         return (output.getMaxStackSize() - output.getCount()) / countPerCraft;
@@ -363,7 +363,7 @@ public final class FusionTableBlockEntity extends BlockEntity {
     }
 
     private static boolean matchesFilter(final ItemStack filterStack, final ItemResource resource) {
-        return !filterStack.isEmpty() && ItemStack.isSameItemSameComponents(filterStack, resource.toStack());
+        return !filterStack.isEmpty() && ItemStack.isSameItemSameTags(filterStack, resource.toStack());
     }
 
     private static boolean isMachineSlot(final int slot) {

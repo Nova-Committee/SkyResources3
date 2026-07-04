@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": {
+      "tag": "minecraft:logs"
+    },
+    "Y": {
+      "item": "minecraft:diamond_sword"
+    }
+  },
+  "pattern": [
+    " Y ",
+    " X ",
+    "XXX"
+  ],
+  "result": {
+    "item": "skyresources:life_injector"
+  },
+  "show_notification": true
+}

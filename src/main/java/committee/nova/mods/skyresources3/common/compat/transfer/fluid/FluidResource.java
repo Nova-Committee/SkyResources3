@@ -1,7 +1,8 @@
 package committee.nova.mods.skyresources3.common.compat.transfer.fluid;
 
+import java.util.Objects;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public final class FluidResource {
     public static final FluidResource EMPTY = new FluidResource(FluidStack.EMPTY);
@@ -9,7 +10,7 @@ public final class FluidResource {
     private final FluidStack stack;
 
     private FluidResource(final FluidStack stack) {
-        this.stack = stack.isEmpty() ? FluidStack.EMPTY : stack.copyWithAmount(1);
+        this.stack = stack.isEmpty() ? FluidStack.EMPTY : new FluidStack(stack, 1);
     }
 
     public static FluidResource of(final Fluid fluid) {
@@ -29,17 +30,17 @@ public final class FluidResource {
     }
 
     public FluidStack toStack(final int amount) {
-        return this.stack.isEmpty() ? FluidStack.EMPTY : this.stack.copyWithAmount(amount);
+        return this.stack.isEmpty() ? FluidStack.EMPTY : new FluidStack(this.stack, amount);
     }
 
     @Override
     public boolean equals(final Object obj) {
         return this == obj || obj instanceof FluidResource other
-                && FluidStack.isSameFluidSameComponents(this.stack, other.stack);
+                && this.stack.isFluidStackIdentical(other.stack);
     }
 
     @Override
     public int hashCode() {
-        return FluidStack.hashFluidAndComponents(this.stack);
+        return Objects.hash(this.stack.getFluid(), this.stack.getTag());
     }
 }

@@ -236,7 +236,7 @@ final class JeiSourceDescriptions {
         }
         final ItemStack normalized = stack.copyWithCount(1);
         for (final ItemStack existing : stacks) {
-            if (ItemStack.isSameItemSameComponents(existing, normalized)) {
+            if (ItemStack.isSameItemSameTags(existing, normalized)) {
                 return;
             }
         }

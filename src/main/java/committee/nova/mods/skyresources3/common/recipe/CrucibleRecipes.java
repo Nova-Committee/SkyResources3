@@ -3,18 +3,17 @@ package committee.nova.mods.skyresources3.common.recipe;
 import committee.nova.mods.skyresources3.init.registry.ModRecipeTypes;
 import java.util.Optional;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 
 public final class CrucibleRecipes {
-    public static Optional<RecipeHolder<CrucibleRecipe>> find(final ServerLevel level, final ItemStack input) {
+    public static Optional<CrucibleRecipe> find(final ServerLevel level, final ItemStack input) {
         if (input.isEmpty()) {
             return Optional.empty();
         }
         return level.getRecipeManager().getRecipeFor(
                 ModRecipeTypes.CRUCIBLE_TYPE.get(),
-                new SingleRecipeInput(input.copy()),
+                new SimpleContainer(input.copy()),
                 level
         );
     }

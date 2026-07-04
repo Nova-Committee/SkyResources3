@@ -4,7 +4,7 @@ import committee.nova.mods.skyresources3.core.guide.GuideAction;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.ModList;
+import net.minecraftforge.fml.ModList;
 
 public final class GuideRecipeIntegration {
     private static final String JEI_MOD_ID = "jei";

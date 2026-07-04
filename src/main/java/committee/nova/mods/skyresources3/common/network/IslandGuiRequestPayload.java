@@ -1,28 +1,26 @@
 package committee.nova.mods.skyresources3.common.network;
 
-import committee.nova.mods.skyresources3.Skyresources3;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+import java.util.function.Supplier;
 
-public record IslandGuiRequestPayload() implements CustomPacketPayload {
-    public static final Type<IslandGuiRequestPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "island_gui_request")
-    );
-    public static final StreamCodec<RegistryFriendlyByteBuf, IslandGuiRequestPayload> STREAM_CODEC =
-            StreamCodec.unit(new IslandGuiRequestPayload());
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+public record IslandGuiRequestPayload() {
+    static void encode(final IslandGuiRequestPayload payload, final FriendlyByteBuf buffer) {
     }
 
-    static void handle(final IslandGuiRequestPayload payload, final IPayloadContext context) {
-        if (context.player() instanceof ServerPlayer player) {
-            IslandGuiStatePayload.sendTo(player);
-        }
+    static IslandGuiRequestPayload decode(final FriendlyByteBuf buffer) {
+        return new IslandGuiRequestPayload();
+    }
+
+    static void handle(final IslandGuiRequestPayload payload, final Supplier<NetworkEvent.Context> contextSupplier) {
+        final NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            final ServerPlayer player = context.getSender();
+            if (player != null) {
+                IslandGuiStatePayload.sendTo(player);
+            }
+        });
+        context.setPacketHandled(true);
     }
 }

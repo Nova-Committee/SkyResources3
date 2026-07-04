@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "S": {
+      "item": "minecraft:snowball"
+    }
+  },
+  "pattern": [
+    "SS",
+    "SF"
+  ],
+  "result": {
+    "count": 3,
+    "item": "skyresources:fleshy_snow_nugget"
+  },
+  "show_notification": true
+}

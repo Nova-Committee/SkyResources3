@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandlerUtil;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
@@ -40,16 +40,16 @@ public final class FluidDropperBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(FLUIDS_KEY, this.fluids);
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(FLUIDS_KEY, this.fluids);
     }
 
@@ -75,11 +75,11 @@ public final class FluidDropperBlockEntity extends BlockEntity {
             }
 
             final BlockPos neighborPos = this.worldPosition.relative(direction);
-            final IFluidHandler neighbor = level.getCapability(
-                    Capabilities.FluidHandler.BLOCK,
-                    neighborPos,
-                    direction.getOpposite()
-            );
+            final IFluidHandler neighbor = level.getBlockEntity(neighborPos) == null
+                    ? null
+                    : level.getBlockEntity(neighborPos)
+                            .getCapability(ForgeCapabilities.FLUID_HANDLER, direction.getOpposite())
+                            .orElse(null);
             if (neighbor == null) {
                 continue;
             }

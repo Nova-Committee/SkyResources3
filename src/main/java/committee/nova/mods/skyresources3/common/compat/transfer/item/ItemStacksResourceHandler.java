@@ -8,7 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class ItemStacksResourceHandler extends ItemStackHandler
         implements ResourceHandler<ItemResource>, LegacyNbtSerializable {
@@ -77,7 +77,7 @@ public class ItemStacksResourceHandler extends ItemStackHandler
             return 0;
         }
         final ItemStack current = this.getStackInSlot(index);
-        if (current.isEmpty() || !ItemStack.isSameItemSameComponents(current, resource.toStack())) {
+        if (current.isEmpty() || !ItemStack.isSameItemSameTags(current, resource.toStack())) {
             return 0;
         }
         return this.extractItem(index, amount, transaction != null && transaction.isSimulation()).getCount();
@@ -112,13 +112,13 @@ public class ItemStacksResourceHandler extends ItemStackHandler
 
     @Override
     public void deserialize(final ValueInput input) {
-        this.deserializeNBT(input.registries(), input.tag().getCompound("value"));
+        this.deserializeNBT(input.tag().getCompound("value"));
     }
 
     @Override
     public CompoundTag serialize(final HolderLookup.Provider registries) {
         final CompoundTag tag = new CompoundTag();
-        tag.put("value", this.serializeNBT(registries));
+        tag.put("value", this.serializeNBT());
         return tag;
     }
 

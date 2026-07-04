@@ -12,14 +12,14 @@ final class BonemealGrowth {
     static boolean isValidTarget(final Level level, final BlockPos target) {
         final BlockState blockState = level.getBlockState(target);
         return blockState.getBlock() instanceof BonemealableBlock bonemealableBlock
-                && bonemealableBlock.isValidBonemealTarget(level, target, blockState);
+                && bonemealableBlock.isValidBonemealTarget(level, target, blockState, level.isClientSide());
     }
 
     static void growUntilStable(final ServerLevel level, final BlockPos target) {
         for (int tries = 0; tries < MAX_GROWTH_ATTEMPTS; tries++) {
             final BlockState blockState = level.getBlockState(target);
             if (!(blockState.getBlock() instanceof BonemealableBlock bonemealableBlock)
-                    || !bonemealableBlock.isValidBonemealTarget(level, target, blockState)) {
+                    || !bonemealableBlock.isValidBonemealTarget(level, target, blockState, false)) {
                 return;
             }
             bonemealableBlock.performBonemeal(level, level.random, target, blockState);

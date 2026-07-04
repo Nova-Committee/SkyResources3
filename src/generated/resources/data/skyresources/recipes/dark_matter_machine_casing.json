@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": {
+      "item": "skyresources:dark_matter"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "XXX"
+  ],
+  "result": {
+    "item": "skyresources:machine_casing",
+    "nbt": "{BlockEntityTag:{casing_type:\"skyresources:dark_matter\"},CustomModelData:6,casing_type:\"skyresources:dark_matter\"}"
+  }
+}

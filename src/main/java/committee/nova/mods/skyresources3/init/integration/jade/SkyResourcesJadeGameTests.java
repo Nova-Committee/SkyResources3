@@ -14,7 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.network.codec.StreamDecoder;
@@ -204,7 +204,7 @@ public final class SkyResourcesJadeGameTests {
 
         @Override
         public <D> Optional<D> decodeFromNbt(
-                final StreamDecoder<RegistryFriendlyByteBuf, D> decoder,
+                final StreamDecoder<FriendlyByteBuf, D> decoder,
                 final Tag tag
         ) {
             return Optional.empty();
@@ -212,7 +212,7 @@ public final class SkyResourcesJadeGameTests {
 
         @Override
         public <D> Tag encodeAsNbt(
-                final StreamEncoder<RegistryFriendlyByteBuf, D> encoder,
+                final StreamEncoder<FriendlyByteBuf, D> encoder,
                 final D value
         ) {
             return new CompoundTag();

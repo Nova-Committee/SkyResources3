@@ -11,14 +11,13 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidStacksResourceHandler;
@@ -39,11 +38,11 @@ public final class CrucibleBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        final ValueInput input = new ValueInput(tag, registries);
+    public void load(final net.minecraft.nbt.CompoundTag tag) {
+        super.load(tag);
+        final ValueInput input = new ValueInput(tag);
         input.readChild(FLUIDS_KEY, this.fluids);
-        this.itemIn = input.read(ITEM_KEY, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.itemIn = input.read(ITEM_KEY, ItemStack.CODEC).orElse(ItemStack.EMPTY);
         this.itemAmount = input.getIntOr(ITEM_AMOUNT_KEY, 0);
         if (this.itemAmount <= 0) {
             this.itemAmount = 0;
@@ -52,11 +51,11 @@ public final class CrucibleBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag, final net.minecraft.core.HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        final ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(final net.minecraft.nbt.CompoundTag tag) {
+        super.saveAdditional(tag);
+        final ValueOutput output = new ValueOutput(tag);
         output.putChild(FLUIDS_KEY, this.fluids);
-        output.store(ITEM_KEY, ItemStack.OPTIONAL_CODEC, this.itemIn);
+        output.store(ITEM_KEY, ItemStack.CODEC, this.itemIn);
         output.putInt(ITEM_AMOUNT_KEY, this.itemAmount);
     }
 
@@ -124,19 +123,20 @@ public final class CrucibleBlockEntity extends BlockEntity {
     }
 
     private boolean tryInsertStack(final ServerLevel level, final ItemStack stack) {
-        final Optional<RecipeHolder<CrucibleRecipe>> holder = CrucibleRecipes.find(level, stack);
+        final Optional<CrucibleRecipe> holder = CrucibleRecipes.find(level, stack);
         if (holder.isEmpty()) {
             return false;
         }
 
-        final CrucibleRecipe recipe = holder.get().value();
+        final CrucibleRecipe recipe = holder.get();
         final FluidStack output = recipe.output();
         if (!this.canAcceptRecipe(stack, recipe, output)) {
             return false;
         }
 
         if (this.itemIn.isEmpty()) {
-            this.itemIn = stack.copyWithCount(1);
+            this.itemIn = stack.copy();
+            this.itemIn.setCount(1);
         }
         this.itemAmount += output.getAmount();
         stack.shrink(recipe.input().count());
@@ -151,7 +151,7 @@ public final class CrucibleBlockEntity extends BlockEntity {
         if (!recipe.input().matches(stack)) {
             return false;
         }
-        if (!this.itemIn.isEmpty() && !ItemStack.isSameItemSameComponents(this.itemIn, stack)) {
+        if (!this.itemIn.isEmpty() && !ItemStack.isSameItemSameTags(this.itemIn, stack)) {
             return false;
         }
         final FluidResource resource = FluidResource.of(output);
@@ -169,12 +169,12 @@ public final class CrucibleBlockEntity extends BlockEntity {
             return false;
         }
 
-        final Optional<RecipeHolder<CrucibleRecipe>> holder = CrucibleRecipes.find(level, this.itemIn);
+        final Optional<CrucibleRecipe> holder = CrucibleRecipes.find(level, this.itemIn);
         if (holder.isEmpty()) {
             return false;
         }
 
-        final FluidResource resource = FluidResource.of(holder.get().value().output());
+        final FluidResource resource = FluidResource.of(holder.get().output());
         final int remainingCapacity = this.getRemainingCapacity(resource);
         final int amount = Math.min(Math.min(this.getHeatProgress(level), this.itemAmount), remainingCapacity);
         if (amount <= 0) {

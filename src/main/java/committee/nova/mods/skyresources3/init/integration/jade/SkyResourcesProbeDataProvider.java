@@ -10,8 +10,7 @@ import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBl
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.util.HeatSources;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -19,13 +18,20 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.StreamServerDataProvider;
+import snownee.jade.api.IServerDataProvider;
 
-final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<BlockAccessor, SkyResourcesProbeData> {
+final class SkyResourcesProbeDataProvider implements IServerDataProvider<BlockAccessor> {
     static final SkyResourcesProbeDataProvider INSTANCE = new SkyResourcesProbeDataProvider();
 
     @Override
-    public @Nullable SkyResourcesProbeData streamData(final BlockAccessor accessor) {
+    public void appendServerData(final CompoundTag tag, final BlockAccessor accessor) {
+        final SkyResourcesProbeData data = probeData(accessor);
+        if (data.hasAnyValue()) {
+            data.write(tag);
+        }
+    }
+
+    private static SkyResourcesProbeData probeData(final BlockAccessor accessor) {
         final Level level = accessor.getLevel();
         final BlockPos pos = accessor.getPosition();
         final BlockState state = accessor.getBlockState();
@@ -70,12 +76,7 @@ final class SkyResourcesProbeDataProvider implements StreamServerDataProvider<Bl
             data = data.withMultiblock(freezerState(level, state, pos));
         }
 
-        return data.hasAnyValue() ? data : null;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, SkyResourcesProbeData> streamCodec() {
-        return SkyResourcesProbeData.STREAM_CODEC;
+        return data;
     }
 
     @Override

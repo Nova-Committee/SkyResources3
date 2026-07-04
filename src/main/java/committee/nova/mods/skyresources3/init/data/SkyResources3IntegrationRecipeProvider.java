@@ -5,7 +5,6 @@ import committee.nova.mods.skyresources3.common.recipe.ProcessRecipes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.concurrent.CompletableFuture;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -18,7 +17,7 @@ public final class SkyResources3IntegrationRecipeProvider implements DataProvide
     private final PackOutput.PathProvider recipePathProvider;
 
     public SkyResources3IntegrationRecipeProvider(final PackOutput output) {
-        this.recipePathProvider = output.createRegistryElementsPathProvider(Registries.RECIPE);
+        this.recipePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipes");
     }
 
     @Override
@@ -52,7 +51,7 @@ public final class SkyResources3IntegrationRecipeProvider implements DataProvide
             final String result,
             final JsonObject... inputs
     ) {
-        final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        final ResourceLocation id = new ResourceLocation(
                 Skyresources3.MODID,
                 "process/infusion/" + name
         );
@@ -65,7 +64,7 @@ public final class SkyResources3IntegrationRecipeProvider implements DataProvide
 
     private static JsonObject infusionRecipe(final String result, final JsonObject... inputs) {
         final JsonObject recipe = new JsonObject();
-        recipe.add("neoforge:conditions", modLoadedConditions());
+        recipe.add("forge:conditions", modLoadedConditions());
         recipe.addProperty("type", Skyresources3.MODID + ":process");
         recipe.addProperty("process", ProcessRecipes.INFUSION);
         recipe.add("inputs", inputs(inputs));
@@ -76,7 +75,7 @@ public final class SkyResources3IntegrationRecipeProvider implements DataProvide
 
     private static JsonArray modLoadedConditions() {
         final JsonObject condition = new JsonObject();
-        condition.addProperty("type", "neoforge:mod_loaded");
+        condition.addProperty("type", "forge:mod_loaded");
         condition.addProperty("modid", INTEGRATED_DYNAMICS);
 
         final JsonArray conditions = new JsonArray();

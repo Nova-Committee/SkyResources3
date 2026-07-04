@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,8 +41,7 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            final ItemStack stack,
+    public InteractionResult use(
             final BlockState state,
             final Level level,
             final BlockPos pos,
@@ -51,22 +49,11 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
             final InteractionHand hand,
             final BlockHitResult hitResult
     ) {
-        return BlockInteractionResults.item(this.openMenu(level, pos, player, hitResult, stack));
+        return this.openMenu(level, pos, player, hitResult, player.getItemInHand(hand));
     }
 
     @Override
-    protected InteractionResult useWithoutItem(
-            final BlockState state,
-            final Level level,
-            final BlockPos pos,
-            final Player player,
-            final BlockHitResult hitResult
-    ) {
-        return this.openMenu(level, pos, player, hitResult, ItemStack.EMPTY);
-    }
-
-    @Override
-    protected VoxelShape getShape(
+    public VoxelShape getShape(
             final BlockState state,
             final BlockGetter level,
             final BlockPos pos,
@@ -76,7 +63,7 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected VoxelShape getCollisionShape(
+    public VoxelShape getCollisionShape(
             final BlockState state,
             final BlockGetter level,
             final BlockPos pos,
@@ -86,7 +73,7 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(final BlockState state) {
+    public RenderShape getRenderShape(final BlockState state) {
         return RenderShape.MODEL;
     }
 
@@ -107,7 +94,7 @@ public final class CrucibleInserterBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        player.openMenu(
+        net.minecraftforge.network.NetworkHooks.openScreen((net.minecraft.server.level.ServerPlayer) player,
                 new SimpleMenuProvider(
                         (containerId, inventory, menuPlayer) ->
                                 new CrucibleInserterMenu(containerId, inventory, inserter),

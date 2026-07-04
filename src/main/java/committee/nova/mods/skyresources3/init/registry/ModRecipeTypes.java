@@ -9,13 +9,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
 
 public final class ModRecipeTypes {
-    private static final ResourceLocation PROCESS_ID = ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "process");
-    private static final ResourceLocation CRUCIBLE_ID = ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "crucible");
-    private static final ResourceLocation CONDENSER_ID = ResourceLocation.fromNamespaceAndPath(Skyresources3.MODID, "condenser");
+    private static final ResourceLocation PROCESS_ID = new ResourceLocation(Skyresources3.MODID, "process");
+    private static final ResourceLocation CRUCIBLE_ID = new ResourceLocation(Skyresources3.MODID, "crucible");
+    private static final ResourceLocation CONDENSER_ID = new ResourceLocation(Skyresources3.MODID, "condenser");
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
             DeferredRegister.create(Registries.RECIPE_TYPE, Skyresources3.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =

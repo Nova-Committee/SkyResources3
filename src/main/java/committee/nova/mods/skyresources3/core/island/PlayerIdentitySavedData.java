@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -23,9 +22,6 @@ public final class PlayerIdentitySavedData extends SavedData {
             .optionalFieldOf("players", Map.of())
             .xmap(PlayerIdentitySavedData::new, data -> Map.copyOf(data.players))
             .codec();
-    private static final Factory<PlayerIdentitySavedData> FACTORY =
-            new Factory<>(PlayerIdentitySavedData::new, PlayerIdentitySavedData::load);
-
     private final Map<UUID, String> players;
 
     public PlayerIdentitySavedData() {
@@ -37,12 +33,12 @@ public final class PlayerIdentitySavedData extends SavedData {
     }
 
     public static PlayerIdentitySavedData get(final ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(FACTORY, DATA_ID);
+        return level.getDataStorage().computeIfAbsent(PlayerIdentitySavedData::load, PlayerIdentitySavedData::new, DATA_ID);
     }
 
     @Override
-    public CompoundTag save(final CompoundTag tag, final HolderLookup.Provider registries) {
-        CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+    public CompoundTag save(final CompoundTag tag) {
+        CODEC.encodeStart(NbtOps.INSTANCE, this)
                 .result()
                 .filter(CompoundTag.class::isInstance)
                 .map(CompoundTag.class::cast)
@@ -50,8 +46,8 @@ public final class PlayerIdentitySavedData extends SavedData {
         return tag;
     }
 
-    private static PlayerIdentitySavedData load(final CompoundTag tag, final HolderLookup.Provider registries) {
-        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag)
+    private static PlayerIdentitySavedData load(final CompoundTag tag) {
+        return CODEC.parse(NbtOps.INSTANCE, tag)
                 .result()
                 .orElseGet(PlayerIdentitySavedData::new);
     }
