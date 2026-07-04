@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fluids.FluidStack;
 
 public final class CrucibleRecipe implements Recipe<SimpleContainer> {
@@ -95,6 +96,18 @@ public final class CrucibleRecipe implements Recipe<SimpleContainer> {
     public static final class Serializer implements RecipeSerializer<CrucibleRecipe> {
         @Override
         public CrucibleRecipe fromJson(final ResourceLocation id, final JsonObject json) {
+            return this.fromJson(id, json, ICondition.IContext.EMPTY);
+        }
+
+        @Override
+        public CrucibleRecipe fromJson(
+                final ResourceLocation id,
+                final JsonObject json,
+                final ICondition.IContext context
+        ) {
+            if (!RecipeJsonUtil.areForgeConditionsMet(json, context)) {
+                return null;
+            }
             return new CrucibleRecipe(
                     id,
                     GsonHelper.getAsString(json, "group", ""),

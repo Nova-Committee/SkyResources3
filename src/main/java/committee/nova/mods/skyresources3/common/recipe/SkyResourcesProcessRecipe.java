@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 public final class SkyResourcesProcessRecipe implements Recipe<ProcessRecipeInput> {
     private final ResourceLocation id;
@@ -143,6 +144,18 @@ public final class SkyResourcesProcessRecipe implements Recipe<ProcessRecipeInpu
     public static final class Serializer implements RecipeSerializer<SkyResourcesProcessRecipe> {
         @Override
         public SkyResourcesProcessRecipe fromJson(final ResourceLocation id, final JsonObject json) {
+            return this.fromJson(id, json, ICondition.IContext.EMPTY);
+        }
+
+        @Override
+        public SkyResourcesProcessRecipe fromJson(
+                final ResourceLocation id,
+                final JsonObject json,
+                final ICondition.IContext context
+        ) {
+            if (!RecipeJsonUtil.areForgeConditionsMet(json, context)) {
+                return null;
+            }
             final JsonArray inputJson = GsonHelper.getAsJsonArray(json, "inputs");
             final List<ProcessIngredient> inputs = inputJson.asList().stream()
                     .map(ProcessIngredient::fromJson)

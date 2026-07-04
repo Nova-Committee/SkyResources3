@@ -8,8 +8,13 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 public final class RecipeJsonUtil {
+    public static boolean areForgeConditionsMet(final JsonObject json, final ICondition.IContext context) {
+        return CraftingHelper.processConditions(json, "forge:conditions", context);
+    }
+
     public static ItemStack stackFromJson(final JsonObject json) {
         final String key = json.has("item") ? "item" : "id";
         final ResourceLocation itemId = new ResourceLocation(GsonHelper.getAsString(json, key));

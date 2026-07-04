@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     private final ResourceLocation id;
@@ -179,6 +180,18 @@ public final class CondenserRecipe implements Recipe<CondenserRecipeInput> {
     public static final class Serializer implements RecipeSerializer<CondenserRecipe> {
         @Override
         public CondenserRecipe fromJson(final ResourceLocation id, final JsonObject json) {
+            return this.fromJson(id, json, ICondition.IContext.EMPTY);
+        }
+
+        @Override
+        public CondenserRecipe fromJson(
+                final ResourceLocation id,
+                final JsonObject json,
+                final ICondition.IContext context
+        ) {
+            if (!RecipeJsonUtil.areForgeConditionsMet(json, context)) {
+                return null;
+            }
             return new CondenserRecipe(
                     id,
                     GsonHelper.getAsString(json, "group", ""),
