@@ -1,0 +1,24 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:prismarine_shard"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:yellow_dye"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:ore_alchemical_dust",
+      "nbt": "{ore_alchemy_dust_type:\"skyresources:lithium\"}"
+    }
+  ],
+  "parameter": 0.0056,
+  "process": "fusion"
+}

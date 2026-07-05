@@ -4,34 +4,38 @@ import committee.nova.mods.skyresources3.common.item.DirtyGemItem;
 import committee.nova.mods.skyresources3.common.item.DirtyGemType;
 import committee.nova.mods.skyresources3.common.item.OreAlchemyDustItem;
 import committee.nova.mods.skyresources3.common.item.OreAlchemyDustType;
+import committee.nova.mods.skyresources3.init.data.SkyResources3MaterialSeeds;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import java.util.function.ToIntFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nullable;
 
 public final class MaterialItemTintSources {
     public static int oreAlchemyDustColor(final ItemStack stack) {
+        final ResourceLocation typeId = OreAlchemyDustItem.oreAlchemyDustTypeId(stack);
         return colorFromRegistry(
                 Minecraft.getInstance().level,
                 ModDataPackRegistries.ORE_ALCHEMY_DUST_TYPES,
-                ModDataPackRegistries.oreAlchemyDustTypeKey(OreAlchemyDustItem.oreAlchemyDustTypeId(stack)),
+                ModDataPackRegistries.oreAlchemyDustTypeKey(typeId),
                 OreAlchemyDustType::color,
-                OreAlchemyDustType.DEFAULT_COLOR
+                SkyResources3MaterialSeeds.oreAlchemyDustColor(typeId)
         );
     }
 
     public static int dirtyGemColor(final ItemStack stack) {
+        final ResourceLocation typeId = DirtyGemItem.dirtyGemTypeId(stack);
         return colorFromRegistry(
                 Minecraft.getInstance().level,
                 ModDataPackRegistries.DIRTY_GEM_TYPES,
-                ModDataPackRegistries.dirtyGemTypeKey(DirtyGemItem.dirtyGemTypeId(stack)),
+                ModDataPackRegistries.dirtyGemTypeKey(typeId),
                 DirtyGemType::color,
-                DirtyGemType.DEFAULT_COLOR
+                SkyResources3MaterialSeeds.dirtyGemColor(typeId)
         );
     }
 

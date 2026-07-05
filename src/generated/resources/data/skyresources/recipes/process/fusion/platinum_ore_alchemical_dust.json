@@ -1,0 +1,24 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:gold_ingot"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:yellow_dye"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:ore_alchemical_dust",
+      "nbt": "{ore_alchemy_dust_type:\"skyresources:platinum\"}"
+    }
+  ],
+  "parameter": 0.0056,
+  "process": "fusion"
+}

@@ -777,10 +777,9 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 1,
                 input(ItemTags.LOGS)
         );
-        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.EMERALD_DIRTY_GEM, 0.015F, Blocks.STONE);
-        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.DIAMOND_DIRTY_GEM, 0.033F, Blocks.STONE);
-        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.QUARTZ_DIRTY_GEM, 0.42F, Blocks.NETHERRACK);
-        this.dirtyGemRockGrinderRecipe(ModDataPackRegistries.LAPIS_DIRTY_GEM, 0.54F, Blocks.STONE);
+        for (final SkyResources3MaterialSeeds.GemSeed gem : SkyResources3MaterialSeeds.gems()) {
+            this.dirtyGemRockGrinderRecipe(gem.key(), gem.rarity(), gem.sourceBlock());
+        }
     }
 
     private void dirtyGemRockGrinderRecipe(
@@ -798,10 +797,11 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
     }
 
     private void buildCauldronCleanRecipes() {
-        this.dirtyGemCleanRecipe(ModDataPackRegistries.EMERALD_DIRTY_GEM, Items.EMERALD);
-        this.dirtyGemCleanRecipe(ModDataPackRegistries.DIAMOND_DIRTY_GEM, Items.DIAMOND);
-        this.dirtyGemCleanRecipe(ModDataPackRegistries.QUARTZ_DIRTY_GEM, Items.QUARTZ);
-        this.dirtyGemCleanRecipe(ModDataPackRegistries.LAPIS_DIRTY_GEM, Items.LAPIS_LAZULI);
+        for (final SkyResources3MaterialSeeds.GemSeed gem : SkyResources3MaterialSeeds.gems()) {
+            if (gem.hasCleanOutput()) {
+                this.dirtyGemCleanRecipe(gem.key(), gem.cleanOutput().get());
+            }
+        }
     }
 
     private void dirtyGemCleanRecipe(final ResourceKey<DirtyGemType> gem, final ItemLike output) {
@@ -1303,26 +1303,24 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 1,
                 input(ModItems.PLANT_MATTER.get(), 6)
         );
+        for (final SkyResources3MaterialSeeds.DustSeed dust : SkyResources3MaterialSeeds.dusts()) {
+            if (dust.hasFusionRecipe()) {
+                this.oreAlchemyDustFusionRecipe(dust);
+            }
+        }
         this.oreAlchemyDustFusionRecipe(
-                ModDataPackRegistries.IRON_ORE_ALCHEMY_DUST,
-                3,
+                ModDataPackRegistries.oreAlchemyDustTypeKey("uranium"),
+                6,
                 Items.ROTTEN_FLESH,
-                Items.BLAZE_POWDER,
-                2
+                ModItems.RADIOACTIVE_MIX.get(),
+                1
         );
         this.oreAlchemyDustFusionRecipe(
-                ModDataPackRegistries.GOLD_ORE_ALCHEMY_DUST,
-                5,
-                Items.WHEAT,
-                Items.GLOWSTONE_DUST,
-                2
-        );
-        this.oreAlchemyDustFusionRecipe(
-                ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST,
-                1,
-                Items.PUMPKIN_SEEDS,
-                Items.GUNPOWDER,
-                2
+                ModDataPackRegistries.oreAlchemyDustTypeKey("thorium"),
+                7,
+                ModItems.ENRICHED_BONEMEAL.get(),
+                ModItems.RADIOACTIVE_MIX.get(),
+                1
         );
     }
 
@@ -1343,6 +1341,16 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ProcessIngredient... inputs
     ) {
         this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, inputs);
+    }
+
+    private void oreAlchemyDustFusionRecipe(final SkyResources3MaterialSeeds.DustSeed dust) {
+        this.oreAlchemyDustFusionRecipe(
+                dust.key(),
+                dust.rarity(),
+                dust.fusionComponent().get(),
+                oreAlchemyRarityDust(dust.rarity()),
+                2
+        );
     }
 
     private void oreAlchemyDustFusionRecipe(
@@ -1481,6 +1489,22 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
 
     private static float oreAlchemyFusionParameter(final int rarity) {
         return rarity * 0.0008F;
+    }
+
+    private static ItemLike oreAlchemyRarityDust(final int rarity) {
+        if (rarity <= 2) {
+            return Items.GUNPOWDER;
+        }
+        if (rarity <= 4) {
+            return Items.BLAZE_POWDER;
+        }
+        if (rarity <= 6) {
+            return Items.GLOWSTONE_DUST;
+        }
+        if (rarity <= 8) {
+            return Items.YELLOW_DYE;
+        }
+        return ModItems.DARK_MATTER.get();
     }
 
     private static String oreAlchemyDustRecipeName(final ResourceKey<OreAlchemyDustType> dust) {

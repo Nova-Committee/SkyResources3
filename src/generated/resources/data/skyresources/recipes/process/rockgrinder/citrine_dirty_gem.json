@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:netherrack"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:dirty_gem",
+      "nbt": "{dirty_gem_type:\"skyresources:citrine\"}"
+    }
+  ],
+  "parameter": 0.015,
+  "process": "rockgrinder"
+}

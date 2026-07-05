@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:end_stone"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:dirty_gem",
+      "nbt": "{dirty_gem_type:\"skyresources:ender_essence\"}"
+    }
+  ],
+  "parameter": 0.009,
+  "process": "rockgrinder"
+}

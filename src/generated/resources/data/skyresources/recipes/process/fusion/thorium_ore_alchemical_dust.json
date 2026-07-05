@@ -1,0 +1,23 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "skyresources:enriched_bonemeal"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "skyresources:radioactive_mix"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:ore_alchemical_dust",
+      "nbt": "{ore_alchemy_dust_type:\"skyresources:thorium\"}"
+    }
+  ],
+  "parameter": 0.0056,
+  "process": "fusion"
+}

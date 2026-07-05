@@ -16,6 +16,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.data.tags.ItemTagsProvider;
 
 public final class SkyResources3ItemTagsProvider extends ItemTagsProvider {
+    private static final String PRIMARY_COMMON_NAMESPACE = "forge";
+    private static final String LEGACY_COMMON_NAMESPACE = "c";
+
     public SkyResources3ItemTagsProvider(
             final PackOutput output,
             final CompletableFuture<HolderLookup.Provider> lookupProvider,
@@ -27,16 +30,21 @@ public final class SkyResources3ItemTagsProvider extends ItemTagsProvider {
     @Override
     protected void addTags(final HolderLookup.Provider lookupProvider) {
         this.tag(ItemTags.PLANKS).add(ModItems.PETRIFIED_PLANKS.get());
-        this.tag(commonItemTag("ores/iron")).add(Items.IRON_ORE, Items.DEEPSLATE_IRON_ORE);
-        this.tag(commonItemTag("ores/gold")).add(Items.GOLD_ORE, Items.DEEPSLATE_GOLD_ORE, Items.NETHER_GOLD_ORE);
-        this.tag(commonItemTag("ores/copper")).add(Items.COPPER_ORE, Items.DEEPSLATE_COPPER_ORE);
-        this.tag(commonItemTag("gems/emerald")).add(Items.EMERALD);
-        this.tag(commonItemTag("gems/diamond")).add(Items.DIAMOND);
-        this.tag(commonItemTag("gems/quartz")).add(Items.QUARTZ);
-        this.tag(commonItemTag("gems/lapis")).add(Items.LAPIS_LAZULI);
+        this.addCommonItemTag("ores/iron", Items.IRON_ORE, Items.DEEPSLATE_IRON_ORE);
+        this.addCommonItemTag("ores/gold", Items.GOLD_ORE, Items.DEEPSLATE_GOLD_ORE, Items.NETHER_GOLD_ORE);
+        this.addCommonItemTag("ores/copper", Items.COPPER_ORE, Items.DEEPSLATE_COPPER_ORE);
+        this.addCommonItemTag("gems/emerald", Items.EMERALD);
+        this.addCommonItemTag("gems/diamond", Items.DIAMOND);
+        this.addCommonItemTag("gems/quartz", Items.QUARTZ);
+        this.addCommonItemTag("gems/lapis", Items.LAPIS_LAZULI);
     }
 
-    private static TagKey<Item> commonItemTag(final String path) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation("c", path));
+    private void addCommonItemTag(final String path, final Item... entries) {
+        this.tag(commonItemTag(PRIMARY_COMMON_NAMESPACE, path)).add(entries);
+        this.tag(commonItemTag(LEGACY_COMMON_NAMESPACE, path)).add(entries);
+    }
+
+    private static TagKey<Item> commonItemTag(final String namespace, final String path) {
+        return TagKey.create(Registries.ITEM, new ResourceLocation(namespace, path));
     }
 }

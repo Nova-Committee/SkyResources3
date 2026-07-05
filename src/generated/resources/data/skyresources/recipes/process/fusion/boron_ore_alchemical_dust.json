@@ -1,0 +1,24 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:soul_sand"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "minecraft:glowstone_dust"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:ore_alchemical_dust",
+      "nbt": "{ore_alchemy_dust_type:\"skyresources:boron\"}"
+    }
+  ],
+  "parameter": 0.0039999997,
+  "process": "fusion"
+}

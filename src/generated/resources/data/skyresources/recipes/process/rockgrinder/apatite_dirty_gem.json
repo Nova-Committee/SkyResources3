@@ -1,0 +1,18 @@
+{
+  "type": "skyresources:process",
+  "inputs": [
+    {
+      "ingredient": {
+        "item": "minecraft:stone"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "item": "skyresources:dirty_gem",
+      "nbt": "{dirty_gem_type:\"skyresources:apatite\"}"
+    }
+  ],
+  "parameter": 0.6,
+  "process": "rockgrinder"
+}

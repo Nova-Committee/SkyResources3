@@ -22,6 +22,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.network.chat.Component;
@@ -37,6 +38,18 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(Skyresources3.MODID, "jei");
+    }
+
+    @Override
+    public void registerItemSubtypes(final ISubtypeRegistration registration) {
+        registration.useNbtForSubtypes(
+                ModItems.ORE_ALCHEMICAL_DUST.get(),
+                ModItems.DIRTY_GEM.get(),
+                ModItems.MACHINE_CASING.get(),
+                ModItems.COMBUSTION_HEATER.get(),
+                ModItems.HEAT_PROVIDER.get(),
+                ModItems.CONDENSER.get()
+        );
     }
 
     @Override

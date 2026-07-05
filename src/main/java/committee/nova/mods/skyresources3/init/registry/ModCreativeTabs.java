@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.common.item.DirtyGemItem;
 import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.common.item.MachineCasingItem;
 import committee.nova.mods.skyresources3.common.item.OreAlchemyDustItem;
+import committee.nova.mods.skyresources3.init.data.SkyResources3MaterialSeeds;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -73,14 +74,12 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SECUNDUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.TERTIUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.QUARTUS_ALCHEMICAL_DUST.get());
-                        parameters.holders().lookup(ModDataPackRegistries.ORE_ALCHEMY_DUST_TYPES)
-                                .ifPresent(registry -> registry.listElements()
-                                        .filter(reference -> reference.value().isAvailable(parameters.holders()))
-                                        .forEach(reference -> output.accept(OreAlchemyDustItem.forType(reference.key()))));
-                        parameters.holders().lookup(ModDataPackRegistries.DIRTY_GEM_TYPES)
-                                .ifPresent(registry -> registry.listElements()
-                                        .filter(reference -> reference.value().isAvailable(parameters.holders()))
-                                        .forEach(reference -> output.accept(DirtyGemItem.forType(reference.key()))));
+                        SkyResources3MaterialSeeds.oreAlchemyDustKeys().forEach(
+                                typeKey -> output.accept(OreAlchemyDustItem.forType(typeKey))
+                        );
+                        SkyResources3MaterialSeeds.dirtyGemKeys().forEach(
+                                typeKey -> output.accept(DirtyGemItem.forType(typeKey))
+                        );
                         output.accept(ModItems.ALCHEMICAL_COAL.get());
                         output.accept(ModItems.WOODEN_HEAT_COMPONENT.get());
                         output.accept(ModItems.STONE_ALCHEMY_COMPONENT.get());
