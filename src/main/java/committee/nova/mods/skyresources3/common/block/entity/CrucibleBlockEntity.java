@@ -16,8 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidStacksResourceHandler;
@@ -30,6 +34,7 @@ public final class CrucibleBlockEntity extends BlockEntity {
     private static final int TANK = 0;
 
     private final CrucibleFluidHandler fluids = new CrucibleFluidHandler(this);
+    private final LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> this.fluids);
     private ItemStack itemIn = ItemStack.EMPTY;
     private int itemAmount;
 
@@ -66,6 +71,20 @@ public final class CrucibleBlockEntity extends BlockEntity {
         if (changed) {
             this.markUpdated(level);
         }
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final net.minecraft.core.Direction side) {
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return this.fluidCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.fluidCapability.invalidate();
     }
 
     public ResourceHandler<FluidResource> getFluidHandler() {

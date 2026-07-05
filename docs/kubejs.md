@@ -55,7 +55,7 @@ ServerEvents.registry('skyresources:condenser_type', event => {
 
 ServerEvents.registry('skyresources:ore_alchemy_dust_type', event => {
   event.create('kubejs:osmium').json({
-    source_tag: 'c:ores/osmium',
+    source_tag: 'forge:ores/osmium',
     rarity: 6,
     color: '#7FAFC6'
   })
@@ -63,7 +63,7 @@ ServerEvents.registry('skyresources:ore_alchemy_dust_type', event => {
 
 ServerEvents.registry('skyresources:dirty_gem_type', event => {
   event.create('kubejs:ruby').json({
-    source_tag: 'c:gems/ruby',
+    source_tag: 'forge:gems/ruby',
     rarity: 0.015,
     color: '#FA1E1E'
   })

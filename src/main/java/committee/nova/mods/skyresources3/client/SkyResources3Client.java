@@ -9,6 +9,7 @@ import committee.nova.mods.skyresources3.common.entity.HeavyExplosiveSnowball;
 import committee.nova.mods.skyresources3.common.entity.HeavySnowball;
 import committee.nova.mods.skyresources3.common.network.IslandGuiStatePayload;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
+import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import committee.nova.mods.skyresources3.init.registry.ModMenuTypes;
@@ -16,6 +17,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -65,6 +68,7 @@ public final class SkyResources3Client {
     @SubscribeEvent
     public static void registerMenuScreens(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.ALCHEMICAL_GLASS.get(), RenderType.translucent());
             MenuScreens.register(ModMenuTypes.FUSION_TABLE.get(), FusionTableScreen::new);
             MenuScreens.register(ModMenuTypes.DIRT_FURNACE.get(), DirtFurnaceScreen::new);
             MenuScreens.register(ModMenuTypes.FREEZER.get(), FreezerScreen::new);

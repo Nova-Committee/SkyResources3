@@ -6,6 +6,7 @@ import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -20,6 +21,9 @@ import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class LifeInfuserBlockEntity extends BlockEntity {
     public static final int GEM_SLOT = 0;
@@ -30,6 +34,7 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
     private static final String INPUT_KEY = "input";
 
     private final LifeInfuserItemHandler items = new LifeInfuserItemHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
     private boolean powered;
 
     public LifeInfuserBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -51,6 +56,20 @@ public final class LifeInfuserBlockEntity extends BlockEntity {
         super.saveAdditional(tag);
         final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public boolean canInsertGem(final ItemStack stack) {

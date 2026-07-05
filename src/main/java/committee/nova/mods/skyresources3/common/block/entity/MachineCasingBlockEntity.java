@@ -51,7 +51,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
@@ -85,6 +87,7 @@ public final class MachineCasingBlockEntity extends BlockEntity {
     private static final String CONDENSER_RECIPE_HASH_KEY = "condenser_recipe_hash";
 
     private final FuelItemHandler fuelItems = new FuelItemHandler(this);
+    private final LazyOptional<IItemHandler> itemCapability = LazyOptional.of(() -> this.fuelItems);
     private ResourceLocation casingTypeId = DEFAULT_CASING_TYPE;
     @Nullable
     private ResourceLocation combustionHeaterTypeId;
@@ -194,6 +197,20 @@ public final class MachineCasingBlockEntity extends BlockEntity {
             this.clearCondenserRuntime();
         }
         this.setChanged();
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public ResourceHandler<ItemResource> getItemHandler() {

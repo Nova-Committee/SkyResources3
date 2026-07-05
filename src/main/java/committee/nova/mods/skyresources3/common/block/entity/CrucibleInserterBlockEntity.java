@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.common.block.entity;
 
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
@@ -16,6 +17,9 @@ import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class CrucibleInserterBlockEntity extends BlockEntity implements Container {
     public static final int SLOT_COUNT = 1;
@@ -23,6 +27,7 @@ public final class CrucibleInserterBlockEntity extends BlockEntity implements Co
     private static final int SLOT = 0;
 
     private final CrucibleInserterItemHandler items = new CrucibleInserterItemHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
 
     public CrucibleInserterBlockEntity(final BlockPos pos, final BlockState blockState) {
         super(ModBlockEntityTypes.CRUCIBLE_INSERTER.get(), pos, blockState);
@@ -40,6 +45,20 @@ public final class CrucibleInserterBlockEntity extends BlockEntity implements Co
         super.saveAdditional(tag);
         final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {

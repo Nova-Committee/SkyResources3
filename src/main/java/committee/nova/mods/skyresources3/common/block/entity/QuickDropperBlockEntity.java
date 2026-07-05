@@ -16,6 +16,9 @@ import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class QuickDropperBlockEntity extends BlockEntity {
     public static final int SLOT_COUNT = 1;
@@ -23,6 +26,7 @@ public final class QuickDropperBlockEntity extends BlockEntity {
     private static final int SLOT = 0;
 
     private final QuickDropperItemHandler items = new QuickDropperItemHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
 
     public QuickDropperBlockEntity(final BlockPos pos, final BlockState blockState) {
         super(ModBlockEntityTypes.QUICK_DROPPER.get(), pos, blockState);
@@ -40,6 +44,20 @@ public final class QuickDropperBlockEntity extends BlockEntity {
         super.saveAdditional(tag);
         final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {

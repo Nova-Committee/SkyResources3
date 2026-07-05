@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -22,6 +23,9 @@ import committee.nova.mods.skyresources3.common.compat.transfer.energy.SimpleEne
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class RockCrusherBlockEntity extends BlockEntity {
     public static final int INPUT_SLOT = 0;
@@ -41,6 +45,8 @@ public final class RockCrusherBlockEntity extends BlockEntity {
 
     private final RockCrusherItemHandler items = new RockCrusherItemHandler(this);
     private final RockCrusherEnergyHandler energy = new RockCrusherEnergyHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
+    private final LazyOptional<EnergyHandler> energyCapability = LazyOptional.of(this::getEnergyHandler);
     private final NonNullList<ItemStack> bufferStacks = NonNullList.create();
     private float progress;
 
@@ -75,6 +81,24 @@ public final class RockCrusherBlockEntity extends BlockEntity {
                 .filter(stack -> !stack.isEmpty())
                 .map(ItemStack::copy)
                 .toList());
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        if (capability == ForgeCapabilities.ENERGY) {
+            return this.energyCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
+        this.energyCapability.invalidate();
     }
 
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {

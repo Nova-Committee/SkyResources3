@@ -7,6 +7,7 @@ import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -17,6 +18,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.energy.EnergyHandler;
@@ -46,6 +50,9 @@ public final class AqueousMachineBlockEntity extends BlockEntity {
     private final AqueousItemHandler items = new AqueousItemHandler(this);
     private final AqueousEnergyHandler energy = new AqueousEnergyHandler(this);
     private final AqueousFluidHandler fluids = new AqueousFluidHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
+    private final LazyOptional<EnergyHandler> energyCapability = LazyOptional.of(this::getEnergyHandler);
+    private final LazyOptional<ResourceHandler<FluidResource>> fluidCapability = LazyOptional.of(this::getFluidHandler);
     private float progress;
 
     public AqueousMachineBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -70,6 +77,28 @@ public final class AqueousMachineBlockEntity extends BlockEntity {
         output.putChild(ENERGY_KEY, this.energy);
         output.putChild(FLUIDS_KEY, this.fluids);
         output.putFloat(PROGRESS_KEY, this.progress);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return this.fluidCapability.cast();
+        }
+        if (capability == ForgeCapabilities.ENERGY) {
+            return this.energyCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
+        this.energyCapability.invalidate();
+        this.fluidCapability.invalidate();
     }
 
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {

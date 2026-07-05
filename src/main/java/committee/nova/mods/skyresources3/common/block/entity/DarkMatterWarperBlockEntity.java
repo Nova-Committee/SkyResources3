@@ -4,6 +4,7 @@ import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -32,6 +33,9 @@ import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class DarkMatterWarperBlockEntity extends BlockEntity {
     public static final int SLOT_COUNT = 1;
@@ -45,6 +49,7 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
     private static final int NO_FUEL_EFFECT_AMPLIFIER = 2;
 
     private final WarperItemHandler items = new WarperItemHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
     private int burnTime;
 
     public DarkMatterWarperBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -65,6 +70,20 @@ public final class DarkMatterWarperBlockEntity extends BlockEntity {
         final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         output.putInt(BURN_TIME_KEY, this.burnTime);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {

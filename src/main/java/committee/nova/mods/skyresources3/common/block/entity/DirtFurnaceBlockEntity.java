@@ -2,6 +2,7 @@ package committee.nova.mods.skyresources3.common.block.entity;
 
 import committee.nova.mods.skyresources3.common.menu.DirtFurnaceMenu;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
+import java.util.EnumMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -25,15 +26,39 @@ import net.minecraft.world.level.block.state.BlockState;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.WorldlyContainerWrapper;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 public final class DirtFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
     private static final int FUEL_RATE = 3;
     private static final int COOKING_TOTAL_TIME = 200;
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(() -> this.getItemHandler(null));
+    private final EnumMap<Direction, LazyOptional<ResourceHandler<ItemResource>>> sidedItemCapabilities =
+            new EnumMap<>(Direction.class);
 
     public DirtFurnaceBlockEntity(final BlockPos pos, final BlockState blockState) {
         super(ModBlockEntityTypes.DIRT_FURNACE.get(), pos, blockState, RecipeType.SMELTING);
         this.setCookingTotalTime(COOKING_TOTAL_TIME);
+        for (final Direction direction : Direction.values()) {
+            this.sidedItemCapabilities.put(direction, LazyOptional.of(() -> this.getItemHandler(direction)));
+        }
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, @Nullable final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return (side == null ? this.itemCapability : this.sidedItemCapabilities.get(side)).cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
+        this.sidedItemCapabilities.values().forEach(LazyOptional::invalidate);
     }
 
     public void serverTick(final ServerLevel level, final BlockPos pos, BlockState state) {

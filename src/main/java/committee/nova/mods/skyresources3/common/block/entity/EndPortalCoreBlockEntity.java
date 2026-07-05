@@ -38,6 +38,9 @@ import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class EndPortalCoreBlockEntity extends BlockEntity {
     public static final int SLOT_COUNT = 1;
@@ -53,6 +56,7 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
     private static final Set<RelativeMovement> NO_RELATIVE_MOVEMENT = Set.of();
 
     private final EndPortalCoreItemHandler items = new EndPortalCoreItemHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
     private boolean powered;
 
     public EndPortalCoreBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -65,6 +69,20 @@ public final class EndPortalCoreBlockEntity extends BlockEntity {
         final ValueInput input = new ValueInput(tag);
         input.readChild(ITEMS_KEY, this.items);
         this.powered = input.getBooleanOr(POWERED_KEY, false);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     @Override

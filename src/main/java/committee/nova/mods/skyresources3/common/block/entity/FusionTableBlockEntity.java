@@ -8,6 +8,7 @@ import committee.nova.mods.skyresources3.init.registry.ModItems;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -21,6 +22,9 @@ import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.TransactionContext;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class FusionTableBlockEntity extends BlockEntity {
     private static final String ITEMS_KEY = "items";
@@ -41,6 +45,7 @@ public final class FusionTableBlockEntity extends BlockEntity {
     private static final int YIELD_ROUNDING_SCALE = 10_000;
 
     private final FusionTableItemHandler items = new FusionTableItemHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
     private final StoredItemStacks filter = new StoredItemStacks(this, INPUT_SLOT_COUNT);
 
     private double yieldAmount;
@@ -80,6 +85,20 @@ public final class FusionTableBlockEntity extends BlockEntity {
         output.putFloat(CATALYST_YIELD_KEY, this.catalystYield);
         output.putFloat(CATALYST_LEFT_KEY, this.catalystLeft);
         output.putInt(PROGRESS_KEY, this.progress);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public void serverTick(final ServerLevel level) {

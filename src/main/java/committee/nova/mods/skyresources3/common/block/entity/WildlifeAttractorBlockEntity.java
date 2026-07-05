@@ -5,6 +5,7 @@ import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +22,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.energy.EnergyHandler;
@@ -49,6 +53,9 @@ public final class WildlifeAttractorBlockEntity extends BlockEntity {
     private final WildlifeItemHandler items = new WildlifeItemHandler(this);
     private final WildlifeEnergyHandler energy = new WildlifeEnergyHandler(this);
     private final WildlifeFluidHandler fluids = new WildlifeFluidHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
+    private final LazyOptional<EnergyHandler> energyCapability = LazyOptional.of(this::getEnergyHandler);
+    private final LazyOptional<ResourceHandler<FluidResource>> fluidCapability = LazyOptional.of(this::getFluidHandler);
     private int matterLeft;
 
     public WildlifeAttractorBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -73,6 +80,28 @@ public final class WildlifeAttractorBlockEntity extends BlockEntity {
         output.putChild(ENERGY_KEY, this.energy);
         output.putChild(FLUIDS_KEY, this.fluids);
         output.putInt(MATTER_LEFT_KEY, this.matterLeft);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return this.fluidCapability.cast();
+        }
+        if (capability == ForgeCapabilities.ENERGY) {
+            return this.energyCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
+        this.energyCapability.invalidate();
+        this.fluidCapability.invalidate();
     }
 
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {

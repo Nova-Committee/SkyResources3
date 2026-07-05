@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.common.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
@@ -13,12 +14,16 @@ import committee.nova.mods.skyresources3.common.compat.ValueOutput;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class AbstractCombustionInventoryBlockEntity extends BlockEntity {
     public static final int SLOT_COUNT = 5;
     private static final String ITEMS_KEY = "items";
 
     private final StoredItemStacks items = new StoredItemStacks(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
 
     protected AbstractCombustionInventoryBlockEntity(
             final BlockEntityType<?> type,
@@ -40,6 +45,20 @@ public abstract class AbstractCombustionInventoryBlockEntity extends BlockEntity
         super.saveAdditional(tag);
         final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {

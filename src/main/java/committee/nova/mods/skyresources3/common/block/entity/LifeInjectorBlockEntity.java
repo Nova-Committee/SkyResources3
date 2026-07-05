@@ -3,6 +3,7 @@ package committee.nova.mods.skyresources3.common.block.entity;
 import committee.nova.mods.skyresources3.common.item.HealthGemItem;
 import committee.nova.mods.skyresources3.init.registry.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +16,9 @@ import net.minecraft.world.phys.AABB;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemStacksResourceHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class LifeInjectorBlockEntity extends BlockEntity {
     public static final int GEM_SLOT = 0;
@@ -26,6 +30,7 @@ public final class LifeInjectorBlockEntity extends BlockEntity {
     private static final int MAX_HEALTH_PER_ENTITY = 2;
 
     private final LifeInjectorItemHandler items = new LifeInjectorItemHandler(this);
+    private final LazyOptional<ResourceHandler<ItemResource>> itemCapability = LazyOptional.of(this::getItemHandler);
     private int cooldown;
 
     public LifeInjectorBlockEntity(final BlockPos pos, final BlockState blockState) {
@@ -51,6 +56,20 @@ public final class LifeInjectorBlockEntity extends BlockEntity {
         final ValueOutput output = new ValueOutput(tag);
         output.putChild(ITEMS_KEY, this.items);
         output.putInt(COOLDOWN_KEY, this.cooldown);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+            return this.itemCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.itemCapability.invalidate();
     }
 
     public boolean hasGem() {

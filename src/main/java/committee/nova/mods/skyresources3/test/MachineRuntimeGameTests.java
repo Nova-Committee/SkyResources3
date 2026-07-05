@@ -3,10 +3,25 @@ package committee.nova.mods.skyresources3.test;
 import java.util.function.Function;
 import committee.nova.mods.skyresources3.Config;
 import committee.nova.mods.skyresources3.common.block.CombustionControllerBlock;
+import committee.nova.mods.skyresources3.common.block.entity.AqueousMachineBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.CombustionCollectorBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.CombustionControllerBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.CrucibleBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.CrucibleInserterBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.DarkMatterWarperBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.DirtFurnaceBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.EndPortalCoreBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.FluidDropperBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.FreezerBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.FusionTableBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.LifeInfuserBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.LifeInjectorBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.QuickDropperBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.RockCleanerBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.RockCrusherBlockEntity;
 import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
+import committee.nova.mods.skyresources3.common.block.entity.WildlifeAttractorBlockEntity;
 import committee.nova.mods.skyresources3.common.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.common.item.CondenserItem;
 import committee.nova.mods.skyresources3.common.item.DirtyGemItem;
@@ -20,9 +35,11 @@ import committee.nova.mods.skyresources3.init.data.SkyResources3MaterialSeeds;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
 import committee.nova.mods.skyresources3.init.registry.ModCreativeTabs;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
+import committee.nova.mods.skyresources3.init.registry.ModFluids;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
@@ -42,11 +59,17 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.ResourceHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.item.ItemResource;
 import committee.nova.mods.skyresources3.common.compat.transfer.transaction.Transaction;
@@ -59,6 +82,9 @@ public final class MachineRuntimeGameTests {
     private static final BlockPos CONTROLLER_POS = CHAMBER_POS.north();
     private static final BlockPos COLLECTOR_POS = CHAMBER_POS.east();
     private static final BlockPos REDSTONE_POS = CASING_POS.west();
+    private static final BlockPos FLUID_DROPPER_POS = new BlockPos(6, 2, 2);
+    private static final BlockPos FLUID_SOURCE_POS = FLUID_DROPPER_POS.below();
+    private static final BlockPos CRUCIBLE_POS = FLUID_DROPPER_POS.above();
     private static final double ITEM_ASSERT_RADIUS = 2.0D;
     private static final int EXPECTED_OUTPUT_COUNT = 1;
     private static final int DIRT_RECIPE_HEAT = 100;
@@ -348,6 +374,268 @@ public final class MachineRuntimeGameTests {
                 1,
                 casing.getStackInSlot(MachineCasingBlockEntity.FUEL_SLOT).getCount(),
                 "Only the condenser itself should consume one catalyst"
+        );
+        helper.succeed();
+    }
+
+    public static void condenserCasingExposesItemCapability(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(CASING_POS, ModBlocks.MACHINE_CASING.get());
+        final MachineCasingBlockEntity casing = machineCasingAt(helper, CASING_POS);
+        casing.setCasingType(ModDataPackRegistries.DARK_MATTER);
+        final Player player = GameTestAssertions.makeMockPlayer(helper, GameType.CREATIVE);
+        helper.assertTrue(
+                casing.installHeater(CondenserItem.forType(ModDataPackRegistries.DARK_MATTER_CONDENSER), player),
+                "Condenser should install into the machine casing"
+        );
+
+        final IItemHandler handler = casing.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).orElse(null);
+        helper.assertTrue(handler != null, "Machine casing should expose an item capability");
+
+        final ItemStack catalyst = OreAlchemyDustItem.forType(ModDataPackRegistries.COPPER_ORE_ALCHEMY_DUST);
+        final ItemStack remainder = handler.insertItem(MachineCasingBlockEntity.FUEL_SLOT, catalyst.copy(), false);
+
+        helper.assertTrue(remainder.isEmpty(), "Automation should insert a valid condenser catalyst");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                1,
+                casing.getStackInSlot(MachineCasingBlockEntity.FUEL_SLOT).getCount(),
+                "Inserted catalyst should land in the condenser fuel slot"
+        );
+        helper.succeed();
+    }
+
+    public static void condenserUsesCasingSourceAboveAndOutputBelow(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(OUTPUT_POS, Blocks.CHEST);
+        final MachineCasingBlockEntity casing = setupCopperCrystalFluidCondenser(helper);
+
+        GameTestAssertions.assertValueEqual(
+                helper,
+                MachineCasingBlockEntity.MACHINE_MODE_CONDENSER,
+                casing.installedMachineMode(),
+                "Casing should enter condenser mode after installing a condenser"
+        );
+        helper.assertTrue(!casing.usesCombustionChamber(), "Condenser should not require a combustion chamber");
+        helper.assertTrue(
+                !casing.hasValidMultiblock(helper.getLevel()),
+                "Condenser should not depend on the combustion multiblock validation path"
+        );
+
+        casing.serverTick(helper.getLevel());
+
+        helper.assertTrue(helper.getBlockState(SOURCE_POS).isAir(), "Condenser should consume the source directly above it");
+        assertContainerItemCount(helper, OUTPUT_POS, Items.COPPER_INGOT, EXPECTED_OUTPUT_COUNT);
+        helper.succeed();
+    }
+
+    public static void fluidDropperPullsFromCrucibleAndPlacesSourceBelow(final GameTestHelper helper) {
+        helper.killAllEntities();
+        helper.setBlock(FLUID_DROPPER_POS, ModBlocks.FLUID_DROPPER.get());
+        helper.setBlock(CRUCIBLE_POS, ModBlocks.CRUCIBLE.get());
+
+        final CrucibleBlockEntity crucible = crucibleAt(helper, CRUCIBLE_POS);
+        final FluidDropperBlockEntity dropper = fluidDropperAt(helper, FLUID_DROPPER_POS);
+        final IFluidHandler crucibleHandler =
+                crucible.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.DOWN).orElse(null);
+
+        helper.assertTrue(crucibleHandler != null, "Crucible should expose a fluid capability");
+        GameTestAssertions.assertValueEqual(
+                helper,
+                1000,
+                crucibleHandler.fill(
+                        new FluidStack(ModFluids.CRYSTAL_FLUID.get(), 1000),
+                        IFluidHandler.FluidAction.EXECUTE
+                ),
+                "Crucible should accept one bucket of crystal fluid for dropper extraction"
+        );
+
+        dropper.serverTick(helper.getLevel());
+
+        helper.assertTrue(
+                helper.getBlockState(FLUID_SOURCE_POS).is(ModBlocks.CRYSTAL_FLUID.get()),
+                "Fluid dropper should place a crystal fluid source below itself"
+        );
+        GameTestAssertions.assertValueEqual(
+                helper,
+                0,
+                crucible.getFluidHandler().getFluidInTank(0).getAmount(),
+                "Crucible should lose the transferred bucket"
+        );
+        GameTestAssertions.assertValueEqual(
+                helper,
+                0,
+                dropper.getFluidHandler().getFluidInTank(0).getAmount(),
+                "Fluid dropper should empty its tank after placing the source"
+        );
+        helper.succeed();
+    }
+
+    public static void forgeCapabilityMatrixCoversMigratedMachines(final GameTestHelper helper) {
+        helper.killAllEntities();
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(1, 1, 6),
+                ModBlocks.DIRT_FURNACE.get(),
+                DirtFurnaceBlockEntity.class,
+                true,
+                false,
+                false,
+                "Dirt furnace"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(2, 1, 6),
+                ModBlocks.QUICK_DROPPER.get(),
+                QuickDropperBlockEntity.class,
+                true,
+                false,
+                false,
+                "Quick dropper"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(3, 1, 6),
+                ModBlocks.CRUCIBLE_INSERTER.get(),
+                CrucibleInserterBlockEntity.class,
+                true,
+                false,
+                false,
+                "Crucible inserter"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(4, 1, 6),
+                ModBlocks.DARK_MATTER_WARPER.get(),
+                DarkMatterWarperBlockEntity.class,
+                true,
+                false,
+                false,
+                "Dark matter warper"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(5, 1, 6),
+                ModBlocks.END_PORTAL_CORE.get(),
+                EndPortalCoreBlockEntity.class,
+                true,
+                false,
+                false,
+                "End portal core"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(6, 1, 6),
+                ModBlocks.COMBUSTION_COLLECTOR.get(),
+                CombustionCollectorBlockEntity.class,
+                true,
+                false,
+                false,
+                "Combustion collector"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(7, 1, 6),
+                ModBlocks.COMBUSTION_CONTROLLER.get(),
+                CombustionControllerBlockEntity.class,
+                true,
+                false,
+                false,
+                "Combustion controller"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(8, 1, 6),
+                ModBlocks.MINI_FREEZER.get(),
+                FreezerBlockEntity.class,
+                true,
+                false,
+                false,
+                "Mini freezer"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(1, 1, 8),
+                ModBlocks.FUSION_TABLE.get(),
+                FusionTableBlockEntity.class,
+                true,
+                false,
+                false,
+                "Fusion table"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(2, 1, 8),
+                ModBlocks.LIFE_INFUSER.get(),
+                LifeInfuserBlockEntity.class,
+                true,
+                false,
+                false,
+                "Life infuser"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(3, 1, 8),
+                ModBlocks.LIFE_INJECTOR.get(),
+                LifeInjectorBlockEntity.class,
+                true,
+                false,
+                false,
+                "Life injector"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(4, 1, 8),
+                ModBlocks.ROCK_CRUSHER.get(),
+                RockCrusherBlockEntity.class,
+                true,
+                false,
+                true,
+                "Rock crusher"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(5, 1, 8),
+                ModBlocks.ROCK_CLEANER.get(),
+                RockCleanerBlockEntity.class,
+                true,
+                true,
+                true,
+                "Rock cleaner"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(6, 1, 8),
+                ModBlocks.AQUEOUS_CONCENTRATOR.get(),
+                AqueousMachineBlockEntity.class,
+                true,
+                true,
+                true,
+                "Aqueous concentrator"
+        );
+        assertCapabilityExposure(
+                helper,
+                new BlockPos(7, 1, 8),
+                ModBlocks.WILDLIFE_ATTRACTOR.get(),
+                WildlifeAttractorBlockEntity.class,
+                true,
+                true,
+                true,
+                "Wildlife attractor"
+        );
+        helper.succeed();
+    }
+
+    public static void alchemicalGlassKeepsTransparentBlockProperties(final GameTestHelper helper) {
+        helper.killAllEntities();
+        final Block block = ModBlocks.ALCHEMICAL_GLASS.get();
+        final BlockState state = block.defaultBlockState();
+
+        helper.assertTrue(block instanceof GlassBlock, "Alchemical glass should use the GlassBlock implementation");
+        helper.assertTrue(!state.canOcclude(), "Alchemical glass should remain non-occluding");
+        helper.assertTrue(
+                block.skipRendering(state, state, Direction.NORTH),
+                "Alchemical glass should cull faces against adjacent matching glass blocks"
         );
         helper.succeed();
     }
@@ -984,6 +1272,18 @@ public final class MachineRuntimeGameTests {
         return (CombustionCollectorBlockEntity) blockEntity;
     }
 
+    private static CrucibleBlockEntity crucibleAt(final GameTestHelper helper, final BlockPos relativePos) {
+        final BlockEntity blockEntity = blockEntityAt(helper, relativePos);
+        helper.assertTrue(blockEntity instanceof CrucibleBlockEntity, "Expected a crucible block entity");
+        return (CrucibleBlockEntity) blockEntity;
+    }
+
+    private static FluidDropperBlockEntity fluidDropperAt(final GameTestHelper helper, final BlockPos relativePos) {
+        final BlockEntity blockEntity = blockEntityAt(helper, relativePos);
+        helper.assertTrue(blockEntity instanceof FluidDropperBlockEntity, "Expected a fluid dropper block entity");
+        return (FluidDropperBlockEntity) blockEntity;
+    }
+
     private static void assertCollectorItemCount(
             final GameTestHelper helper,
             final CombustionCollectorBlockEntity collector,
@@ -1036,6 +1336,39 @@ public final class MachineRuntimeGameTests {
             final int extracted = handler.extract(slot, ItemResource.of(stack), amount, transaction);
             transaction.commit();
             return extracted;
+        }
+    }
+
+    private static void assertCapabilityExposure(
+            final GameTestHelper helper,
+            final BlockPos relativePos,
+            final Block block,
+            final Class<? extends BlockEntity> expectedType,
+            final boolean expectItemCapability,
+            final boolean expectFluidCapability,
+            final boolean expectEnergyCapability,
+            final String label
+    ) {
+        helper.setBlock(relativePos, block);
+        final BlockEntity blockEntity = blockEntityAt(helper, relativePos);
+        helper.assertTrue(expectedType.isInstance(blockEntity), "Expected " + label + " block entity");
+        if (expectItemCapability) {
+            helper.assertTrue(
+                    blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).isPresent(),
+                    label + " should expose an item capability"
+            );
+        }
+        if (expectFluidCapability) {
+            helper.assertTrue(
+                    blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP).isPresent(),
+                    label + " should expose a fluid capability"
+            );
+        }
+        if (expectEnergyCapability) {
+            final IEnergyStorage energyStorage =
+                    blockEntity.getCapability(ForgeCapabilities.ENERGY, Direction.UP).orElse(null);
+            helper.assertTrue(energyStorage != null, label + " should expose an energy capability");
+            helper.assertTrue(energyStorage.receiveEnergy(100, false) > 0, label + " should accept Forge energy input");
         }
     }
 

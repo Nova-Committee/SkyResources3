@@ -11,7 +11,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import committee.nova.mods.skyresources3.common.compat.ValueInput;
 import committee.nova.mods.skyresources3.common.compat.ValueOutput;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -34,6 +36,7 @@ public final class FluidDropperBlockEntity extends BlockEntity {
     };
 
     private final FluidDropperFluidHandler fluids = new FluidDropperFluidHandler(this);
+    private final LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> this.fluids);
 
     public FluidDropperBlockEntity(final BlockPos pos, final BlockState blockState) {
         super(ModBlockEntityTypes.FLUID_DROPPER.get(), pos, blockState);
@@ -58,6 +61,20 @@ public final class FluidDropperBlockEntity extends BlockEntity {
             this.pullFromNeighbors(level);
         }
         this.placeStoredFluid(level);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction side) {
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return this.fluidCapability.cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.fluidCapability.invalidate();
     }
 
     public ResourceHandler<FluidResource> getFluidHandler() {

@@ -28,6 +28,7 @@ import committee.nova.mods.skyresources3.common.block.StandaloneMachineBlock;
 import committee.nova.mods.skyresources3.common.block.WildlifeAttractorBlock;
 import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -91,8 +92,9 @@ public final class ModBlocks {
             "light_matter_block",
             stone(5.0F, 10.0F)
     );
-    public static final RegistryObject<Block> ALCHEMICAL_GLASS = registerSimpleBlock(
+    public static final RegistryObject<GlassBlock> ALCHEMICAL_GLASS = registerBlock(
             "alchemical_glass",
+            GlassBlock::new,
             properties(0.3F, 0.3F, SoundType.GLASS).noOcclusion()
     );
     public static final RegistryObject<LiquidBlock> CRYSTAL_FLUID = registerBlock(

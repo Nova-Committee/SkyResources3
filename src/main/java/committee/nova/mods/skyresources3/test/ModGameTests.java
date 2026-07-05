@@ -152,6 +152,31 @@ public final class ModGameTests {
                 "condenser_hopper_output",
                 MachineRuntimeGameTests::condenserHopperBelowDoesNotExtractCatalyst
         );
+        registerFunctionTest(
+                tests,
+                "condenser_item_capability",
+                MachineRuntimeGameTests::condenserCasingExposesItemCapability
+        );
+        registerFunctionTest(
+                tests,
+                "condenser_structure_flow",
+                MachineRuntimeGameTests::condenserUsesCasingSourceAboveAndOutputBelow
+        );
+        registerFunctionTest(
+                tests,
+                "fluid_dropper_places_source",
+                MachineRuntimeGameTests::fluidDropperPullsFromCrucibleAndPlacesSourceBelow
+        );
+        registerFunctionTest(
+                tests,
+                "machine_capability_matrix",
+                MachineRuntimeGameTests::forgeCapabilityMatrixCoversMigratedMachines
+        );
+        registerFunctionTest(
+                tests,
+                "alchemical_glass_properties",
+                MachineRuntimeGameTests::alchemicalGlassKeepsTransparentBlockProperties
+        );
         registerFunctionTest(tests, "combustion_priority", MachineRuntimeGameTests::combustionControllerUsesFilterPriority);
         registerFunctionTest(tests, "combustion_cooldown", MachineRuntimeGameTests::combustionControllerWaitsForCooldown);
         registerFunctionTest(
