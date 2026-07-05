@@ -778,40 +778,38 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 input(ItemTags.LOGS)
         );
         for (final SkyResources3MaterialSeeds.GemSeed gem : SkyResources3MaterialSeeds.gems()) {
-            this.dirtyGemRockGrinderRecipe(gem.key(), gem.rarity(), gem.sourceBlock());
+            this.dirtyGemRockGrinderRecipe(gem);
         }
     }
 
-    private void dirtyGemRockGrinderRecipe(
-            final ResourceKey<DirtyGemType> gem,
-            final float rarity,
-            final ItemLike source
-    ) {
+    private void dirtyGemRockGrinderRecipe(final SkyResources3MaterialSeeds.GemSeed gem) {
         this.processRecipe(
                 ProcessRecipes.ROCK_GRINDER,
-                dirtyGemRecipeName(gem),
-                rarity,
-                DirtyGemItem.forType(gem),
-                input(source)
+                dirtyGemRecipeName(gem.key()),
+                gem.rarity(),
+                DirtyGemItem.forType(gem.key()),
+                materialTagPresentConditions(gem.sourceTagPath()),
+                input(gem.sourceBlock())
         );
     }
 
     private void buildCauldronCleanRecipes() {
         for (final SkyResources3MaterialSeeds.GemSeed gem : SkyResources3MaterialSeeds.gems()) {
             if (gem.hasCleanOutput()) {
-                this.dirtyGemCleanRecipe(gem.key(), gem.cleanOutput().get());
+                this.dirtyGemCleanRecipe(gem, gem.cleanOutput().get());
             }
         }
     }
 
-    private void dirtyGemCleanRecipe(final ResourceKey<DirtyGemType> gem, final ItemLike output) {
+    private void dirtyGemCleanRecipe(final SkyResources3MaterialSeeds.GemSeed gem, final ItemLike output) {
         this.processRecipe(
                 ProcessRecipes.CAULDRON_CLEAN,
-                dirtyGemRecipeName(gem),
+                dirtyGemRecipeName(gem.key()),
                 1.0F,
                 output,
                 1,
-                input(DirtyGemItem.forType(gem))
+                materialTagPresentConditions(gem.sourceTagPath()),
+                input(DirtyGemItem.forType(gem.key()))
         );
     }
 
@@ -1343,13 +1341,24 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, inputs);
     }
 
+    private void fusionRecipe(
+            final String name,
+            final float catalystUse,
+            final ItemStack output,
+            final JsonArray conditions,
+            final ProcessIngredient... inputs
+    ) {
+        this.processRecipe(ProcessRecipes.FUSION, name, catalystUse, output, conditions, inputs);
+    }
+
     private void oreAlchemyDustFusionRecipe(final SkyResources3MaterialSeeds.DustSeed dust) {
         this.oreAlchemyDustFusionRecipe(
                 dust.key(),
                 dust.rarity(),
                 dust.fusionComponent().get(),
                 oreAlchemyRarityDust(dust.rarity()),
-                2
+                2,
+                materialTagPresentConditions(dust.sourceTagPath())
         );
     }
 
@@ -1360,10 +1369,29 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final ItemLike rarityDust,
             final int rarityDustCount
     ) {
+        this.oreAlchemyDustFusionRecipe(
+                dust,
+                rarity,
+                component,
+                rarityDust,
+                rarityDustCount,
+                materialTagPresentConditions(SkyResources3MaterialSeeds.ORE_TAG_PREFIX + dust.location().getPath())
+        );
+    }
+
+    private void oreAlchemyDustFusionRecipe(
+            final ResourceKey<OreAlchemyDustType> dust,
+            final int rarity,
+            final ItemLike component,
+            final ItemLike rarityDust,
+            final int rarityDustCount,
+            final JsonArray conditions
+    ) {
         this.fusionRecipe(
                 oreAlchemyDustRecipeName(dust),
                 oreAlchemyFusionParameter(rarity),
                 OreAlchemyDustItem.forType(dust),
+                conditions,
                 input(component),
                 input(rarityDust, rarityDustCount)
         );
@@ -1411,11 +1439,37 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             final String process,
             final String name,
             final float parameter,
+            final ItemLike output,
+            final int outputCount,
+            final JsonArray conditions,
+            final ProcessIngredient... inputs
+    ) {
+        this.processRecipe(process, name, parameter, new ItemStack(output, outputCount), conditions, inputs);
+    }
+
+    private void processRecipe(
+            final String process,
+            final String name,
+            final float parameter,
             final ItemStack output,
+            final ProcessIngredient... inputs
+    ) {
+        this.processRecipe(process, name, parameter, output, null, inputs);
+    }
+
+    private void processRecipe(
+            final String process,
+            final String name,
+            final float parameter,
+            final ItemStack output,
+            final JsonArray conditions,
             final ProcessIngredient... inputs
     ) {
         final ResourceLocation id = id("process/" + process + "/" + name);
         this.output.accept(new JsonFinishedRecipe(id, ModRecipeTypes.PROCESS_SERIALIZER.get(), json -> {
+            if (conditions != null) {
+                json.add("forge:conditions", conditions.deepCopy());
+            }
             json.addProperty("process", process);
             json.add("inputs", processIngredientsToJson(inputs));
             json.add("outputs", itemStacksToJson(List.of(output.copy())));
@@ -1505,6 +1559,34 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
             return Items.YELLOW_DYE;
         }
         return ModItems.DARK_MATTER.get();
+    }
+
+    private static JsonArray materialTagPresentConditions(final String sourceTagPath) {
+        final JsonArray conditions = new JsonArray();
+        final JsonObject eitherTagPresent = new JsonObject();
+        eitherTagPresent.addProperty("type", "forge:or");
+
+        final JsonArray values = new JsonArray();
+        values.add(tagPresentCondition(SkyResources3MaterialSeeds.PRIMARY_COMMON_NAMESPACE, sourceTagPath));
+        values.add(tagPresentCondition(SkyResources3MaterialSeeds.LEGACY_COMMON_NAMESPACE, sourceTagPath));
+        eitherTagPresent.add("values", values);
+
+        conditions.add(eitherTagPresent);
+        return conditions;
+    }
+
+    private static JsonObject tagPresentCondition(final String namespace, final String path) {
+        final JsonObject condition = new JsonObject();
+        condition.addProperty("type", "forge:not");
+        condition.add("value", tagEmptyCondition(namespace, path));
+        return condition;
+    }
+
+    private static JsonObject tagEmptyCondition(final String namespace, final String path) {
+        final JsonObject condition = new JsonObject();
+        condition.addProperty("type", "forge:tag_empty");
+        condition.addProperty("tag", namespace + ":" + path);
+        return condition;
     }
 
     private static String oreAlchemyDustRecipeName(final ResourceKey<OreAlchemyDustType> dust) {

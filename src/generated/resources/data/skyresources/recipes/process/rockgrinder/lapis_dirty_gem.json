@@ -1,5 +1,26 @@
 {
   "type": "skyresources:process",
+  "forge:conditions": [
+    {
+      "type": "forge:or",
+      "values": [
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "forge:gems/lapis"
+          }
+        },
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "c:gems/lapis"
+          }
+        }
+      ]
+    }
+  ],
   "inputs": [
     {
       "ingredient": {

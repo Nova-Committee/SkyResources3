@@ -1,5 +1,26 @@
 {
   "type": "skyresources:process",
+  "forge:conditions": [
+    {
+      "type": "forge:or",
+      "values": [
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "forge:ores/tungsten"
+          }
+        },
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "c:ores/tungsten"
+          }
+        }
+      ]
+    }
+  ],
   "inputs": [
     {
       "ingredient": {

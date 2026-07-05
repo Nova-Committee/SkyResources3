@@ -16,9 +16,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.data.tags.ItemTagsProvider;
 
 public final class SkyResources3ItemTagsProvider extends ItemTagsProvider {
-    private static final String PRIMARY_COMMON_NAMESPACE = "forge";
-    private static final String LEGACY_COMMON_NAMESPACE = "c";
-
     public SkyResources3ItemTagsProvider(
             final PackOutput output,
             final CompletableFuture<HolderLookup.Provider> lookupProvider,
@@ -40,8 +37,8 @@ public final class SkyResources3ItemTagsProvider extends ItemTagsProvider {
     }
 
     private void addCommonItemTag(final String path, final Item... entries) {
-        this.tag(commonItemTag(PRIMARY_COMMON_NAMESPACE, path)).add(entries);
-        this.tag(commonItemTag(LEGACY_COMMON_NAMESPACE, path)).add(entries);
+        this.tag(commonItemTag(SkyResources3MaterialSeeds.PRIMARY_COMMON_NAMESPACE, path)).add(entries);
+        this.tag(commonItemTag(SkyResources3MaterialSeeds.LEGACY_COMMON_NAMESPACE, path)).add(entries);
     }
 
     private static TagKey<Item> commonItemTag(final String namespace, final String path) {

@@ -9,13 +9,16 @@ import committee.nova.mods.skyresources3.common.block.entity.MachineCasingBlockE
 import committee.nova.mods.skyresources3.common.block.entity.StandaloneMachineBlockEntity;
 import committee.nova.mods.skyresources3.common.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.common.item.CondenserItem;
+import committee.nova.mods.skyresources3.common.item.DirtyGemItem;
 import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
 import committee.nova.mods.skyresources3.common.item.OreAlchemyDustItem;
 import committee.nova.mods.skyresources3.common.menu.CombustionControllerMenu;
 import committee.nova.mods.skyresources3.core.machine.CasingType;
 import committee.nova.mods.skyresources3.core.machine.CombustionHeaterType;
 import committee.nova.mods.skyresources3.init.event.MachineCasingEvents;
+import committee.nova.mods.skyresources3.init.data.SkyResources3MaterialSeeds;
 import committee.nova.mods.skyresources3.init.registry.ModBlocks;
+import committee.nova.mods.skyresources3.init.registry.ModCreativeTabs;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import net.minecraft.core.BlockPos;
@@ -31,6 +34,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -183,6 +188,62 @@ public final class MachineRuntimeGameTests {
                 ModDataPackRegistries.condenserTypeId(ModDataPackRegistries.LIGHT_MATTER_CONDENSER),
                 CondenserItem::condenserTypeId,
                 "Standalone condenser"
+        );
+        helper.succeed();
+    }
+
+    public static void creativeTabIncludesBuiltInMaterialVariants(final GameTestHelper helper) {
+        final var registries = helper.getLevel().registryAccess();
+        final CreativeModeTab.ItemDisplayParameters parameters = new CreativeModeTab.ItemDisplayParameters(
+                FeatureFlags.DEFAULT_FLAGS,
+                false,
+                registries
+        );
+        final CreativeModeTab tab = ModCreativeTabs.MAIN.get();
+        tab.buildContents(parameters);
+
+        final long oreDustCount = tab.getDisplayItems().stream()
+                .filter(stack -> stack.is(ModItems.ORE_ALCHEMICAL_DUST.get()))
+                .map(OreAlchemyDustItem::oreAlchemyDustTypeId)
+                .distinct()
+                .count();
+        final long dirtyGemCount = tab.getDisplayItems().stream()
+                .filter(stack -> stack.is(ModItems.DIRTY_GEM.get()))
+                .map(DirtyGemItem::dirtyGemTypeId)
+                .distinct()
+                .count();
+
+        GameTestAssertions.assertValueEqual(
+                helper,
+                3,
+                (int) oreDustCount,
+                "Creative tab should only include ore alchemical dust variants with non-empty source tags"
+        );
+        GameTestAssertions.assertValueEqual(
+                helper,
+                5,
+                (int) dirtyGemCount,
+                "Creative tab should only include dirty gem variants with non-empty source tags"
+        );
+        helper.succeed();
+    }
+
+    public static void materialSeedColorsResolveByTypeId(final GameTestHelper helper) {
+        GameTestAssertions.assertValueEqual(
+                helper,
+                0xD8AF93,
+                SkyResources3MaterialSeeds.oreAlchemyDustColor(
+                        ModDataPackRegistries.oreAlchemyDustTypeId(ModDataPackRegistries.IRON_ORE_ALCHEMY_DUST)
+                ),
+                "Built-in ore alchemical dust color should resolve from the type id"
+        );
+        GameTestAssertions.assertValueEqual(
+                helper,
+                0x12DB3A,
+                SkyResources3MaterialSeeds.dirtyGemColor(
+                        ModDataPackRegistries.dirtyGemTypeId(ModDataPackRegistries.EMERALD_DIRTY_GEM)
+                ),
+                "Built-in dirty gem color should resolve from the type id"
         );
         helper.succeed();
     }

@@ -130,6 +130,16 @@ public final class ModGameTests {
                 "standalone_machine_type_components",
                 MachineRuntimeGameTests::standaloneMachineBlocksPersistTypeComponents
         );
+        registerFunctionTest(
+                tests,
+                "creative_tab_material_variants",
+                MachineRuntimeGameTests::creativeTabIncludesBuiltInMaterialVariants
+        );
+        registerFunctionTest(
+                tests,
+                "material_seed_colors",
+                MachineRuntimeGameTests::materialSeedColorsResolveByTypeId
+        );
         registerFunctionTest(tests, "condenser_drops_output", MachineRuntimeGameTests::condenserDropsOutputWhenNoHandlerExists);
         registerFunctionTest(tests, "condenser_blocked_output", MachineRuntimeGameTests::condenserKeepsSourceWhenOutputIsBlocked);
         registerFunctionTest(

@@ -1,6 +1,7 @@
 package committee.nova.mods.skyresources3.init.data;
 
 import committee.nova.mods.skyresources3.common.item.DirtyGemType;
+import committee.nova.mods.skyresources3.common.item.ItemTagAvailability;
 import committee.nova.mods.skyresources3.common.item.OreAlchemyDustType;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
@@ -8,8 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -17,6 +22,7 @@ import net.minecraft.world.level.block.Blocks;
 
 public final class SkyResources3MaterialSeeds {
     static final String PRIMARY_COMMON_NAMESPACE = "forge";
+    static final String LEGACY_COMMON_NAMESPACE = "c";
     static final String ORE_TAG_PREFIX = "ores/";
     static final String GEM_TAG_PREFIX = "gems/";
 
@@ -125,6 +131,22 @@ public final class SkyResources3MaterialSeeds {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    public static List<ResourceKey<OreAlchemyDustType>> availableOreAlchemyDustKeys(
+            final HolderLookup.Provider registries
+    ) {
+        return DUSTS.stream()
+                .filter(dust -> ItemTagAvailability.hasEntries(registries, commonItemTagKey(dust.sourceTagPath())))
+                .map(DustSeed::key)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public static List<ResourceKey<DirtyGemType>> availableDirtyGemKeys(final HolderLookup.Provider registries) {
+        return GEMS.stream()
+                .filter(gem -> ItemTagAvailability.hasEntries(registries, commonItemTagKey(gem.sourceTagPath())))
+                .map(GemSeed::key)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
     public static int oreAlchemyDustColor(final ResourceLocation typeId) {
         return ORE_ALCHEMY_DUST_COLORS.getOrDefault(typeId, OreAlchemyDustType.DEFAULT_COLOR);
     }
@@ -135,6 +157,10 @@ public final class SkyResources3MaterialSeeds {
 
     static String commonItemTag(final String path) {
         return PRIMARY_COMMON_NAMESPACE + ":" + path;
+    }
+
+    private static TagKey<Item> commonItemTagKey(final String path) {
+        return TagKey.create(Registries.ITEM, new ResourceLocation(PRIMARY_COMMON_NAMESPACE, path));
     }
 
     private static Supplier<ItemLike> item(final ItemLike item) {

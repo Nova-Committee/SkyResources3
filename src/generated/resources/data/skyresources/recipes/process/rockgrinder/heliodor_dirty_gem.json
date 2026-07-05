@@ -1,5 +1,26 @@
 {
   "type": "skyresources:process",
+  "forge:conditions": [
+    {
+      "type": "forge:or",
+      "values": [
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "forge:gems/heliodor"
+          }
+        },
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "c:gems/heliodor"
+          }
+        }
+      ]
+    }
+  ],
   "inputs": [
     {
       "ingredient": {

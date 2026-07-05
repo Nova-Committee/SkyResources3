@@ -1,5 +1,26 @@
 {
   "type": "skyresources:process",
+  "forge:conditions": [
+    {
+      "type": "forge:or",
+      "values": [
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "forge:ores/gold"
+          }
+        },
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "c:ores/gold"
+          }
+        }
+      ]
+    }
+  ],
   "inputs": [
     {
       "ingredient": {

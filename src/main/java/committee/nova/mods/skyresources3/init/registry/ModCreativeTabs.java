@@ -74,10 +74,10 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.SECUNDUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.TERTIUS_ALCHEMICAL_DUST.get());
                         output.accept(ModItems.QUARTUS_ALCHEMICAL_DUST.get());
-                        SkyResources3MaterialSeeds.oreAlchemyDustKeys().forEach(
+                        SkyResources3MaterialSeeds.availableOreAlchemyDustKeys(parameters.holders()).forEach(
                                 typeKey -> output.accept(OreAlchemyDustItem.forType(typeKey))
                         );
-                        SkyResources3MaterialSeeds.dirtyGemKeys().forEach(
+                        SkyResources3MaterialSeeds.availableDirtyGemKeys(parameters.holders()).forEach(
                                 typeKey -> output.accept(DirtyGemItem.forType(typeKey))
                         );
                         output.accept(ModItems.ALCHEMICAL_COAL.get());
