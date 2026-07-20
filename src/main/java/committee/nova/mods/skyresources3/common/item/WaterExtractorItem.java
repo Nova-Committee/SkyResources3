@@ -35,7 +35,8 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
-import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import committee.nova.mods.skyresources3.common.compat.transfer.fluid.FluidUtil;
 
 public final class WaterExtractorItem extends Item {
@@ -228,11 +229,8 @@ public final class WaterExtractorItem extends Item {
             return false;
         }
 
-        if (FluidUtil.tryPlaceFluid(FluidResource.of(Fluids.WATER), player, level, context.getHand(), target)) {
-            drainWater(stack, FluidType.BUCKET_VOLUME);
-            return true;
-        }
-        return false;
+        final IFluidHandler source = stack.getCapability(Capabilities.FluidHandler.ITEM);
+        return !FluidUtil.tryPlaceFluid(source, player, level, context.getHand(), target).isEmpty();
     }
 
     private static BlockPos getFluidPlacementTarget(final UseOnContext context, final Player player) {
