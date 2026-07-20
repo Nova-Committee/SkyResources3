@@ -109,13 +109,8 @@ public final class FluidDropperBlockEntity extends BlockEntity {
         }
 
         final BlockPos below = this.worldPosition.below();
-        if (!level.isEmptyBlock(below)) {
-            return;
-        }
-
-        final FluidResource resource = this.fluids.getResource(TANK);
-        if (!resource.isEmpty() && FluidUtil.tryPlaceFluid(resource, null, level, InteractionHand.MAIN_HAND, below)) {
-            this.fluids.clear();
+        if (!FluidUtil.tryPlaceFluid(this.fluids, null, level, InteractionHand.MAIN_HAND, below).isEmpty()) {
+            this.setChanged();
         }
     }
 
@@ -148,10 +143,6 @@ public final class FluidDropperBlockEntity extends BlockEntity {
         @Override
         protected void onContentsChanged(final int index, final FluidStack previousContents) {
             this.owner.setChanged();
-        }
-
-        private void clear() {
-            this.set(TANK, FluidResource.EMPTY, 0);
         }
     }
 }

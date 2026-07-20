@@ -84,6 +84,30 @@ public final class ModGameTests {
                     "rock_grinder_process",
                     () -> RuntimeMigrationGameTests::rockGrinderUsesProcessRecipe
             );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            WATER_EXTRACTOR_PLACES_SOURCE =
+            TEST_FUNCTIONS.register(
+                    "water_extractor_places_source",
+                    () -> WorldFluidPlacementGameTests::waterExtractorPlacesSourceAndConsumesOneBucket
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            WATER_EXTRACTOR_BLOCKED_TARGET =
+            TEST_FUNCTIONS.register(
+                    "water_extractor_blocked_target",
+                    () -> WorldFluidPlacementGameTests::waterExtractorBlockedTargetKeepsWater
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            FLUID_DROPPER_PLACES_SOURCE =
+            TEST_FUNCTIONS.register(
+                    "fluid_dropper_places_source",
+                    () -> WorldFluidPlacementGameTests::fluidDropperPlacesSourceAndConsumesOneBucket
+            );
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>>
+            FLUID_DROPPER_BLOCKED_TARGET =
+            TEST_FUNCTIONS.register(
+                    "fluid_dropper_blocked_target",
+                    () -> WorldFluidPlacementGameTests::fluidDropperBlockedTargetKeepsFluid
+            );
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> MAGMAFIED_STONE_TICK =
             TEST_FUNCTIONS.register(
                     "magmafied_stone_tick",
@@ -319,6 +343,10 @@ public final class ModGameTests {
         registerFunctionTest(event, "island_offline_identity", ISLAND_OFFLINE_IDENTITY, environment);
         registerFunctionTest(event, "cutting_knife_process", CUTTING_KNIFE_PROCESS, environment);
         registerFunctionTest(event, "rock_grinder_process", ROCK_GRINDER_PROCESS, environment);
+        registerFunctionTest(event, "water_extractor_places_source", WATER_EXTRACTOR_PLACES_SOURCE, environment);
+        registerFunctionTest(event, "water_extractor_blocked_target", WATER_EXTRACTOR_BLOCKED_TARGET, environment);
+        registerFunctionTest(event, "fluid_dropper_places_source", FLUID_DROPPER_PLACES_SOURCE, environment);
+        registerFunctionTest(event, "fluid_dropper_blocked_target", FLUID_DROPPER_BLOCKED_TARGET, environment);
         registerFunctionTest(event, "magmafied_stone_tick", MAGMAFIED_STONE_TICK, environment);
         registerFunctionTest(event, "infusion_stone_process", INFUSION_STONE_PROCESS, environment);
         registerFunctionTest(event, "life_infuser_process", LIFE_INFUSER_PROCESS, environment);
