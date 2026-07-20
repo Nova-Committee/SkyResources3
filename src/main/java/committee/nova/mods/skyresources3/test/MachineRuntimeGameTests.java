@@ -431,6 +431,9 @@ public final class MachineRuntimeGameTests {
 
     public static void fluidDropperPullsFromCrucibleAndPlacesSourceBelow(final GameTestHelper helper) {
         helper.killAllEntities();
+        helper.setBlock(FLUID_DROPPER_POS, Blocks.AIR);
+        helper.setBlock(CRUCIBLE_POS, Blocks.AIR);
+        helper.setBlock(FLUID_SOURCE_POS, Blocks.AIR);
         helper.setBlock(FLUID_DROPPER_POS, ModBlocks.FLUID_DROPPER.get());
         helper.setBlock(CRUCIBLE_POS, ModBlocks.CRUCIBLE.get());
 
@@ -454,7 +457,10 @@ public final class MachineRuntimeGameTests {
 
         helper.assertTrue(
                 helper.getBlockState(FLUID_SOURCE_POS).is(ModBlocks.CRYSTAL_FLUID.get()),
-                "Fluid dropper should place a crystal fluid source below itself"
+                "Fluid dropper should place a crystal fluid source below itself; actual state="
+                        + helper.getBlockState(FLUID_SOURCE_POS)
+                        + ", crucible amount=" + crucible.getFluidHandler().getFluidInTank(0).getAmount()
+                        + ", dropper amount=" + dropper.getFluidHandler().getFluidInTank(0).getAmount()
         );
         GameTestAssertions.assertValueEqual(
                 helper,

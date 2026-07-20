@@ -69,6 +69,26 @@ public final class ModGameTests {
         registerFunctionTest(tests, "rock_grinder_process", RuntimeMigrationGameTests::rockGrinderUsesProcessRecipe);
         registerFunctionTest(
                 tests,
+                "water_extractor_places_source",
+                WorldFluidPlacementGameTests::waterExtractorPlacesSourceAndConsumesOneBucket
+        );
+        registerFunctionTest(
+                tests,
+                "water_extractor_blocked_target",
+                WorldFluidPlacementGameTests::waterExtractorBlockedTargetKeepsWater
+        );
+        registerFunctionTest(
+                tests,
+                "fluid_dropper_places_source",
+                WorldFluidPlacementGameTests::fluidDropperPlacesSourceAndConsumesOneBucket
+        );
+        registerFunctionTest(
+                tests,
+                "fluid_dropper_blocked_target",
+                WorldFluidPlacementGameTests::fluidDropperBlockedTargetKeepsFluid
+        );
+        registerFunctionTest(
+                tests,
                 "magmafied_stone_tick",
                 RuntimeMigrationGameTests::magmafiedStoneTicksCrystalFluid
         );
@@ -164,7 +184,7 @@ public final class ModGameTests {
         );
         registerFunctionTest(
                 tests,
-                "fluid_dropper_places_source",
+                "fluid_dropper_pulls_from_crucible",
                 MachineRuntimeGameTests::fluidDropperPullsFromCrucibleAndPlacesSourceBelow
         );
         registerFunctionTest(
