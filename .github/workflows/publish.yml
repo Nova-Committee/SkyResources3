@@ -1,0 +1,163 @@
+name: Publish to Modrinth and CurseForge
+
+run-name: Publish ${{ inputs.release_type }} from ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: Platform release type
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - beta
+          - alpha
+      changelog:
+        description: Changelog for this version
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skyresources3-platform-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 21
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+
+      - name: Build
+        shell: bash
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build --no-daemon
+
+      - name: Read metadata and select the main JAR
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          read_property() {
+            local key="$1"
+            local matches=()
+
+            mapfile -t matches < <(
+              awk -v key="$key" '
+                $0 ~ "^[[:space:]]*" key "[[:space:]]*=" {
+                  value = $0
+                  sub(/^[^=]*=[[:space:]]*/, "", value)
+                  sub(/\r$/, "", value)
+                  print value
+                }
+              ' gradle.properties
+            )
+
+            if (( ${#matches[@]} != 1 )); then
+              printf '::error file=gradle.properties::Expected exactly one %s property, found %d\n' \
+                "$key" "${#matches[@]}" >&2
+              exit 1
+            fi
+            if [[ -z "${matches[0]}" ]]; then
+              printf '::error file=gradle.properties::Property %s must not be empty\n' "$key" >&2
+              exit 1
+            fi
+
+            printf '%s' "${matches[0]}"
+          }
+
+          minecraft_version="$(read_property minecraft_version)"
+          mod_loader="$(read_property mod_loader)"
+          mod_name="$(read_property mod_name)"
+          mod_version="$(read_property mod_version)"
+          mod_version_tag="$(read_property mod_version_tag)"
+          project_version="${minecraft_version}-${mod_version}-${mod_version_tag}"
+          expected_jar="${mod_name}-${mod_loader}-${project_version}.jar"
+
+          main_jars=()
+          while IFS= read -r -d '' jar; do
+            case "$(basename "$jar")" in
+              *-sources.jar|*-javadoc.jar|*-dev.jar)
+                ;;
+              *)
+                main_jars+=("$jar")
+                ;;
+            esac
+          done < <(find build/libs -maxdepth 1 -type f -name '*.jar' -print0)
+
+          if (( ${#main_jars[@]} != 1 )); then
+            printf '::error file=build/libs::Expected exactly one main JAR, found %d\n' \
+              "${#main_jars[@]}" >&2
+            find build/libs -maxdepth 1 -type f -name '*.jar' -printf '%f\n' | sort >&2
+            exit 1
+          fi
+
+          artifact="${main_jars[0]}"
+          if [[ "$(basename "$artifact")" != "$expected_jar" ]]; then
+            printf '::error file=build/libs::Main JAR is %s; expected %s from Gradle properties\n' \
+              "$(basename "$artifact")" "$expected_jar" >&2
+            exit 1
+          fi
+
+          {
+            printf 'artifact=%s\n' "$artifact"
+            printf 'minecraft_version=%s\n' "$minecraft_version"
+            printf 'mod_loader=%s\n' "$mod_loader"
+            printf 'mod_name=%s\n' "$mod_name"
+            printf 'version=%s\n' "$project_version"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Verify publishing secrets
+        shell: bash
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          missing_secrets=()
+          [[ -n "${MODRINTH_TOKEN:-}" ]] || missing_secrets+=(MODRINTH_TOKEN)
+          [[ -n "${CURSEFORGE_TOKEN:-}" ]] || missing_secrets+=(CURSEFORGE_TOKEN)
+
+          if (( ${#missing_secrets[@]} > 0 )); then
+            printf '::error::Missing required repository secrets: %s\n' \
+              "${missing_secrets[*]}" >&2
+            exit 1
+          fi
+
+      - name: Publish the same JAR to both platforms
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          modrinth-id: RgaJkHX3
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-id: "1575615"
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          files: ${{ steps.release.outputs.artifact }}
+          name: ${{ steps.release.outputs.mod_name }} ${{ steps.release.outputs.version }}
+          version: ${{ steps.release.outputs.version }}
+          version-type: ${{ inputs.release_type }}
+          changelog: ${{ inputs.changelog }}
+          loaders: ${{ steps.release.outputs.mod_loader }}
+          game-versions: ${{ steps.release.outputs.minecraft_version }}
+          java: "21"
+          fail-mode: fail
