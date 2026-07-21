@@ -1,0 +1,164 @@
+name: 发布到 Modrinth 与 CurseForge
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 发布类型
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - beta
+          - alpha
+      changelog:
+        description: 本次发布的更新说明
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skyresources3-platform-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: 构建并发布
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出源码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 配置 Java 17
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: 配置 Gradle
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+
+      - name: 构建
+        shell: bash
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build --no-daemon
+
+      - name: 读取发布元数据
+        id: metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          read_property() {
+            local key="$1"
+            local -a definitions=()
+            mapfile -t definitions < <(grep -E "^[[:space:]]*${key}[[:space:]]*=" gradle.properties || true)
+
+            if [[ "${#definitions[@]}" -ne 1 ]]; then
+              echo "::error file=gradle.properties::属性 ${key} 必须且只能定义一次，当前找到 ${#definitions[@]} 处。"
+              exit 1
+            fi
+
+            local value="${definitions[0]#*=}"
+            value="${value#"${value%%[![:space:]]*}"}"
+            value="${value%"${value##*[![:space:]]}"}"
+
+            if [[ -z "$value" ]]; then
+              echo "::error file=gradle.properties::属性 ${key} 不能为空。"
+              exit 1
+            fi
+
+            printf '%s' "$value"
+          }
+
+          minecraft_version="$(read_property minecraft_version)"
+          mod_loader="$(read_property mod_loader)"
+          mod_name="$(read_property mod_name)"
+          mod_version="$(read_property mod_version)"
+          mod_version_tag="$(read_property mod_version_tag)"
+          version="${minecraft_version}-${mod_version}-${mod_version_tag}"
+          expected_jar="${mod_name}-${mod_loader}-${minecraft_version}-${mod_version}-${mod_version_tag}.jar"
+
+          {
+            printf 'minecraft_version=%s\n' "$minecraft_version"
+            printf 'mod_loader=%s\n' "$mod_loader"
+            printf 'mod_name=%s\n' "$mod_name"
+            printf 'version=%s\n' "$version"
+            printf 'expected_jar=%s\n' "$expected_jar"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: 校验唯一主 JAR
+        id: artifact
+        shell: bash
+        env:
+          EXPECTED_JAR: ${{ steps.metadata.outputs.expected_jar }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! -d build/libs ]]; then
+            echo "::error::Gradle 构建未生成 build/libs 目录。"
+            exit 1
+          fi
+
+          mapfile -d '' jars < <(
+            find build/libs -maxdepth 1 -type f -name '*.jar' \
+              ! -name '*-sources.jar' \
+              ! -name '*-javadoc.jar' \
+              ! -name '*-dev.jar' \
+              -print0
+          )
+
+          if [[ "${#jars[@]}" -ne 1 ]]; then
+            echo "::error::build/libs 中必须恰好存在一个非 sources、javadoc、dev 的主 JAR，当前找到 ${#jars[@]} 个。"
+            find build/libs -maxdepth 1 -type f -name '*.jar' -print | sort
+            exit 1
+          fi
+
+          actual_jar="$(basename -- "${jars[0]}")"
+          if [[ "$actual_jar" != "$EXPECTED_JAR" ]]; then
+            echo "::error::主 JAR 文件名必须为 ${EXPECTED_JAR}，实际为 ${actual_jar}。"
+            exit 1
+          fi
+
+          printf 'jar=%s\n' "${jars[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: 校验发布 Secrets
+        shell: bash
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          missing=()
+          [[ -n "$MODRINTH_TOKEN" ]] || missing+=(MODRINTH_TOKEN)
+          [[ -n "$CURSEFORGE_TOKEN" ]] || missing+=(CURSEFORGE_TOKEN)
+
+          if [[ "${#missing[@]}" -ne 0 ]]; then
+            echo "::error::缺少必需的 Repository secret：${missing[*]}。"
+            exit 1
+          fi
+
+      - name: 发布到 Modrinth 与 CurseForge
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          files: ${{ steps.artifact.outputs.jar }}
+          name: ${{ steps.metadata.outputs.mod_name }} ${{ steps.metadata.outputs.version }}
+          version: ${{ steps.metadata.outputs.version }}
+          version-type: ${{ inputs.release_type }}
+          changelog: ${{ inputs.changelog }}
+          loaders: ${{ steps.metadata.outputs.mod_loader }}
+          game-versions: ${{ steps.metadata.outputs.minecraft_version }}
+          java: "17"
+          modrinth-id: RgaJkHX3
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-id: "1575615"
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          fail-mode: fail
