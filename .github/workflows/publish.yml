@@ -1,0 +1,150 @@
+name: 发布到 Modrinth 和 CurseForge
+
+"on":
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 发布类型
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - beta
+          - alpha
+      changelog:
+        description: 版本更新说明
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skyresources3-platform-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: 构建并发布
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 配置 Java 21
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: 配置 Gradle
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+
+      - name: 构建模组
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build --no-daemon
+
+      - name: 读取发布元数据并选择主 JAR
+        id: metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for key in minecraft_version mod_loader mod_name mod_version mod_version_tag; do
+            mapfile -t matches < <(grep -E "^[[:space:]]*${key}[[:space:]]*=" gradle.properties || true)
+            if [[ ${#matches[@]} -ne 1 ]]; then
+              echo "::error file=gradle.properties::属性 '${key}' 必须且只能定义一次，实际为 ${#matches[@]} 次。" >&2
+              exit 1
+            fi
+
+            value="${matches[0]#*=}"
+            value="${value%$'\r'}"
+            value="$(printf '%s' "$value" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+            if [[ -z "$value" ]]; then
+              echo "::error file=gradle.properties::属性 '${key}' 不能为空。" >&2
+              exit 1
+            fi
+
+            printf -v "$key" '%s' "$value"
+          done
+
+          version="${minecraft_version}-${mod_version}-${mod_version_tag}"
+          expected_jar="build/libs/${mod_name}-${mod_loader}-${version}.jar"
+
+          shopt -s nullglob
+          all_jars=(build/libs/*.jar)
+          publishable_jars=()
+          for jar in "${all_jars[@]}"; do
+            case "${jar##*/}" in
+              *-sources*.jar | *-javadoc*.jar | *-dev*.jar)
+                ;;
+              *)
+                publishable_jars+=("$jar")
+                ;;
+            esac
+          done
+
+          if [[ ${#publishable_jars[@]} -ne 1 ]]; then
+            echo "::error file=build/libs::build/libs 中必须恰好有一个非 sources、javadoc、dev 的主 JAR，实际为 ${#publishable_jars[@]} 个。" >&2
+            if [[ ${#all_jars[@]} -gt 0 ]]; then
+              printf '发现的 JAR：\n' >&2
+              printf '  %s\n' "${all_jars[@]}" >&2
+            fi
+            exit 1
+          fi
+
+          main_jar="${publishable_jars[0]}"
+          if [[ "$main_jar" != "$expected_jar" ]]; then
+            echo "::error file=build/libs::主 JAR 名称与 Gradle 版本公式不一致：期望 '${expected_jar}'，实际 '${main_jar}'。" >&2
+            exit 1
+          fi
+
+          {
+            printf 'minecraft_version=%s\n' "$minecraft_version"
+            printf 'mod_loader=%s\n' "$mod_loader"
+            printf 'mod_name=%s\n' "$mod_name"
+            printf 'version=%s\n' "$version"
+            printf 'jar=%s\n' "$main_jar"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: 验证发布凭据
+        shell: bash
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          missing=0
+          if [[ -z "$MODRINTH_TOKEN" ]]; then
+            echo "::error::仓库 Secret MODRINTH_TOKEN 未配置。" >&2
+            missing=1
+          fi
+          if [[ -z "$CURSEFORGE_TOKEN" ]]; then
+            echo "::error::仓库 Secret CURSEFORGE_TOKEN 未配置。" >&2
+            missing=1
+          fi
+          exit "$missing"
+
+      - name: 上传同一 JAR 到两个平台
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          files: ${{ steps.metadata.outputs.jar }}
+          name: "${{ steps.metadata.outputs.mod_name }} ${{ steps.metadata.outputs.version }}"
+          version: ${{ steps.metadata.outputs.version }}
+          version-type: ${{ inputs.release_type }}
+          changelog: ${{ inputs.changelog }}
+          loaders: ${{ steps.metadata.outputs.mod_loader }}
+          game-versions: ${{ steps.metadata.outputs.minecraft_version }}
+          java: "21"
+          modrinth-id: RgaJkHX3
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-id: "1575615"
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          fail-mode: fail
