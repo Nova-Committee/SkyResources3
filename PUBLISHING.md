@@ -18,7 +18,7 @@
 - `minecraft_version`：发布页面使用的 Minecraft 版本；本分支应为 `1.21.11`。
 - `mod_loader`：发布页面使用的加载器；本分支应为 `neoforge`。
 - `mod_name`：发布名称和主 JAR 文件名前缀。
-- `mod_version`：模组版本，例如 `1.0.0`。
+- `mod_version`：模组版本，例如 `1.0.1`。
 - `mod_version_tag`：版本标签，例如 `release`、`beta` 或 `alpha`。
 
 发布版本严格复用 `build.gradle` 的公式：
@@ -27,7 +27,7 @@
 <minecraft_version>-<mod_version>-<mod_version_tag>
 ```
 
-例如当前属性会生成版本 `1.21.11-1.0.0-release`，主 JAR 应为 `build/libs/SkyResources3-neoforge-1.21.11-1.0.0-release.jar`。手动输入的 `release_type` 决定平台上的 release/beta/alpha 分类，不会改写 `gradle.properties` 或版本号；发布前应确保它与版本计划一致。
+例如当前属性会生成版本 `1.21.11-1.0.1-release`，主 JAR 应为 `build/libs/SkyResources3-neoforge-1.21.11-1.0.1-release.jar`。手动输入的 `release_type` 决定平台上的 release/beta/alpha 分类，不会改写 `gradle.properties` 或版本号；发布前应确保它与版本计划一致。
 
 ## 手动运行
 
