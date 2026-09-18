@@ -1,8 +1,12 @@
 package committee.nova.mods.skyresources3.common.item;
 
 import committee.nova.mods.skyresources3.Config;
+import committee.nova.mods.skyresources3.common.recipe.ExtractingRecipe;
+import committee.nova.mods.skyresources3.common.recipe.InsertingRecipe;
 import committee.nova.mods.skyresources3.common.recipe.WaterExtractorRecipes;
 import java.util.List;
+import java.util.Optional;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -10,16 +14,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -159,10 +161,16 @@ public final class WaterExtractorItem extends Item {
     private static boolean shouldConsumeClientUseOn(final UseOnContext context, final Player player) {
         final ItemStack stack = context.getItemInHand();
         final BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        return WaterExtractorRecipes.findBlockInsertion(state)
-                .map(recipe -> canDrainWater(stack, recipe.waterAmount()))
+
+        return InsertingRecipe.find(context.getLevel(), state.getBlock().asItem().getDefaultInstance())
+                .map(recipe -> canDrainWater(stack, recipe.getInputFluid().getAmount()))
                 .orElse(false)
                 || (player.isShiftKeyDown() && canDrainWater(stack, FluidType.BUCKET_VOLUME));
+
+//        return WaterExtractorRecipes.findBlockInsertion(state)
+//                .map(recipe -> canDrainWater(stack, recipe.waterAmount()))
+//                .orElse(false)
+//                || (player.isShiftKeyDown() && canDrainWater(stack, FluidType.BUCKET_VOLUME));
     }
 
     private static boolean tryInsertWaterRecipe(final UseOnContext context, final Player player) {
@@ -170,17 +178,41 @@ public final class WaterExtractorItem extends Item {
         final BlockPos pos = context.getClickedPos();
         final ItemStack stack = context.getItemInHand();
         final BlockState state = level.getBlockState(pos);
-        return WaterExtractorRecipes.findBlockInsertion(state)
-                .map(recipe -> insertWaterAndReplaceBlock(
-                        stack,
-                        level,
-                        player,
-                        pos,
-                        context,
-                        recipe.outputState(),
-                        recipe.waterAmount()
-                ))
-                .orElse(false);
+
+        // search inserting recipe
+        Optional<InsertingRecipe> recipe = InsertingRecipe.find(level, state.getBlock().asItem().getDefaultInstance());
+
+        // no recipe found or unable to drain water anymore, do nothing
+        if (recipe.isEmpty() || !canDrainWater(stack, recipe.get().getInputFluid().getAmount())) {
+            return false;
+        }
+
+        // find the recipe and able to drain water, insert the hit block
+        drainWater(stack, recipe.get().getInputFluid().getAmount());
+        if (recipe.get().getOutputBlock().getItem() instanceof BlockItem blockItem){
+            // if output block is really a block item, place it
+            level.setBlock(pos, blockItem.getBlock().defaultBlockState(), Block.UPDATE_ALL);
+        } else {
+            // else, destroy the hit block and drop the recipe output
+            level.destroyBlock(pos, false, player);
+            Containers.dropItemStack(level, pos.getCenter().x(), pos.getCenter().y(), pos.getCenter().z(), recipe.get().getOutputBlock());
+        }
+        playWaterSound(level, player, pos, SoundEvents.BUCKET_EMPTY);
+        level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
+        return true;
+
+
+//        return WaterExtractorRecipes.findBlockInsertion(state)
+//                .map(recipe -> insertWaterAndReplaceBlock(
+//                        stack,
+//                        level,
+//                        player,
+//                        pos,
+//                        context,
+//                        recipe.outputState(),
+//                        recipe.waterAmount()
+//                ))
+//                .orElse(false);
     }
 
     private static boolean insertWaterAndReplaceBlock(
@@ -253,9 +285,31 @@ public final class WaterExtractorItem extends Item {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hit.getDirection(), stack)) {
             return false;
         }
-        return WaterExtractorRecipes.findBlockExtraction(state)
-                .map(recipe -> extractWaterForBlockRecipe(stack, level, player, pos, recipe))
-                .orElse(false);
+
+        // search extracting recipe
+        Optional<ExtractingRecipe> recipe = ExtractingRecipe.find(level, state.getBlock().asItem().getDefaultInstance());
+
+        // no recipe found or unable to add water anymore, do nothing
+        if (recipe.isEmpty() || !canAddWater(stack, recipe.get().getOutputFluid().getAmount())){
+            return false;
+        }
+
+        // find recipe and able to add water, extract the hit block
+        addWater(stack, recipe.get().getOutputFluid().getAmount());
+        if (recipe.get().getOutputBlock().getItem() instanceof BlockItem blockItem){
+            // if output block is really a block item, place it
+            level.setBlock(pos, blockItem.getBlock().defaultBlockState(), Block.UPDATE_ALL);
+        } else {
+            // else, just destroy the hit block
+            level.destroyBlock(pos, false, player);
+        }
+        playWaterSound(level, player, pos, SoundEvents.PLAYER_SPLASH);
+        level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
+        return true;
+
+//        return WaterExtractorRecipes.findBlockExtraction(state)
+//                .map(recipe -> extractWaterForBlockRecipe(stack, level, player, pos, recipe))
+//                .orElse(false);
     }
 
     private static boolean extractWaterForBlockRecipe(
