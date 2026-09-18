@@ -224,6 +224,8 @@
   "jei.skyresources.category.crucible": "坩埚",
   "jei.skyresources.category.condenser": "冷凝器",
   "jei.skyresources.category.heat_sources": "热源",
+  "jei.skyresources.category.extracting": "取液",
+  "jei.skyresources.category.inserting": "注液",
   "jei.skyresources.process.heat": "热量：%s HU",
   "jei.skyresources.process.ticks": "时间：%s 刻",
   "jei.skyresources.process.yield": "产出：%sx",

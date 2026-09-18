@@ -1,0 +1,16 @@
+{
+  "type": "skyresources:extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:snow_block"
+    }
+  },
+  "output_block": {
+    "count": 0,
+    "item": "minecraft:air"
+  },
+  "output_fluid": {
+    "Amount": 50,
+    "FluidName": "minecraft:water"
+  }
+}

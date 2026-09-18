@@ -1,0 +1,15 @@
+{
+  "type": "skyresources:inserting",
+  "input_block": {
+    "ingredient": {
+      "item": "skyresources:dry_cactus"
+    }
+  },
+  "input_fluid": {
+    "Amount": 1200,
+    "FluidName": "minecraft:water"
+  },
+  "output_block": {
+    "item": "minecraft:cactus"
+  }
+}
