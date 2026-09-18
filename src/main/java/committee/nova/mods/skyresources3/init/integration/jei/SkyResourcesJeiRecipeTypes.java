@@ -1,10 +1,9 @@
 package committee.nova.mods.skyresources3.init.integration.jei;
 
 import committee.nova.mods.skyresources3.Skyresources3;
+import committee.nova.mods.skyresources3.common.recipe.*;
 import committee.nova.mods.skyresources3.core.guide.GuideRecipeTargets;
-import committee.nova.mods.skyresources3.common.recipe.CondenserRecipe;
-import committee.nova.mods.skyresources3.common.recipe.CrucibleRecipe;
-import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
+
 import java.util.List;
 import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +22,10 @@ final class SkyResourcesJeiRecipeTypes {
             new RecipeType<>(id("condenser"), CondenserRecipe.class);
     static final RecipeType<HeatSourceJeiRecipe> HEAT_SOURCES =
             new RecipeType<>(id("heat_sources"), HeatSourceJeiRecipe.class);
+    static final RecipeType<ExtractingRecipe> EXTRACTING =
+            new RecipeType<>(id("extracting"), ExtractingRecipe.class);
+    static final RecipeType<InsertingRecipe> INSERTING =
+            new RecipeType<>(id("inserting"), InsertingRecipe.class);
 
     static List<RecipeType<?>> byGuideTarget(final String target) {
         return switch (target) {

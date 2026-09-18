@@ -224,6 +224,8 @@
   "jei.skyresources.category.crucible": "Crucible",
   "jei.skyresources.category.condenser": "Condenser",
   "jei.skyresources.category.heat_sources": "Heat Sources",
+  "jei.skyresources.category.extracting": "Extracting Fluid",
+  "jei.skyresources.category.inserting": "Inserting Fluid",
   "jei.skyresources.process.heat": "Heat: %s HU",
   "jei.skyresources.process.ticks": "Time: %s ticks",
   "jei.skyresources.process.yield": "Yield: %sx",

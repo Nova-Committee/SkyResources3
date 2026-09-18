@@ -1,9 +1,8 @@
 package committee.nova.mods.skyresources3.init.registry;
 
 import committee.nova.mods.skyresources3.Skyresources3;
-import committee.nova.mods.skyresources3.common.recipe.CondenserRecipe;
-import committee.nova.mods.skyresources3.common.recipe.CrucibleRecipe;
-import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
+import committee.nova.mods.skyresources3.common.recipe.*;
+
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +32,16 @@ public final class ModRecipeTypes {
             RECIPE_SERIALIZERS.register("crucible", CrucibleRecipe.Serializer::new);
     public static final Supplier<RecipeSerializer<CondenserRecipe>> CONDENSER_SERIALIZER =
             RECIPE_SERIALIZERS.register("condenser", CondenserRecipe.Serializer::new);
+
+    // water extractor recipes
+    public static final Supplier<RecipeType<ExtractingRecipe>> EXTRACTING_TYPE =
+            RECIPE_TYPES.register("extracting", () -> RecipeType.simple(new ResourceLocation(Skyresources3.MODID, "extracting")));
+    public static final Supplier<RecipeSerializer<ExtractingRecipe>> EXTRACTING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("extracting", ExtractingRecipe.Serializer::new);
+    public static final Supplier<RecipeType<InsertingRecipe>> INSERTING_TYPE =
+            RECIPE_TYPES.register("inserting", () -> RecipeType.simple(new ResourceLocation(Skyresources3.MODID, "inserting")));
+    public static final Supplier<RecipeSerializer<InsertingRecipe>> INSERTING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("inserting", InsertingRecipe.Serializer::new);
 
     public static void register(final IEventBus modEventBus) {
         RECIPE_TYPES.register(modEventBus);

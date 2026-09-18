@@ -1,0 +1,15 @@
+{
+  "type": "skyresources:extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cactus"
+    }
+  },
+  "output_block": {
+    "item": "skyresources:dry_cactus"
+  },
+  "output_fluid": {
+    "Amount": 50,
+    "FluidName": "minecraft:water"
+  }
+}

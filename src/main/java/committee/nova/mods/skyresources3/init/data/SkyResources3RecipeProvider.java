@@ -61,6 +61,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.common.Mod;
 
 public final class SkyResources3RecipeProvider extends RecipeProvider {
     private Consumer<FinishedRecipe> output;
@@ -652,6 +653,7 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
         this.buildInfusionRecipes();
         this.buildCombustionRecipes();
         this.buildFusionRecipes();
+        this.buildWaterExtractorRecipes();
     }
 
     private void buildCrucibleRecipes() {
@@ -1320,6 +1322,69 @@ public final class SkyResources3RecipeProvider extends RecipeProvider {
                 ModItems.RADIOACTIVE_MIX.get(),
                 1
         );
+    }
+
+    private void buildWaterExtractorRecipes(){
+
+        this.extractingRecipe(
+                "water_from_snow",
+                input(Blocks.SNOW_BLOCK),
+                new FluidStack(Fluids.WATER, 50),
+                ItemStack.EMPTY
+        );
+        this.extractingRecipe(
+                "water_from_leaves",
+                input(ItemTags.LEAVES),
+                new FluidStack(Fluids.WATER, 20),
+                ItemStack.EMPTY
+        );
+        this.extractingRecipe(
+                "water_from_cactus",
+                input(Blocks.CACTUS),
+                new FluidStack(Fluids.WATER, 50),
+                ModBlocks.DRY_CACTUS.get().asItem().getDefaultInstance()
+        );
+
+        this.insertingRecipe(
+                "clay",
+                input(Blocks.DIRT),
+                new FluidStack(Fluids.WATER, 200),
+                Blocks.CLAY.asItem().getDefaultInstance()
+        );
+        this.insertingRecipe(
+                "cactus",
+                input(ModBlocks.DRY_CACTUS.get()),
+                new FluidStack(Fluids.WATER, 1200),
+                Blocks.CACTUS.asItem().getDefaultInstance()
+        );
+    }
+
+    private void extractingRecipe(
+            final String name,
+            final ProcessIngredient input,
+            final FluidStack outputFluid,
+            final ItemStack outputBlock
+    ){
+        final ResourceLocation id = id("extracting/" + name);
+        this.output.accept(new JsonFinishedRecipe(id, ModRecipeTypes.EXTRACTING_SERIALIZER.get(), json -> {
+            json.add("input", processIngredientToJson(input));
+            json.add("output_fluid", fluidStackToJson(outputFluid));
+            json.add("output_block", RecipeJsonUtil.stackToJson(outputBlock));
+        }));
+    }
+
+    private void insertingRecipe(
+            final String name,
+            final ProcessIngredient inputBlock,
+            final FluidStack inputFluid,
+            final ItemStack outputBlock
+    ){
+        final ResourceLocation id = id("inserting/" + name);
+        this.output.accept(new JsonFinishedRecipe(id, ModRecipeTypes.INSERTING_SERIALIZER.get(), json -> {
+            json.add("input_block", processIngredientToJson(inputBlock));
+            json.add("input_fluid", fluidStackToJson(inputFluid));
+            json.add("output_block", RecipeJsonUtil.stackToJson(outputBlock));
+        }));
     }
 
     private void fusionRecipe(

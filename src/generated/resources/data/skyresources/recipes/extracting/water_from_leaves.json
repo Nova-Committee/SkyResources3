@@ -1,0 +1,16 @@
+{
+  "type": "skyresources:extracting",
+  "input": {
+    "ingredient": {
+      "tag": "minecraft:leaves"
+    }
+  },
+  "output_block": {
+    "count": 0,
+    "item": "minecraft:air"
+  },
+  "output_fluid": {
+    "Amount": 20,
+    "FluidName": "minecraft:water"
+  }
+}

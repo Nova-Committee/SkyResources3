@@ -1,0 +1,15 @@
+{
+  "type": "skyresources:inserting",
+  "input_block": {
+    "ingredient": {
+      "item": "minecraft:dirt"
+    }
+  },
+  "input_fluid": {
+    "Amount": 200,
+    "FluidName": "minecraft:water"
+  },
+  "output_block": {
+    "item": "minecraft:clay"
+  }
+}

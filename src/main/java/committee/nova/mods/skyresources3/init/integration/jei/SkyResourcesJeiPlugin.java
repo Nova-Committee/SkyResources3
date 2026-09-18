@@ -4,10 +4,7 @@ import committee.nova.mods.skyresources3.Skyresources3;
 import committee.nova.mods.skyresources3.common.item.CombustionHeaterItem;
 import committee.nova.mods.skyresources3.common.item.CondenserItem;
 import committee.nova.mods.skyresources3.common.item.HeatProviderItem;
-import committee.nova.mods.skyresources3.common.recipe.CondenserRecipe;
-import committee.nova.mods.skyresources3.common.recipe.ProcessRecipes;
-import committee.nova.mods.skyresources3.common.recipe.CrucibleRecipe;
-import committee.nova.mods.skyresources3.common.recipe.SkyResourcesProcessRecipe;
+import committee.nova.mods.skyresources3.common.recipe.*;
 import committee.nova.mods.skyresources3.init.registry.ModDataPackRegistries;
 import committee.nova.mods.skyresources3.init.registry.ModItems;
 import committee.nova.mods.skyresources3.init.registry.ModRecipeTypes;
@@ -33,6 +30,8 @@ import net.minecraft.world.level.block.Blocks;
 
 @JeiPlugin
 public final class SkyResourcesJeiPlugin implements IModPlugin {
+    public static final ResourceLocation ICONS = new ResourceLocation(Skyresources3.MODID, "textures/gui/jei_icons.png");
+
     private static IJeiRuntime runtime;
 
     @Override
@@ -114,7 +113,10 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                 ),
                 new CrucibleRecipeJeiCategory(guiHelper),
                 new CondenserRecipeJeiCategory(guiHelper),
-                new HeatSourceJeiCategory(guiHelper)
+                new HeatSourceJeiCategory(guiHelper),
+
+                new ExtractingRecipeCategory(guiHelper),
+                new InsertingRecipeCategory(guiHelper)
         );
     }
 
@@ -159,6 +161,15 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                 infusionRecipes,
                 condenserRecipes
         );
+
+        final List<ExtractingRecipe> extractingRecipes =
+                SkyResourcesJeiRecipeMaps.recipes(ModRecipeTypes.EXTRACTING_TYPE.get());
+        registration.addRecipes(SkyResourcesJeiRecipeTypes.EXTRACTING,
+                extractingRecipes);
+        final List<InsertingRecipe> insertingRecipes =
+                SkyResourcesJeiRecipeMaps.recipes(ModRecipeTypes.INSERTING_TYPE.get());
+        registration.addRecipes(SkyResourcesJeiRecipeTypes.INSERTING,
+                insertingRecipes);
     }
 
     @Override
@@ -210,6 +221,8 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
                 Blocks.MAGMA_BLOCK
         );
         registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.HEAT_SOURCES, heatProviders());
+        registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.EXTRACTING, waterExtractors());
+        registration.addRecipeCatalysts(SkyResourcesJeiRecipeTypes.INSERTING, waterExtractors());
     }
 
     @Override
@@ -295,5 +308,9 @@ public final class SkyResourcesJeiPlugin implements IModPlugin {
         return ModDataPackRegistries.BUILTIN_CONDENSER_TYPES.stream()
                 .map(CondenserItem::forType)
                 .toArray(ItemStack[]::new);
+    }
+
+    private static ItemStack[] waterExtractors(){
+        return new ItemStack[]{new ItemStack(ModItems.WATER_EXTRACTOR.get())};
     }
 }
